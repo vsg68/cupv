@@ -1,22 +1,29 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Users</title>        
-            <script type='text/javascript' language='JavaScript'  src='jquery-1.4.2.js' ></script>
-			<script type="text/javascript" src='manager.js'></script>
 <style>
 	.formlabel {
 		width: 200px;
-		border: green solid 1px;
-		}
+	}
 	 .formtext input[type='text'] {
-		width: 300px;
-		}
+		width: 280px;
+	}
+	.formtext, .formlabel {
+		float: left;
+		height: 24px;
+<!--
+		vertical-align: bottom;
+-->
+	}	
 	.user1 {
 		border: 1px solid blue;
 		width: 500px;
-		}	
+	}
+	.fieldentry {
+<!--
+		border: 1px solid red;
+-->
+		position: relative;
+		overflow: auto;
+		margin: 2px 0 0 0;
+	}
 </style>	
 
     </head>
@@ -26,36 +33,34 @@
 	<form name='usersform' method='post'>
 		<fieldset  class="user1">
         <legend>Пользователь</legend>
-			<table >
-			   <tr>
-					<td class='formlabel'>ФИО:</td>
-					<td class='formtext'><input type='text' name='fio' /></td>
-			   </tr>	
-			   <tr>
-					<td class='formlabel'>Логин:</td>
-					<td class='formtext'><input type='text' name='login' /></td>
-			   </tr>	
-			   <tr>
-					<td class='formlabel'>Пароль:</td>
-					<td class='formtext'><input type='text' name='passwd' /></td>
-			   </tr>	
-			   <tr>
-					<td class='formlabel'>Основной домен:</td>
-					<td class='formtext'>
-						<input type='radio' name='domains' value='gmpro.ru'>gmpro.ru
+				<div class='fieldentry'>
+			   		<div class='formlabel'>ФИО:</div>
+					<div class='formtext'><input type='text' name='fio' /></div>
+			   </div>	
+			   <div class='fieldentry'>
+					<div class='formlabel'>Логин:</div>
+					<div class='formtext'><input type='text' name='login' /></div>
+			   </div>
+			   <div class='fieldentry'>
+					<div class='formlabel'>Основной домен:</div>
+					<div class='formtext'>
+						<input type='radio' name='domains' value='gmpro.ru' checked>gmpro.ru
 						<input type='radio' name='domains' value='gmpro1.ru'>gmpro1.ru
 						<input type='radio' name='domains' value='gmpro2.ru'>gmpro2.ru
-					</td>
-			   </tr>	
-			   <tr>
-					<td class='formlabel'>Путь:</td>
-					<td class='formtext'><input type='text'  name='path' value='/var/tmp' /></td>
-			   </tr>
-			   <tr>
-					<td class='formlabel'>Сеть:</td>
-					<td class='formtext'><input type='text' name='nets' value='10/16, 192.168.0.5/32, 172.28.18.0/24' /></td>
-			   </tr>	
-		  </table>
+					</div>
+			   </div>				   
+			   <div class='fieldentry'>
+					<div class='formlabel'>Пароль:</div>
+					<td class='formtext'><input type='text' name='passwd' /></div>
+			   </div>	
+			   <div class='fieldentry'>
+					<div class='formlabel'>Путь:</div>
+					<div class='formtext'><input type='text'  name='path' value='/var/tmp' /></div>
+			   </div>
+			   <div class='fieldentry'>
+					<div class='formlabel'>Сеть:</div>
+					<div class='formtext'><input type='text' name='nets' value='10/16, 192.168.0.5/32, 172.28.18.0/24' /></div>
+			   </div>	
 		</fieldset> 
 <!--				
 			   <tr>
@@ -112,5 +117,3 @@
         </table>  
 		<input type='submit' value='добавить'>
 		</form>
-</body>
-</html>
