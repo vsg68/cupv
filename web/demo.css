@@ -1,0 +1,62 @@
+body {
+       background-color: #dde;
+   }
+
+legend { 
+    font-size:  small;
+    background-color: #fff;
+    border: 1px dimgrey outset;
+    padding:3px;
+    color: #555;
+  
+}
+fieldset {
+    background-color: #eee;
+    text-align:  center;
+    color: navy;  
+    padding:10px;       
+    max-width: 1000px;      
+}
+input[type='text']  {
+    margin: 10px 0;
+    width: 200px;
+  disabled: true;
+}
+
+.container {
+	background-color: #ccc;
+	margin:50px 100px;
+	width: 500px;
+	height: 740px;
+}
+.mainmenu {
+	background-color: #cecece;
+	height: 40px;
+}
+.usrs {
+	background-color: #cc0;
+	position: relative;
+}
+.umenu {
+	background-color: #c0c;
+	float:left;
+	overflow: auto;
+	width: 218px;
+	height: 700px;
+}
+.ulist {
+	background-color: green;
+	width: 200px;
+}
+.ufields {
+	width: 200px;
+	height: 200px;
+	border: 1px solid #000;
+	float:left;
+}
+.usr {
+	padding: 0 5px;
+}
+.active {
+	background-color: #0cc;
+}
