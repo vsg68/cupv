@@ -8,8 +8,25 @@ $(function(){
 	$('a, .usr').click(function(){
 						$('.active').removeClass('active');
 						$(this).parent('.usr').addClass('active');
-						sometext = $(this).text();
-						$('.ufields').replaceWith('<div class="ufields"><strong>'+ sometext +'</strong></div>');
+						var href = $(this).attr('href');
+//						$('.ufields').replaceWith('<div class="ufields"><strong>'+ sometext +'</strong></div>');
+
+						$.ajax({
+							url: href,
+							type: 'post',
+							//~data: {
+								//~ q: 'assets/snippets/ajax/getContent.php',
+								//~ mainemail: 
+							//~ },
+							success: function(response) {
+								$('.view')
+										.empty()
+										.html(response);
+//								$('a[rel='+id+']').addClass('selected-report');
+								return false;
+							}
+						});								
 						return false;
 					})
  })
+

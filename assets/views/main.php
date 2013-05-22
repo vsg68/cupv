@@ -25,7 +25,9 @@
 
 						</div>
 				</div>		
-				<div class='ufields'></div>
+				<div class='ufields'>
+					<div class='view'></div>
+				</div>
             </div>
         </div>
     </body>

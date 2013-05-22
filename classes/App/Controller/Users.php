@@ -2,7 +2,7 @@
  
 namespace App\Controller;
  
-class Users extends \App\Page {
+class Users extends \PHPixie\Controller {
  
 
 /*
@@ -11,29 +11,20 @@ class Users extends \App\Page {
 
     public function action_index() {
  
-        //Include the list.php subtemplate
-        $this->view->subview = 'list1';
- 
-        //Find all fairies and pass them to the view
-        //ORM takes care of that
-        $this->view->users = $this->pixie->orm->get('users')->find_all();
+        $view = $this->pixie->view('main');
+        $view->users = $this->pixie->orm->get('users')->find_all();
+        $this->response->body = $view->render();
     }
-	
-/*
- *	вывод нужного шаблона
- */
 	
 	public function action_view() {
  
         //Show the single fairy page
-        $this->view->subview = 'view';
+        $view = $this->pixie->view('view');
  
-        //Get the ID of the fairy from URL parameters
-        $id = $this->request->param('id');
- 
-        //Find a fairy by ID and pass her to the view
-        //ORM makes it very trivial too
-        $this->view->users = $this->pixie->orm->get('users', $id);
+        //$id = $this->request->param('id');
+		$view->mainemail = $this->request->param('id');
+        //$this->view->users = $this->pixie->orm->get('users', $id);
+        $this->response->body = $view->render();
     }
 	
 /*

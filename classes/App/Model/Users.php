@@ -5,9 +5,9 @@ namespace App\Model;
 //from the class name
 class Users extends \PHPixie\ORM\Model {
 
-	public $has_many = array('users');
+	//public $has_many = array('users');
 	public $table = 'users';
-	public $id = 'users_id';
+	//public $id = 'users_id';
 //~ 
 	//~ public function get($property)
 	//~ {

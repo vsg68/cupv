@@ -20,14 +20,14 @@ fieldset {
 input[type='text']  {
     margin: 10px 0;
     width: 200px;
-  disabled: true;
+    disabled: true;
 }
 
 .container {
 	background-color: #ccc;
 	margin:50px 100px;
-	width: 500px;
-	height: 740px;
+	width: 900px;
+	height: 780px;
 }
 .mainmenu {
 	background-color: #cecece;
@@ -42,21 +42,33 @@ input[type='text']  {
 	float:left;
 	overflow: auto;
 	width: 218px;
-	height: 700px;
+	height: 720px;
 }
 .ulist {
 	background-color: green;
 	width: 200px;
 }
 .ufields {
-	width: 200px;
-	height: 200px;
-	border: 1px solid #000;
+	width: 600px;
+	height: 720px;
+	margin: 10px 0;
+	overflow: auto;
 	float:left;
+}
+.view {
+	background-color: cyan;
+	width: 580px;
 }
 .usr {
 	padding: 0 5px;
 }
 .active {
 	background-color: #0cc;
+}
+.formlabel {
+	background-color: yellow;
+	width: 300px;
+}
+.user1{
+	text-align: left;
 }
