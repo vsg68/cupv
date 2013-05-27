@@ -96,6 +96,7 @@ class Users extends \PHPixie\Controller {
 //~ 
 	public function action_add() {
 
+
         if ($this->request->method == 'POST') {
 
 			$user = $this->request->post();
@@ -137,6 +138,7 @@ class Users extends \PHPixie\Controller {
 								->execute();
 			}
 
+
 			if(1) {
 				// Если прошло изменение - выводим пользователя
 				$view = $this->pixie->view('view');
@@ -145,14 +147,16 @@ class Users extends \PHPixie\Controller {
 								->where('user_id',$user['user_id'])
 								->execute()
 								->current();
-print_r($view->user);
-exit;
+//~ print_r($view->user);
+//~ exit;
 				$view->aliases = array();
 				$this->response->body = $view->render();
 			} else {
 				
 			}	
 			//return $this->redirect('/users/view/'.$user['user_id']);
+
+
 		}
 		
 	}

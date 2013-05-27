@@ -8,6 +8,7 @@ $(function(){
 				$(this).before( alias );
 				return false;
 	});
+	
 	$('a, .usr').click(function(){
 						$('.active').removeClass('active');
 						$(this).parent('.usr').addClass('active');
@@ -30,30 +31,30 @@ $(function(){
 						});								
 						return false;
 					});
-	
 
+	$('#usersform').live('submit', function(event){
+			event.preventDefault();
+			//var params;
+			var params =  $('#usersform').serialize();
+			$.post(	'/users/add/', params , function(response) {
+												$('#ufields').empty().html(response);
+												return false;
+												});
+			return false;
+	});
+	
  })
 
 function submit_form() {
-    // disable the submit button
-    //$('#submit_view').attr("disabled", true);  
-
-	params = $('form[name="usersform"]').serialize();
-
-	//~ $('#ufields')
-		//~ .empty()
-		//~ .load('/users/add/', params, $('#log').text('Готово'));	    
-		$.ajax({
-			url: '/users/add/',
-			type: 'post',
-			data: params,
-			success: function(response) {
-				$('#ufields')
-						.empty()
-						.html(response);
-
-				return false;
-			}
-		});								
-		return false;
- }
+	
+	$('#usersform').submit( function(event){
+			event.preventDefault();
+			//var params;
+			var params =  $('#usersform').serialize();
+			$.post(	'/users/add/', params , function(response) {
+												$('#ufields').empty().html(response);
+												return false;
+												});
+			return false;
+	});
+	}

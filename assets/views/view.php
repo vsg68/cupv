@@ -1,5 +1,5 @@
 <div id='log'></div>
-<form name='usersform' method='post'>
+<form id='usersform' action='#' method='post'>
 	<input type='hidden' name='user_id' value='<?= $user->user_id; ?>' >
 	<input type='hidden' name='mailbox' value='<?= $user->mailbox; ?>' >
 	<fieldset  class="user1">
@@ -51,6 +51,6 @@
 		<?php endforeach; ?>      
 		   <button id='fnext'>Еще</button>
    </fieldset>
-	<div class='submit'><input id='submit_view' type='submit' value='Изменить' onclick=submit_form();></div>
+	<div class='submit'><input type='submit' id='submit_view' value='Изменить'	></div>
 </form>
 
