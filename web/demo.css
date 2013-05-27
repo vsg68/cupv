@@ -1,63 +1,43 @@
+/*
 body {
        background-color: #dde;
    }
 
-legend { 
-    font-size:  small;
-    background-color: #fff;
-    border: 1px dimgrey outset;
-    padding:3px;
-    color: #555;
-  
-}
-fieldset {
-    background-color: #eee;
-    text-align:  center;
-    color: navy;  
-    padding:10px;       
-    max-width: 1000px;      
-}
+
 input[type='text']  {
     margin: 10px 0;
     width: 200px;
     disabled: true;
 }
+*/
 
 .container {
 	background-color: #ccc;
 	margin:50px 100px;
-	width: 900px;
+	width: 840px;
 	height: 780px;
 }
 .mainmenu {
 	background-color: #cecece;
 	height: 40px;
 }
-.usrs {
-	background-color: #cc0;
+.usrs, .fieldentry {
 	position: relative;
 }
-.umenu {
-	background-color: #c0c;
+.umenu, #ufields {
 	float:left;
 	overflow: auto;
+	height: 720px;
+}
+.view, .ufields {
+	width: 532px;
+}
+
+.umenu, .ulist {
 	width: 218px;
-	height: 720px;
 }
-.ulist {
-	background-color: green;
-	width: 200px;
-}
-.ufields {
-	width: 600px;
-	height: 720px;
-	margin: 10px 0;
-	overflow: auto;
-	float:left;
-}
-.view {
-	background-color: cyan;
-	width: 580px;
+#ufields, .alias {
+	margin: 0 0 0 40px;
 }
 .usr {
 	padding: 0 5px;
@@ -66,9 +46,36 @@ input[type='text']  {
 	background-color: #0cc;
 }
 .formlabel {
-	background-color: yellow;
-	width: 300px;
+	width: 200px;
+	line-height: 25px;
 }
-.user1{
-	text-align: left;
+.fieldentry input[type='text'] {
+	width: 280px;
+}
+.fieldentry input[type='text'], .formlabel {
+	float: left;
+}
+fieldset {
+	width: 500px;
+	margin: 10px 0 0 0;
+}
+legend { 
+    font-size:  small;
+    font-style: italic;
+    background-color: #ddd;
+    border: 1px dimgrey outset;
+    padding:2px 3px;
+}
+.fieldentry {
+	overflow: auto;
+	margin: 2px 0 0 0;
+}
+.submit {
+	text-align: center;
+}
+.login {
+	width: 100px !important;
+}
+#log {
+	text-weight: bold;
 }

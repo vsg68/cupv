@@ -5,21 +5,24 @@ namespace App\Model;
 //from the class name
 class Users extends \PHPixie\ORM\Model {
 
-	//public $has_many = array('users');
+	protected $has_many = array('aliases' => array(
+												'model' => 'aliases',
+												'key' => 'alias_name'
+											));
 	public $table = 'users';
-	//public $id = 'users_id';
+	public $id_field = 'user_id';
 //~ 
-	//~ public function get($property)
-	//~ {
-		//~ if ($property == 'total_votes') {
-			//~ 
+	public function get($property)
+	{
+		if ($property == 'ee') {
+			
 			//~ foreach ($this->options->find_all() as $option)
 			//~ {
 				//~ $options[] = $option->alias;
 			//~ }
-				//~ return $total;
-		//~ }
-	//~ }
+				return 'ee';
+		}
+	}
 
  
 }

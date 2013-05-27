@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
- <!DOCTYPE html>
-<html>
-    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Users</title>        
-            <script type='text/javascript' language='JavaScript'  src='jquery-1.4.2.js' ></script>
-			<script type="text/javascript" src='manager.js'></script>
-			<link rel="stylesheet" href="demo.css" type="text/css" />
+            <script type='text/javascript' language='JavaScript'  src='/jquery-1.4.2.js' ></script>
+			<script type="text/javascript" src='/manager.js'></script>
+			<link rel="stylesheet" href="/demo.css" type="text/css" />
     </head>
     <body>
         <div class="container">
             <div class="mainmenu">
-				<a href="/users/add" class="btn btn-success">Add a new user</a>
+				<a id='newusr' href="/users/new" >Add a new user</a>
             </div>
             <div class='usrs'>
 				<div class='umenu'>
@@ -25,8 +22,8 @@
 
 						</div>
 				</div>		
-				<div class='ufields'>
-					<div class='view'></div>
+				<div id='ufields'>
+					<div class='view'><h2>Пользователи ООО "ГАЗМЕТАЛЛПРОЕКТ"</h2></div>
 				</div>
             </div>
         </div>
