@@ -4,8 +4,44 @@ namespace App\Controller;
  
 class Users extends \PHPixie\Controller {
  //~ 
+	private $user_id;
+	private $logmsg;
+
+//	функция для тестирования строк на возможные значения
+    private function sanitize($value,$key,$method) {
+
+		switch ( $method ) {
+			case 'empty':
+				$value = isset($value) ? $value : '0';
+				break;
+			case 'notempty':
+				if( $value == '' ) {
+					 $this->logmsg .= "<span class='error'>Field $key can not be empty</span>";
+				 }
+				break;
+			case 'net':
+				if( !preg_match ('!((\d+\.)+\d+(/\d+)?,?\s*)+!', $value) ) {
+					$this->logmsg .= "<span class='error'>Wrong entry for net in field $key</span>";
+				}
+				break;
+			case 'is_number':
+				if( is_number($value) ) {
+					$this->logmsg .= "<span class='error'>Wrong entry for field $key</span>";
+				}
+				break;
+			case 'is_mail':
+				if ( ! preg_match('/(\w+)@(\w+\.)+(\w+)/',$value) ) {
+					$this->logmsg .= "<span class='error'>Wrong entry for mail in field $key</span>";
+				}
+				break;
+			default:
+				
+		}
+	}	
+
     public function action_index() {
- 
+
+
         $view = $this->pixie->view('main');
         $view->users = $this->pixie->db
 							->query('select')->table('users')
@@ -16,6 +52,8 @@ class Users extends \PHPixie\Controller {
 	
 	public function action_new() {
 
+		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
+		
         $view = $this->pixie->view('new');
         $view->domains = $this->pixie->db
 								->query('select')
@@ -29,10 +67,14 @@ class Users extends \PHPixie\Controller {
 	public function action_view() {
 
 		$view = $this->pixie->view('view');
+		// вывод лога
+		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
 
+		$id = isset( $this->user_id ) ? $this->user_id : $this->request->param('id');
+		
 		$view->user = $this->pixie->db
 								->query('select')->table('users')
-								->where('user_id',$this->request->param('id'))
+								->where('user_id',$id)
 								->execute()
 								->current();
 
@@ -40,6 +82,7 @@ class Users extends \PHPixie\Controller {
 								->query('select')->table('aliases')
 								->where('alias_name',$view->user->mailbox)
 								->where('or',array('delivery_to',$view->user->mailbox))
+								->where('and',array('delivery_to','!=','alias_name'))
 								->execute()
 								->as_array();
 		
@@ -48,136 +91,79 @@ class Users extends \PHPixie\Controller {
 /*
  *	обработка запроса и вывод формы
  */
-	public function action_add1() {
- 
-        //If the HTTP method is 'POST'
-        //it means that the form got submitted
-        //and we should process it
-        if ($this->request->method == 'POST') {
-
-			//~ $user = array(
-					//~ 'username' 		=> $this->request->post('fio'),
-					//~ 'password' 		=> $this->request->post('passwd'),
-					//~ 'md5password'	=> md5($this->request->post('passwd')),
-					//~ 'path'			=> $this->request->post('path'),
-					//~ 'imap_enable'	=> $this->request->post('imap') + $this->request->post('pop3'),
-					//~ 'allow_nets'	=> $this->request->post('nets')
-					//~ );
-			$user = json_decode($this->request->post(),true);
-
-			$id = $user->id;
-			
-			if ( ! $id && $this->request->post('login') && $this->request->post('domain') ) {
-
-				$user['mailbox'] = $this->request->post('login').'@'.$this->request->post('domain');
-
-				$result = $this->pixie->db
-								->query('insert')->table('users')
-								->data($user)
-								->execute();
-
-				// для редиректа получаем id
-				$id = $this->pixie->db->insert_id();								
-
-			} elseif( $id && $this->request->post('mailbox') ) {
-
-				$user['active'] = $this->request->post('active');
-
-				$result = $this->pixie->db
-								->query('update')->table('users')
-								->data($user)
-								->where('user_id',$id)
-								->execute();
-			}
-
-			//return $this->redirect('/users/view/'.$id);
-		}
-	}	
-//~ 
 	public function action_add() {
-
 
         if ($this->request->method == 'POST') {
 
 			$user = $this->request->post();
 
-			if ( ! $user['user_id'] && $user['login'] && $user['domain'] ) {
-			// новый пользователь
-				$result = $this->pixie->db
-								->query('insert')->table('users')
-								->data(array(
-									'username' 		=> $user['username'],
-									'mailbox'		=> $user['login'].'@'.$user['domain'],
-									'password' 		=> $user['password'],
-									'md5password' 	=> md5($user['password']),
-									'path'			=> $user('path'),
-									'imap_enable' 	=> $user('imap') + $user('pop3'),
-									'allow_nets' 	=> $user('allow_nets'),
-									'active'		=> 1
-								))
-								->execute();
+			// обработка строк
+			array_walk($user,array($this,'sanitize'),'notempty');		
+			 if( ! isset( $user['imap'] ) ) { $user['imap'] = 0; }
+			 if( ! isset( $user['pop3'] ) ) { $user['pop3'] = 0; }
 
-				// для редиректа получаем id
-				$user['user_id'] = $this->pixie->db->insert_id();								
+			// Если нет ошибок заполнения - проходим в обработку
+			if( ! isset($this->logmsg)) {
+				//
+				// Приходит обработка либо нового пользователя, либо изменение существующего
+				//
+				if ( ! $user['user_id'] && $user['login'] && $user['domain'] ) {
+				// новый пользователь
+					$result = $this->pixie->db
+									->query('insert')->table('users')
+									->data(array(
+										'username' 		=> $user['username'],
+										'mailbox'		=> $user['login'].'@'.$user['domain'],
+										'password' 		=> $user['password'],
+										'md5password' 	=> md5($user['password']),
+										'path'			=> $user['path'],
+										'imap_enable' 	=> $user['imap'] + $user['pop3'],
+										'allow_nets' 	=> $user['allow_nets'],
+										'active'		=> 1
+									))
+									->execute();
 
-			} elseif( $user['user_id'] && $user['mailbox'] ) {
+					// для редиректа получаем id
+					$user['user_id'] = $this->pixie->db->insert_id();								
 
-				$result = $this->pixie->db
-								->query('update')->table('users')
-								->data(array(
-									'username' 		=> $user['username'],
-									'password' 		=> $user['password'],
-									'md5password' 	=> md5($user['password']),
-									'path'			=> $user['path'],
-									//'imap_enable' 	=> ( $user['imap'] + $user['pop3'] ),
-									'imap_enable' 	=> ( '' + 1 ),
-									'allow_nets' 	=> $user['allow_nets'],
-									'active'		=> $user['active']
-								))
-								->where('user_id',$user['user_id'])
-								->execute();
+				}
+				elseif( $user['user_id'] && $user['mailbox'] ) {
+				// Существующий пользователь
+					$result = $this->pixie->db
+									->query('update')->table('users')
+									->data(array(
+										'username' 		=> $user['username'],
+										'password' 		=> $user['password'],
+										'md5password' 	=> md5($user['password']),
+										'path'			=> $user['path'],
+										'imap_enable' 	=> ( $user['imap'] + $user['pop3'] ),
+										'allow_nets' 	=> $user['allow_nets'],
+										'active'		=> $user['active']
+									))
+									->where('user_id',$user['user_id'])
+									->execute();
+				}
+
+				// Возвращаемся обратно в форму редактирования
+				$this->user_id = $user['user_id'];
+				$this->logmsg = "<span class='success'>Изменено</span>";
+				$this->action_view();
 			}
+			else {
+				if ( $user['user_id'] ) {
 
-
-			if(1) {
-				// Если прошло изменение - выводим пользователя
-				$view = $this->pixie->view('view');
-				$view->user = $this->pixie->db
-								->query('select')->table('users')
-								->where('user_id',$user['user_id'])
-								->execute()
-								->current();
-//~ print_r($view->user);
-//~ exit;
-				$view->aliases = array();
-				$this->response->body = $view->render();
-			} else {
-				
-			}	
-			//return $this->redirect('/users/view/'.$user['user_id']);
-
+					$this->user_id = $user['user_id'];
+					$this->action_view();
+				}
+				else 
+					$this->action_new();
+			}
 
 		}
 		
 	}
-/*
-    public function sanitize($methods,$datastr) {
 
-		foreach( $methods as  $method) {
-			switch ( $method ) {
-				case 'empty':
-					$datastr = trim($datastr);
-					break;
-				case 'net':
-				case 'is_number':
-				case 'is_mail':
-					if ( ! preg_match('/(\w+)@(\w+\.)+(\w+)/',$datastr) ) {
-						$log
-					break;
-				
-		
-	}	
-*/
+
 }
 
 ?>

@@ -4,13 +4,10 @@ body {
    }
 
 
-input[type='text']  {
-    margin: 10px 0;
-    width: 200px;
-    disabled: true;
+input[type='checkbox']  {
+    margin: 0;
 }
 */
-
 .container {
 	background-color: #ccc;
 	margin:50px 100px;
@@ -58,6 +55,9 @@ input[type='text']  {
 fieldset {
 	width: 500px;
 	margin: 10px 0 0 0;
+/*
+	text-align: center;
+*/
 }
 legend { 
     font-size:  small;
@@ -65,6 +65,16 @@ legend {
     background-color: #ddd;
     border: 1px dimgrey outset;
     padding:2px 3px;
+}
+table {
+	width: 80%;
+	margin: 0 0 0 40px;
+	border-spacing:0;
+	border:0;
+}
+.alias {
+	background-color: #cca;
+	border: 1px solid #444;
 }
 .fieldentry {
 	overflow: auto;
@@ -77,5 +87,13 @@ legend {
 	width: 100px !important;
 }
 #log {
-	text-weight: bold;
+	text-align: center;
+}
+.success, .error {
+	background-color: green;
+	padding: 0 5px;
+	color: #fff;
+}
+.error {
+	background-color: red !important;
 }

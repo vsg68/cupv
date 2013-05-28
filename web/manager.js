@@ -17,16 +17,11 @@ $(function(){
 						$.ajax({
 							url: href,
 							type: 'post',
-							//~data: {
-								//~ q: 'assets/snippets/ajax/getContent.php',
-								//~ mainemail: 
-							//~ },
 							success: function(response) {
 								$('.view')
 										.empty()
 										.html(response);
-//								$('a[rel='+id+']').addClass('selected-report');
-								return false;
+								$('.alias:even').css('background-color','#b8c8c8');										
 							}
 						});								
 						return false;
@@ -37,12 +32,12 @@ $(function(){
 			//var params;
 			var params =  $('#usersform').serialize();
 			$.post(	'/users/add/', params , function(response) {
-												$('#ufields').empty().html(response);
-												return false;
+												$('.view').empty().html(response);
+												$('.alias:even').css('background-color','#eee');
 												});
 			return false;
 	});
-	
+
  })
 
 function submit_form() {
@@ -53,7 +48,6 @@ function submit_form() {
 			var params =  $('#usersform').serialize();
 			$.post(	'/users/add/', params , function(response) {
 												$('#ufields').empty().html(response);
-												return false;
 												});
 			return false;
 	});

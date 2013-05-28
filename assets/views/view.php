@@ -1,4 +1,4 @@
-<div id='log'></div>
+<div id='log'><?= $log ?></div>
 <form id='usersform' action='#' method='post'>
 	<input type='hidden' name='user_id' value='<?= $user->user_id; ?>' >
 	<input type='hidden' name='mailbox' value='<?= $user->mailbox; ?>' >
@@ -32,23 +32,31 @@
 		</div>
 	</fieldset>
 	<fieldset>
-		   <legend>Алиасы</legend>	
+		   <legend>Алиасы</legend>
+			<table>
 		<?php foreach ($aliases as $alias): ?>
-		   <div class="alias">
-			   <input type='text' name='alias[]' value='<?= $alias->alias_name ?>' >
-			   <input type='checkbox' name='alias_act[]' value='1' <?php ($alias->active & 1 ) && print ('checked'); ?>>
-		   </div>
-		<?php endforeach; ?>   
-		   <button id='anext'>Еще</button>
+			<?php  if( $alias->alias_name == $user->mailbox) { continue; } ?>
+		   <tr class="alias">
+			   <td><?= $user->mailbox; ?></td>
+			   <td><input type='text' name='alias[]' value='<?= $alias->alias_name ?>' ></td>
+			   <td><input type='checkbox' name='alias_act[]' value='<?= $alias->alias_id ?>' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
+		   </tr>
+		<?php endforeach; ?>
+			</table>
+			<button id='anext'>Еще</button>
+
 	</fieldset>
 	<fieldset>
 		   <legend>Пересылка</legend>
+		   <table>
 		<?php foreach ($aliases as $alias): ?>
-		   <div class="alias">
-			   <input type='text' name='forward[]' value='<?= $alias->delivery_to ?>' />
-			   <input type='checkbox' name='forward_act[]' value='1' <?php ($alias->active & 1 ) && print ('checked'); ?>>
-		   </div>
-		<?php endforeach; ?>      
+		   <tr class="alias">
+			   <td><input type='text' name='forward[]' value='<?= $alias->delivery_to ?>' /></td>
+			   <td><?= $user->mailbox; ?></td>
+			   <td><input type='checkbox' name='forward_act[]' value='<?= $alias->alias_id ?>' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
+		   </tr>
+		<?php endforeach; ?>
+			</table>
 		   <button id='fnext'>Еще</button>
    </fieldset>
 	<div class='submit'><input type='submit' id='submit_view' value='Изменить'	></div>
