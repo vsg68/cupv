@@ -4,9 +4,14 @@ $(function(){
 	
 	$('button').live('click',function(){
 
-				alias = $(this).prev().get(0).outerHTML;
-				$(this).before( alias );
-				return false;
+		mailbox = $('input[name="mailbox"]').val();
+		inputname = $(this).attr('name') + '[]';
+		chkboxname =  $(this).attr('name') + '_chk[]';
+
+		tr = '<tr class="alias"><td>'+mailbox+'</td><td><input type="text" name="'+inputname+'" value=""></td><td><input type="checkbox" name="'+chkboxname+'" value="" checked></td></tr>';
+		var tbl = $(this).siblings('table').get(0);
+		$(tbl).append(tr);
+		return false;
 	});
 	
 	$('a, .usr').click(function(){
@@ -27,7 +32,7 @@ $(function(){
 						return false;
 					});
 
-	$('#usersform').live('submit', function(event){
+	$('#submit_view').live('submit', function(event){
 			event.preventDefault();
 			//var params;
 			var params =  $('#usersform').serialize();
