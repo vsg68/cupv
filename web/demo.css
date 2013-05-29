@@ -92,7 +92,7 @@ legend {
 .atable{
 	border-collapse:collapse;
 	border:1px solid #000;
-	width: 70%;
+	width: 470px;
 	margin-left:10px;
 }
 .atable th{
@@ -109,4 +109,10 @@ legend {
 }
 .evenRow{
 	background:#DFDFFF;
+}
+.hidden {
+	display: none;
+}
+.delRow {
+	cursor: pointer;
 }

@@ -39,9 +39,9 @@
 		<?php foreach ($aliases as $alias): ?>
 			<?php  if( $alias->alias_name == $user->mailbox) { continue; } ?>
 		   <tr class="alias">
-			   <td><?= $user->mailbox; ?></td>
-			   <td><input type='text' name='alias[]' value='<?= $alias->alias_name ?>' ></td>
-			   <td><input type='checkbox' name='alias_act[]' value='<?= $alias->alias_id ?>' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
+			   <td><input type='hidden' name='alias_st[]' value='<?= $alias->active ?>'><?= $user->mailbox; ?></td>
+			   <td><input type='text' name='alias[]' value='<?= $alias->alias_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
+			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
 			   <td><img src="/cross.gif" class="delRow" border="0"></td>
 		   </tr>
 		<?php endforeach; ?>
@@ -54,9 +54,9 @@
 
 		<?php foreach ($aliases as $alias): ?>
 		   <tr class="alias">
-			   <td><input type='text' name='forward[]' value='<?= $alias->delivery_to ?>' /></td>
-			   <td><?= $user->mailbox; ?></td>
-			   <td><input type='checkbox' name='forward_act[]' value='<?= $alias->alias_id ?>' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
+			   <td><input type='text' name='fwd[]' value='<?= $alias->delivery_to ?>'  <?php ($alias->active & 1 ) || print ('disabled'); ?> /></td>
+			   <td><input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'><?= $user->mailbox; ?></td>
+			   <td><input type='checkbox' name='chk' value='' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
 			   <td><img src="/cross.gif" class="delRow" border="0"></td>
 		   </tr>
 		<?php endforeach; ?>

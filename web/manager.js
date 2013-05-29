@@ -5,9 +5,9 @@ $(function(){
 		
 		name 		= $(this).attr('id');
 		open_tag 	= '<tr class="alias">';
-		mail_cell 	= '<td>' + $('input[name="mailbox"]').val() + '</td>';
-		input_cell 	= '<td><input type="text" name="' + name + '[]"></td>';
-		chkbox_cell = '<td><input type="checkbox" name="' + name + '_chk[]" checked></td>';
+		mail_cell 	= '<td><input type="hidden" tag="1" name="' + name + '_st[]" value="1">' + $('input[name="mailbox"]').val() + '</td>';
+		input_cell 	= '<td><input type="text" name="' + name + '[]" value=""></td>';
+		chkbox_cell = '<td><input type="checkbox" name="chk" checked></td>';
 		button_cell = '<td><img src="/cross.gif" class="delRow" border="0"></td>';
 		close_tag 	= '</tr>';
 
@@ -17,11 +17,33 @@ $(function(){
 		$(tbl).append( tr );
 		return false;
 	});
-	
+
+	// Удаление строк
+	$('.delRow').live('click', function(){
+
+		var tr 		   = $(this).closest('tr.alias');
+		var input_hide = $(tr).find(':hidden:eq(0)');
+
+		// Если есть таг - то поле создано вручную
+		if( $(input_hide).attr('tag') ) 
+			$(tr).remove();
+		else {	
+			$(input_hide).val('2');
+			$(tr).addClass('hidden');
+		}	
+		
+			
+		
+		
+	});
+
+	// подсветка выбранного пользователя
 	$('a, .usr').click(function(){
 		
 			var href = $(this).attr('href');
-			if( href === undefined )  return false; 	
+
+			if( href === undefined )  return false;
+			
 			$('.active').removeClass('active');
 			$(this).parent('.usr').addClass('active');
 
@@ -38,28 +60,37 @@ $(function(){
 			return false;
 		});
 
+	// Submit
 	$('#submit_view').live('submit', function(event){
 			event.preventDefault();
-			//var params;
+
 			var params =  $('#usersform').serialize();
 			$.post(	'/users/add/', params , function(response) {
 												$('.view').empty().html(response);
-												$('.alias:even').css('background-color','#eee');
+												//$('.alias:even').css('background-color','#eee');
 												});
 			return false;
 	});
 
+
+	// Отключение алиаса (disable)
+	$(':checkbox').live('click', function(){
+		
+		var input_text = $(this).closest('tr.alias').find(':text:eq(0)');
+		var input_hide = $(this).closest('tr.alias').find(':hidden:eq(0)');
+
+		if ( $(this).attr('checked') ) {
+			$(input_text).removeAttr('disabled');
+			$(input_hide).val('1');
+		}	
+		else {
+			$(input_text).attr('disabled', 'true');
+			$(input_hide).val('0');
+		}	
+	});
+
+	// Проверка введенных значений
+	
  })
 
-function submit_form() {
-	
-	$('#usersform').submit( function(event){
-			event.preventDefault();
-			//var params;
-			var params =  $('#usersform').serialize();
-			$.post(	'/users/add/', params , function(response) {
-												$('#ufields').empty().html(response);
-												});
-			return false;
-	});
-	}
+
