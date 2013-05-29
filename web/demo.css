@@ -66,16 +66,7 @@ legend {
     border: 1px dimgrey outset;
     padding:2px 3px;
 }
-table {
-	width: 80%;
-	margin: 0 0 0 40px;
-	border-spacing:0;
-	border:0;
-}
-.alias {
-	background-color: #cca;
-	border: 1px solid #444;
-}
+
 .fieldentry {
 	overflow: auto;
 	margin: 2px 0 0 0;
@@ -96,4 +87,26 @@ table {
 }
 .error {
 	background-color: red !important;
+}
+
+.atable{
+	border-collapse:collapse;
+	border:1px solid #000;
+	width: 70%;
+	margin-left:10px;
+}
+.atable th{
+	border:1px solid #fff;
+	background:#BFBFFF;
+	font-weight:bold;
+}
+.atable td{
+	padding:4px;
+	border:1px solid #fff;
+}
+.oddRow{
+	background:#FFFFFF;
+}
+.evenRow{
+	background:#DFDFFF;
 }

@@ -1,36 +1,42 @@
 
 $(function(){
-	// $('#portion').dropdowntreeview({'form':'portion','n':'0'},{'oneclick':'true','height':'600px'},{'collapsed':true});
-	
-	$('button').live('click',function(){
+	// добавление строк	
+	$('.else').live('click',function(){
+		
+		name 		= $(this).attr('id');
+		open_tag 	= '<tr class="alias">';
+		mail_cell 	= '<td>' + $('input[name="mailbox"]').val() + '</td>';
+		input_cell 	= '<td><input type="text" name="' + name + '[]"></td>';
+		chkbox_cell = '<td><input type="checkbox" name="' + name + '_chk[]" checked></td>';
+		button_cell = '<td><img src="/cross.gif" class="delRow" border="0"></td>';
+		close_tag 	= '</tr>';
 
-		mailbox = $('input[name="mailbox"]').val();
-		inputname = $(this).attr('name') + '[]';
-		chkboxname =  $(this).attr('name') + '_chk[]';
-
-		tr = '<tr class="alias"><td>'+mailbox+'</td><td><input type="text" name="'+inputname+'" value=""></td><td><input type="checkbox" name="'+chkboxname+'" value="" checked></td></tr>';
-		var tbl = $(this).siblings('table').get(0);
-		$(tbl).append(tr);
+		var tbl = $(this).parents('.atable').get(0);
+		tr 	= name == 'anext' ? open_tag + mail_cell + input_cell + chkbox_cell + button_cell + close_tag :
+								open_tag + input_cell + mail_cell + chkbox_cell + button_cell + close_tag;
+		$(tbl).append( tr );
 		return false;
 	});
 	
 	$('a, .usr').click(function(){
-						$('.active').removeClass('active');
-						$(this).parent('.usr').addClass('active');
-						var href = $(this).attr('href');
+		
+			var href = $(this).attr('href');
+			if( href === undefined )  return false; 	
+			$('.active').removeClass('active');
+			$(this).parent('.usr').addClass('active');
 
-						$.ajax({
-							url: href,
-							type: 'post',
-							success: function(response) {
-								$('.view')
-										.empty()
-										.html(response);
-								$('.alias:even').css('background-color','#b8c8c8');										
-							}
-						});								
-						return false;
-					});
+			$.ajax({
+				url: href,
+				type: 'post',
+				success: function(response) {
+					$('.view')
+							.empty()
+							.html(response);
+					//$('.alias:even').css('background-color','#b8c8c8');										
+				}
+			});								
+			return false;
+		});
 
 	$('#submit_view').live('submit', function(event){
 			event.preventDefault();
