@@ -5,14 +5,18 @@ $(function(){
 		
 		name 		= $(this).attr('id');
 		open_tag 	= '<tr class="alias">';
-		mail_cell 	= '<td><input type="hidden" tag="1" name="' + name + '_st[]" value="1">' + $('input[name="mailbox"]').val() + '</td>';
+		mail_cell 	= '<td>'+
+						'<input type="hidden" tag="1" name="' + name + '_st[]" value="1">' +
+						'<input type="hidden" name="' + name + '_id[]" value="0">' +
+						 $('input[name="mailbox"]').val() +
+					 '</td>';
 		input_cell 	= '<td><input type="text" name="' + name + '[]" value=""></td>';
 		chkbox_cell = '<td><input type="checkbox" name="chk" checked></td>';
 		button_cell = '<td><img src="/cross.gif" class="delRow" border="0"></td>';
 		close_tag 	= '</tr>';
 
 		var tbl = $(this).parents('.atable').get(0);
-		tr 	= name == 'anext' ? open_tag + mail_cell + input_cell + chkbox_cell + button_cell + close_tag :
+		tr 	= name == 'alias' ? open_tag + mail_cell + input_cell + chkbox_cell + button_cell + close_tag :
 								open_tag + input_cell + mail_cell + chkbox_cell + button_cell + close_tag;
 		$(tbl).append( tr );
 		return false;
@@ -61,19 +65,21 @@ $(function(){
 		});
 
 	// Submit
-	$('#submit_view').live('submit', function(event){
+	$('#submit_view').live('click', function(event){
 			event.preventDefault();
+			// удаляем атрибут, чтобы поле ушло на сервер
+			// иначе получим рассогласование длины массивов
+			$('.alias :text[disabled="true"]').removeAttr('disabled');
 
 			var params =  $('#usersform').serialize();
 			$.post(	'/users/add/', params , function(response) {
 												$('.view').empty().html(response);
-												//$('.alias:even').css('background-color','#eee');
 												});
 			return false;
 	});
 
 
-	// Отключение алиаса (disable)
+	// Блокирование поля алиаса (disable)
 	$(':checkbox').live('click', function(){
 		
 		var input_text = $(this).closest('tr.alias').find(':text:eq(0)');

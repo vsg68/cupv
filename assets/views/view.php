@@ -35,11 +35,15 @@
 	<fieldset>
 		<legend>Алиасы</legend>
 			<table class='atable'>
-				<tr><th>mailbox</th><th>alias</th><th>on/off</th><th><button id='anext' class='else'>+</button></th></tr>
+				<tr><th>mailbox</th><th>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
 		<?php foreach ($aliases as $alias): ?>
 			<?php  if( $alias->alias_name == $user->mailbox) { continue; } ?>
 		   <tr class="alias">
-			   <td><input type='hidden' name='alias_st[]' value='<?= $alias->active ?>'><?= $user->mailbox; ?></td>
+			   <td>
+				   <input type='hidden' name='alias_st[]' value='<?= $alias->active ?>'>
+				   <input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
+				   <?= $user->mailbox; ?>
+			   </td>
 			   <td><input type='text' name='alias[]' value='<?= $alias->alias_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
 			   <td><img src="/cross.gif" class="delRow" border="0"></td>
@@ -50,18 +54,23 @@
 	<fieldset>
 		   <legend>Пересылка</legend>
 		   <table class='atable'>
-				<tr><th>forward</th><th>mailbox</th><th>on/off</th><th><button id='fnext' class='else'>+</button></th></tr>
+				<tr><th>forward</th><th>mailbox</th><th>on/off</th><th><button id='fwd' class='else'>+</button></th></tr>
 
 		<?php foreach ($aliases as $alias): ?>
+		<?php  if( $alias->alias_name != $user->mailbox) { continue; } ?>
 		   <tr class="alias">
 			   <td><input type='text' name='fwd[]' value='<?= $alias->delivery_to ?>'  <?php ($alias->active & 1 ) || print ('disabled'); ?> /></td>
-			   <td><input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'><?= $user->mailbox; ?></td>
+			   <td>
+				   <input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'>
+				   <input type='hidden' name='fwd_id[]' value='<?= $alias->alias_id ?>'>
+				   <?= $user->mailbox; ?>
+				</td>
 			   <td><input type='checkbox' name='chk' value='' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
 			   <td><img src="/cross.gif" class="delRow" border="0"></td>
 		   </tr>
 		<?php endforeach; ?>
 			</table>
    </fieldset>
-	<div class='submit'><input type='submit' id='submit_view' value='Изменить'	></div>
+	<div class='submit'><input type='submit' id='submit_view' value='Изменить'></div>
 </form>
 
