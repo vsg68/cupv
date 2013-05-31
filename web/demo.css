@@ -30,7 +30,7 @@ input[type='checkbox']  {
 	width: 532px;
 }
 
-.umenu, .ulist {
+.umenu, #ulist {
 	width: 218px;
 }
 #ufields, .alias {
@@ -115,4 +115,7 @@ legend {
 }
 .delRow {
 	cursor: pointer;
+}
+.badentry {
+	background-color: pink;
 }

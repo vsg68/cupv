@@ -1,8 +1,8 @@
 
 <div id='log'><?= $log ?></div>
 <form id='usersform' action='#' method='post'>
-	<input type='hidden' name='user_id' value='<?= $user->user_id; ?>' >
-	<input type='hidden' name='mailbox' value='<?= $user->mailbox; ?>' >
+	<input id='user_id' type='hidden' name='user_id' value='<?= $user->user_id; ?>' >
+	<input id='mailbox' type='hidden' name='mailbox' value='<?= $user->mailbox; ?>' >
 	<fieldset  class="user1">
 	<legend><?= $user->mailbox; ?></legend>
 		<div class='fieldentry'>
@@ -35,16 +35,16 @@
 	<fieldset>
 		<legend>Алиасы</legend>
 			<table class='atable'>
-				<tr><th>mailbox</th><th>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+				<tr><th>alias</th><th>mailbox</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
 		<?php foreach ($aliases as $alias): ?>
 			<?php  if( $alias->alias_name == $user->mailbox) { continue; } ?>
 		   <tr class="alias">
+			   <td><input type='text' name='alias[]' value='<?= $alias->alias_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td>
 				   <input type='hidden' name='alias_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
 				   <?= $user->mailbox; ?>
 			   </td>
-			   <td><input type='text' name='alias[]' value='<?= $alias->alias_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
 			   <td><img src="/cross.gif" class="delRow" border="0"></td>
 		   </tr>
@@ -54,17 +54,17 @@
 	<fieldset>
 		   <legend>Пересылка</legend>
 		   <table class='atable'>
-				<tr><th>forward</th><th>mailbox</th><th>on/off</th><th><button id='fwd' class='else'>+</button></th></tr>
+				<tr><th>mailbox</th><th>forward</th><th>on/off</th><th><button id='fwd' class='else'>+</button></th></tr>
 
 		<?php foreach ($aliases as $alias): ?>
 		<?php  if( $alias->alias_name != $user->mailbox) { continue; } ?>
 		   <tr class="alias">
-			   <td><input type='text' name='fwd[]' value='<?= $alias->delivery_to ?>'  <?php ($alias->active & 1 ) || print ('disabled'); ?> /></td>
 			   <td>
 				   <input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='fwd_id[]' value='<?= $alias->alias_id ?>'>
 				   <?= $user->mailbox; ?>
 				</td>
+			   <td><input type='text' name='fwd[]' value='<?= $alias->delivery_to ?>'  <?php ($alias->active & 1 ) || print ('disabled'); ?> /></td>
 			   <td><input type='checkbox' name='chk' value='' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
 			   <td><img src="/cross.gif" class="delRow" border="0"></td>
 		   </tr>
@@ -72,5 +72,5 @@
 			</table>
    </fieldset>
 	<div class='submit'><input type='submit' id='submit_view' value='Изменить'></div>
-</form>
 
+</form>

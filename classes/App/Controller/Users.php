@@ -6,11 +6,11 @@ class Users extends \PHPixie\Controller {
  //~ 
 	private $user_id;
 	private $logmsg;
-
+	
 //	функция для тестирования строк на возможные значения
     private function sanitize($value,$key,$method) {
 
-		$value = trim($value);
+		if( is_string($value) ) $value =  trim($value) ;
 		
 		switch ( $method ) {
 			case 'empty':
@@ -61,7 +61,8 @@ class Users extends \PHPixie\Controller {
 								->table('domains')
 								->group_by('domain_name')
 								->execute();
-								
+		$view->log="Ввод нового пользователя.";
+
         $this->response->body = $view->render();
     }
 
@@ -70,6 +71,7 @@ class Users extends \PHPixie\Controller {
 		$view = $this->pixie->view('view');
 		// вывод лога
 		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
+
 
 		$id = isset( $this->user_id ) ? $this->user_id : $this->request->param('id');
 		
@@ -98,11 +100,13 @@ class Users extends \PHPixie\Controller {
 
 			$user = $this->request->post();
 			unset($user['chk']);
-			
+
 			// обработка строк
 			array_walk($user,array($this,'sanitize'),'notempty');		
 			if( ! isset( $user['imap'] ) )  $user['imap'] = 0; 
-			if( ! isset( $user['pop3'] ) )  $user['pop3'] = 0; 
+			if( ! isset( $user['pop3'] ) )  $user['pop3'] = 0;
+			if( ! isset( $user['active'] ) )  $user['active'] = 0;
+			
 
 			// Инициируем, чтоб не было ошибки при обработке несуществующего массива
 			if( ! isset($user['alias']) ) $user['alias'] = array(); 
@@ -118,8 +122,8 @@ class Users extends \PHPixie\Controller {
 				//
 				// Приходит обработка либо нового пользователя, либо изменение существующего
 				//
-				if ( ! $user['user_id'] && $user['login'] && $user['domain'] ) {
-				// новый пользователь
+				if ( isset($user['login']) && isset($user['domain']) ) {
+					// новый пользователь
 					$this->pixie->db->query('insert')->table('users')
 									->data(array(
 										'username' 		=> $user['username'],
@@ -137,7 +141,7 @@ class Users extends \PHPixie\Controller {
 					$user['user_id'] = $this->pixie->db->insert_id();								
 
 				}
-				elseif( $user['user_id'] && $user['mailbox'] ) {
+				elseif( isset($user['user_id']) && isset($user['mailbox']) ) {
 				// Существующий пользователь
 					$this->pixie->db->query('update')->table('users')
 									->data(array(
@@ -214,10 +218,10 @@ class Users extends \PHPixie\Controller {
 										->execute();
 					}						
 				}	
-//~ print_r($user);
-//~ exit;
+
 				// Возвращаемся обратно в форму редактирования
 				$this->user_id = $user['user_id'];
+
 				$this->logmsg = "<span class='success'>Изменено</span>";
 				$this->action_view();
 			}
@@ -236,7 +240,18 @@ class Users extends \PHPixie\Controller {
 		
 	}
 
+	public function action_chkdomain() {
 
+        $result = $this->pixie->db
+								->query('select')
+								->table('domains')
+								->where('domain_name', $this->request->post('id'))
+								->group_by('domain_name')
+								->execute()
+								->current();
+
+        $this->response->body = $result->domain_name;
+    }
 }
 
 ?>
