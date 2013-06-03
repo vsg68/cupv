@@ -13,14 +13,19 @@
 				<a id='newusr' href="/users/new" >Add a new user</a>
             </div>
             <div class='usrs'>
+<!--
 				<div class='umenu'>
+-->
 						<div id='ulist'>
+							<select id='usrs' size=42>
 							<?php foreach($users as $user):?>
-								<div class='usr'><a href="/users/view/<?php echo $user->user_id;?>"> <?php echo $user->mailbox;?></a> </div>
+								<option value='<?php echo $user->user_id;?>' <?= ( $user->active ) ? '' :'class="disabled"'; ?> ><?php echo $user->mailbox;?></option>
 							<?php endforeach;?>
-
+							</select>
 						</div>
+<!--
 				</div>		
+-->
 				<div id='ufields'>
 					<div class='view'><h2>Пользователи ООО "ГАЗМЕТАЛЛПРОЕКТ"</h2></div>
 				</div>

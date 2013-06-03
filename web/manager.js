@@ -37,21 +37,15 @@ $(function(){
 			$(tr).addClass('hidden');
 		}	
 		
-			
-		
-		
 	});
 
-	// подсветка выбранного пользователя
-	$('a, .usr').click(function(){
+	// Вывод данных пользователя
+	$('option','#usrs').click(function(){
 		
-			var href = $(this).attr('href');
+			var href = '/users/view/' + $(this).val();
 
 			if( href === undefined )  return false;
 			
-			$('.active').removeClass('active');
-			$(this).parent('.usr').addClass('active');
-
 			$.ajax({
 				url: href,
 				type: 'post',
@@ -59,7 +53,6 @@ $(function(){
 					$('.view')
 							.empty()
 							.html(response);
-					//$('.alias:even').css('background-color','#b8c8c8');										
 				}
 			});								
 			return false;
@@ -81,13 +74,20 @@ $(function(){
 								var user_id = $(':hidden[name="user_id"]','#usersform').val();
 								var mailbox = $(':hidden[name="mailbox"]','#usersform').val();
 
-								if( ! $('a:contains("'+mailbox+'")', '.usr').length ) {
+								is_exist = $('option:contains("'+mailbox+'")', '#usrs').length;
+	
+								if( ! is_exist ) {
 
-									var str = $('.usr:last').clone(true);
-									$(str).addClass('active').children('a').html('/user/view/'+user_id).text(mailbox);
-									$('#ulist').append(str);
-								}	
-												
+									var str = '<option value=' + user_id + '>' + mailbox + '</option>';
+									$('#usrs').append(str);
+									$('option:last', '#usrs').attr('selected', true).focus();
+								}
+
+								// обновляем св-во активности
+								is_active = $(':checkbox[name="active"]:checked', '#usersform').length;
+
+								$('option:contains("'+mailbox+'")', '#usrs').toggleClass( 'disabled', is_active==0)
+									
 							});
 			return false;
 	});
@@ -111,9 +111,10 @@ $(function(){
 
 	//Новый пользователь
 	$('#newusr').click(function(event){
+
 			event.preventDefault();
 			
-			if( href === undefined )  return false;
+			if( event.target.href === undefined )  return false;
 
 			$.post('/users/new/', function(response) {
 										$('.view')
@@ -137,6 +138,8 @@ $(function(){
 					$(x).removeClass('badentry');
 				}
 		});
+
+	$('option[act=0]').addClass('disabled');
  })
 
 // Проверка введенных значений

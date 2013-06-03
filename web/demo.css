@@ -31,13 +31,15 @@ input[type='checkbox']  {
 }
 
 .umenu, #ulist {
-	width: 218px;
+	width: 228px;
+	float:left;
+	margin: 0 0 0 10px;
 }
 #ufields, .alias {
 	margin: 0 0 0 40px;
 }
-.usr {
-	padding: 0 5px;
+#usrs {
+	width: 200px;
 }
 .active {
 	background-color: #0cc;
@@ -118,4 +120,7 @@ legend {
 }
 .badentry {
 	background-color: pink;
+}
+.disabled {
+	color: #bdbdbd;
 }
