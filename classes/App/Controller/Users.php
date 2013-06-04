@@ -53,16 +53,16 @@ class Users extends \PHPixie\Controller {
     }
 	
 	public function action_new() {
-
-		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
 		
         $view = $this->pixie->view('new');
+
+		$view->log = isset($this->logmsg) ?  $this->logmsg : '<strong>Ввод нового пользователя.</strong>';
+
         $view->domains = $this->pixie->db
 								->query('select')
 								->table('domains')
 								->group_by('domain_name')
 								->execute();
-		$view->log="Ввод нового пользователя.";
 
         $this->response->body = $view->render();
     }
@@ -107,7 +107,7 @@ class Users extends \PHPixie\Controller {
 			if( ! isset( $user['imap'] ) )  $user['imap'] = 0; 
 			if( ! isset( $user['pop3'] ) )  $user['pop3'] = 0;
 			if( ! isset( $user['active'] ) )  $user['active'] = 0;
-			
+			if( ! isset( $user['path']) || $user['path'] == '' )  $user['path'] = null;
 
 			// Инициируем, чтоб не было ошибки при обработке несуществующего массива
 			if( ! isset($user['alias']) ) $user['alias'] = array(); 
@@ -119,12 +119,13 @@ class Users extends \PHPixie\Controller {
 			
 			
 			// Если нет ошибок заполнения - проходим в обработку
-			if( ! isset($this->logmsg)) {
+			if( ! isset($this->logmsg) ) {
 				//
 				// Приходит обработка либо нового пользователя, либо изменение существующего
 				//
 				if ( isset($user['login']) && isset($user['domain']) ) {
 					// новый пользователь
+
 					$this->pixie->db->query('insert')->table('users')
 									->data(array(
 										'username' 		=> $user['username'],
@@ -138,9 +139,16 @@ class Users extends \PHPixie\Controller {
 									))
 									->execute();
 
+// что делать, когда ошибка? например есть такой мейлбокс
+
 					// для редиректа получаем id
 					$user['user_id'] = $this->pixie->db->insert_id();								
 
+					if( ! $user['user_id'] ) {
+						
+						$this->logmsg = '<span class="error">User is not added. Check his mailbox.</span>';
+					}
+						
 				}
 				elseif( isset($user['user_id']) && isset($user['mailbox']) ) {
 				// Существующий пользователь
@@ -220,14 +228,11 @@ class Users extends \PHPixie\Controller {
 					}						
 				}	
 
-				// Возвращаемся обратно в форму редактирования
-				$this->user_id = $user['user_id'];
-
-				$this->logmsg = "<span class='success'>Изменено</span>";
-				$this->action_view();
 			}
-			else {
-			// Ошибки имели место
+
+			// Ошибки имели место 
+			if( isset( $this->logmsg ) ) {
+
 				if ( $user['user_id'] ) {
 
 					$this->user_id = $user['user_id'];
@@ -235,6 +240,13 @@ class Users extends \PHPixie\Controller {
 				}
 				else 
 					$this->action_new();
+			}
+			else {
+				// Возвращаемся обратно в форму редактирования
+				$this->user_id = $user['user_id'];
+
+				$this->logmsg = "<span class='success'>Изменено</span>";
+				$this->action_view();
 			}
 
 		}

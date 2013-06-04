@@ -19,10 +19,6 @@
 			<input class='formtext' type='text' name='password' value='<?= $user->password; ?>'   />
 	   </div>	
 	   <div class='fieldentry'>
-			<span class='formlabel'>Путь:</span>
-			<input type='text' class='formtext' name='path' value='<?= $user->path; ?>'    />
-	   </div>
-	   <div class='fieldentry'>
 			<span class='formlabel'>Сеть:</span>
 			<input  class='formtext' type='text' name='allow_nets' value='<?= $user->allow_nets; ?>'  />
 	   </div>	
@@ -31,6 +27,17 @@
 				imap:<input type='checkbox' class='formtext' name='imap' value='2' <?php ($user->imap_enable & 2 ) && print ('checked'); ?>  >&nbsp;&nbsp;
 				pop3:<input type='checkbox' class='formtext' name='pop3' value='1' <?php ($user->imap_enable & 1 ) && print ('checked'); ?>  >
 		</div>
+	   <div class='fieldentry'>
+			<span class='formlabel'>Путь:</span><button id='path'>+</button>
+			<?php if( $user->path ): ?>
+				<input type='text' class='formtext path' name='path' value='<?= $user->path; ?>'    />
+			<?php endif; ?>
+	   </div>
+	   <div class='fieldentry'>
+			<span class='formlabel'>Освоено (Kb):</span>
+			<?php echo exec('whoami'); ?>
+				
+	   </div>		
 	</fieldset>
 	<fieldset>
 		<legend>Алиасы</legend>

@@ -21,10 +21,6 @@
 			<input class='formtext' type='text' name='password' value=''   />
 	   </div>	
 	   <div class='fieldentry'>
-			<span class='formlabel'>Путь:</span>
-			<input type='text' class='formtext' name='path' value='/var/tmp'    />
-	   </div>
-	   <div class='fieldentry'>
 			<span class='formlabel'>Сеть:</span>
 			<input  class='formtext' type='text' name='allow_nets' value='192.168.0.0/24'  />
 	   </div>	
@@ -33,6 +29,11 @@
 				imap:<input type='checkbox' class='formtext' name='imap' value='2' checked >&nbsp;&nbsp;
 				pop3:<input type='checkbox' class='formtext' name='pop3' value='1' checked >
 		</div>
+		<div class='fieldentry'>
+			<span class='formlabel'>Путь:</span>
+			<button id='path' >+</button>
+
+	   </div>
 	</fieldset>
    <fieldset>
 		   <legend>Алиасы</legend>

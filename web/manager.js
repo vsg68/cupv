@@ -23,6 +23,18 @@ $(function(){
 		return false;
 	});
 
+	// добавление пути
+	$('#path').live('click',function(){
+		path = '<input class="formtext path" type="text" name="path" value="" />';
+		// если уже есть одно поле, то остальные пропускаем
+		if( $('.path').length == 0 ) {
+
+			$('#path').parent().append(path);
+			$('.path').focus();
+		}	
+		return false;
+	});
+	
 	// Удаление строк
 	$('.delRow').live('click', function(){
 
@@ -61,6 +73,7 @@ $(function(){
 	// Submit
 	$('#submit_view').live('click', function(event){
 			event.preventDefault();
+			
 			// удаляем атрибут, чтобы поле ушло на сервер
 			// иначе получим рассогласование длины массивов
 			$('.alias :text[disabled="true"]').removeAttr('disabled');
@@ -74,8 +87,11 @@ $(function(){
 								var user_id = $(':hidden[name="user_id"]','#usersform').val();
 								var mailbox = $(':hidden[name="mailbox"]','#usersform').val();
 
+								// если имела место ошибка - <div id='log'>xxx</div>
+								if( mailbox === undefined )	return false;
+									
 								is_exist = $('option:contains("'+mailbox+'")', '#usrs').length;
-	
+							
 								if( ! is_exist ) {
 
 									var str = '<option value=' + user_id + '>' + mailbox + '</option>';
@@ -110,21 +126,18 @@ $(function(){
 	});
 
 	//Новый пользователь
-	$('#newusr').click(function(event){
+	$('#new').click(function(){
 
-			event.preventDefault();
-			
-			if( event.target.href === undefined )  return false;
-
-			$.post('/users/new/', function(response) {
-										$('.view')
-											.empty()
-											.html(response);
-										});								
-			return false;
+		$.post('/users/new/', function(response) {
+								$('.view')
+									.empty()
+									.html(response);
+								});								
+		return false;
 			
 	});
 
+	// Проверка при изменении текстового поля
 	$(':text').live('change', function(e){
 
 				var x = e.target;
@@ -139,7 +152,8 @@ $(function(){
 				}
 		});
 
-	$('option[act=0]').addClass('disabled');
+	// onmouseover
+	$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
  })
 
 // Проверка введенных значений

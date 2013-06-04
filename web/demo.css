@@ -1,42 +1,36 @@
-/*
-body {
-       background-color: #dde;
-   }
-
-
-input[type='checkbox']  {
-    margin: 0;
-}
-*/
 .container {
 	background-color: #ccc;
 	margin:50px 100px;
 	width: 840px;
 	height: 780px;
+	position: absolute;
 }
 .mainmenu {
-	background-color: #cecece;
-	height: 40px;
+	margin: 10px 10px 0 10px;
+	padding: 5px;
+	border-style: groove;
+	border-width: 2px;
+	overflow: auto;
 }
 .usrs, .fieldentry {
 	position: relative;
 }
-.umenu, #ufields {
+#ufields {
 	float:left;
 	overflow: auto;
 	height: 720px;
 }
-.view, .ufields {
+.view, #ufields {
 	width: 532px;
 }
 
-.umenu, #ulist {
+#ulist {
 	width: 228px;
 	float:left;
 	margin: 0 0 0 10px;
 }
 #ufields, .alias {
-	margin: 0 0 0 40px;
+	margin: 10px 0 0 20px;
 }
 #usrs {
 	width: 200px;
@@ -79,8 +73,27 @@ legend {
 .login {
 	width: 100px !important;
 }
+input[type='text'].path  {
+	width: 150px !important;
+}
+#path {
+	float: left;
+}
 #log {
 	text-align: center;
+}
+.menu_item {
+	margin: 5px;
+}
+#new {
+	background: url(/document-new.png) 0 -22px;
+	float: left;
+	width: 22px;
+	height: 22px;
+	cursor: pointer;
+}
+.hover_new {
+	background: url(/document-new.png) -22px -44px !important;
 }
 .success, .error {
 	background-color: green;
@@ -106,16 +119,10 @@ legend {
 	padding:4px;
 	border:1px solid #fff;
 }
-.oddRow{
-	background:#FFFFFF;
-}
-.evenRow{
-	background:#DFDFFF;
-}
 .hidden {
 	display: none;
 }
-.delRow {
+.delRow, #new {
 	cursor: pointer;
 }
 .badentry {
