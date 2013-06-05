@@ -9,7 +9,16 @@
     </head>
     <body>
         <div class="container">
-            <div class="mainmenu">
+			<div class="mainmenu">
+			<ul>
+				<li><a href="">Пользователи</a></li>
+				<li class="selected"><a href="">Алиасы</a></li>
+				<li><a href="">Домены</a></li>
+				<li><a href="">Группы</a></li>
+				<li class='helper'></li>
+			</ul>
+			</div>
+            <div class="editmenu">
 				<div id='new'></div>
             </div>
             <div class='usrs'>

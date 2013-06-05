@@ -73,7 +73,21 @@ $(function(){
 	// Submit
 	$('#submit_view').live('click', function(event){
 			event.preventDefault();
-			
+
+			var is_ok = true;
+			// проверка на пустые поля
+			$(':text', '#usersform').each(function(){
+
+					if( $(this).val() == '' ) {
+
+						$(this).addClass('badentry').focus();
+						is_ok = false;
+						return false;
+					}	
+				});
+
+			if( ! is_ok )	return false;  // проверка окончена
+
 			// удаляем атрибут, чтобы поле ушло на сервер
 			// иначе получим рассогласование длины массивов
 			$('.alias :text[disabled="true"]').removeAttr('disabled');
@@ -154,6 +168,15 @@ $(function(){
 
 	// onmouseover
 	$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
+
+	$(".mainmenu ul li").hover(function(){ $(this).addClass("hover_item");}, function(){$(this).removeClass("hover_item")});
+	$(".mainmenu ul li a").click(function(){
+
+					$('.selected').removeClass('selected');
+					$(this).parent().addClass("selected");
+					return false;
+				});
+
  })
 
 // Проверка введенных значений
