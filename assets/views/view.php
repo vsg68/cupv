@@ -28,9 +28,9 @@
 				pop3:<input type='checkbox' class='formtext' name='pop3' value='1' <?php ($user->imap_enable & 1 ) && print ('checked'); ?>  >
 		</div>
 	   <div class='fieldentry'>
-			<span class='formlabel'>Путь:</span><button id='path'>+</button>
+			<span class='formlabel'>Путь:</span><button id='path'><?= ( $user->path )? 'X' : '+' ?></button>
 			<?php if( $user->path ): ?>
-				<input type='text' class='formtext path' name='path' value='<?= $user->path; ?>'    />
+				<input type='text' class='formtext path' name='path' value='<?= $user->path; ?>'/>
 			<?php endif; ?>
 	   </div>
 	   <div class='fieldentry'>

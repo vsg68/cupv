@@ -1,10 +1,11 @@
 body {
 	font-family: verdana, tahome;
 	font-size: 13px;
+	text-align: center;
 }
 .container {
 	background-color: #ccc;
-	margin:50px 100px;
+	margin:50px auto;
 	width: 840px;
 	height: 800px;
 	position: absolute;
@@ -68,12 +69,12 @@ body {
 }
 
 #ulist {
-	width: 228px;
+	width: 200px;
 	float:left;
 	margin: 0 0 0 10px;
 }
-#ufields, .alias {
-	margin: 10px 0 0 20px;
+#ufields {
+	margin: 0 0 0 45px;
 }
 #usrs {
 	width: 200px;
@@ -125,6 +126,7 @@ input[type='text'].path  {
 }
 #log {
 	text-align: center;
+	height: 15px;
 }
 .menu_item {
 	margin: 5px;
@@ -151,7 +153,7 @@ input[type='text'].path  {
 .atable{
 	border-collapse:collapse;
 	border:1px solid #000;
-	width: 470px;
+	width: 478px;
 	margin-left:10px;
 }
 .atable th{

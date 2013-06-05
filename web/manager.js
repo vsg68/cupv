@@ -31,6 +31,11 @@ $(function(){
 
 			$('#path').parent().append(path);
 			$('.path').focus();
+			$('#path').text('X');
+		}
+		else {
+			$('.path').remove();
+			$('#path').text('+');
 		}	
 		return false;
 	});
@@ -174,8 +179,11 @@ $(function(){
 
 					$('.selected').removeClass('selected');
 					$(this).parent().addClass("selected");
-					return false;
 				});
+
+	ctrl = window.location.pathname.split('/')[1];
+	ctrl = ( ctrl ) ? ctrl : 'users';
+	$('#' + ctrl).addClass('selected');
 
  })
 

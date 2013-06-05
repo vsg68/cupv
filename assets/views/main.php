@@ -11,10 +11,10 @@
         <div class="container">
 			<div class="mainmenu">
 			<ul>
-				<li><a href="">Пользователи</a></li>
-				<li class="selected"><a href="">Алиасы</a></li>
-				<li><a href="">Домены</a></li>
-				<li><a href="">Группы</a></li>
+				<li id='users'><a href="/users/">Пользователи</a></li>
+				<li id='aliases'><a href="/aliases/">Алиасы</a></li>
+				<li id='domains'><a href="/domains/">Домены</a></li>
+				<li id='groups'><a href="/groups/">Группы</a></li>
 				<li class='helper'></li>
 			</ul>
 			</div>
