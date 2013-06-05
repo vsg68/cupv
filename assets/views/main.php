@@ -5,6 +5,7 @@
         <title>Users</title>        
             <script type='text/javascript' language='JavaScript'  src='/jquery-1.4.2.js' ></script>
 			<script type="text/javascript" src='/manager.js'></script>
+			<script type="text/javascript" src='/init.js'></script>
 			<link rel="stylesheet" href="/demo.css" type="text/css" />
     </head>
     <body>

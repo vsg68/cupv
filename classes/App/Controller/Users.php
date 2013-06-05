@@ -255,15 +255,15 @@ class Users extends \PHPixie\Controller {
 
 	public function action_chkdomain() {
 
+
         $result = $this->pixie->db
 								->query('select')
 								->table('domains')
 								->where('domain_name', $this->request->post('id'))
-								->group_by('domain_name')
 								->execute()
 								->current();
 
-        $this->response->body = $result->domain_name;
+        $this->response->body = isset($result->domain_name) ? $result->domain_name : '';
     }
 }
 

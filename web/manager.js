@@ -31,7 +31,7 @@ $(function(){
 
 			$('#path').parent().append(path);
 			$('.path').focus();
-			$('#path').text('X');
+			$('#path').text('');
 		}
 		else {
 			$('.path').remove();
@@ -161,7 +161,8 @@ $(function(){
 
 				var x = e.target;
 
-				if( checkfield(e.target.name, e.target.value ) ) {
+				if( checkfield(e.target) ) {
+				//if( checkfield(e.target.name, e.target.value ) ) {					
 					$(x).addClass('badentry').focus();
 					$('#submit_view').attr('disabled','true');
 				}
@@ -171,30 +172,22 @@ $(function(){
 				}
 		});
 
-	// onmouseover
-	$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
-
-	$(".mainmenu ul li").hover(function(){ $(this).addClass("hover_item");}, function(){$(this).removeClass("hover_item")});
-	$(".mainmenu ul li a").click(function(){
-
-					$('.selected').removeClass('selected');
-					$(this).parent().addClass("selected");
-				});
-
-	ctrl = window.location.pathname.split('/')[1];
-	ctrl = ( ctrl ) ? ctrl : 'users';
-	$('#' + ctrl).addClass('selected');
-
  })
 
 // Проверка введенных значений
-function checkfield(name, value) {
+//function checkfield(name, value) {
+function checkfield(obj) {
 
-net_tmpl  = "((\\d+\.)+\\d+(/\\d+)?,?\\s*)+";
-mail_tmpl = "(\\w+)@(\\w+\.)+(\\w+)";
+	name  = $(obj).attr('name');
+	value = $(obj).val();
+
+	one_net	  =	"(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?";
+	net_tmpl  = "^\\s*" + one_net + "(\\s*,\\s*" + one_net + ")*\\s*$";
+	mail_tmpl = "^[\\w\\.]+@(\\w+\\.){1,}\\w+$";
 
 	switch (name ) {
 		case 'allow_nets':
+			//value = value.replace(' ',g);
 			reg = new RegExp(net_tmpl,'i')
 			break
 		case 'alias[]':
@@ -203,7 +196,7 @@ mail_tmpl = "(\\w+)@(\\w+\.)+(\\w+)";
 		// задаем регулярное выражение
 			reg = new RegExp(mail_tmpl,'i')
 		// проверка, что алиас из наших доменов
-//			if( legacy_domain(value) ) return true
+			legacy_domain(obj)
 			break
 		case 'fwd[]':
 			reg = new RegExp(mail_tmpl,'i');
@@ -221,23 +214,32 @@ mail_tmpl = "(\\w+)@(\\w+\.)+(\\w+)";
 		
 }
 
-
 // Проверка на существование домена в базе
-function legacy_domain( addr ) {
+function legacy_domain( obj ) {
 
-// vvv@domain.net -> domain.net
-	domain = addr.replace(/\w+@/,'');
+	var domain;
 	
+	addr = $(obj).val();
+	// vvv@domain.net -> domain.net
+	domain = ( addr ) ? addr.replace(/^[\w\.]+@/,'') : '';
+
 	$.ajax({
 			url:'/users/chkdomain/',
 			data:{'id':domain},
 			type: 'post',
 			cache: false,
-			success: function(response) { $('#mailbox').data('domain',response); }
+			success: function(response) {
 
+				if( domain != response ) {
+
+					$(obj).addClass('badentry').focus();
+					$('#submit_view').attr('disabled','true');
+				}
+				else {
+					$('#submit_view').removeAttr('disabled');
+					$(obj).removeClass('badentry');
+				}
+			}
 	});
-	if( $('#mailbox').data('domain') == domain )
-		return false;
-	else	
-		return true;
+	
 }
