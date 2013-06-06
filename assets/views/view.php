@@ -28,7 +28,7 @@
 				pop3:<input type='checkbox' class='formtext' name='pop3' value='1' <?php ($user->imap_enable & 1 ) && print ('checked'); ?>  >
 		</div>
 	   <div class='fieldentry'>
-			<span class='formlabel'>Путь:</span><button id='path'><?= ( $user->path )? 'X' : '+' ?></button>
+			<span class='formlabel'>Путь:</span><button class='web' id='path'><?= ( $user->path )? '3' : '4' ?></button>
 			<?php if( $user->path ): ?>
 				<input type='text' class='formtext path' name='path' value='<?= $user->path; ?>'/>
 			<?php endif; ?>
@@ -53,7 +53,7 @@
 				   <?= $user->mailbox; ?>
 			   </td>
 			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
-			   <td><img src="/cross.gif" class="delRow" border="0"></td>
+			   <td><td><button class='delRow  web'>r</button></td></td>
 		   </tr>
 		<?php endforeach; ?>
 			</table>
@@ -73,7 +73,7 @@
 				</td>
 			   <td><input type='text' name='fwd[]' value='<?= $alias->delivery_to ?>'  <?php ($alias->active & 1 ) || print ('disabled'); ?> /></td>
 			   <td><input type='checkbox' name='chk' value='' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
-			   <td><img src="/cross.gif" class="delRow" border="0"></td>
+			   <td><button class='delRow web'>r</button></td>
 		   </tr>
 		<?php endforeach; ?>
 			</table>

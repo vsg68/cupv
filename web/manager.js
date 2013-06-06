@@ -31,11 +31,11 @@ $(function(){
 
 			$('#path').parent().append(path);
 			$('.path').focus();
-			$('#path').text('');
+			$('#path').text('<');
 		}
 		else {
 			$('.path').remove();
-			$('#path').text('+');
+			$('#path').text('>');
 		}	
 		return false;
 	});

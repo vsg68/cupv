@@ -4,6 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Users</title>        
             <script type='text/javascript' language='JavaScript'  src='/jquery-1.4.2.js' ></script>
+            <script type='text/javascript' language='JavaScript'  src='/jquery.autocomplete.min.js' ></script>
 			<script type="text/javascript" src='/manager.js'></script>
 			<script type="text/javascript" src='/init.js'></script>
 			<link rel="stylesheet" href="/demo.css" type="text/css" />
@@ -12,10 +13,10 @@
         <div class="container">
 			<div class="mainmenu">
 			<ul>
-				<li id='users'><a href="/users/">Пользователи</a></li>
-				<li id='aliases'><a href="/aliases/">Алиасы</a></li>
-				<li id='domains'><a href="/domains/">Домены</a></li>
-				<li id='groups'><a href="/groups/">Группы</a></li>
+				<li id='users'><strong class='web label'>т</strong><a href="/users/">Пользователи</a></li>
+				<li id='aliases'><strong class='web label'>'</strong><a href="/aliases/">Алиасы</a></li>
+				<li id='domains'><strong class='web label'>ь</strong><a href="/domains/">Домены</a></li>
+				<li id='groups'><strong class='web label'>й</strong><a href="/groups/">Группы</a></li>
 				<li class='helper'></li>
 			</ul>
 			</div>
