@@ -3,11 +3,13 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Users</title>        
-            <script type='text/javascript' language='JavaScript'  src='/jquery-1.4.2.js' ></script>
+            <script type='text/javascript' language='JavaScript'  src='/jquery-1.8.2.min.js' ></script>
             <script type='text/javascript' language='JavaScript'  src='/jquery.autocomplete.min.js' ></script>
 			<script type="text/javascript" src='/manager.js'></script>
 			<script type="text/javascript" src='/init.js'></script>
+			<script type="text/javascript" src='/autocomp.js'></script>
 			<link rel="stylesheet" href="/demo.css" type="text/css" />
+			<link rel="stylesheet" href="/autocomp.css" type="text/css" />
     </head>
     <body>
         <div class="container">

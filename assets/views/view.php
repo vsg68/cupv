@@ -46,14 +46,14 @@
 		<?php foreach ($aliases as $alias): ?>
 			<?php  if( $alias->alias_name == $user->mailbox) { continue; } ?>
 		   <tr class="alias">
-			   <td><input type='text' name='alias[]' value='<?= $alias->alias_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
+			   <td><input class='autocomp' type='text' name='alias[]' value='<?= $alias->alias_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td>
 				   <input type='hidden' name='alias_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
 				   <?= $user->mailbox; ?>
 			   </td>
 			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
-			   <td><td><button class='delRow  web'>r</button></td></td>
+			   <td><button class='delRow  web'>r</button></td>
 		   </tr>
 		<?php endforeach; ?>
 			</table>

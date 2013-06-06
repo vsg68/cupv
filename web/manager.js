@@ -10,9 +10,9 @@ $(function(){
 						'<input type="hidden" tag="1" name="' + name + '_st[]" value="1">' +
 						'<input type="hidden" name="' + name + '_id[]" value="0">' + email +
 					 '</td>';
-		input_cell 	= '<td><input type="text" name="' + name + '[]" value=""></td>';
+		input_cell 	= '<td><input class="autocomp" type="text" name="' + name + '[]" value=""></td>';
 		chkbox_cell = '<td><input type="checkbox" name="chk" checked></td>';
-		button_cell = '<td><img src="/cross.gif" class="delRow" border="0"></td>';
+		button_cell = '<td><button class="delRow  web">r</button></td>';
 		close_tag 	= '</tr>';
 
 		var tbl = $(this).parents('.atable').get(0);
@@ -31,11 +31,11 @@ $(function(){
 
 			$('#path').parent().append(path);
 			$('.path').focus();
-			$('#path').text('<');
+			$('#path').text('3');
 		}
 		else {
 			$('.path').remove();
-			$('#path').text('>');
+			$('#path').text('4');
 		}	
 		return false;
 	});
@@ -196,7 +196,7 @@ function checkfield(obj) {
 		// задаем регулярное выражение
 			reg = new RegExp(mail_tmpl,'i')
 		// проверка, что алиас из наших доменов
-			legacy_domain(obj)
+			//legacy_domain(obj)
 			break
 		case 'fwd[]':
 			reg = new RegExp(mail_tmpl,'i');
