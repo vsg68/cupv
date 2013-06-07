@@ -271,9 +271,8 @@ class Users extends \PHPixie\Controller {
 		$test = $this->request->post('query');
 		
 		// Готовлю ответ в нужном формате
-		$arr = array('query'=>$test,
-					 'suggestions'=>array()
-					 );
+		$arr['suggestions'] = array();
+
 		 
 		if(  preg_match('/^[^@]+@/', $test, $match_arr)) {
 			

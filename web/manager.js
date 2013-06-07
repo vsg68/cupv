@@ -1,5 +1,8 @@
 
 $(function(){
+
+	options = { serviceUrl:'/users/searchdomain/',type:'post'};
+
 	// добавление строк	
 	$('.else').live('click',function(){
 		
@@ -19,6 +22,8 @@ $(function(){
 		tr 	= name == 'alias' ? open_tag + input_cell + mail_cell + chkbox_cell + button_cell + close_tag :
 								open_tag + mail_cell + input_cell + chkbox_cell + button_cell + close_tag;
 		$(tbl).append( tr );
+
+		$('.autocomp').autocomplete({ serviceUrl:'/users/searchdomain/',type:'post'});
 		
 		return false;
 	});
@@ -77,25 +82,30 @@ $(function(){
 
 	// Submit
 	$('#submit_view').live('click', function(event){
+		
 			event.preventDefault();
-
 			var is_ok = true;
+
 			// проверка на пустые поля
 			$(':text', '#usersform').each(function(){
 
-					if( $(this).val() == '' ) {
+				if( checkfield( $(this) ) ) {
 
-						$(this).addClass('badentry').focus();
+						$(this).addClass('badentry');
 						is_ok = false;
-						return false;
-					}	
-				});
+				}	
+			});
 
-			if( ! is_ok )	return false;  // проверка окончена
+			// проверка окончена
+			if( ! is_ok )	{
+
+				$('.badentry:first').focus();
+				return false;
+			}
 
 			// удаляем атрибут, чтобы поле ушло на сервер
 			// иначе получим рассогласование длины массивов
-			$('.alias :text[disabled="true"]').removeAttr('disabled');
+			$('.alias :text[disabled]').removeAttr('disabled');
 
 			var params =  $('#usersform').serialize();
 			$.post(	'/users/add/', params , function(response) {
@@ -156,22 +166,6 @@ $(function(){
 			
 	});
 
-	// Проверка при изменении текстового поля
-	$(':text').live('change', function(e){
-
-				var x = e.target;
-
-				if( checkfield(e.target) ) {
-				//if( checkfield(e.target.name, e.target.value ) ) {					
-					$(x).addClass('badentry').focus();
-					$('#submit_view').attr('disabled','true');
-				}
-				else {
-					$('#submit_view').removeAttr('disabled');
-					$(x).removeClass('badentry');
-				}
-		});
-
  })
 
 // Проверка введенных значений
@@ -195,8 +189,6 @@ function checkfield(obj) {
 			if( $('#mailbox').val() == value )   return true
 		// задаем регулярное выражение
 			reg = new RegExp(mail_tmpl,'i')
-		// проверка, что алиас из наших доменов
-			//legacy_domain(obj)
 			break
 		case 'fwd[]':
 			reg = new RegExp(mail_tmpl,'i');
@@ -214,32 +206,3 @@ function checkfield(obj) {
 		
 }
 
-// Проверка на существование домена в базе
-function legacy_domain( obj ) {
-
-	var domain;
-	
-	addr = $(obj).val();
-	// vvv@domain.net -> domain.net
-	domain = ( addr ) ? addr.replace(/^[\w\.]+@/,'') : '';
-
-	$.ajax({
-			url:'/users/chkdomain/',
-			data:{'id':domain},
-			type: 'post',
-			cache: false,
-			success: function(response) {
-
-				if( domain != response ) {
-
-					$(obj).addClass('badentry').focus();
-					$('#submit_view').attr('disabled','true');
-				}
-				else {
-					$('#submit_view').removeAttr('disabled');
-					$(obj).removeClass('badentry');
-				}
-			}
-	});
-	
-}
