@@ -24,8 +24,7 @@
 	   </div>	
 	   <div class='fieldentry'>
 			 <span class='formlabel'>Протоколы:</span>
-				imap:<input type='checkbox' class='formtext' name='imap' value='2' <?php ($user->imap_enable & 2 ) && print ('checked'); ?>  >&nbsp;&nbsp;
-				pop3:<input type='checkbox' class='formtext' name='pop3' value='1' <?php ($user->imap_enable & 1 ) && print ('checked'); ?>  >
+				imap:<input type='checkbox' class='formtext' name='imap' value='1' <?php ($user->imap_enable & 1 ) && print ('checked'); ?>  >
 		</div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Путь:</span><button class='web' id='path'><?= ( $user->path )? '3' : '4' ?></button>

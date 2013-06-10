@@ -26,8 +26,7 @@
 	   </div>	
 	   <div class='fieldentry'>
 			 <span class='formlabel'>Протоколы:</span>
-				imap:<input type='checkbox' class='formtext' name='imap' value='2' checked >&nbsp;&nbsp;
-				pop3:<input type='checkbox' class='formtext' name='pop3' value='1' checked >
+				imap:<input type='checkbox' class='formtext' name='imap' value='2' checked >
 		</div>
 		<div class='fieldentry'>
 			<span class='formlabel'>Путь:</span>

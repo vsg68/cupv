@@ -105,7 +105,6 @@ class Users extends \PHPixie\Controller {
 			// обработка строк
 			array_walk($user,array($this,'sanitize'),'notempty');		
 			if( ! isset( $user['imap'] ) )  $user['imap'] = 0; 
-			if( ! isset( $user['pop3'] ) )  $user['pop3'] = 0;
 			if( ! isset( $user['active'] ) )  $user['active'] = 0;
 			if( ! isset( $user['path']) || $user['path'] == '' )  $user['path'] = null;
 
@@ -135,17 +134,16 @@ class Users extends \PHPixie\Controller {
 										'password' 		=> $user['password'],
 										'md5password' 	=> md5($user['password']),
 										'path'			=> $user['path'],
-										'imap_enable' 	=> $user['imap'] + $user['pop3'],
+										'imap_enable' 	=> $user['imap'],
 										'allow_nets' 	=> $user['allow_nets'],
 										'active'		=> 1
 									))
 									->execute();
 
-// что делать, когда ошибка? например есть такой мейлбокс
-
 					// для редиректа получаем id
 					$user['user_id'] = $this->pixie->db->insert_id();								
 
+					// при ошибке значение будет неопределено
 					if( ! $user['user_id'] ) {
 						
 						$this->logmsg = '<span class="error">User is not added. Check his mailbox.</span>';
@@ -160,7 +158,7 @@ class Users extends \PHPixie\Controller {
 										'password' 		=> $user['password'],
 										'md5password' 	=> md5($user['password']),
 										'path'			=> $user['path'],
-										'imap_enable' 	=> ( $user['imap'] + $user['pop3'] ),
+										'imap_enable' 	=> $user['imap'],
 										'allow_nets' 	=> $user['allow_nets'],
 										'active'		=> $user['active']
 									))
@@ -255,18 +253,6 @@ class Users extends \PHPixie\Controller {
 		
 	}
 
-	public function action_chkdomain() {
-
-
-        $result = $this->pixie->db
-								->query('select')
-								->table('domains')
-								->where('domain_name', $this->request->post('id'))
-								->execute()
-								->current();
-
-        $this->response->body = isset($result->domain_name) ? $result->domain_name : '';
-    }
 
     public function action_searchdomain() {
 
