@@ -2,9 +2,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Users</title>        
+        <title>Users</title>
             <script type='text/javascript' language='JavaScript'  src='/jquery-1.8.2.min.js' ></script>
-            <script type='text/javascript' language='JavaScript'  src='/jquery.autocomplete.js' ></script>
+            <script type='text/javascript' language='JavaScript'  src='/jquery.autocomplete.min.js' ></script>
 			<script type="text/javascript" src='/manager.js'></script>
 			<script type="text/javascript" src='/init.js'></script>
 			<link rel="stylesheet" href="/demo.css" type="text/css" />

@@ -1,17 +1,17 @@
 <?php
- 
+
 namespace App\Controller;
- 
+
 class Users extends \PHPixie\Controller {
- //~ 
+ //~
 	private $user_id;
 	private $logmsg;
-	
+
 //	функция для тестирования строк на возможные значения
     private function sanitize($value,$key,$method) {
 
 		if( is_string($value) ) $value =  trim($value) ;
-		
+
 		switch ( $method ) {
 			case 'empty':
 				$value = isset($value) ? $value : '0';
@@ -37,9 +37,9 @@ class Users extends \PHPixie\Controller {
 				}
 				break;
 			default:
-				
+
 		}
-	}	
+	}
 
     public function action_index() {
 
@@ -51,9 +51,9 @@ class Users extends \PHPixie\Controller {
 
         $this->response->body = $view->render();
     }
-	
+
 	public function action_new() {
-		
+
         $view = $this->pixie->view('new');
 
 		$view->log = isset($this->logmsg) ?  $this->logmsg : '<strong>Ввод нового пользователя.</strong>';
@@ -75,7 +75,7 @@ class Users extends \PHPixie\Controller {
 
 
 		$id = isset( $this->user_id ) ? $this->user_id : $this->request->param('id');
-		
+
 		$view->user = $this->pixie->db
 								->query('select')->table('users')
 								->where('user_id',$id)
@@ -89,7 +89,8 @@ class Users extends \PHPixie\Controller {
 								->where('and',array('delivery_to','!=','alias_name'))
 								->execute()
 								->as_array();
-		
+
+
         $this->response->body = $view->render();
     }
 /*
@@ -103,20 +104,20 @@ class Users extends \PHPixie\Controller {
 			unset($user['chk']);
 
 			// обработка строк
-			array_walk($user,array($this,'sanitize'),'notempty');		
-			if( ! isset( $user['imap'] ) )  $user['imap'] = 0; 
+			array_walk($user,array($this,'sanitize'),'notempty');
+			if( ! isset( $user['imap'] ) )  $user['imap'] = 0;
 			if( ! isset( $user['active'] ) )  $user['active'] = 0;
 			if( ! isset( $user['path']) || $user['path'] == '' )  $user['path'] = null;
 
 			// Инициируем, чтоб не было ошибки при обработке несуществующего массива
-			if( ! isset($user['alias']) ) $user['alias'] = array(); 
+			if( ! isset($user['alias']) ) $user['alias'] = array();
 			if( ! isset($user['fwd']) )   $user['fwd']   = array();
 
 			// Проверка на почтовый адрес
 			array_walk( $user['alias'],array($this,'sanitize'),'is_mail' );
 			array_walk( $user['fwd'],array($this,'sanitize'),'is_mail' );
-			
-			
+
+
 			// Если нет ошибок заполнения - проходим в обработку
 			if( ! isset($this->logmsg) ) {
 				//
@@ -126,7 +127,7 @@ class Users extends \PHPixie\Controller {
 					// новый пользователь
 
 					$user['mailbox'] = $user['login'].'@'.$user['domain'];
-					
+
 					$this->pixie->db->query('insert')->table('users')
 									->data(array(
 										'username' 		=> $user['username'],
@@ -141,14 +142,14 @@ class Users extends \PHPixie\Controller {
 									->execute();
 
 					// для редиректа получаем id
-					$user['user_id'] = $this->pixie->db->insert_id();								
+					$user['user_id'] = $this->pixie->db->insert_id();
 
 					// при ошибке значение будет неопределено
 					if( ! $user['user_id'] ) {
-						
+
 						$this->logmsg = '<span class="error">User is not added. Check his mailbox.</span>';
 					}
-						
+
 				}
 				elseif( isset($user['user_id']) && isset($user['mailbox']) ) {
 				// Существующий пользователь
@@ -225,12 +226,12 @@ class Users extends \PHPixie\Controller {
 										))
 										->where('alias_id', $user['fwd_id'][$key])
 										->execute();
-					}						
-				}	
+					}
+				}
 
 			}
 
-			// Ошибки имели место 
+			// Ошибки имели место
 			if( isset( $this->logmsg ) ) {
 
 				if ( $user['user_id'] ) {
@@ -238,7 +239,7 @@ class Users extends \PHPixie\Controller {
 					$this->user_id = $user['user_id'];
 					$this->action_view();
 				}
-				else 
+				else
 					$this->action_new();
 			}
 			else {
@@ -250,20 +251,20 @@ class Users extends \PHPixie\Controller {
 			}
 
 		}
-		
+
 	}
 
 
     public function action_searchdomain() {
 
 		$test = $this->request->post('query');
-		
+
 		// Готовлю ответ в нужном формате
 		$arr['suggestions'] = array();
 
-		 
+
 		if(  preg_match('/^[^@]+@/', $test, $match_arr)) {
-			
+
 			$test = preg_replace('/^[^@]+@/','',$test);
 
 			$domains = $this->pixie->db

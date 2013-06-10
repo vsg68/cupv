@@ -8,20 +8,20 @@
 		<div class='fieldentry'>
 			<span class='formlabel'>Aктивен:</span>
 			<input type='checkbox' class='formtext' name='active' value='1' <?php ($user->active == 1) && print ('checked'); ?> >
-	   </div>	 
+	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>ФИО:</span>
 			<input class='formtext' type='text' name='username' value='<?= $user->username; ?>'  />
-	   </div>	
-		   
+	   </div>
+
 	   <div class='fieldentry'>
 			<span class='formlabel'>Пароль:</span>
 			<input class='formtext' type='text' name='password' value='<?= $user->password; ?>'   />
-	   </div>	
+	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Сеть:</span>
 			<input  class='formtext' type='text' name='allow_nets' value='<?= $user->allow_nets; ?>'  />
-	   </div>	
+	   </div>
 	   <div class='fieldentry'>
 			 <span class='formlabel'>Протоколы:</span>
 				imap:<input type='checkbox' class='formtext' name='imap' value='1' <?php ($user->imap_enable & 1 ) && print ('checked'); ?>  >
@@ -34,9 +34,14 @@
 	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Освоено (Kb):</span>
-			<?php echo exec('whoami'); ?>
-				
-	   </div>		
+			<?php
+					//$matches = array();
+					preg_match('/^([^@]+)@(.+)$/',$user->mailbox, $matches );
+					$search_path = isset($user->path) ? $user->path :'/var/vmail/'. $matches[2]. '/'. $matches[1];
+					echo file_exists( $search_path) ? exec($user->path) : 'maildir not found...';
+			?>
+
+	   </div>
 	</fieldset>
 	<fieldset>
 		<legend>Алиасы</legend>
@@ -56,7 +61,7 @@
 		   </tr>
 		<?php endforeach; ?>
 			</table>
-	</fieldset>			
+	</fieldset>
 	<fieldset>
 		   <legend>Пересылка</legend>
 		   <table class='atable'>

@@ -1,9 +1,9 @@
 
 $(function(){
 	options = { serviceUrl:'/users/searchdomain/',type:'post'};
-	// добавление строк	
+	// добавление строк
 	$('.else').live('click',function(){
-		
+
 		name 		= $(this).attr('id');
 		email		= ( $('input[name="mailbox"]').size() == 1) ? $('input[name="mailbox"]').val() : 'mailbox@domain.ru';
 		open_tag 	= '<tr class="alias">';
@@ -23,7 +23,7 @@ $(function(){
 		$(tbl).append( tr );
 
 		$('.autocomp').autocomplete({ serviceUrl:'/users/searchdomain/',type:'post'});
-		
+
 		return false;
 	});
 
@@ -40,10 +40,10 @@ $(function(){
 		else {
 			$('.path').remove();
 			$('#path').text('4');
-		}	
+		}
 		return false;
 	});
-	
+
 	// Удаление строк
 	$('.delRow').live('click', function(){
 
@@ -51,22 +51,22 @@ $(function(){
 		var input_hide = $(tr).find(':hidden:eq(0)');
 
 		// Если есть таг - то поле создано вручную
-		if( $(input_hide).attr('tag') ) 
+		if( $(input_hide).attr('tag') )
 			$(tr).remove();
-		else {	
+		else {
 			$(input_hide).val('2');
 			$(tr).addClass('hidden');
-		}	
+		}
 		return false;
 	});
 
 	// Вывод данных пользователя
 	$('option','#usrs').click(function(){
-		
+
 			var href = '/users/view/' + $(this).val();
 
 			if( href === undefined )  return false;
-			
+
 			$.ajax({
 				url: href,
 				type: 'post',
@@ -75,13 +75,13 @@ $(function(){
 							.empty()
 							.html(response);
 				}
-			});								
+			});
 			return false;
 		});
 
 	// Submit
 	$('#submit_view').live('click', function(event){
-		
+
 			event.preventDefault();
 			var is_ok = true;
 
@@ -110,7 +110,7 @@ $(function(){
 
 			var params =  $('#usersform').serialize();
 			$.post(	'/users/add/', params , function(response) {
-				
+
 								$('.view').empty().html(response);
 								// Если добавили нового пользователя
 								// - вставляем его адрес в список адресов
@@ -119,9 +119,9 @@ $(function(){
 
 								// если имела место ошибка - <div id='log'>xxx</div>
 								if( mailbox === undefined )	return false;
-									
+
 								is_exist = $('option:contains("'+mailbox+'")', '#usrs').length;
-							
+
 								if( ! is_exist ) {
 
 									var str = '<option value=' + user_id + '>' + mailbox + '</option>';
@@ -133,7 +133,7 @@ $(function(){
 								is_active = $(':checkbox[name="active"]:checked', '#usersform').length;
 
 								$('option:contains("'+mailbox+'")', '#usrs').toggleClass( 'disabled', is_active==0)
-									
+
 							});
 			return false;
 	});
@@ -141,18 +141,18 @@ $(function(){
 
 	// Блокирование поля алиаса (disable)
 	$(':checkbox').live('click', function(){
-		
+
 		var input_text = $(this).closest('tr.alias').find(':text:eq(0)');
 		var input_hide = $(this).closest('tr.alias').find(':hidden:eq(0)');
 
 		if ( $(this).attr('checked') ) {
 			$(input_text).removeAttr('disabled');
 			$(input_hide).val('1');
-		}	
+		}
 		else {
 			$(input_text).attr('disabled', 'true');
 			$(input_hide).val('0');
-		}	
+		}
 	});
 
 	//Новый пользователь
@@ -162,9 +162,9 @@ $(function(){
 								$('.view')
 									.empty()
 									.html(response);
-								});								
+								});
 		return false;
-			
+
 	});
 
  })
@@ -205,6 +205,6 @@ function checkfield(obj) {
 		return false;
 	else
 		return true;
-		
+
 }
 
