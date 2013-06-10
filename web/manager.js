@@ -60,8 +60,10 @@ $(function(){
 		return false;
 	});
 
+
 	// Вывод данных пользователя
-	$('option','#usrs').click(function(){
+	//$('option1','#usrs').click(function(){
+	$('select#usrs').change(function(){
 
 			var href = '/users/view/' + $(this).val();
 

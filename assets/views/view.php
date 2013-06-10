@@ -35,10 +35,11 @@
 	   <div class='fieldentry'>
 			<span class='formlabel'>Освоено (Kb):</span>
 			<?php
-					//$matches = array();
-					preg_match('/^([^@]+)@(.+)$/',$user->mailbox, $matches );
-					$search_path = isset($user->path) ? $user->path :'/var/vmail/'. $matches[2]. '/'. $matches[1];
-					echo file_exists( $search_path) ? exec($user->path) : 'maildir not found...';
+				preg_match('/^([^@]+)@(.+)$/',$user->mailbox, $matches );
+				$search_path = isset($user->path) ? $user->path :'/var/vmail/'. $matches[2]. '/'. $matches[1];
+				$summ =  exec('/usr/local/bin/sudo -u vmail /usr/bin/du -sh '.$search_path);
+				$summ = preg_replace("/^([^\/]+).+$/","$1",$summ);
+				echo isset($summ) ? $summ : 'mailbox has no size?';
 			?>
 
 	   </div>
