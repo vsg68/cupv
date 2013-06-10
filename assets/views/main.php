@@ -21,8 +21,10 @@
 				<li class='helper'></li>
 			</ul>
 			</div>
+
             <div class="editmenu">
 				<div id='new'></div>
+				<div id='lb'>ООО "ГАЗМЕТАЛЛПРОЕКТ"</div>
             </div>
             <div class='usrs'>
 				<div id='ulist'>
@@ -33,7 +35,7 @@
 					</select>
 				</div>
 				<div id='ufields'>
-					<div class='view'><h2>Пользователи ООО "ГАЗМЕТАЛЛПРОЕКТ"</h2></div>
+					<div class='view'><h2><img src='/gmp.png' /></h2></div>
 				</div>
             </div>
         </div>

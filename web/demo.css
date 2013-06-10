@@ -42,7 +42,7 @@ body {
 	background-color: #ccc  !important;
 }
 .selected a, .hover_item a {
-	color: #000 !important;
+	color: #BFBFFF; !important;
 }
 .mainmenu a {
 	text-decoration: none;
@@ -53,6 +53,9 @@ body {
 	padding: 5px;
 	border-style: groove;
 	border-width: 2px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #888;
 	overflow: auto;
 }
 .usrs, .fieldentry {
@@ -65,6 +68,9 @@ body {
 }
 .view, #ufields {
 	width: 532px;
+}
+.view h2 {
+	margin: 150px 0 0 0;
 }
 
 #ulist {
@@ -83,10 +89,10 @@ body {
 }
 .formlabel {
 	width: 200px;
-	line-height: 25px;
+	margin: 0 0 0 10px
 }
 .fieldentry input[type='text'] {
-	width: 280px;
+	width: 275px;
 }
 .fieldentry input[type='text'], .formlabel {
 	float: left;
@@ -109,6 +115,8 @@ legend {
 .fieldentry {
 	overflow: auto;
 	margin: 2px 0 0 0;
+	text-align: left;
+	line-height: 25px;
 }
 .submit {
 	text-align: center;
@@ -131,14 +139,14 @@ input[type='text'].path  {
 	margin: 5px;
 }
 #new {
-	background: url(/document-new.png) 0 -22px;
+	background: url(/document-new.png) -22px -44px;
 	float: left;
 	width: 22px;
 	height: 22px;
 	cursor: pointer;
 }
 .hover_new {
-	background: url(/document-new.png) -22px -44px !important;
+	background: url(/document-new.png) 0 -22px  !important;
 }
 .success, .error {
 	background-color: green;
@@ -157,20 +165,22 @@ input[type='text'].path  {
 }
 .atable th{
 	border:1px solid #fff;
+/*
 	background:#BFBFFF;
+*/
+	background:#4198f9;
 	font-weight:bold;
 }
 .atable td{
-	padding:4px;
+	padding:0px;
 	border:1px solid #fff;
 }
 .hidden {
 	display: none;
 }
-.delRow, #new, #path {
-	cursor: pointer;
+.delRow, #path {
 	color: red;
-	font-size: 16px;
+	font-size: 12px;
 }
 .badentry {
 	background-color: pink;
@@ -190,4 +200,15 @@ ul li.helper {
 	font-size: 20px;
 	margin: 0 10px 0 0;
 	color: #222;
+}
+/*
+#img-gmp {
+	float: right;
+	position: absolute;
+	margin:0;
+
+	background: url(/gmp.png);
+	height:44px;
+	width: 48px;
+*/
 }

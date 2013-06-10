@@ -126,10 +126,12 @@ class Users extends \PHPixie\Controller {
 				if ( isset($user['login']) && isset($user['domain']) ) {
 					// новый пользователь
 
+					$user['mailbox'] = $user['login'].'@'.$user['domain'];
+					
 					$this->pixie->db->query('insert')->table('users')
 									->data(array(
 										'username' 		=> $user['username'],
-										'mailbox'		=> $user['login'].'@'.$user['domain'],
+										'mailbox'		=> $user['mailbox'],
 										'password' 		=> $user['password'],
 										'md5password' 	=> md5($user['password']),
 										'path'			=> $user['path'],
@@ -283,6 +285,7 @@ class Users extends \PHPixie\Controller {
 								->fields('domain_name')
 								->table('domains')
 								->where('domain_name', 'like', $test.'%')
+								->where('and', array('delivery_to','virtual'))
 								->group_by('domain_name')
 								->execute();
 

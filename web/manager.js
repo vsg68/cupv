@@ -1,8 +1,6 @@
 
 $(function(){
-
 	options = { serviceUrl:'/users/searchdomain/',type:'post'};
-
 	// добавление строк	
 	$('.else').live('click',function(){
 		
@@ -13,14 +11,15 @@ $(function(){
 						'<input type="hidden" tag="1" name="' + name + '_st[]" value="1">' +
 						'<input type="hidden" name="' + name + '_id[]" value="0">' + email +
 					 '</td>';
-		input_cell 	= '<td><input class="autocomp" type="text" name="' + name + '[]" value=""></td>';
+		alias_cell 	= '<td><input class="autocomp" type="text" name="' + name + '[]" value=""></td>';
+		fwd_cell 	= '<td><input type="text" name="' + name + '[]" value=""></td>';
 		chkbox_cell = '<td><input type="checkbox" name="chk" checked></td>';
 		button_cell = '<td><button class="delRow  web">r</button></td>';
 		close_tag 	= '</tr>';
 
 		var tbl = $(this).parents('.atable').get(0);
-		tr 	= name == 'alias' ? open_tag + input_cell + mail_cell + chkbox_cell + button_cell + close_tag :
-								open_tag + mail_cell + input_cell + chkbox_cell + button_cell + close_tag;
+		tr 	= name == 'alias' ? open_tag + alias_cell + mail_cell + chkbox_cell + button_cell + close_tag :
+								open_tag + mail_cell + fwd_cell + chkbox_cell + button_cell + close_tag;
 		$(tbl).append( tr );
 
 		$('.autocomp').autocomplete({ serviceUrl:'/users/searchdomain/',type:'post'});
@@ -58,7 +57,7 @@ $(function(){
 			$(input_hide).val('2');
 			$(tr).addClass('hidden');
 		}	
-		
+		return false;
 	});
 
 	// Вывод данных пользователя
@@ -91,9 +90,11 @@ $(function(){
 
 				if( checkfield( $(this) ) ) {
 
-						$(this).addClass('badentry');
-						is_ok = false;
-				}	
+					$(this).addClass('badentry');
+					is_ok = false;
+				}
+				else
+					$(this).removeClass('badentry');
 			});
 
 			// проверка окончена
@@ -191,12 +192,13 @@ function checkfield(obj) {
 			reg = new RegExp(mail_tmpl,'i')
 			break
 		case 'fwd[]':
-			reg = new RegExp(mail_tmpl,'i');
+			reg = new RegExp(mail_tmpl,'i')
 			break
-		case '':
-			return true
 		default:
-			return false
+			if( ! value )
+				return true
+			else
+				return false
 	}
 
 	if( reg.test(value) )
