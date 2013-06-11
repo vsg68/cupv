@@ -14,38 +14,15 @@
         <div class="container">
 			<div class="mainmenu">
 			<ul>
-				<li id='users'><strong class='web label'>т</strong><a href="/users/">Пользователи</a></li>
+				<li id='users'><strong class='web label'>m</strong><a href="/users/">Пользователи</a></li>
 				<li id='aliases'><strong class='web label'>'</strong><a href="/aliases/">Алиасы</a></li>
 				<li id='domains'><strong class='web label'>ь</strong><a href="/domains/">Домены</a></li>
 				<li id='groups'><strong class='web label'>й</strong><a href="/groups/">Группы</a></li>
 				<li class='helper'></li>
 			</ul>
 			</div>
+			<?php include($subview.'.php'); ?>
 
-            <div class="editmenu">
-				<div id='domains_flt'>Домены(фильтр):
-					<select>
-						<option value='' selected></option>
-						<?php foreach($domains as $domain):?>
-							<option value='<?php echo $domain->domain_name;?>' ><?php echo $domain->domain_name; ?></option>
-						<?php endforeach;?>
-					</select>
-				</div>
-				<div id='lb'>ООО "ГАЗМЕТАЛЛПРОЕКТ"</div>
-				<div id='new'></div>
-            </div>
-            <div class='usrs'>
-				<div id='ulist'>
-					<select id='usrs' size=42>
-					<?php foreach($users as $user):?>
-						<option value='<?php echo $user->user_id;?>' <?= ( $user->active ) ? '' :'class="disabled"'; ?> ><?php echo $user->mailbox;?></option>
-					<?php endforeach;?>
-					</select>
-				</div>
-				<div id='ufields'>
-					<div class='view'><h2><img src='/gmp.png' /></h2></div>
-				</div>
-            </div>
         </div>
     </body>
 </html>

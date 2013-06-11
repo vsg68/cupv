@@ -45,6 +45,8 @@ class Users extends \PHPixie\Controller {
 
         $view = $this->pixie->view('main');
 
+		$view->subview = 'users_view';
+
         $view->users = $this->pixie->db
 							->query('select')->table('users')
 							->order_by('mailbox')
