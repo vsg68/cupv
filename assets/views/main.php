@@ -23,8 +23,16 @@
 			</div>
 
             <div class="editmenu">
-				<div id='new'></div>
+				<div id='domains_flt'>Домены(фильтр):
+					<select>
+						<option value='' selected></option>
+						<?php foreach($domains as $domain):?>
+							<option value='<?php echo $domain->domain_name;?>' ><?php echo $domain->domain_name; ?></option>
+						<?php endforeach;?>
+					</select>
+				</div>
 				<div id='lb'>ООО "ГАЗМЕТАЛЛПРОЕКТ"</div>
+				<div id='new'></div>
             </div>
             <div class='usrs'>
 				<div id='ulist'>

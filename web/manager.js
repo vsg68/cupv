@@ -1,6 +1,10 @@
 
 $(function(){
 	options = { serviceUrl:'/users/searchdomain/',type:'post'};
+
+	// заполняем массив для фильтрации
+	var mboxes = $('option','#usrs').clone();
+
 	// добавление строк
 	$('.else').live('click',function(){
 
@@ -62,7 +66,6 @@ $(function(){
 
 
 	// Вывод данных пользователя
-	//$('option1','#usrs').click(function(){
 	$('select#usrs').change(function(){
 
 			var href = '/users/view/' + $(this).val();
@@ -80,6 +83,20 @@ $(function(){
 			});
 			return false;
 		});
+
+	//Фильтрайия пользователей по домену
+	$('select','#domains_flt').change(function(){
+
+		filter = $('option:selected', '#domains_flt').text();
+
+		if( filter )
+			selected_opts = $(mboxes).filter(':contains("@' + filter+ '")');
+		else
+			selected_opts = $(mboxes);
+
+		$('select#usrs').empty().append(selected_opts);
+
+	});
 
 	// Submit
 	$('#submit_view').live('click', function(event){

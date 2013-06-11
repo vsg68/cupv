@@ -44,10 +44,18 @@ class Users extends \PHPixie\Controller {
     public function action_index() {
 
         $view = $this->pixie->view('main');
+
         $view->users = $this->pixie->db
 							->query('select')->table('users')
 							->order_by('mailbox')
 							->execute();
+
+		$view->domains = $this->pixie->db
+								->query('select')
+								->fields('domain_name')
+								->table('domains')
+								->where('delivery_to','virtual')
+								->execute();
 
         $this->response->body = $view->render();
     }
@@ -273,7 +281,6 @@ class Users extends \PHPixie\Controller {
 								->table('domains')
 								->where('domain_name', 'like', $test.'%')
 								->where('and', array('delivery_to','virtual'))
-								->group_by('domain_name')
 								->execute();
 
 			foreach($domains as $domain) {

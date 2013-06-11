@@ -53,9 +53,6 @@ body {
 	padding: 5px;
 	border-style: groove;
 	border-width: 2px;
-	font-size: 18px;
-	font-weight: bold;
-	color: #888;
 	overflow: auto;
 }
 .usrs, .fieldentry {
@@ -100,9 +97,6 @@ body {
 fieldset {
 	width: 500px;
 	margin: 10px 0 0 0;
-/*
-	text-align: center;
-*/
 }
 legend {
     font-size:  small;
@@ -140,7 +134,7 @@ input[type='text'].path  {
 }
 #new {
 	background: url(/document-new.png) -22px -44px;
-	float: left;
+	float: right;
 	width: 22px;
 	height: 22px;
 	cursor: pointer;
@@ -165,9 +159,6 @@ input[type='text'].path  {
 }
 .atable th{
 	border:1px solid #fff;
-/*
-	background:#BFBFFF;
-*/
 	background:#4198f9;
 	font-weight:bold;
 }
@@ -201,14 +192,18 @@ ul li.helper {
 	margin: 0 10px 0 0;
 	color: #222;
 }
-/*
-#img-gmp {
-	float: right;
-	position: absolute;
-	margin:0;
-
-	background: url(/gmp.png);
-	height:44px;
-	width: 48px;
-*/
+#domains_flt {
+	font-size: 10px;
+	float: left;
+}
+#domains_flt select {
+	width: 100px;
+}
+#lb {
+	width: 400px;
+	float: left;
+	margin: 0 0 0 20px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #888;
 }
