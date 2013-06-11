@@ -207,3 +207,36 @@ ul li.helper {
 	font-weight: bold;
 	color: #888;
 }
+/*
+*********************************************
+*/
+.ed {
+	float: right;
+	width: 175px;
+}
+.some1 {
+	border-collapse:collapse;
+	border:1px solid #000;
+	width: 478px;
+	margin-left:10px;
+}
+.some1 th{
+	border:1px solid #fff;
+	background:#4198f9;
+	font-weight:bold;
+}
+.some1 td{
+	padding:0px;
+	border:1px solid #fff;
+}
+.key {
+	text-align:left;
+	margin: 0 0 0 10px !important;
+
+}
+.value {
+	text-align:right;
+}
+.some {
+	width: 555px !important;
+}
