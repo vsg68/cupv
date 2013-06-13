@@ -210,16 +210,57 @@ ul li.helper {
 /*
 *********************************************
 */
-.ed {
-	float: right;
+#aliasesplace {
+	margin:5px 2px 5px 10px;
+	background-color: #fff;
+	width: 600px;
+	height: 705px;
+	border-style: groove;
+	border-width: 2px;
+	position:relative;
+}
+#aliasesplace, #ed  {
+	float:left
+}
+#ed {
 	width: 175px;
 }
-.some1 {
-	border-collapse:collapse;
-	border:1px solid #000;
-	width: 478px;
-	margin-left:10px;
+#aliases_box  {
+	width: 575px;
+	height: 675px;
+	padding: 2px 25px 2px 0;
+	line-height: 18px;
 }
+.th, #aliases_box {
+	overflow: auto;
+}
+.alias_th, .mbox_th {
+	background:#4198f9;
+	font-weight:bold;
+	text-align: center;
+	width: 20%;
+	height: 25px;
+	line-height: 25px;
+	float:left;
+}
+.mbox_th {
+	width: 80% !important;
+}
+
+table.some {
+	border-collapse:collapse;
+	text-align:left;
+	width: 100%;
+/*
+	border:1px solid #000;
+	width: 590px;
+*/
+/*
+	margin-left:10px;
+*/
+}
+
+/*
 .some1 th{
 	border:1px solid #fff;
 	background:#4198f9;
@@ -229,14 +270,15 @@ ul li.helper {
 	padding:0px;
 	border:1px solid #fff;
 }
-.key {
+*/
+.key:nth-child(2n) {
 	text-align:left;
+/*
 	margin: 0 0 0 10px !important;
-
+*/
+	background:#eee;
 }
 .value {
 	text-align:right;
 }
-.some {
-	width: 555px !important;
-}
+

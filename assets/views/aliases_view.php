@@ -3,23 +3,24 @@
 	<div id='new'></div>
 </div>
 <div class='usrs'>
-	<div id=>
-		<table class='atable some'>
-					<tr><th>alias</th><th colspan=2>mailbox</th></tr>
-
-			   <tr class="key">
-				   <td><?=  'alias_name:' ?></td>
-				   <td>
-					   <input type='hidden' name='alias_st[]' value=''>
-					   <input type='hidden' name='alias_id[]' value=''>
-					   alias_name, alias_name1, alias_name2, alias_name3
-				   </td>
-				   <td><button class='delRow  web'>r</button></td>
-			   </tr>
-
+	<div id='aliasesplace'>
+	<div class='th'>
+		<div class='alias_th'>alias</div>
+		<div class='mbox_th'>mailbox</div>
+	</div>
+	<div id='aliases_box'>
+		<table class='some'>
+		<?php foreach( $aliases_arr as $alias => $delivered ): ?>
+		   <tr class="key">
+			   <td><?=  $alias.":" ?></td>
+			   <?php sort($delivered); ?>
+			   <td><?= implode(', ', $delivered); ?></td>
+		   </tr>
+		<?php endforeach; ?>
 		</table>
 	</div>
-	<div class='ed'>
+	<div id='ed'>
+<!--
 	<table class='some1'>
 					<tr><th>alias</th><th>on/off</th><th>?</th></tr>
 
@@ -28,31 +29,32 @@
 				   <td>
 					   <input type='checkbox' name='alias_st[]' value=''>
 				   </td>
-				   <td><button class='delRow  web'>r</button></td>
+
 			   </tr>
 			   <tr class="key">
 				   <td><input type='text' name='alias_id[]' value='alias_name2'></td>
 				   <td>
 					   <input type='checkbox' name='alias_st[]' value=''>
 				   </td>
-				   <td><button class='delRow  web'>r</button></td>
+
 			   </tr>
 			   <tr class="key">
 				   <td><input type='text' name='alias_id[]' value='alias_name3'></td>
 				   <td>
 					   <input type='checkbox' name='alias_st[]' value=''>
 				   </td>
-				   <td><button class='delRow  web'>r</button></td>
+
 			   </tr>
 			   <tr class="key">
 				   <td><input type='text' name='alias_id[]' value='alias_name'></td>
 				   <td>
 					   <input type='checkbox' name='alias_st[]' value=''>
 				   </td>
-				   <td><button class='delRow  web'>r</button></td>
+
 			   </tr>
 
 		</table>
+-->
 	</div>
 <!--
 	<select id='usrs' class='some' size=32>
