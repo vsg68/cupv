@@ -14,6 +14,7 @@ $(function(){
 
 	});
 
+	//Фильтрайия пользователей по ящикам
 	$('#fltr').keyup(function(event){
 
 		$('.hidden_filter').removeClass('hidden_filter');
@@ -27,4 +28,16 @@ $(function(){
 
 	});
 
+	$('tr','#aliases_box').hover( function(){
+									$(this).addClass('hover_tr');
+									},
+								  function(){
+									$(this).removeClass('hover_tr');
+	});
+
+	$('tr','#aliases_box').click(function(){
+
+		$('.selected_key').removeClass('selected_key');
+		$(this).addClass('selected_key');
+	});
 })

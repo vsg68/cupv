@@ -1,7 +1,7 @@
 #aliasesplace {
 	margin:5px 2px 5px 10px;
 	background-color: #fff;
-	width: 450px;
+	width: 437px;
 	height: 705px;
 	border-style: groove;
 	border-width: 2px;
@@ -19,47 +19,45 @@
 	line-height: 18px;
 	overflow-y: scroll;
 }
-/*
-.th{
-/*
-	overflow: auto;
-	height: 25px;
-}
-*/
 .alias_th, .mbox_th {
 	background:#4198f9;
 	font-weight:bold;
 	text-align: center;
-	width: 20%;
+	width: 50%;
 	height: 25px;
 	line-height: 25px;
 	float:left;
 }
-.mbox_th {
-	width: 80% !important;
-}
 
 #aliases_box table {
 	border-collapse:collapse;
+	color: #222;
 	text-align:left;
-	width: 433px;
+	width: 420px;
 }
 #aliases_box tr:nth-child(2n) {
-	text-align:left;
-
+	background-color: #eee;
+}
+#aliases_box tr {
+	cursor:pointer;
 }
 .key {
 	font-weight:bold;
-	color: #222;
-	cursor:pointer;
-
 }
 .lb_filter{
 	float: left;
 	margin: 0 0 0 20px;
 	font-size: 10px;
 }
-
+.lb_filter input{
+	width: 145px;
+}
 .hidden_filter {
 	display: none !important;
+}
+.hover_tr {
+	background-color: #fcfff0 !important;
+}
+.selected_key {
+	background-color: pink !important;
 }
