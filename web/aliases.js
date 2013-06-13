@@ -1,7 +1,5 @@
 $(function(){
 
-	var tr_aliases = $('tr', '#aliases_box');
-
 	//Фильтрайия пользователей по домену (alias)
 	$('select','#domains_flt').change(function(){
 

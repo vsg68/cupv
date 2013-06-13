@@ -42,7 +42,7 @@ body {
 	background-color: #ccc  !important;
 }
 .selected a, .hover_item a {
-	color: #BFBFFF; !important;
+	color: #222 !important;
 }
 .mainmenu a {
 	text-decoration: none;

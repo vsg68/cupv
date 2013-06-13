@@ -43,33 +43,16 @@
 	border-collapse:collapse;
 	text-align:left;
 	width: 433px;
-
-/*
-	margin-left:10px;
-*/
 }
-
-/*
-.some1 th{
-	border:1px solid #fff;
-	background:#4198f9;
-	font-weight:bold;
-}
-.some1 td{
-	padding:0px;
-	border:1px solid #fff;
-}
-*/
 #aliases_box tr:nth-child(2n) {
 	text-align:left;
 
-/*
-	margin: 0 0 0 10px !important;
-*/
-	background:#eee;
 }
-.value {
-	text-align:right;
+.key {
+	font-weight:bold;
+	color: #222;
+	cursor:pointer;
+
 }
 .lb_filter{
 	float: left;
