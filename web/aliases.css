@@ -1,0 +1,79 @@
+#aliasesplace {
+	margin:5px 2px 5px 10px;
+	background-color: #fff;
+	width: 450px;
+	height: 705px;
+	border-style: groove;
+	border-width: 2px;
+	position:relative;
+}
+#aliasesplace, #ed  {
+	float:left
+}
+#ed {
+	width: 175px;
+}
+#aliases_box  {
+	height: 675px;
+	padding: 2px 25px 2px 0;
+	line-height: 18px;
+	overflow-y: scroll;
+}
+/*
+.th{
+/*
+	overflow: auto;
+	height: 25px;
+}
+*/
+.alias_th, .mbox_th {
+	background:#4198f9;
+	font-weight:bold;
+	text-align: center;
+	width: 20%;
+	height: 25px;
+	line-height: 25px;
+	float:left;
+}
+.mbox_th {
+	width: 80% !important;
+}
+
+#aliases_box table {
+	border-collapse:collapse;
+	text-align:left;
+	width: 433px;
+
+/*
+	margin-left:10px;
+*/
+}
+
+/*
+.some1 th{
+	border:1px solid #fff;
+	background:#4198f9;
+	font-weight:bold;
+}
+.some1 td{
+	padding:0px;
+	border:1px solid #fff;
+}
+*/
+#aliases_box tr:nth-child(2n) {
+	text-align:left;
+
+/*
+	margin: 0 0 0 10px !important;
+*/
+	background:#eee;
+}
+.value {
+	text-align:right;
+}
+.lb_filter{
+	float: left;
+	margin: 0 0 0 20px;
+	font-size: 10px;
+}
+

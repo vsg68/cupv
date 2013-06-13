@@ -9,7 +9,10 @@ class Aliases extends \PHPixie\Controller {
     public function action_index() {
 
         $view = $this->pixie->view('main');
-		$view->subview = 'aliases_view';
+
+		$view->subview 		= 'aliases_view';
+		$view->script_file	= '<script type="text/javascript" src="/aliases.js"></script>';
+		$view->css_file 	= '<link rel="stylesheet" href="/aliases.css" type="text/css" />';
 
 		$aliases_arr = array();
 
@@ -20,12 +23,12 @@ class Aliases extends \PHPixie\Controller {
 								->order_by('alias_name')
 								->execute();
 
-		//~ $view->domains = $this->pixie->db
-								//~ ->query('select')
-								//~ ->fields('domain_name')
-								//~ ->table('domains')
-								//~ ->where('delivery_to','virtual')
-								//~ ->execute();
+		$view->domains = $this->pixie->db
+								->query('select')
+								->fields('domain_name')
+								->table('domains')
+								->where('delivery_to','virtual')
+								->execute();
 
 		foreach ($aliases as $alias) {
 

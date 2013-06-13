@@ -46,6 +46,8 @@ class Users extends \PHPixie\Controller {
         $view = $this->pixie->view('main');
 
 		$view->subview = 'users_view';
+		$view->script_file = '<script type="text/javascript" src="/users.js"></script>';
+		$view->css_file = '';
 
         $view->users = $this->pixie->db
 							->query('select')->table('users')
