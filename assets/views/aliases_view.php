@@ -1,79 +1,22 @@
-<div class="editmenu">
-	<div id='domains_flt'>Домен:
-		<select>
-			<option value='' selected></option>
-			<?php foreach($domains as $domain):?>
-				<option value='<?php echo $domain->domain_name;?>' ><?php echo $domain->domain_name; ?></option>
-			<?php endforeach;?>
-		</select>
-	</div>
-	<div class='lb_filter'> Mail (filter):
-		<input type='text' id='fltr'>
-	</div>
-	<div id='new'></div>
-</div>
-<div class='usrs'>
-	<div id='aliasesplace'>
-	<div class='th'>
-		<div class='alias_th'>alias</div>
-		<div class='mbox_th'>mailbox</div>
-	</div>
-	<div id='aliases_box'>
-		<table>
-		<?php foreach( $aliases_arr as $alias => $delivered ): ?>
-		   <tr>
-			   <td class="key"><?=  $alias.":" ?></td>
-			   <td class="val"><?php  sort($delivered); echo implode(',<br>', $delivered); ?></td>
-		   </tr>
+	<div id='log'><?= $log ?></div>
+	<h4><?= $alias_name ?></h4>
+<form id='usersform' action='#' method='post'>
+	<table class='atable'>
+	   <tr><th>alias</th><th>on/off</th><th><button class='else'>+</button></th></tr>
+		<?php foreach ($aliases as $alias): ?>
+			   <tr class="alias">
+				   <td><input type='text' name='fwd[]' value='<?= $alias->delivery_to; ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?>></td>
+				   <td>
+						<input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>>
+						<input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'>
+						<input type='hidden' name='fwd_id[]' value='<?= $alias->alias_id ?>'>
+					</td>
+				   <td><button class='delRow  web'>r</button></td>
+				</tr>
 		<?php endforeach; ?>
-		</table>
-	</div>
-	<div id='ed'>
-<!--
-	<table class='some1'>
-					<tr><th>alias</th><th>on/off</th><th>?</th></tr>
 
-			   <tr class="key">
-				   <td><input type='text' name='alias_id[]' value='alias_name1'></td>
-				   <td>
-					   <input type='checkbox' name='alias_st[]' value=''>
-				   </td>
-
-			   </tr>
-			   <tr class="key">
-				   <td><input type='text' name='alias_id[]' value='alias_name2'></td>
-				   <td>
-					   <input type='checkbox' name='alias_st[]' value=''>
-				   </td>
-
-			   </tr>
-			   <tr class="key">
-				   <td><input type='text' name='alias_id[]' value='alias_name3'></td>
-				   <td>
-					   <input type='checkbox' name='alias_st[]' value=''>
-				   </td>
-
-			   </tr>
-			   <tr class="key">
-				   <td><input type='text' name='alias_id[]' value='alias_name'></td>
-				   <td>
-					   <input type='checkbox' name='alias_st[]' value=''>
-				   </td>
-
-			   </tr>
-
-		</table>
--->
-	</div>
-<!--
-	<select id='usrs' class='some' size=32>
-
-			<option value='a' ><div class='key'>mailboxqqqq:</div><div class='value'>aaa</div></option>
-			<option value='a' ><span class='key'>mailboxqqqq:</span><span class='value'>eeeeeeeeeeeee</span></option>
-			<option value='a' ><span class='key'>mailboxqqqq</span><span class='value'>q222</span></option>
-			<option value='a' ><span class='key'>mailbo:</span><span class='value'>1111</span></option>
-
-
-	</select>
--->
-</div>
+	</table>
+	<input type='hidden' name='alias' value='<?= $alias_name ?>'>
+	<div class='submit'><input type='submit' id='submit_view' value='Изменить'></div>
+</form>
+<script type="text/javascript">$('.autocomp').autocomplete(options);</script>

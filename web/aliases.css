@@ -11,7 +11,8 @@
 	float:left
 }
 #ed {
-	width: 175px;
+	width: 365px;
+	margin: 10px;
 }
 #aliases_box  {
 	height: 675px;
@@ -28,18 +29,18 @@
 	line-height: 25px;
 	float:left;
 }
-
+h4 {
+	margin: 5px;
+}
 #aliases_box table {
 	border-collapse:collapse;
 	color: #222;
 	text-align:left;
 	width: 420px;
 }
-#aliases_box tr:nth-child(2n) {
-	background-color: #eee;
-}
 #aliases_box tr {
 	cursor:pointer;
+	border-top: 1px solid #eee;
 }
 .key {
 	font-weight:bold;
@@ -60,4 +61,11 @@
 }
 .selected_key {
 	background-color: pink !important;
+}
+.atable {
+	width: 100% !important;
+	margin: 0px !important;
+}
+.atable input[type=text]{
+	width: 250px !important;
 }
