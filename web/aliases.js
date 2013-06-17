@@ -30,8 +30,12 @@ $(function(){
 
 	// Запрос на редактирование
 	$('tr','#aliases_box').click( function(){
+		// Выбор записи
+		$('.selected_key').removeClass('selected_key');
+		$(this).addClass('selected_key');
+		// Запрос
 		alias_name = $('.key', this).text();
-		$.post('/aliases/view/',{'id':alias_name},function(response){ $('#ed').empty().append(response);})
+		$.post('/aliases/single/',{'name':alias_name},function(response){ $('#ed').empty().append(response);})
 	});
 
 	// Добавление полей
@@ -89,7 +93,13 @@ $(function(){
 			var params =  $('#usersform').serialize();
 			$.post(	'/aliases/add/', params , function(response) {
 
-								$('#ed').empty().html(response);
+								mail_tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
+
+								if( mail_tmpl.test(response) )
+									window.location = '/aliases/view/?name=' + response;
+								else {
+									$('#ed').empty().html(response);
+
 								// Если добавили нового пользователя
 								// - вставляем его адрес в список адресов
 /*								var user_id = $(':hidden[name="user_id"]','#usersform').val();
@@ -112,6 +122,7 @@ $(function(){
 
 								$('option:contains("'+mailbox+'")', '#usrs').toggleClass( 'disabled', is_active==0)
 */
+								}
 							});
 			return false;
 	});
@@ -127,12 +138,12 @@ $(function(){
 									$(this).removeClass('hover_tr');
 	});
 
+	arr = window.location.search.split('=');
 	// Выбор записи
-	$('tr','#aliases_box').click(function(){
+	$('.key:contains("' + arr[1] + '")','#aliases_box').parent().addClass('selected_key');
 
-		$('.selected_key').removeClass('selected_key');
-		$(this).addClass('selected_key');
-	});
+
+
 
 
 })

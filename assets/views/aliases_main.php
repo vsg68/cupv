@@ -30,48 +30,6 @@
 		</div>
 	</div>
 	<div id='ed'>
-some text
-<!--
-				<h4>vsg@tark.com</h4>
-				<table class='atable'>
-				   <tr><th>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
-				   <tr class="key">
-					   <td><input type='text' name='alias_id[]' value='alias_name1'></td>
-					   <td><input type='checkbox' name='alias_st[]' value=''></td>
-					   <td><button class='delRow  web'>r</button></td>
-					</tr>
-				   <tr class="key">
-					   <td><input type='text' name='alias_id[]' value='alias_name1'></td>
-					   <td><input type='checkbox' name='alias_st[]' value=''></td>
-					   <td><button class='delRow  web'>r</button></td>
-					</tr>
-				   <tr class="key">
-					   <td><input type='text' name='alias_id[]' value='alias_name1'></td>
-					   <td><input type='checkbox' name='alias_st[]' value=''></td>
-					   <td><button class='delRow  web'>r</button></td>
-					</tr>
-				   <tr class="key">
-					   <td><input type='text' name='alias_id[]' value='alias_name1'></td>
-					   <td><input type='checkbox' name='alias_st[]' value=''></td>
-					   <td><button class='delRow  web'>r</button></td>
-					</tr>
-
-				</table>
--->
-<!--
-		</fieldset>
--->
-
+		<?= $aliases_block; ?>
 	</div>
-<!--
-	<select id='usrs' class='some' size=32>
-
-			<option value='a' ><div class='key'>mailboxqqqq:</div><div class='value'>aaa</div></option>
-			<option value='a' ><span class='key'>mailboxqqqq:</span><span class='value'>eeeeeeeeeeeee</span></option>
-			<option value='a' ><span class='key'>mailboxqqqq</span><span class='value'>q222</span></option>
-			<option value='a' ><span class='key'>mailbo:</span><span class='value'>1111</span></option>
-
-
-	</select>
--->
 </div>

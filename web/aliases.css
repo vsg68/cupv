@@ -30,7 +30,8 @@
 	float:left;
 }
 h4 {
-	margin: 5px;
+	padding: 5px;
+	border: 1px solid #fff;
 }
 #aliases_box table {
 	border-collapse:collapse;
@@ -57,10 +58,10 @@ h4 {
 	display: none !important;
 }
 .hover_tr {
-	background-color: #fcfff0 !important;
+	background-color: #fdffe1 !important;
 }
 .selected_key {
-	background-color: pink !important;
+	background-color: #d2fdfd !important;
 }
 .atable {
 	width: 100% !important;

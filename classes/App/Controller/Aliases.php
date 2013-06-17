@@ -8,6 +8,7 @@ class Aliases extends \PHPixie\Controller {
 
 	private $logmsg;
 	private $alias_name;
+	private $alias_block;
 
     private function sanitize($value,$key,$method) {
 
@@ -42,7 +43,7 @@ class Aliases extends \PHPixie\Controller {
 		}
 	}
 
-    public function action_index() {
+    public function action_view() {
 
         $view = $this->pixie->view('main');
 
@@ -54,7 +55,7 @@ class Aliases extends \PHPixie\Controller {
 
         $aliases = $this->pixie->db
 								->query('select')
-								->fields('alias_name','delivery_to')
+								->fields('alias_name','delivery_to','active')
 								->table('aliases')
 								->order_by('alias_name')
 								->execute();
@@ -70,6 +71,8 @@ class Aliases extends \PHPixie\Controller {
 
 			if( ! isset($aliases_arr[$alias->alias_name]) )
 				$aliases_arr[$alias->alias_name] = array();
+			// Если алиас неактивный - форматируем
+			$alias->delivery_to = ( $alias->active == 1 ) ? $alias->delivery_to : "<strike>".$alias->delivery_to."</strike>";
 
 			array_push( $aliases_arr[$alias->alias_name], $alias->delivery_to);
 		}
@@ -77,26 +80,34 @@ class Aliases extends \PHPixie\Controller {
 
 		$view->aliases_arr = $aliases_arr;
 
+		$view->aliases_block = $this->action_single();
+
         $this->response->body = $view->render();
     }
 
-    public function action_view() {
+
+	public function action_single() {
 
 		$view = $this->pixie->view('aliases_view');
 		// вывод лога
 		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
 
- 		$view->alias_name = isset( $this->alias_name ) ? $this->alias_name : $this->request->post('id');
+		// POST - аякс запрос
+		// GET - запрос через гет-параметры
+ 		$view->alias_name = $this->request->get('name') ? $this->request->get('name') : $this->request->post('name');
+
+		if( ! $view->alias_name )	return "some text 1";
 
 		$view->aliases = $this->pixie->db
-								->query('select')->table('aliases')
-								->where('alias_name',$view->alias_name)
-								->execute();
+									->query('select')->table('aliases')
+									->where('alias_name',$view->alias_name)
+									->execute();
 
-
-        $this->response->body = $view->render();
-    }
-
+		if( $this->request->get('name') )
+			return $view->render();
+		else
+			$this->response->body = $view->render();
+	}
 
 	public function action_add() {
 
@@ -147,24 +158,19 @@ class Aliases extends \PHPixie\Controller {
 				}
 			}
 
-			// Ошибки имели место
+			// Ошибки имели место - возвращаем форму
 			if( isset( $this->logmsg ) ) {
 
 				if ( $params['alias'] ) {
 
 					$this->alias_name = $params['alias'];
-					$this->action_view();
+					$this->action_single();
 				}
 				else
 					$this->action_new();
 			}
-			else {
-				// Возвращаемся обратно в форму редактирования
-				$this->alias_name = $params['alias'];
-
-				$this->logmsg = "<span class='success'>Изменено</span>";
-				$this->action_view();
-			}
+			else
+				$this->response->body = $params['alias'];
 
 		}
 
