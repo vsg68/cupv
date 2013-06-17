@@ -92,11 +92,18 @@ class Aliases extends \PHPixie\Controller {
 		// вывод лога
 		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
 
-		// POST - аякс запрос
-		// GET - запрос через гет-параметры
- 		$view->alias_name = $this->request->get('name') ? $this->request->get('name') : $this->request->post('name');
+		// Если пришли сюда не через ошибку
+		if( ! isset($this->alias_name) ) {
+			// POST - аякс запрос
+			// GET - запрос через гет-параметры
+			$view->alias_name = $this->request->get('name') ? $this->request->get('name') : $this->request->post('name');
 
-		if( ! $view->alias_name )	return "some text 1";
+			// Если пустой запрос и не было ошибок
+			if( ! $view->alias_name )	return "some text 1";
+		}
+		else
+			$view->alias_name = $this->alias_name;
+
 
 		$view->aliases = $this->pixie->db
 									->query('select')->table('aliases')
