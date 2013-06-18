@@ -17,7 +17,12 @@
 		<?php endforeach; ?>
 
 	</table>
+<<<<<<< HEAD
 	<input type='hidden' name='alias' value='<?= $alias_name; ?>'>
+=======
+	<?= $hidden_alias_name ?>
+
+>>>>>>> refs/remotes/github/Aliases
 	<div class='submit'><input type='submit' id='submit_view' value='Изменить'></div>
 </form>
 <script type="text/javascript">$('.autocomp').autocomplete(options);</script>

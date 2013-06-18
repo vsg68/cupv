@@ -129,7 +129,6 @@ $(function(){
 
 	//Новый alias
 	$('#new').click(function(){
-
 		$.get('/aliases/new/',function(response) { $('#ed').empty().html(response); });
 	});
 

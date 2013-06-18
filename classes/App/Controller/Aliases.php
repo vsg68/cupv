@@ -88,6 +88,7 @@ class Aliases extends \PHPixie\Controller {
 
 		$view 				= $this->pixie->view('aliases_view');
 		$view->log 			= isset($this->logmsg) ?  $this->logmsg : '';
+<<<<<<< HEAD
 		$view->alias_name 	= $this->alias_name; 		// Вдруг была ошибка?
 
 		if( ! $this->request->get('name') )
@@ -114,6 +115,37 @@ class Aliases extends \PHPixie\Controller {
 		if( ! isset($this->logmsg) )
 
 			$view->log = '<strong>Ввод нового алиаса.</strong>';
+=======
+		$view->aliases		= array();
+		$view->hidden_alias_name = "";
+		$view->alias_name 	= $this->alias_name; 		// Вдруг была ошибка?
+
+		// Редактирование
+		if( $this->request->get('act') == '1' ) {
+
+			$view->alias_name = $this->request->get('name');
+
+			$view->aliases = $this->pixie->db
+									->query('select')->table('aliases')
+									->where('alias_name',$view->alias_name)
+									->execute();
+
+			$view->hidden_alias_name = "<input type='hidden' name='alias' value='". $view->alias_name ."'>";
+
+		}
+		// Новая запись
+		elseif( $this->request->get('act') == '0' ) {
+
+			if( ! isset($this->logmsg) )
+				$view->log = '<strong>Ввод нового пользователя.</strong>';
+
+			$view->alias_name 	= "<input type='text' class='autocomp' name='newalias' value='' placeholder='введите новый адрес'>";
+		}
+		// простой вывод
+		else
+			return "some text 1";
+
+>>>>>>> refs/remotes/github/Aliases
 
 		$this->response->body = $view->render();
 	}
