@@ -35,14 +35,14 @@ $(function(){
 		$(this).addClass('selected_key');
 		// Запрос
 		alias_name = $('.key', this).text();
-		$.post('/aliases/single/',{'name':alias_name},function(response){ $('#ed').empty().append(response);})
+		$.get('/aliases/single/',{'name':alias_name, 'act':'1'},function(response){ $('#ed').empty().append(response);})
 	});
 
 	// Добавление полей
 	$('.else').live('click',function(){
 
 		open_tag 	= '<tr class="alias">';
-		alias_cell 	= '<td><input class="autocomp" type="text" name="fwd[]" value=""></td>';
+		alias_cell 	= '<td><input class="autocomp" type="text" name="fwd[]" value="" placeholder="введите почтовый адрес"></td>';
 		chkbox_cell = '<td>'+
 						'<input type="hidden" name="fwd_st[]" value="1">' +
 						'<input type="hidden" name="fwd_id[]" value="0">' +
@@ -127,7 +127,11 @@ $(function(){
 			return false;
 	});
 
+	//Новый alias
+	$('#new').click(function(){
 
+		$.get('/aliases/new/',function(response) { $('#ed').empty().html(response); });
+	});
 
 
 	// Hover по массиву алиасов

@@ -3,6 +3,8 @@
 */
 $(function(){
 
+	options = { serviceUrl:'/users/searchdomain/',type:'post'};
+
 // onmouseover
 	$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
 
@@ -19,7 +21,7 @@ $(function(){
 
 
 	// Удаление строк
-	$('.delRow').live('click', function(){
+	$('button.delRow').live('click', function(){
 
 		var tr 		   = $(this).closest('tr.alias');
 		var input_hide = $(tr).find(':hidden:eq(0)');

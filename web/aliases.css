@@ -33,6 +33,9 @@ h4 {
 	padding: 5px;
 	border: 1px solid #fff;
 }
+h4 input {
+	width: 150px;
+}
 #aliases_box table {
 	border-collapse:collapse;
 	color: #222;

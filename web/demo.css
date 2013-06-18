@@ -142,16 +142,8 @@ input[type='text'].path  {
 .hover_new {
 	background: url(/document-new.png) 0 -22px  !important;
 }
-.success, .error {
-	background-color: green;
-	padding: 0 5px;
-	color: #fff;
-	border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-}
 .error {
-	background-color: red !important;
+	color: red;
 }
 
 .atable{

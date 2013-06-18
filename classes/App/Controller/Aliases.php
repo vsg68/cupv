@@ -77,43 +77,45 @@ class Aliases extends \PHPixie\Controller {
 			array_push( $aliases_arr[$alias->alias_name], $alias->delivery_to);
 		}
 
+		$view->aliases_arr 		= $aliases_arr;
+		$view->aliases_block 	= $this->action_single();
 
-		$view->aliases_arr = $aliases_arr;
-
-		$view->aliases_block = $this->action_single();
-
-        $this->response->body = $view->render();
+        $this->response->body	= $view->render();
     }
 
 
 	public function action_single() {
 
-		$view = $this->pixie->view('aliases_view');
-		// вывод лога
-		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
+		$view 				= $this->pixie->view('aliases_view');
+		$view->log 			= isset($this->logmsg) ?  $this->logmsg : '';
+		$view->alias_name 	= $this->alias_name; 		// Вдруг была ошибка?
 
-		// Если пришли сюда не через ошибку
-		if( ! isset($this->alias_name) ) {
-			// POST - аякс запрос
-			// GET - запрос через гет-параметры
-			$view->alias_name = $this->request->get('name') ? $this->request->get('name') : $this->request->post('name');
+		if( ! $this->request->get('name') )
+			return "some text 1";
 
-			// Если пустой запрос и не было ошибок
-			if( ! $view->alias_name )	return "some text 1";
-		}
-		else
-			$view->alias_name = $this->alias_name;
-
-
+		$view->alias_name 	= $this->request->get('name');
 		$view->aliases = $this->pixie->db
-									->query('select')->table('aliases')
-									->where('alias_name',$view->alias_name)
-									->execute();
+								->query('select')->table('aliases')
+								->where('alias_name',$view->alias_name)
+								->execute();
 
-		if( $this->request->get('name') )
+		// Редактирование
+		if( ! $this->request->get('act') )
 			return $view->render();
-		else
-			$this->response->body = $view->render();
+
+		$this->response->body = $view->render();
+	}
+
+	public function action_new() {
+
+		$view 		= $this->pixie->view('aliases_new');
+		$view->log 	= isset($this->logmsg) ?  $this->logmsg : '';
+
+		if( ! isset($this->logmsg) )
+
+			$view->log = '<strong>Ввод нового алиаса.</strong>';
+
+		$this->response->body = $view->render();
 	}
 
 	public function action_add() {
@@ -130,37 +132,66 @@ class Aliases extends \PHPixie\Controller {
 			// Проверка на почтовый адрес
 			array_walk( $params['fwd'] ,array($this,'sanitize'),'is_mail' );
 
+
 			// Если нет ошибок заполнения - проходим в обработку
 			if( ! isset($this->logmsg) ) {
 
-				// Обработка алиасов
-				foreach ($params['fwd'] as $key=>$alias ) {
+				$is_exist = array();
 
-					if( $params['fwd_st'][$key] == 2 ) {
-					// Удаление
-						$this->pixie->db->query('delete')->table('aliases')
-										->where('alias_id',$params['fwd_id'][$key])
-										->execute();
+				// если создали новое
+				if( isset($params['newalias']) ) {
+
+					// Проверка на почтовый адрес
+					if ( ! preg_match('/(\w+)@(\w+\.)+(\w+)/',$params['newalias']) )
+						$this->logmsg .= "<span class='error'>Wrong entry for mail</span>";
+
+					if( ! isset($this->logmsg) ) {
+
+						// Проверка на существование такого алиаса
+						$is_exist = $this->pixie->db
+												->query('select')->table('aliases')
+												->where('alias_name',$params['newalias'])
+												->execute()
+												->as_array();
+
+						if( count($is_exist) )
+							$this->logmsg = "<span class='error'>Адрес <strong>".$params['newalias']."</strong> уже используется.Разуй глаза.</span>";
+						else
+							$params['alias'] = $params['newalias'];
 					}
-					elseif( $params['fwd_id'][$key] == 0 ) {
-					// Новый
-						$this->pixie->db->query('insert')->table('aliases')
-										->data(array(
-											'alias_name' => $params['alias'],
-											'delivery_to'=> $params['fwd'][$key],
-											'active'	 => $params['fwd_st'][$key]
-										))->execute();
-					}
-					else {
-					// Изменение
-						$this->pixie->db->query('update')->table('aliases')
-										->data(array(
-											'alias_name' => $params['alias'],
-											'delivery_to'=> $params['fwd'][$key],
-											'active'	 => $params['fwd_st'][$key]
-										))
-										->where('alias_id', $params['fwd_id'][$key])
-										->execute();
+				}
+
+				// Если ошибок все еще нет
+				if( ! isset( $this->logmsg ) ) {
+					// Обработка алиасов
+					foreach ($params['fwd'] as $key=>$alias ) {
+
+						if( $params['fwd_st'][$key] == 2 ) {
+						// Удаление
+							$this->pixie->db->query('delete')->table('aliases')
+											->where('alias_id',$params['fwd_id'][$key])
+											->execute();
+						}
+						elseif( $params['fwd_id'][$key] == 0 ) {
+						// Новый
+							$this->pixie->db->query('insert')->table('aliases')
+											->data(array(
+												'alias_name' => $params['alias'],
+												'delivery_to'=> $params['fwd'][$key],
+												'active'	 => $params['fwd_st'][$key]
+											))->execute();
+						}
+						else {
+						// Изменение
+							$this->pixie->db->query('update')->table('aliases')
+											->data(array(
+												'alias_name' => $params['alias'],
+												'delivery_to'=> $params['fwd'][$key],
+												'active'	 => $params['fwd_st'][$key]
+											))
+											->where('alias_id', $params['fwd_id'][$key])
+											->execute();
+						}
 					}
 				}
 			}
@@ -168,7 +199,7 @@ class Aliases extends \PHPixie\Controller {
 			// Ошибки имели место - возвращаем форму
 			if( isset( $this->logmsg ) ) {
 
-				if ( $params['alias'] ) {
+				if ( isset($params['alias']) ) {
 
 					$this->alias_name = $params['alias'];
 					$this->action_single();
@@ -182,5 +213,7 @@ class Aliases extends \PHPixie\Controller {
 		}
 
 	}
+
+
 }
 ?>

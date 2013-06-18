@@ -1,6 +1,5 @@
 
 $(function(){
-	options = { serviceUrl:'/users/searchdomain/',type:'post'};
 
 	// заполняем массив для фильтрации
 	var mboxes = $('option','#usrs');
@@ -15,8 +14,8 @@ $(function(){
 						'<input type="hidden" name="' + name + '_st[]" value="1">' +
 						'<input type="hidden" name="' + name + '_id[]" value="0">' + email +
 					 '</td>';
-		alias_cell 	= '<td><input class="autocomp" type="text" name="' + name + '[]" value=""></td>';
-		fwd_cell 	= '<td><input type="text" name="' + name + '[]" value=""></td>';
+		alias_cell 	= '<td><input class="autocomp" type="text" name="' + name + '[]" value="" placeholder="введите почтовый адрес"></td>';
+		fwd_cell 	= '<td><input type="text" name="' + name + '[]" value="" placeholder="введите почтовый адрес"></td>';
 		chkbox_cell = '<td><input type="checkbox" name="chk" checked></td>';
 		button_cell = '<td><button class="delRow  web">r</button></td>';
 		close_tag 	= '</tr>';
