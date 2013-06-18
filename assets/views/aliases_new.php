@@ -11,7 +11,7 @@
 				<input type='hidden' name='fwd_st[]' value='1'>
 				<input type='hidden' name='fwd_id[]' value='0'>
 			</td>
-		   <td><span class='delRow web'>a</span></td>
+		   <td><span class='delRow web'>n</span></td>
 		</tr>
 	</table>
 	<div class='submit'><input type='submit' id='submit_view' value='Изменить'></div>
