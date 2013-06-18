@@ -35,7 +35,7 @@ $(function(){
 		$(this).addClass('selected_key');
 		// Запрос
 		alias_name = $('.key', this).text();
-		$.post('/aliases/single/',{'name':alias_name},function(response){ $('#ed').empty().append(response);})
+		$.get('/aliases/single/',{'name':alias_name, 'act':'1'},function(response){ $('#ed').empty().append(response);})
 	});
 
 	// Добавление полей
@@ -127,7 +127,11 @@ $(function(){
 			return false;
 	});
 
+	//Новый alias
+	$('#new').click(function(){
 
+		$.get('/aliases/single/',{'act':'0'}, function(response) { $('#ed').empty().html(response); });
+	});
 
 
 	// Hover по массиву алиасов

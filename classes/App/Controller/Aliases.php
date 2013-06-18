@@ -77,43 +77,48 @@ class Aliases extends \PHPixie\Controller {
 			array_push( $aliases_arr[$alias->alias_name], $alias->delivery_to);
 		}
 
+		$view->aliases_arr 		= $aliases_arr;
+		$view->aliases_block 	= $this->action_single();
 
-		$view->aliases_arr = $aliases_arr;
-
-		$view->aliases_block = $this->action_single();
-
-        $this->response->body = $view->render();
+        $this->response->body	= $view->render();
     }
 
 
 	public function action_single() {
 
-		$view = $this->pixie->view('aliases_view');
-		// вывод лога
-		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
+		$view 				= $this->pixie->view('aliases_view');
+		$view->log 			= isset($this->logmsg) ?  $this->logmsg : '';
+		$view->aliases		= array();
+		$view->hidden_alias_name = "";
+		$view->alias_name 	= $this->alias_name; 		// Вдруг была ошибка?
 
-		// Если пришли сюда не через ошибку
-		if( ! isset($this->alias_name) ) {
-			// POST - аякс запрос
-			// GET - запрос через гет-параметры
-			$view->alias_name = $this->request->get('name') ? $this->request->get('name') : $this->request->post('name');
+		// Редактирование
+		if( $this->request->get('act') == '1' ) {
 
-			// Если пустой запрос и не было ошибок
-			if( ! $view->alias_name )	return "some text 1";
-		}
-		else
-			$view->alias_name = $this->alias_name;
+			$view->alias_name = $this->request->get('name');
 
-
-		$view->aliases = $this->pixie->db
+			$view->aliases = $this->pixie->db
 									->query('select')->table('aliases')
 									->where('alias_name',$view->alias_name)
 									->execute();
 
-		if( $this->request->get('name') )
-			return $view->render();
+			$view->hidden_alias_name = "<input type='hidden' name='alias' value='". $view->alias_name ."'>";
+
+		}
+		// Новая запись
+		elseif( $this->request->get('act') == '0' ) {
+
+			if( ! isset($this->logmsg) )
+				$view->log = '<strong>Ввод нового пользователя.</strong>';
+
+			$view->alias_name 	= "<input type='text' class='autocomp' name='newalias' value='' placeholder='введите новый адрес'>";
+		}
+		// простой вывод
 		else
-			$this->response->body = $view->render();
+			return "some text 1";
+
+
+		$this->response->body = $view->render();
 	}
 
 	public function action_add() {
@@ -182,5 +187,7 @@ class Aliases extends \PHPixie\Controller {
 		}
 
 	}
+
+
 }
 ?>

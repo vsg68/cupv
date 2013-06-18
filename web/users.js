@@ -1,6 +1,5 @@
 
 $(function(){
-	options = { serviceUrl:'/users/searchdomain/',type:'post'};
 
 	// заполняем массив для фильтрации
 	var mboxes = $('option','#usrs');

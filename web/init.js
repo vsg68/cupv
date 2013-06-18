@@ -3,6 +3,8 @@
 */
 $(function(){
 
+	options = { serviceUrl:'/users/searchdomain/',type:'post'};
+
 // onmouseover
 	$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
 
