@@ -92,7 +92,7 @@ class Aliases extends \PHPixie\Controller {
 		$view->alias_name 	= $this->alias_name; 		// Вдруг была ошибка?
 
 		if( ! $this->request->get('name') )
-			return "some text 1";
+			return "<img class='letter' src=/mail.png />";
 
 		$view->alias_name 	= $this->request->get('name');
 		$view->aliases = $this->pixie->db
