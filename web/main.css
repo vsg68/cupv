@@ -5,9 +5,9 @@ body {
 }
 .container {
 	background-color: #ccc;
-	margin:50px auto;
+	margin:30px auto;
 	width: 840px;
-	height: 800px;
+	height: 850px;
 }
 .mainmenu {
 	height: 30px;
@@ -34,9 +34,6 @@ body {
 	-moz-border-radius: 6px;
 	text-align: center;
 	font-weight: bold;
-/*
-	margin: 0 10px;
-*/
 }
 .mainmenu ul li.hover_item, .selected {
 	background-color: #ccc  !important;
@@ -55,75 +52,12 @@ body {
 	border-width: 2px;
 	overflow: auto;
 }
-.usrs, .fieldentry {
-	position: relative;
-}
-#ufields {
-	float:left;
-	overflow: auto;
-	height: 720px;
-}
-.view, #ufields {
-	width: 532px;
-}
-.view h2 {
-	margin: 150px 0 0 0;
-}
-
-#ulist {
-	width: 200px;
-	float:left;
-	margin: 0 0 0 10px;
-}
-#ufields {
-	margin: 0 0 0 45px;
-}
-#usrs {
-	width: 200px;
-}
 .active {
 	background-color: #0cc;
-}
-.formlabel {
-	width: 200px;
-	margin: 0 0 0 10px
-}
-.fieldentry input[type='text'] {
-	width: 275px;
-}
-.fieldentry input[type='text'], .formlabel {
-	float: left;
-}
-fieldset {
-	width: 500px;
-	margin: 10px 0 0 0;
-}
-legend {
-    font-size:  small;
-    font-style: italic;
-    background-color: #ddd;
-    border: 1px dimgrey outset;
-    padding:2px 3px;
-}
-
-.fieldentry {
-	overflow: auto;
-	margin: 2px 0 0 0;
-	text-align: left;
-	line-height: 25px;
 }
 .submit {
 	text-align: center;
 	margin-top: 20px;
-}
-.login {
-	width: 100px !important;
-}
-input[type='text'].path  {
-	width: 150px !important;
-}
-#path {
-	float: left;
 }
 #log {
 	text-align: center;
@@ -139,27 +73,16 @@ input[type='text'].path  {
 	height: 22px;
 	cursor: pointer;
 }
+.label {
+	font-size: 20px;
+	margin: 0 10px 0 0;
+	color: #222;
+}
 .hover_new {
 	background: url(/document-new.png) 0 -22px  !important;
 }
 .error {
 	color: red;
-}
-
-.atable{
-	border-collapse:collapse;
-	border:1px solid #000;
-	width: 478px;
-	margin-left:10px;
-}
-.atable th{
-	border:1px solid #fff;
-	background:#4198f9;
-	font-weight:bold;
-}
-.atable td{
-	padding:0px;
-	border:1px solid #fff;
 }
 .hidden {
 	display: none;
@@ -182,11 +105,25 @@ ul li.helper {
 .web {
 	font-family: Webdings,Verdana;
 }
-.label {
-	font-size: 20px;
-	margin: 0 10px 0 0;
-	color: #222;
+.atable{
+	border-collapse:collapse;
+	border:1px solid #000;
+	width: 100% !important;
+	margin: 0px !important;
 }
+.atable input[type=text]{
+	width: 250px !important;
+}
+.atable th{
+	border:1px solid #fff;
+	background:#4198f9;
+	font-weight:bold;
+}
+.atable td{
+	padding:0px;
+	border:1px solid #fff;
+}
+
 #domains_flt {
 	font-size: 10px;
 	float: left;
@@ -202,6 +139,75 @@ ul li.helper {
 	font-weight: bold;
 	color: #888;
 }
+/*	******************	*/
+#aliasesplace {
+	margin:5px 2px 5px 10px;
+	background-color: #fff;
+	width: 437px;
 /*
-*********************************************
+	height: 705px;
 */
+	border-style: groove;
+	border-width: 2px;
+	position:relative;
+}
+#aliasesplace, #ed  {
+	float:left
+}
+#aliases_box  {
+	padding: 2px 25px 2px 0;
+	overflow-y: scroll !important;
+}
+#aliases_box, #ed  {
+	height: 725px;
+	line-height: 18px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+#ed {
+	width: 365px;
+	margin: 10px;
+}
+
+#aliases_box table {
+	border-collapse:collapse;
+	color: #222;
+	text-align:left;
+	width: 420px;
+}
+#aliases_box tr {
+	cursor:pointer;
+	border-top: 1px solid #eee;
+	line-height: 20px;
+}
+.th {
+	background:#4198f9;
+	font-weight:bold;
+	text-align: center;
+	width: 50%;
+	height: 25px;
+	line-height: 25px;
+	float:left;
+}
+.key {
+	font-weight:bold;
+}
+.hover_tr {
+	background-color: #fdffe1 !important;
+}
+.selected_key {
+	background-color: #d2fdfd !important;
+}
+h4{
+	margin: 15px 0 10px 0;
+}
+.nonactive {
+	text-decoration: line-through;
+}
+.txt {
+	width: 275px;
+}
+.lb {
+	border:0;
+	margin-top:50px;
+}
