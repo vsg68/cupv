@@ -8,7 +8,7 @@
 			<script type="text/javascript" src='/init.js'></script>
 			<?= $script_file; ?>
 
-			<link rel="stylesheet" href="/demo.css" type="text/css" />
+			<link rel="stylesheet" href="/main.css" type="text/css" />
 			<?= $css_file; ?>
 			<link rel="stylesheet" href="/autocomp.css" type="text/css" />
     </head>

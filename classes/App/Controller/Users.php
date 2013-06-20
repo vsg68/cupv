@@ -4,7 +4,7 @@ namespace App\Controller;
 
 class Users extends \PHPixie\Controller {
  //~
-	private $user_id;
+	private $mailbox;
 	private $logmsg;
 
 //	функция для тестирования строк на возможные значения
@@ -41,13 +41,13 @@ class Users extends \PHPixie\Controller {
 		}
 	}
 
-    public function action_index() {
+    public function action_view() {
 
         $view = $this->pixie->view('main');
 
-		$view->subview = 'users_view';
+		$view->subview = 'users_main';
 		$view->script_file = '<script type="text/javascript" src="/users.js"></script>';
-		$view->css_file = '';
+		$view->css_file = '<link rel="stylesheet" href="/users.css" type="text/css" />';
 
         $view->users = $this->pixie->db
 							->query('select')->table('users')
@@ -61,53 +61,62 @@ class Users extends \PHPixie\Controller {
 								->where('delivery_to','virtual')
 								->execute();
 
+		$view->users_block = $this->action_single();
+
         $this->response->body = $view->render();
     }
 
 	public function action_new() {
 
-        $view = $this->pixie->view('new');
+        $view = $this->pixie->view('users_new');
 
-		$view->log = isset($this->logmsg) ?  $this->logmsg : '<strong>Ввод нового пользователя.</strong>';
+		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
 
         $view->domains = $this->pixie->db
 								->query('select')
 								->table('domains')
 								->group_by('domain_name')
+								->where('delivery_to','virtual')
 								->execute();
 
         $this->response->body = $view->render();
     }
 
-	public function action_view() {
+	public function action_single() {
 
-		$view = $this->pixie->view('view');
+		$view = $this->pixie->view('users_view');
+
 		// вывод лога
 		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
 
+		if( ! $this->request->get('name') )
+			return "<img class='lb' src='/users.png' />";
 
-		$id = isset( $this->user_id ) ? $this->user_id : $this->request->param('id');
+		$mailbox = isset( $this->mailbox ) ? $this->mailbox : $this->request->get('name');
 
 		$view->user = $this->pixie->db
 								->query('select')->table('users')
-								->where('user_id',$id)
+								->where('mailbox',$mailbox)
 								->execute()
 								->current();
 
 		$view->aliases = $this->pixie->db
 								->query('select')->table('aliases')
-								->where('alias_name',$view->user->mailbox)
-								->where('or',array('delivery_to',$view->user->mailbox))
+								->where('alias_name',$mailbox)
+								->where('or',array('delivery_to',$mailbox))
 								->where('and',array('delivery_to','!=','alias_name'))
 								->execute()
 								->as_array();
 
 
+		// Редактирование
+		if( ! $this->request->get('act') )
+			return $view->render();
+
+
         $this->response->body = $view->render();
     }
-/*
- *	обработка запроса и вывод формы
- */
+
 	public function action_add() {
 
         if ($this->request->method == 'POST') {
@@ -135,7 +144,7 @@ class Users extends \PHPixie\Controller {
 				//
 				// Приходит обработка либо нового пользователя, либо изменение существующего
 				//
-				if ( isset($user['login']) && isset($user['domain']) ) {
+				if ( ! isset($user['mailbox']) ) {
 					// новый пользователь
 
 					$user['mailbox'] = $user['login'].'@'.$user['domain'];
@@ -153,17 +162,8 @@ class Users extends \PHPixie\Controller {
 									))
 									->execute();
 
-					// для редиректа получаем id
-					$user['user_id'] = $this->pixie->db->insert_id();
-
-					// при ошибке значение будет неопределено
-					if( ! $user['user_id'] ) {
-
-						$this->logmsg = '<span class="error">User is not added. Check his mailbox.</span>';
-					}
-
 				}
-				elseif( isset($user['user_id']) && isset($user['mailbox']) ) {
+				else {
 				// Существующий пользователь
 					$this->pixie->db->query('update')->table('users')
 									->data(array(
@@ -175,7 +175,7 @@ class Users extends \PHPixie\Controller {
 										'allow_nets' 	=> $user['allow_nets'],
 										'active'		=> $user['active']
 									))
-									->where('user_id',$user['user_id'])
+									->where('mailbox',$user['mailbox'])
 									->execute();
 				}
 
@@ -247,21 +247,15 @@ class Users extends \PHPixie\Controller {
 			if( isset( $this->logmsg ) ) {
 
 				if ( $user['user_id'] ) {
-
-					$this->user_id = $user['user_id'];
-					$this->action_view();
+					// Ошибка во время редактирования
+					$this->mailbox = $user['mailbox'];
+					$this->action_single();
 				}
 				else
 					$this->action_new();
 			}
-			else {
-				// Возвращаемся обратно в форму редактирования
-				$this->user_id = $user['user_id'];
-
-				$this->logmsg = "<span class='success'>Изменено</span>";
-				$this->action_view();
-			}
-
+			else
+				$this->response->body = $user['mailbox'];
 		}
 
 	}

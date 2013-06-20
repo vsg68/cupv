@@ -92,7 +92,7 @@ class Aliases extends \PHPixie\Controller {
 		$view->alias_name 	= $this->alias_name; 		// Вдруг была ошибка?
 
 		if( ! $this->request->get('name') )
-			return "<img class='letter' src=/mail.png />";
+			return "<img class='lb' src=/mail.png />";
 
 		$view->alias_name 	= $this->request->get('name');
 		$view->aliases = $this->pixie->db
@@ -116,10 +116,6 @@ class Aliases extends \PHPixie\Controller {
 
 		$view 		= $this->pixie->view('aliases_new');
 		$view->log 	= isset($this->logmsg) ?  $this->logmsg : '';
-
-		if( ! isset($this->logmsg) )
-
-			$view->log = '<strong>Ввод нового алиаса.</strong>';
 
 		$this->response->body = $view->render();
 	}
@@ -152,18 +148,7 @@ class Aliases extends \PHPixie\Controller {
 						$this->logmsg .= "<span class='error'>Wrong entry for mail</span>";
 
 					if( ! isset($this->logmsg) ) {
-
-						// Проверка на существование такого алиаса
-						$is_exist = $this->pixie->db
-												->query('select')->table('aliases')
-												->where('alias_name',$params['newalias'])
-												->execute()
-												->as_array();
-
-						if( count($is_exist) )
-							$this->logmsg = "<span class='error'>Адрес <strong>".$params['newalias']."</strong> уже используется.Разуй глаза.</span>";
-						else
-							$params['alias'] = $params['newalias'];
+						$params['alias'] = $params['newalias'];
 					}
 				}
 

@@ -1,5 +1,5 @@
 <div id='log'><?= $log ?></div>
-
+<h4>Ввод нового алиаса.</h4>
 <form id='usersform' action='#' method='post'>
 	<h4><input type='text' class='autocomp' name='newalias' value='' placeholder='введите новый адрес'></h4>
 	<table class='atable'>

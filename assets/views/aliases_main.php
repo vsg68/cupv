@@ -14,9 +14,9 @@
 </div>
 <div class='usrs'>
 	<div id='aliasesplace'>
-		<div class='th'>
-			<div class='alias_th'>alias</div>
-			<div class='mbox_th'>mailbox</div>
+		<div>
+			<div class='th'>alias</div>
+			<div class='th'>mailbox</div>
 		</div>
 		<div id='aliases_box'>
 			<table>

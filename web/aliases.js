@@ -1,18 +1,5 @@
 $(function(){
 
-	//Фильтрайия пользователей по домену (alias)
-	$('select','#domains_flt').change(function(){
-
-		filter = $('option:selected', '#domains_flt').text();
-
-		$('.hidden').removeClass('hidden');
-
-		if( filter )
-			$('td.key:not(:contains("@' + filter+ '"))', '#aliases_box')
-					.parent()
-					.addClass('hidden');
-
-	});
 
 	//Фильтрайия пользователей по ящикам
 	$('#fltr').keyup(function(event){
@@ -28,15 +15,7 @@ $(function(){
 
 	});
 
-	// Запрос на редактирование
-	$('tr','#aliases_box').click( function(){
-		// Выбор записи
-		$('.selected_key').removeClass('selected_key');
-		$(this).addClass('selected_key');
-		// Запрос
-		alias_name = $('.key', this).text();
-		$.get('/aliases/single/',{'name':alias_name, 'act':'1'},function(response){ $('#ed').empty().append(response);})
-	});
+
 
 	// Добавление полей
 	$('.else').live('click',function(){
@@ -65,85 +44,27 @@ $(function(){
 	$('#submit_view').live('click', function(event){
 
 			event.preventDefault();
-			var is_ok = true;
 
-			// проверка на пустые поля
-			$(':text', '#usersform').each(function(){
+			// Проверка на существование такого алиаса
+			var alias = $(':text[name="newalias"]').val();
 
-				if( checkfield( $(this) ) ) {
-
-					$(this).addClass('badentry');
-					is_ok = false;
-				}
-				else
-					$(this).removeClass('badentry');
+			$('.key:contains("' + alias +'")').each( function(){
+					if( $(this).text() == alias ) {
+						alert('Алиас '+ alias +' уже существует!');
+						$(':text[name="newalias"]').val('');
+					}
 			});
 
-			// проверка окончена
-			if( ! is_ok )	{
-
-				$('.badentry:first').focus();
-				return false;
-			}
-
-			// удаляем атрибут, чтобы поле ушло на сервер
-			// иначе получим рассогласование длины массивов
-			$('.alias :text[disabled]').removeAttr('disabled');
-
-			var params =  $('#usersform').serialize();
-			$.post(	'/aliases/add/', params , function(response) {
-
-								mail_tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
-
-								if( mail_tmpl.test(response) )
-									window.location = '/aliases/view/?name=' + response;
-								else {
-									$('#ed').empty().html(response);
-
-								// Если добавили нового пользователя
-								// - вставляем его адрес в список адресов
-/*								var user_id = $(':hidden[name="user_id"]','#usersform').val();
-								var mailbox = $(':hidden[name="mailbox"]','#usersform').val();
-
-								// если имела место ошибка - <div id='log'>xxx</div>
-								if( mailbox === undefined )	return false;
-
-								is_exist = $('option:contains("'+mailbox+'")', '#usrs').length;
-
-								if( ! is_exist ) {
-
-									var str = '<option value=' + user_id + '>' + mailbox + '</option>';
-									$('#usrs').append(str);
-									$('option:last', '#usrs').attr('selected', true).focus();
-								}
-
-								// обновляем св-во активности
-								is_active = $(':checkbox[name="active"]:checked', '#usersform').length;
-
-								$('option:contains("'+mailbox+'")', '#usrs').toggleClass( 'disabled', is_active==0)
-*/
-								}
-							});
+			try_submit();
 			return false;
 	});
 
-	//Новый alias
-	$('#new').click(function(){
-		$.get('/aliases/new/',function(response) { $('#ed').empty().html(response); });
-	});
+	//~ //Новый alias
+	//~ $('#new').click(function(){
+		//~ $.get('/aliases/new/',function(response) { $('#ed').empty().html(response); });
+	//~ });
 
 
-	// Hover по массиву алиасов
-	$('tr','#aliases_box').hover( function(){
-									$(this).addClass('hover_tr');
-									},
-								  function(){
-									$(this).removeClass('hover_tr');
-	});
-
-	arr = window.location.search.split('=');
-	// Выбор записи
-	$('.key:contains("' + arr[1] + '")','#aliases_box').parent().addClass('selected_key');
 
 
 

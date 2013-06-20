@@ -1,6 +1,7 @@
 /*
 		Для установки начальных значений
 */
+
 $(function(){
 
 	options = { serviceUrl:'/users/searchdomain/',type:'post'};
@@ -10,12 +11,11 @@ $(function(){
 
 	$(".mainmenu ul li").hover(function(){ $(this).addClass("hover_item");}, function(){$(this).removeClass("hover_item")});
 	$(".mainmenu ul li a").click(function(){
+									$('.selected').removeClass('selected');
+									$(this).parent().addClass("selected");
+								});
 
-					$('.selected').removeClass('selected');
-					$(this).parent().addClass("selected");
-				});
-
-	ctrl = window.location.pathname.split('/')[1];
+	var ctrl = window.location.pathname.split('/')[1];
 	ctrl = ( ctrl ) ? ctrl : 'users';
 	$('#' + ctrl).addClass('selected');
 
@@ -53,7 +53,95 @@ $(function(){
 		}
 	});
 
-})
+
+	//Фильтрайия пользователей по домену
+	$('select','#domains_flt').change(function(){
+
+		filter = $('option:selected', '#domains_flt').text();
+
+		$('.hidden').removeClass('hidden');
+
+		if( filter )
+			$('td.key:not(:contains("@' + filter+ '"))', '#aliases_box')
+					.parent()
+					.addClass('hidden');
+
+	});
+
+
+	// Hover по массиву алиасов
+	$('tr','#aliases_box').hover( function(){
+									$(this).addClass('hover_tr');
+									},
+								  function(){
+									$(this).removeClass('hover_tr');
+								});
+
+	// Выбор записи
+	key = window.location.search.split('=')[1];
+	$('.key:contains("' + key + '")','#aliases_box').parent().addClass('selected_key');
+
+	// Запрос на редактирование
+	$('tr','#aliases_box').click( function(){
+									// Выбор записи
+									$('.selected_key').removeClass('selected_key');
+									$(this).addClass('selected_key');
+									// Запрос
+									name = $('.key', this).text();
+									$.get('/'+ ctrl + '/single/',{'name':name, 'act':'1'},function(response){ $('#ed').empty().append(response);})
+								});
+
+	//Новый пользователь
+	$('#new').click(function(){
+					$.get('/'+ ctrl +'/new/', function(response) {$('#ed').empty().html(response);});
+	});
+
+
+});
+
+
+// Общая часть проверки, отсылки и получения данных
+function try_submit() {
+
+	var is_ok = true;
+	var ctrl  = window.location.pathname.split('/')[1];
+	    ctrl = ( ctrl ) ? ctrl : 'users';
+	// проверка на пустые поля
+	$(':text', '#usersform').each(function(){
+
+		if( checkfield( $(this) ) ) {
+
+			$(this).addClass('badentry');
+			is_ok = false;
+		}
+		else
+			$(this).removeClass('badentry');
+	});
+
+	// проверка окончена
+	if( ! is_ok )	{
+
+		$('.badentry:first').focus();
+		return false;
+	}
+
+	// удаляем атрибут, чтобы поле ушло на сервер
+	// иначе получим рассогласование длины массивов
+	$('.alias :text[disabled]').removeAttr('disabled');
+
+	var params =  $('#usersform').serialize();
+
+	$.post(	'/'+ ctrl +'/add/', params , function(response) {
+
+						mail_tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
+
+						if( mail_tmpl.test(response) )
+							window.location = '/'+ ctrl +'/view/?name=' + response;
+						else
+							$('#ed').empty().html(response);
+					});
+	return false;
+}
 
 // Проверка введенных значений
 //function checkfield(name, value) {
