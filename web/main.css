@@ -5,9 +5,20 @@ body {
 }
 .container {
 	background-color: #ccc;
-	margin:30px auto;
-	width: 840px;
-	height: 850px;
+	margin:0px auto;
+	width: 845px;
+	height: 900px;
+}
+#usrs {
+	height: 840px;
+	width: 441px;
+	float: left;
+}
+#ed {
+	width: 382px;
+	height: 800px;
+	padding: 10px;
+	float: left;
 }
 .mainmenu {
 	height: 30px;
@@ -61,7 +72,8 @@ body {
 }
 #log {
 	text-align: center;
-	height: 15px;
+
+	margin: 10px 0;
 }
 .menu_item {
 	margin: 5px;
@@ -93,9 +105,6 @@ body {
 }
 .badentry {
 	background-color: pink;
-}
-.disabled {
-	color: #bdbdbd;
 }
 ul li.helper {
 	width: 100%;
@@ -140,44 +149,31 @@ ul li.helper {
 	color: #888;
 }
 /*	******************	*/
-#aliasesplace {
+.aliasesplace {
 	margin:5px 2px 5px 10px;
 	background-color: #fff;
-	width: 437px;
-/*
-	height: 705px;
-*/
 	border-style: groove;
 	border-width: 2px;
-	position:relative;
 }
-#aliasesplace, #ed  {
-	float:left
-}
-#aliases_box  {
+.aliases_box  {
 	padding: 2px 25px 2px 0;
+	height: 774px;
 	overflow-y: scroll !important;
 }
-#aliases_box, #ed  {
-	height: 725px;
+.aliases_box, .domain_box, #ed  {
 	line-height: 18px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
-#ed {
-	width: 365px;
-	margin: 10px;
-}
-
-#aliases_box table {
+.aliases_box table, .domain_box table {
 	border-collapse:collapse;
 	color: #222;
 	text-align:left;
 	width: 420px;
 }
-#aliases_box tr {
+.aliases_box tr, .domain_box tr {
 	cursor:pointer;
-	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
 	line-height: 20px;
 }
 .th {
@@ -191,6 +187,7 @@ ul li.helper {
 }
 .key {
 	font-weight:bold;
+	min-width: 180px;
 }
 .hover_tr {
 	background-color: #fdffe1 !important;
@@ -210,4 +207,42 @@ h4{
 .lb {
 	border:0;
 	margin-top:50px;
+}
+.lb_filter{
+	float: left;
+	margin: 0 0 0 20px;
+	font-size: 10px;
+}
+.lb_filter input{
+	width: 145px;
+}
+.hidden_filter {
+	display: none !important;
+}
+/**/
+#usrs, .fieldentry {
+	position: relative;
+}
+.formlabel {
+	width: 110px;
+	margin: 0 0 0 10px;
+}
+.fieldentry input[type='text'] {
+	width: 245px;
+}
+.fieldentry input[type='text'], .formlabel {
+	float: left;
+}
+.fieldentry {
+	overflow: auto;
+	margin: 2px 0 0 0;
+	text-align: left;
+	line-height: 25px;
+	background-color: #ddd;
+}
+input[type='text'].path  {
+	width: 212px;
+}
+#path {
+	float: left;
 }

@@ -1,0 +1,13 @@
+
+.aliasesplace {
+	float: none !important;
+}
+.share {
+	height: 7px;
+}
+.domain_box  {
+	padding: 2px 25px 2px 0;
+	height: 327px;
+	overflow-y: scroll;
+}
+

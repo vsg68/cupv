@@ -62,15 +62,29 @@ $(function(){
 		$('.hidden').removeClass('hidden');
 
 		if( filter )
-			$('td.key:not(:contains("@' + filter+ '"))', '#aliases_box')
+			$('td.key:not(:contains("@' + filter+ '"))', '.aliases_box')
 					.parent()
 					.addClass('hidden');
 
 	});
 
+	//Фильтрайия пользователей по ящикам
+	$('#fltr').keyup(function(event){
+
+		$('.hidden_filter').removeClass('hidden_filter');
+
+		search_str = $(this).val();
+
+		if( search_str )
+			$('td.val:not(:contains("' + search_str + '"))', '.aliases_box')
+			.parent()
+			.addClass('hidden_filter');
+
+	});
+
 
 	// Hover по массиву алиасов
-	$('tr','#aliases_box').hover( function(){
+	$('tr','.aliases_box,.domain_box').hover( function(){
 									$(this).addClass('hover_tr');
 									},
 								  function(){
@@ -79,10 +93,10 @@ $(function(){
 
 	// Выбор записи
 	key = window.location.search.split('=')[1];
-	$('.key:contains("' + key + '")','#aliases_box').parent().addClass('selected_key');
+	$('.key','.aliases_box, .domain_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
 
 	// Запрос на редактирование
-	$('tr','#aliases_box').click( function(){
+	$('tr','.aliases_box').click( function(){
 									// Выбор записи
 									$('.selected_key').removeClass('selected_key');
 									$(this).addClass('selected_key');
@@ -106,6 +120,7 @@ function try_submit() {
 	var is_ok = true;
 	var ctrl  = window.location.pathname.split('/')[1];
 	    ctrl = ( ctrl ) ? ctrl : 'users';
+
 	// проверка на пустые поля
 	$(':text', '#usersform').each(function(){
 
@@ -153,6 +168,8 @@ function checkfield(obj) {
 	one_net	  =	"(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?";
 	net_tmpl  = "^\\s*" + one_net + "(\\s*,\\s*" + one_net + ")*\\s*$";
 	mail_tmpl = "^[\\w\\.]+@(\\w+\\.){1,}\\w+$";
+	transp_tmpl	= "^\\w+:\[(\\d+{1,3}\\.){3}\\d+{1,3}$";
+	domain_tmpl	= "^(\\w+\\.)+\\w+";
 
 	switch (name ) {
 		case 'allow_nets':
@@ -167,6 +184,12 @@ function checkfield(obj) {
 			break
 		case 'fwd[]':
 			reg = new RegExp(mail_tmpl,'i')
+			break
+		case 'domain_name':
+			reg = new RegExp(domain_tmpl,'i')
+			break
+		case 'delivery_to':
+			reg = new RegExp(transp_tmpl,'i')
 			break
 		default:
 			if( ! value )

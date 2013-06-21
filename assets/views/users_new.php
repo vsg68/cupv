@@ -29,7 +29,7 @@
 		</div>
 		<div class='fieldentry'>
 			<span class='formlabel'>Путь:</span>
-			<button id='path' >+</button>
+			<button id='path' class='web' >4</button>
 
 	   </div>
 

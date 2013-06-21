@@ -12,13 +12,13 @@
 	</div>
 	<div id='new'></div>
 </div>
-<div class='usrs'>
-	<div id='aliasesplace'>
+<div id='usrs'>
+	<div class='aliasesplace'>
 		<div>
 			<div class='th'>alias</div>
 			<div class='th'>mailbox</div>
 		</div>
-		<div id='aliases_box'>
+		<div class='aliases_box'>
 			<table>
 			<?php foreach( $aliases_arr as $alias => $delivered ): ?>
 			   <tr>
@@ -29,7 +29,8 @@
 			</table>
 		</div>
 	</div>
-	<div id='ed'>
-		<?= $aliases_block; ?>
-	</div>
 </div>
+<div id='ed'>
+	<?= $aliases_block; ?>
+</div>
+

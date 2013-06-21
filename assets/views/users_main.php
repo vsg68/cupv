@@ -7,16 +7,18 @@
 			<?php endforeach;?>
 		</select>
 	</div>
-	<div id='lb'>ООО "ГАЗМЕТАЛЛПРОЕКТ"</div>
+	<div class='lb_filter'> ФИО (filter):
+		<input type='text' id='fltr'>
+	</div>
 	<div id='new'></div>
 </div>
-<div class='usrs'>
-	<div id='aliasesplace'>
+<div id='usrs'>
+	<div class='aliasesplace'>
 		<div>
 			<div class='th'>mailbox</div>
 			<div class='th'>name</div>
 		</div>
-		<div id='aliases_box'>
+		<div class='aliases_box'>
 			<table>
 			<?php foreach( $users as $user ): ?>
 			   <tr id="<?= $user->user_id ?>">
@@ -27,7 +29,8 @@
 			</table>
 		</div>
 	</div>
-	<div id='ed'>
-		<?= $users_block ?>
-	</div>
 </div>
+<div id='ed'>
+	<?= $users_block ?>
+</div>
+
