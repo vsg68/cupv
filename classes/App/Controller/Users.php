@@ -7,6 +7,7 @@ class Users extends \PHPixie\Controller {
 	private $mailbox;
 	private $logmsg;
 
+
 //	функция для тестирования строк на возможные значения
     private function sanitize($value,$key,$method) {
 

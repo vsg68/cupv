@@ -94,7 +94,9 @@ class Aliases extends \PHPixie\Controller {
 		if( ! $this->request->get('name') )
 			return "<img class='lb' src=/mail.png />";
 
-		$view->alias_name 	= $this->request->get('name');
+		if( ! isset($view->alias_name) )
+				$view->alias_name = $this->request->get('name');
+
 		$view->aliases = $this->pixie->db
 								->query('select')->table('aliases')
 								->where('alias_name',$view->alias_name)
