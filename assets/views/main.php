@@ -24,7 +24,6 @@
 			</ul>
 			</div>
 			<?php include($subview.'.php'); ?>
-
         </div>
     </body>
 </html>

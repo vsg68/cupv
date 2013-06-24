@@ -168,8 +168,8 @@ function checkfield(obj) {
 	one_net	  =	"(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?";
 	net_tmpl  = "^\\s*" + one_net + "(\\s*,\\s*" + one_net + ")*\\s*$";
 	mail_tmpl = "^[\\w\\.]+@(\\w+\\.){1,}\\w+$";
-	transp_tmpl	= "^\\w+:\[(\\d+{1,3}\\.){3}\\d+{1,3}$";
-	domain_tmpl	= "^(\\w+\\.)+\\w+";
+	transp_tmpl	= "^\\w+:\\[(\\d{1,3}\\.){3}\\d{1,3}\\]$";
+	domain_tmpl	= "^(\\w+\\.)+\\w+$";
 
 	switch (name ) {
 		case 'allow_nets':

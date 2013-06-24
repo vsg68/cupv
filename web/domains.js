@@ -11,7 +11,7 @@ $(function(){
 								});
 	// Транспорт ?
 	$('#path').live('click',function(){
-		path = '<input class="formtext path" type="text" name="delivery_to" value="" />';
+		path = '<input class="formtext path" type="text" name="delivery_to" value="" placeholder="proto:[ip_addr]" />';
 		// если уже есть одно поле, то остальные пропускаем
 		if( $('.path').length == 0 ) {
 
@@ -32,17 +32,21 @@ $(function(){
 
 			var domain = $(':text[name="domain_name"]').val();
 			var virtual	= $(':text[name="delivery_to"]').val();
-			var scope	= ( virtual != '' ) ? '#transport' : '#local';
+			//var scope	= ( virtual === undefined ) ? '#local' : '#transport';
 			var is_ok  = true;
-//только новый
-			// проверка, что такой домен есть
-			$('.key:contains("' + domain + '")', scope).each( function(){
 
-					if( $(this).text() == domain ) {
-							alert('Домен '+ domain +' уже существует');
-							$(':text[name="domain_name"]').val('');
-					}
-			});
+			// проверка только для нового домена
+			if( domain != undefined ) {
+				// проверка, что такой домен есть
+				//$('.key:contains("' + domain + '")', scope).each( function(){
+				$('.key:contains("' + domain + '")').each( function(){
+
+						if( $(this).text() == domain ) {
+								alert('Домен '+ domain +' уже существует');
+								$(':text[name="domain_name"]').val('');
+						}
+				});
+			}
 
 			// проверка на пустые поля
 			$(':text', '#usersform').each(function(){

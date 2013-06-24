@@ -16,13 +16,13 @@ class Domains extends \PHPixie\Controller {
 		switch ( $method ) {
 			case 'transport':
 				if( !preg_match ('/\w+:\[(\d+\.)+\d+\]/', $value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for net in field $key</span>";
+					$this->logmsg .= "<span class='error'>Wrong entry for net in field $value</span>";
 					return true;
 				}
 				break;
 			case 'is_domain':
 				if ( ! preg_match('/(\w+\.)+(\w+)/',$value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for mail in field $key</span>";
+					$this->logmsg .= "<span class='error'>Wrong entry for mail in field $value</span>";
 					return true;
 				}
 				break;
@@ -36,6 +36,7 @@ class Domains extends \PHPixie\Controller {
         $view = $this->pixie->view('main');
 
 		$view->subview 		= 'domains_main';
+
 		$view->script_file	= '<script type="text/javascript" src="/domains.js"></script>';
 		$view->css_file 	= '<link rel="stylesheet" href="/domains.css" type="text/css" />';
 
@@ -54,22 +55,28 @@ class Domains extends \PHPixie\Controller {
 
 	public function action_single() {
 
-		$view 				= $this->pixie->view('domains_view');
-		$view->log 			= isset($this->logmsg) ?  $this->logmsg : '';
+		$view 		= $this->pixie->view('domains_view');
+		$view->log 	= isset($this->logmsg) ?  $this->logmsg : '';
+		$domain		= array();
 
-		$view->domain_id 	= $this->domain_id; 		// Вдруг была ошибка?
+
 
 		if( ! $this->request->get('name') )
-			return "<img class='lb' src=/domain.png />";
+			return "<img class='lb' src=/domains.png />";
 
-		if( ! isset($view->domain_id) )
-					$view->domain_id = $this->request->get('name');
+		if( ! isset($this->domain_id) )
+			$this->domain_id = $this->request->get('name');
 
-		$view->domain = $this->pixie->db
+		$domain = $this->pixie->db
 								->query('select')->table('domains')
-								->where('domain_id', $this->request->get('name'))
+								->where('domain_id', $this->domain_id)
 								->execute()
 								->current();
+		//Если ответ пустой
+		if( ! count($domain) )
+			return "<strong>Домена с ID ".$this->domain_id." не существует.</strong>";
+		else
+			$view->domain = $domain;
 
 		// Редактирование
 		if( ! $this->request->get('act') )
@@ -98,15 +105,15 @@ class Domains extends \PHPixie\Controller {
 
 			if( ! isset( $params['active'] ) )  $params['active'] = 0;
 
-			// Проверка на почтовый адрес
-			$this->sanitize($params['domain_name'], 'is_domain' );
+			// Проверка на правильность заполнения (Новая запись)
+			if( isset($params['domain_name']) )
+				$this->sanitize($params['domain_name'], 'is_domain' );
 
 			// Проверка транспорта
 			if( isset($params['delivery_to']) )
 				$this->sanitize( $params['delivery_to'], 'net');
 			else
 				$params['delivery_to'] = 'virtual';
-
 
 			// Если нет ошибок заполнения - проходим в обработку
 			if( ! isset($this->logmsg) ) {
@@ -130,10 +137,9 @@ class Domains extends \PHPixie\Controller {
 				}
 				// Если редактируем
 				else {
-						$this->pixie->db
+					$this->pixie->db
 									->query('update')->table('domains')
 									->data(array(
-												'domain_name' 	=> $params['domain_name'],
 												'delivery_to' 	=> $params['delivery_to'],
 												'domain_type' 	=> ( $params['delivery_to'] != 'virtual' )? '2' : '0',
 												'domain_notes'	=> $params['domain_notes'],
