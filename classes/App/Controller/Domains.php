@@ -62,7 +62,8 @@ class Domains extends \PHPixie\Controller {
 
 
 		if( ! $this->request->get('name') )
-			return "<img class='lb' src=/domains.png />";
+			//return "<img class='lb' src=/domains.png />";
+			return;
 
 		if( ! isset($this->domain_id) )
 			$this->domain_id = $this->request->get('name');

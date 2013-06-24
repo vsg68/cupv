@@ -91,7 +91,7 @@ class Users extends \PHPixie\Controller {
 		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
 
 		if( ! $this->request->get('name') )
-			return "<img class='lb' src='/users.png' />";
+			return; // "<img class='lb' src='/users.png' />";
 
 		$mailbox = isset( $this->mailbox ) ? $this->mailbox : $this->request->get('name');
 
