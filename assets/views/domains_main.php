@@ -11,7 +11,7 @@
 		<div class='domain_box' id='local'>
 			<table>
 			<?php foreach( $domains as $domain ): ?>
-			<?php if( $domain->delivery_to != 'virtual')  continue; ?>
+			<?php if( $domain->domain_type != '0')  continue; ?>
 			   <tr id="<?= $domain->domain_id ?>" >
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->domain_notes ?></td>
@@ -30,7 +30,7 @@
 		<div class='domain_box' id='transport'>
 			<table>
 			<?php foreach( $domains as $domain ): ?>
-			<?php if( $domain->delivery_to == 'virtual')  continue; ?>
+			<?php if( $domain->domain_type != '2')  continue; ?>
 			   <tr id="<?= $domain->domain_id ?>">
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->delivery_to ?></td>
