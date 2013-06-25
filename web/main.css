@@ -7,7 +7,7 @@ body {
 	background-color: #ccc;
 	margin:0px auto;
 	width: 845px;
-	height: 900px;
+	height: 870px;
 }
 #usrs {
 	height: 840px;
@@ -16,9 +16,11 @@ body {
 }
 #ed {
 	width: 382px;
-	height: 800px;
+	height: 770px;
 	padding: 10px;
 	float: left;
+	background-position: 88px 520px;
+	background-repeat: no-repeat;
 }
 .mainmenu {
 	height: 30px;
@@ -157,7 +159,7 @@ ul li.helper {
 }
 .aliases_box  {
 	padding: 2px 25px 2px 0;
-	height: 774px;
+	height: 744px;
 	overflow-y: scroll !important;
 }
 .aliases_box, .domain_box, #ed  {

@@ -1,5 +1,5 @@
 #ed {
-	background: url('/users.png') 88px 550px no-repeat;
+	background-image: url('/users.png');
 }
 .login {
 	width: 100px !important;

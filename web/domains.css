@@ -1,5 +1,5 @@
 #ed {
-	background: url('/domains.png') 88px 550px no-repeat;
+	background-image: url('/domains.png');
 }
 
 .aliasesplace {
@@ -10,7 +10,10 @@
 }
 .domain_box  {
 	padding: 2px 25px 2px 0;
-	height: 327px;
+	height: 186px;
 	overflow-y: scroll;
 }
 
+.noedit{
+	cursor: default !important;
+}
