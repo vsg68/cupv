@@ -17,6 +17,12 @@
 			 <button id='path' class='web' >4</button>
 		</div>
 
-		<div class='submit'><input type='submit' id='submit_domain' value='Изменить'></div>
+<br />
+		<h4>Алиасы домена</h4>
+		<table class='atable'>
+			<tr><th  class='txt'>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+		</table>
+
+	<div class='submit'><input type='submit' id='submit_domain' value='Изменить'></div>
 </form>
 

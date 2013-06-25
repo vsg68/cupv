@@ -185,6 +185,9 @@ function checkfield(obj) {
 		case 'fwd[]':
 			reg = new RegExp(mail_tmpl,'i')
 			break
+		case 'dom[]':
+			reg = new RegExp(domain_tmpl,'i')
+			break
 		case 'domain_name':
 			reg = new RegExp(domain_tmpl,'i')
 			break

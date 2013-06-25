@@ -2,7 +2,7 @@
 	<div id='new'></div>
 </div>
 <div id='usrs'>
-	<h4>локальные домены</h4>
+	<h4>Локальные домены</h4>
 	<div class='aliasesplace'>
 		<div>
 			<div class='th'> домен</div>
@@ -20,7 +20,27 @@
 			</table>
 		</div>
 	</div>
+	<h4>Алиасы доменов</h4>
+	<div class='aliasesplace noedit'>
+		<div>
+			<div class='th'>алиас</div>
+			<div class='th'> домен</div>
+		</div>
+		<div class='domain_box'>
+			<table>
+			<?php foreach( $domains as $domain ): ?>
+			<?php if( $domain->domain_type != '1')  continue; ?>
+			   <tr class='noedit' >
+				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
+				   <td class="val"><?= $domain->delivery_to ?></td>
+			   </tr>
+			<?php endforeach; ?>
+			</table>
+		</div>
+	</div>
+<!--
 		<div class='share'></div>
+-->
 		<h4>Транспорт</h4>
 	<div class='aliasesplace'>
 		<div>

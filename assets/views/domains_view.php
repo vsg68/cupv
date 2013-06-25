@@ -17,6 +17,23 @@
 		</div>
 		<?php endif; ?>
 		<input type='hidden' name='domain_id' value='<?= $domain->domain_id; ?>'  />
+			<input type='hidden' name='dom_alias' value='<?= $domain->domain_name; ?>'  />
+<br />
+		<h4>Алиасы домена</h4>
+			<table class='atable'>
+				<tr><th  class='txt'>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+		<?php foreach ($aliases as $alias): ?>
+		   <tr class="alias">
+			   <td><input type='text' name='dom[]' value='<?= $alias->domain_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
+			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
+			   <td>
+					<input type='hidden' name='dom_st[]' value='<?= $alias->active ?>'>
+				   <input type='hidden' name='dom_id[]' value='<?= $alias->domain_id ?>'>
+				   <button class='delRow  web'>r</button>
+				</td>
+		   </tr>
+		<?php endforeach; ?>
+			</table>
 
 		<div class='submit'><input type='submit' id='submit_domain' value='Изменить'></div>
 </form>

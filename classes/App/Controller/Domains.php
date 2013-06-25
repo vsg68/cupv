@@ -57,8 +57,6 @@ class Domains extends \PHPixie\Controller {
 
 		$view 		= $this->pixie->view('domains_view');
 		$view->log 	= isset($this->logmsg) ?  $this->logmsg : '';
-		$domain		= array();
-
 
 
 		if( ! $this->request->get('name') )
@@ -73,11 +71,18 @@ class Domains extends \PHPixie\Controller {
 								->where('domain_id', $this->domain_id)
 								->execute()
 								->current();
+
 		//Если ответ пустой
 		if( ! count($domain) )
 			return "<strong>Домена с ID ".$this->domain_id." не существует.</strong>";
-		else
-			$view->domain = $domain;
+
+		$view->domain = $domain;
+
+		// Собираем алиасы домена
+		$view->aliases = $this->pixie->db
+									->query('select')->table('domains')
+									->where('delivery_to', $domain->domain_name)
+									->execute();
 
 		// Редактирование
 		if( ! $this->request->get('act') )
@@ -110,16 +115,20 @@ class Domains extends \PHPixie\Controller {
 			if( isset($params['domain_name']) )
 				$this->sanitize($params['domain_name'], 'is_domain' );
 
-			// Проверка транспорта
-			if( isset($params['delivery_to']) )
+			// Проверка типа домена
+			if( isset($params['delivery_to']) ) {
 				$this->sanitize( $params['delivery_to'], 'net');
-			else
+				$params['domain_type'] = '2';
+			}
+			else {
 				$params['delivery_to'] = 'virtual';
+				$params['domain_type'] = '0';
+			}
 
 			// Если нет ошибок заполнения - проходим в обработку
 			if( ! isset($this->logmsg) ) {
 
-				// если новая
+				// Если запись новая
 				if( ! isset($params['domain_id']) ) {
 
 					$this->pixie->db
@@ -127,7 +136,7 @@ class Domains extends \PHPixie\Controller {
 									->data(array(
 												'domain_name' 	=> $params['domain_name'],
 												'delivery_to' 	=> $params['delivery_to'],
-												'domain_type' 	=> ( $params['delivery_to'] != 'virtual' )? '2' : '0',
+												'domain_type' 	=> $params['domain_type'],
 												'domain_notes'	=> $params['domain_notes'],
 												'active'		=> $params['active']
 												))
@@ -135,14 +144,13 @@ class Domains extends \PHPixie\Controller {
 
 					$params['domain_id'] = $this->pixie->db->insert_id();
 
+					$params['dom_alias'] = $params['domain_name'];
 				}
 				// Если редактируем
 				else {
 					$this->pixie->db
 									->query('update')->table('domains')
 									->data(array(
-												'delivery_to' 	=> $params['delivery_to'],
-												'domain_type' 	=> ( $params['delivery_to'] != 'virtual' )? '2' : '0',
 												'domain_notes'	=> $params['domain_notes'],
 												'active'		=> $params['active'],
 												))
@@ -151,6 +159,38 @@ class Domains extends \PHPixie\Controller {
 				}
 
 			}
+
+			// Обработка алиасов
+			foreach ($params['dom'] as $key=>$alias ) {
+
+				if( $params['dom_st'][$key] == 2 ) {
+				// Удаление
+					$this->pixie->db->query('delete')->table('domains')
+									->where('domain_id',$params['dom_id'][$key])
+									->execute();
+				}
+				elseif( $params['dom_id'][$key] == 0 ) {
+				// Новый
+					$this->pixie->db->query('insert')->table('domains')
+									->data(array(
+										'domain_name' => $alias,
+										'delivery_to' => $params['dom_alias'],
+										'domain_type' => '1',
+										'active'	  => $params['dom_st'][$key]
+									))->execute();
+				}
+				else {
+				// Изменение
+					$this->pixie->db->query('update')->table('domains')
+									->data(array(
+										'domain_name' => $alias,
+										'active'	 => $params['dom_st'][$key]
+									))
+									->where('domain_id', $params['dom_id'][$key])
+									->execute();
+				}
+			}
+
 			// Ошибки имели место - возвращаем форму
 			if( isset( $this->logmsg ) ) {
 

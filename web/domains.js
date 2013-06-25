@@ -1,13 +1,19 @@
 $(function(){
 
 	// Запрос на редактирование
-	$('tr','.domain_box').click( function(){
+	$('tr','.domain_box').not('.noedit').click( function(){
 									// Выбор записи
 									$('.selected_key').removeClass('selected_key');
 									$(this).addClass('selected_key');
 									// Запрос
 									name = $(this).attr('id');
-									$.get('/domains/single/',{'name':name, 'act':'1'},function(response){ $('#ed').empty().append(response);})
+									$.get('/domains/single/',{'name':name, 'act':'1'},function(response){
+											$('#ed').empty().append(response);
+
+											// Если имеем дело с транспортом - блокируем алиасы
+											if( $(':text[name="delivery_to"]').val() != undefined )
+												$('#alias').attr('disabled','true');
+											})
 								});
 	// Транспорт ?
 	$('#path').live('click',function(){
@@ -18,35 +24,62 @@ $(function(){
 			$('#path').parent().append(path);
 			$('.path').focus();
 			$('#path').text('3');
+			// удаляем алиасы и блокируем добавление
+			$('#alias').attr('disabled','true');
+			$('.atable tr').not(':first').remove();
 		}
 		else {
 			$('.path').remove();
 			$('#path').text('4');
+			$('#alias').removeAttr('disabled');
 		}
 		return false;
 	});
+
+
+	// Добавление alias
+	$('.else').live('click',function(){
+
+		open_tag 	= '<tr class="alias">';
+		alias_cell 	= '<td><input type="text" name="dom[]" value="" placeholder="название домена"></td>';
+		chkbox_cell = '<td>'+
+						'<input type="hidden" name="dom_st[]" value="1">' +
+						'<input type="hidden" name="dom_id[]" value="0">' +
+						'<input type="checkbox" name="chk" checked>' +
+					  '</td>';
+		button_cell = '<td><button class="delRow  web">r</button></td>';
+		close_tag 	= '</tr>';
+
+		var tbl = $(this).parents('.atable').get(0);
+
+		$(tbl).append( open_tag + alias_cell + chkbox_cell + button_cell + close_tag );
+
+
+
+		return false;
+	});
+
 
 	 $('#submit_domain').live('click', function(event){
 
 			event.preventDefault();
 
-			var domain = $(':text[name="domain_name"]').val();
-			var virtual	= $(':text[name="delivery_to"]').val();
-			//var scope	= ( virtual === undefined ) ? '#local' : '#transport';
 			var is_ok  = true;
 
-			// проверка только для нового домена
-			if( domain != undefined ) {
-				// проверка, что такой домен есть
-				//$('.key:contains("' + domain + '")', scope).each( function(){
-				$('.key:contains("' + domain + '")').each( function(){
+			// проверка на существование домена
+			$(':text[name="domain_name"], :text[name="dom[]"]').each(function(){;
 
-						if( $(this).text() == domain ) {
-								alert('Домен '+ domain +' уже существует');
-								$(':text[name="domain_name"]').val('');
+				var domain = this;
+
+				$('.key:contains("' + $(domain).val() + '")').each( function(){
+
+						if( $(this).text() == $(domain).val() ) {
+								alert('Домен "'+ $(domain).val() +'" уже существует');
+								$(domain).val('');
+								return false;
 						}
 				});
-			}
+			});
 
 			// проверка на пустые поля
 			$(':text', '#usersform').each(function(){
@@ -66,6 +99,10 @@ $(function(){
 				$('.badentry:first').focus();
 				return false;
 			}
+
+			// удаляем атрибут, чтобы поле ушло на сервер
+			// иначе получим рассогласование длины массивов
+			$('.alias :text[disabled]').removeAttr('disabled');
 
 			var params =  $('#usersform').serialize();
 
