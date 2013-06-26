@@ -9,6 +9,7 @@
 			<?= $script_file; ?>
 
 			<link rel="stylesheet" href="/main.css" type="text/css" />
+			<link rel="stylesheet" href="/main-color.css" type="text/css" />
 			<?= $css_file; ?>
 			<link rel="stylesheet" href="/autocomp.css" type="text/css" />
     </head>
@@ -16,14 +17,16 @@
         <div class="container">
 			<div class="mainmenu">
 			<ul>
-				<li id='users'><strong class='web label'>m</strong><a href="/users/">Пользователи</a></li>
-				<li id='aliases'><strong class='web label'>'</strong><a href="/aliases/">Алиасы</a></li>
-				<li id='domains'><strong class='web label'>ь</strong><a href="/domains/">Домены</a></li>
-				<li id='groups'><strong class='web label'>й</strong><a href="/groups/">Группы</a></li>
+				<li id='users'><strong class='web label'>m</strong><a href="/users/">Пользователи</a><div class='whiteline'><div></li>
+				<li id='aliases'><strong class='web label'>'</strong><a href="/aliases/">Алиасы</a><div class='whiteline'><div></li>
+				<li id='domains'><strong class='web label'>ь</strong><a href="/domains/">Домены</a><div class='whiteline'><div></li>
+				<li id='groups'><strong class='web label'>й</strong><a href="/groups/">Группы</a><div class='whiteline'><div></li>
 				<li class='helper'></li>
 			</ul>
 			</div>
+			<div class='border'>
 			<?php include($subview.'.php'); ?>
+			</div>
         </div>
     </body>
 </html>

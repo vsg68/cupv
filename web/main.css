@@ -10,7 +10,7 @@ body {
 	height: 870px;
 }
 #usrs {
-	height: 840px;
+	height: 790px;
 	width: 441px;
 	float: left;
 }
@@ -48,9 +48,11 @@ body {
 	text-align: center;
 	font-weight: bold;
 }
+/*
 .mainmenu ul li.hover_item, .selected {
 	background-color: #ccc  !important;
 }
+*/
 .selected a, .hover_item a {
 	color: #222 !important;
 }
@@ -189,7 +191,7 @@ ul li.helper {
 }
 .key {
 	font-weight:bold;
-	min-width: 180px;
+	min-width: 200px;
 }
 .hover_tr {
 	background-color: #fdffe1 !important;

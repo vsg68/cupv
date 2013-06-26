@@ -1,6 +1,6 @@
-<div class="editmenu">
-	<div id='new'></div>
-</div>
+	<div class="editmenu">
+		<div id='new'></div>
+	</div>
 <div id='usrs'>
 	<h4>Локальные домены</h4>
 	<div class='aliasesplace'>
