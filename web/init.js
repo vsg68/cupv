@@ -9,15 +9,7 @@ $(function(){
 // onmouseover
 	$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
 
-	$(".mainmenu ul li").hover(
-								function(){
-									$(this).addClass("hover_item");
-									//$(this).children('.whiteline').show();
-								},
-								function(){
-									$(this).removeClass("hover_item")
-									//$(this).children('.whiteline').hide();
-								});
+	$(".mainmenu ul li").hover(function(){$(this).addClass("hover_item");}, function(){$(this).removeClass("hover_item")});
 	$(".mainmenu ul li a").click(function(){
 									$('.selected').removeClass('selected');
 									$(this).parent().addClass("selected");
