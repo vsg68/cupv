@@ -70,15 +70,13 @@ $(function(){
 			$(':text[name="domain_name"], :text[name="dom[]"]').each(function(){;
 
 				var domain = this;
+				// фильтрую набор по известному содержимому
+				if ( $('.key').contents().filter( function(){ return $(this).text()==$(domain).val()}).length ) {
+						alert('Домен "'+ $(domain).val() +'" уже существует');
+						$(domain).val('');
+						return false;
+				}
 
-				$('.key:contains("' + $(domain).val() + '")').each( function(){
-
-						if( $(this).text() == $(domain).val() ) {
-								alert('Домен "'+ $(domain).val() +'" уже существует');
-								$(domain).val('');
-								return false;
-						}
-				});
 			});
 
 			// проверка на пустые поля

@@ -1,7 +1,9 @@
 #ed {
-	background-image: url('/domains-a.png');
+	background-image: url('/domains.png');
 }
-
+#usrs {
+	margin: 5px 0 0 0;
+}
 .aliasesplace {
 	float: none !important;
 }
