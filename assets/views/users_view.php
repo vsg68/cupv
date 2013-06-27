@@ -33,7 +33,7 @@
 			<?php endif; ?>
 	   </div>
 	   <div class='fieldentry'>
-			<span class='formlabel'>Освоено (Kb):</span>
+			<span class='formlabel'>Размер п/я:</span>
 			<?php
 				preg_match('/^([^@]+)@(.+)$/',$user->mailbox, $matches );
 				$search_path = isset($user->path) ? $user->path :'/var/vmail/'. $matches[2]. '/'. $matches[1];

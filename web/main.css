@@ -83,10 +83,10 @@ body {
 	margin: 5px;
 }
 #new {
-	background: url(/document-new.png) -22px -44px;
+	background: url(/document-new.png) -24px -48px;
 	float: right;
-	width: 22px;
-	height: 22px;
+	width: 24px;
+	height: 24px;
 	cursor: pointer;
 }
 .label {
@@ -95,7 +95,7 @@ body {
 	color: #222;
 }
 .hover_new {
-	background: url(/document-new.png) 0 -22px  !important;
+	background: url(/document-new.png) 0 -24px  !important;
 }
 .error {
 	color: red;
