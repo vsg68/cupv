@@ -1,12 +1,18 @@
 $(function(){
 
+	// Выбор записи
+	key = window.location.search.split('=')[1];
+	$('#i-' + key).addClass('selected_key');
+
 	// Запрос на редактирование
 	$('tr','.domain_box').not('.noedit').click( function(){
+
+									reg = /i-/;
 									// Выбор записи
 									$('.selected_key').removeClass('selected_key');
 									$(this).addClass('selected_key');
 									// Запрос
-									name = $(this).attr('id');
+									name = $(this).attr('id').replace('i-','');
 									$.get('/domains/single/',{'name':name, 'act':'1'},function(response){
 											$('#ed').empty().append(response);
 
@@ -15,27 +21,64 @@ $(function(){
 												$('#alias').attr('disabled','true');
 											})
 								});
-	// Транспорт ?
+	// Транспорт
 	$('#path').live('click',function(){
-		path = '<input class="formtext path" type="text" name="delivery_to" value="" placeholder="proto:[ip_addr]" />';
+		path = '<input class="formtext" type="text" name="delivery_to" value="" placeholder="proto:[ip_addr]" />';
 		// если уже есть одно поле, то остальные пропускаем
-		if( $('.path').length == 0 ) {
+		if( $('.path .formtext').size() == 0 ) {
 
-			$('#path').parent().append(path);
-			$('.path').focus();
-			$('#path').text('3');
+			$('.path').append(path);
+			$('.path .formtext').focus();
+			$(this).text('6');
 			// удаляем алиасы и блокируем добавление
 			$('#alias').attr('disabled','true');
 			$('.atable tr').not(':first').remove();
+			// Прячем и очищаем адреса
+			$('.listbox .web').text('4');
+			$('.listbox .formtext').remove();
+
 		}
 		else {
-			$('.path').remove();
-			$('#path').text('4');
+			$('.path .formtext').remove();
+			$(this).text('4');
 			$('#alias').removeAttr('disabled');
 		}
 		return false;
 	});
 
+	// Адрес рассылки
+	$('#all_email').live('click',function(){
+
+		email = "<div class='formtext'>"+
+				"<input type='text' name='all_email' value='' placeholder='mailbox_name'/>@domain.name"+
+				"<input type='hidden' name='all_enable' value='1'></div>";
+
+		if( $('.listbox .formtext').size() == 0 ) {
+
+			$(this).text('6');
+			$('.listbox').append(email);
+			$('.listbox :text').focus();
+			// Удаляем транспорт
+			$('.path .formtext').remove();
+			$('.path .web').text('4');
+			// Разрешаем алиас
+			$('#alias').removeAttr('disabled');
+		}
+		else {
+			$(this).text('4');
+			$('.listbox .formtext').remove();
+		}
+		return false;
+	});
+
+	// Блокирование поля email (disable)
+	$(':checkbox[name="all_enable"]').live('click', function(){
+
+		if ( $(this).attr('checked') )
+			$(':text[name="all_email"]').removeAttr('disabled');
+		else
+			$(':text[name="all_email"]').attr('disabled','true');
+	});
 
 	// Добавление alias
 	$('.else').live('click',function(){
@@ -59,27 +102,51 @@ $(function(){
 		return false;
 	});
 
-
-	 $('#submit_domain').live('click', function(event){
+	$('#submit_domain').live('click', function(event){
 
 			event.preventDefault();
 
 			var is_ok  = true;
+			var domain_name = $('input[name="domain_name"]').val();
 
 			// проверка на существование домена
-			$(':text[name="domain_name"], :text[name="dom[]"]').each(function(){;
+			// для новых записей
+			if( $(':text').is('[name="domain_name"]') ) {
 
-				var domain = this;
-				// фильтрую набор по известному содержимому
-				if ( $('.key').contents().filter( function(){ return $(this).text()==$(domain).val()}).length ) {
-						alert('Домен "'+ $(domain).val() +'" уже существует');
-						$(domain).val('');
-						return false;
-				}
+				$(':text[name="domain_name"], :text[name="dom[]"]').each(function(){
 
-			});
+					var domain = this;
+					// фильтрую набор по известному содержимому
+					$('.key').each( function(){
 
-			// проверка на пустые поля
+						if ( $(this).text()==$(domain).val()) {
+							alert('Домен "'+ $(domain).val() +'" уже существует');
+							$(domain).val('');
+							return false;
+						}
+
+					});
+				});
+			}
+			// если записи редактируем
+			else {
+				$(':text[name="dom[]"]').each(function(){
+
+					var domain = this;
+					// фильтрую набор по известному содержимому
+					$('.key').not('noactive').each( function(){
+
+						if ( $(this).text()==$(domain).val()) {
+							alert('Домен "'+ $(domain).val() +'" уже существует');
+							$(domain).val('');
+							return false;
+						}
+
+					});
+
+				});
+			}
+			// проверка на правильное заполнение полей
 			$(':text', '#usersform').each(function(){
 
 				if( checkfield( $(this) ) ) {
@@ -100,7 +167,7 @@ $(function(){
 
 			// удаляем атрибут, чтобы поле ушло на сервер
 			// иначе получим рассогласование длины массивов
-			$('.alias :text[disabled]').removeAttr('disabled');
+			$(':disabled','.alias, .listbox').removeAttr('disabled');
 
 			var params =  $('#usersform').serialize();
 

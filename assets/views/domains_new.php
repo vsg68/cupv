@@ -6,17 +6,20 @@
 	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Домен:</span>
-			<input class='formtext' type='text' name='domain_name' value=''  />
+			<input class='formtext' type='text' name='domain_name' value='' placeholder='domain.name'  />
 	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Описание:</span>
-			<input  class='formtext' type='text' name='domain_notes' value=''  />
+			<input  class='formtext' type='text' name='domain_notes' value=''  placeholder='text' />
 	   </div>
-	   <div class='fieldentry'>
-			 <span class='formlabel'>Транспорт:</span>
-			 <button id='path' class='web' >4</button>
-		</div>
+	   <div class='fieldentry path'>
+			 <span class='formlabel'>Транспорт:<span id='path' class='web' >4</span></span>
 
+		</div>
+	   <div class='fieldentry listbox'>
+			<span class='formlabel'>Рассылка:<span id='all_email' class='web'>4</span></span>
+
+	   </div>
 <br />
 		<h4>Алиасы домена</h4>
 		<table class='atable'>

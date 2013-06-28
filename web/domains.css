@@ -15,7 +15,19 @@
 	height: 186px;
 	overflow-y: scroll;
 }
-
 .noedit{
 	cursor: default !important;
 }
+.listbox input[type="text"]{
+	width: 100px !important;
+}
+.listbox input[type="checkbox"]{
+	float:left;
+}
+
+span.web {
+	padding:0 3px;
+	margin: 0 5px;
+	cursor: pointer;
+}
+

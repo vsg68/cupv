@@ -93,7 +93,7 @@ $(function(){
 
 	// Выбор записи
 	key = window.location.search.split('=')[1];
-	$('.key','.aliases_box, .domain_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
+	$('.key','.aliases_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
 
 	// Запрос на редактирование
 	$('tr','.aliases_box').click( function(){
@@ -168,6 +168,7 @@ function checkfield(obj) {
 	one_net	  =	"(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?";
 	net_tmpl  = "^\\s*" + one_net + "(\\s*,\\s*" + one_net + ")*\\s*$";
 	mail_tmpl = "^[\\w\\.]+@(\\w+\\.){1,}\\w+$";
+	word_tmpl = "^[\\w\\.]+$";
 	transp_tmpl	= "^\\w+:\\[(\\d{1,3}\\.){3}\\d{1,3}\\]$";
 	domain_tmpl	= "^(\\w+\\.)+\\w+$";
 
@@ -193,6 +194,11 @@ function checkfield(obj) {
 			break
 		case 'delivery_to':
 			reg = new RegExp(transp_tmpl,'i')
+			break
+		case 'all_email':
+		// Если чекбокс есть и не отмечен - пропускаем проверку
+			if( ! $('input:checked').is('[name="all_enable"]') ) return false
+			reg = new RegExp(word_tmpl,'i')
 			break
 		default:
 			if( ! value )

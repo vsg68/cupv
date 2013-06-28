@@ -103,7 +103,7 @@ body {
 .hidden {
 	display: none;
 }
-.delRow, #path {
+.delRow {
 	color: red;
 	font-size: 12px;
 }
@@ -247,6 +247,8 @@ h4{
 input[type='text'].path  {
 	width: 212px;
 }
+/*
 #path {
 	float: left;
 }
+*/

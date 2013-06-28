@@ -12,7 +12,7 @@
 			<table>
 			<?php foreach( $domains as $domain ): ?>
 			<?php if( $domain->domain_type != '0')  continue; ?>
-			   <tr id="<?= $domain->domain_id ?>" >
+			   <tr id="i-<?= $domain->domain_id ?>" >
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->domain_notes ?></td>
 			   </tr>
@@ -38,9 +38,6 @@
 			</table>
 		</div>
 	</div>
-<!--
-		<div class='share'></div>
--->
 		<h4>Транспорт</h4>
 	<div class='aliasesplace'>
 		<div>
@@ -51,7 +48,7 @@
 			<table>
 			<?php foreach( $domains as $domain ): ?>
 			<?php if( $domain->domain_type != '2')  continue; ?>
-			   <tr id="<?= $domain->domain_id ?>">
+			   <tr id="i-<?= $domain->domain_id ?>">
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->delivery_to ?></td>
 			   </tr>

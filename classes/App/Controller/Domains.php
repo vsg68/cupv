@@ -58,7 +58,6 @@ class Domains extends \PHPixie\Controller {
 		$view 		= $this->pixie->view('domains_view');
 		$view->log 	= isset($this->logmsg) ?  $this->logmsg : '';
 
-
 		if( ! $this->request->get('name') )
 			//return "<img class='lb' src=/domains.png />";
 			return;
@@ -71,7 +70,6 @@ class Domains extends \PHPixie\Controller {
 								->where('domain_id', $this->domain_id)
 								->execute()
 								->current();
-
 		//Если ответ пустой
 		if( ! count($domain) )
 			return "<strong>Домена с ID ".$this->domain_id." не существует.</strong>";
@@ -109,7 +107,12 @@ class Domains extends \PHPixie\Controller {
 
 			$params = $this->request->post();
 
-			if( ! isset( $params['active'] ) )  $params['active'] = 0;
+			// Инициируем, чтоб не было ошибки при обработке несуществующего параметра
+			if( ! isset( $params['active'] ) )  	$params['active'] = 0;
+			if( ! isset( $params['all_enable'] ) )  $params['all_enable'] = 0;
+			if( ! isset( $params['all_email'] ) )  	$params['all_email'] = '';
+			if( ! isset( $params['dom']) ) 			$params['dom'] = array();
+
 
 			// Проверка на правильность заполнения (Новая запись)
 			if( isset($params['domain_name']) )
@@ -138,13 +141,14 @@ class Domains extends \PHPixie\Controller {
 												'delivery_to' 	=> $params['delivery_to'],
 												'domain_type' 	=> $params['domain_type'],
 												'domain_notes'	=> $params['domain_notes'],
+												'all_enable'	=> $params['all_enable'],
+												'all_email'		=> $params['all_email'],
 												'active'		=> $params['active']
 												))
 									->execute();
 
 					$params['domain_id'] = $this->pixie->db->insert_id();
 
-					$params['dom_alias'] = $params['domain_name'];
 				}
 				// Если редактируем
 				else {
@@ -153,6 +157,8 @@ class Domains extends \PHPixie\Controller {
 									->data(array(
 												'domain_notes'	=> $params['domain_notes'],
 												'active'		=> $params['active'],
+												'all_enable'	=> $params['all_enable'],
+												'all_email'		=> $params['all_email'],
 												))
 									->where('domain_id', $params['domain_id'])
 									->execute();
@@ -174,7 +180,7 @@ class Domains extends \PHPixie\Controller {
 					$this->pixie->db->query('insert')->table('domains')
 									->data(array(
 										'domain_name' => $alias,
-										'delivery_to' => $params['dom_alias'],
+										'delivery_to' => $params['domain_name'],
 										'domain_type' => '1',
 										'active'	  => $params['dom_st'][$key]
 									))->execute();

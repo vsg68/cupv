@@ -59,10 +59,6 @@ body {
 .error {
 	color: red;
 }
-.delRow, #path {
-	color: red;
-	font-size: 12px;
-}
 .badentry {
 	background-color: pink;
 }
@@ -93,6 +89,12 @@ body {
 .hover_tr, .selected_key {
 	color: #f04a00 !important;
 }
-.fieldentry {
+.fieldentry, .listbox {
 	background-color: #eee;
+}
+input:-moz-placeholder {
+	color: #ddd;
+}
+input::-webkit-input-placeholder {
+	color: #ddd;
 }
