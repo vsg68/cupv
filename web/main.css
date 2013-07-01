@@ -37,7 +37,7 @@ body {
 }
 .mainmenu li {
 	display: inline-block;
-	line-height: 23px;
+	line-height: 25px;
 	background-color: #fff;
 	border: solid 1px #ccc;
 	width: 200px;
@@ -116,7 +116,13 @@ ul li.helper {
 	visibility: hidden;
 }
 .web {
+/*
 	font-family: Webdings,Verdana;
+*/
+	padding:0 3px;
+	margin: 0 5px;
+	cursor: pointer;
+	float: right;
 }
 .atable{
 	border-collapse:collapse;
@@ -247,6 +253,7 @@ h4{
 input[type='text'].path  {
 	width: 212px;
 }
+
 /*
 #path {
 	float: left;

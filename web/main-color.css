@@ -27,20 +27,6 @@ body {
 .selected {
 	background-color: #fff  !important;
 }
-.mainmenu li {
-	display: inline-block;
-	line-height: 23px;
-	background-color: #f6f7f7 ;
-	border: solid 1px #ccc;
-	width: 200px;
-	height: 30px;
-	border-radius: 6px;
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-	text-align: center;
-	font-weight: bold;
-}
-
 .selected a, .hover_item a, li.hover_item {
 	color: #c96c4c !important;
 }

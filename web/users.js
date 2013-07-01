@@ -36,15 +36,15 @@ $(function(){
 	$('#path').live('click',function(){
 		path = '<input class="formtext path" type="text" name="path" value="" />';
 		// если уже есть одно поле, то остальные пропускаем
-		if( $('.path').length == 0 ) {
+		if( $('.path .formtext').length == 0 ) {
 
-			$('#path').parent().append(path);
-			$('.path').focus();
-			$('#path').text('3');
+			$('.path').append(path);
+			$('.path .formtext').focus();
+			$(this).html('&dArr;');
 		}
 		else {
-			$('.path').remove();
-			$('#path').text('4');
+			$('.path .formtext').remove();
+			$(this).html('&rArr;');
 		}
 		return false;
 	});
