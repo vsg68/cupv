@@ -24,10 +24,3 @@
 .listbox input[type="checkbox"]{
 	float:left;
 }
-
-span.web {
-	padding:0 3px;
-	margin: 0 5px;
-	cursor: pointer;
-}
-

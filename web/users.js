@@ -18,7 +18,7 @@ $(function(){
 		button_cell = '<td>'+
 							'<input type="hidden" name="' + name + '_st[]" value="1">' +
 							'<input type="hidden" name="' + name + '_id[]" value="0">' +
-							'<button class="delRow  web">r</button>' +
+							'<button class="delRow  web">&times;</button>' +
 					  '</td>';
 		close_tag 	= '</tr>';
 
