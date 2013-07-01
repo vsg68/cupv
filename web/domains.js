@@ -109,43 +109,41 @@ $(function(){
 			var is_ok  = true;
 			var domain_name = $('input[name="domain_name"]').val();
 
-			// проверка на существование домена
-			// для новых записей
-			if( $(':text').is('[name="domain_name"]') ) {
+			// Заполняем массив значениями полей
+			var domainArr = $('.key').map(function(){
+											if( ! $(this).parent().is('.noedit') )
+												return $(this).text()
+											});
+			var aliasArr  = $('.noedit .key').map(function(){ return $(this).text() });
+			var valuesArr = $(':text[name="domain_name"],:text[name="dom[]"]').map(function(){ return $(this).val() });
 
-				$(':text[name="domain_name"], :text[name="dom[]"]').each(function(){
+			// проверка на вхождение в массив интересующих значений
+			$(':text[name="domain_name"],:text[name="dom[]"]').each(function(){
+					var domain  = $(this).val();
+					is_bad_field = 0;
+					lenDomain = $.grep( domainArr, function(val){ return val == domain; }).length;
+					lenVal 	  = $.grep( valuesArr, function(val){ return val == domain; }).length;
+					lenAlias  = $.grep( aliasArr, function(val){ return val == domain; }).length;
 
-					var domain = this;
-					// фильтрую набор по известному содержимому
-					$('.key').each( function(){
+					// проверка на существование домена
+					// для новых записей
+					if( $(':text').is('[name="domain_name"]') ) {
 
-						if ( $(this).text()==$(domain).val()) {
-							alert('Домен "'+ $(domain).val() +'" уже существует');
-							$(domain).val('');
+						if( lenDomain != 0 || lenVal != 1 || lenAlias != 0  )
+							is_bad_field = 1;
+					}
+					else {
+						if(  lenDomain != 0 || lenVal != 1 || lenAlias > 1  )
+							is_bad_field = 1;
+					}
+
+					if( is_bad_field ) {
+							alert('Домен "'+ $(this).val() +'" уже существует');
+							$(this).val('');
 							return false;
-						}
+					}
+			});
 
-					});
-				});
-			}
-			// если записи редактируем
-			else {
-				$(':text[name="dom[]"]').each(function(){
-
-					var domain = this;
-					// фильтрую набор по известному содержимому
-					$('.key').not('noactive').each( function(){
-
-						if ( $(this).text()==$(domain).val()) {
-							alert('Домен "'+ $(domain).val() +'" уже существует');
-							$(domain).val('');
-							return false;
-						}
-
-					});
-
-				});
-			}
 			// проверка на правильное заполнение полей
 			$(':text', '#usersform').each(function(){
 
