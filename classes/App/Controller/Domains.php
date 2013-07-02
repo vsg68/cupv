@@ -110,7 +110,7 @@ class Domains extends \PHPixie\Controller {
 			// Инициируем, чтоб не было ошибки при обработке несуществующего параметра
 			if( ! isset( $params['active'] ) )  	$params['active'] = 0;
 			if( ! isset( $params['all_enable'] ) )  $params['all_enable'] = 0;
-			if( ! isset( $params['all_email'] ) )  	$params['all_email'] = '';
+			$params['all_email'] = isset( $params['all_email'] ) ? $params['all_email'].'@'.$params['domain_name'] : '';
 			if( ! isset( $params['dom']) ) 			$params['dom'] = array();
 
 
