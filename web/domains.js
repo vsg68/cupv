@@ -111,13 +111,9 @@ $(function(){
 			var aliasObj = {};
 
 			// Заполняем массив значениями полей
-			var domainArr = $('.key').map(function(){
-											if( ! $(this).parent().is('.noedit') )
-												return $(this).text()
-											});
+			var domainArr = $('tr:not(.noedit) .key').map(function(){ return $(this).text()	});
 			var valuesArr = $(':text[name="domain_name"],:text[name="dom[]"]').map(function(){ return $(this).val() });
-
-
+			// Готовим ассоциативный массив [alias]=>domain
 			$('tr.noedit').each(function(){
 							key = $(this).children('.key').text();
 							val = $(this).children('.val').text();

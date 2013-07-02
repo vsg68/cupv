@@ -18,7 +18,6 @@ body {
 	border: solid 1px #ddd;
 }
 .whiteline {
-	width:200px;
 	height:1px;
 	background-color: #fff;
 	position: absolute;

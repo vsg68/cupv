@@ -1,14 +1,8 @@
 #ed {
 	background-image: url('/domains.png');
 }
-#usrs {
-	margin: 5px 0 0 0;
-}
 .aliasesplace {
 	float: none !important;
-}
-.share {
-	height: 7px;
 }
 .domain_box  {
 	padding: 2px 25px 2px 0;

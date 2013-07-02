@@ -1,0 +1,41 @@
+/*
+#ed {
+	background-image: url('/groups.png');
+}
+*/
+.editmenu {
+	text-align: left;
+	font-size: 10px;
+	background-color: #eee;
+}
+.date_field {
+	width: 80px;
+}
+.time_field {
+	width: 60px;
+}
+#onoff {
+	float: right;
+	width: 24px;
+	height: 24px;
+	background: url(/stop.png) 0 -24px no-repeat;
+	cursor: pointer;
+	border: 1px solid #ccc;
+}
+.filtermenu {
+	float:left;
+	width: 780px;
+}
+#logplace {
+	border: 1px solid #ccc;
+	height: 770px;
+	margin: 10px;
+	overflow-y: scroll;
+	overflow-x: auto;
+}
+.ui-widget-header, .ui-datapicker,.ui-widget-content, .ui-state-default {
+	color: #c96c4c;
+}
+.ui-widget-header .ui-icon {
+	background-image: url(/ui-icons_454545_256x240.png) !important;
+}

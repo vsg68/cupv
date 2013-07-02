@@ -21,6 +21,7 @@
 				<li id='aliases'><a href="/aliases/">Алиасы</a><div class='whiteline'><div></li>
 				<li id='domains'><a href="/domains/">Домены</a><div class='whiteline'><div></li>
 				<li id='groups'><a href="/groups/">Группы</a><div class='whiteline'><div></li>
+				<li id='logs'><a href="/logs/">Логи</a><div class='whiteline'><div></li>
 				<li class='helper'></li>
 			</ul>
 			</div>

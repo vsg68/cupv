@@ -33,10 +33,12 @@ body {
 	overflow: hidden;
 	text-align: justify;
 }
+.whiteline, .mainmenu li {
+ 	width: 160px;
+}
 .mainmenu li {
 	display: inline-block;
 	line-height: 25px;
-	width: 200px;
 	height: 30px;
 	border-radius: 6px;
 	-webkit-border-radius: 6px;
@@ -50,11 +52,11 @@ body {
 .editmenu {
 	margin: 10px 10px 0 10px;
 	padding: 5px;
+	height: 26px;
 /*
 	border-style: groove;
 	border-width: 2px;
 */
-	overflow: auto;
 }
 .submit {
 	text-align: center;
