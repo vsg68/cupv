@@ -40,7 +40,7 @@
 			   <td>
 					<input type='hidden' name='dom_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='dom_id[]' value='<?= $alias->domain_id ?>'>
-				   <button class='delRow  web'>&times;</button>
+				   <span class='delRow  web'>&otimes;</span>
 				</td>
 		   </tr>
 		<?php endforeach; ?>

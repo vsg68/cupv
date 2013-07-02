@@ -27,7 +27,7 @@ $(function(){
 						'<input type="hidden" name="fwd_id[]" value="0">' +
 						'<input type="checkbox" name="chk" checked>' +
 					  '</td>';
-		button_cell = '<td><button class="delRow  web">r</button></td>';
+		button_cell = '<td><span class="delRow  web">&otimes;</span>'+
 		close_tag 	= '</tr>';
 
 		var tbl = $(this).parents('.atable').get(0);

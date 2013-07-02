@@ -55,7 +55,7 @@
 			   <td>
 					<input type='hidden' name='alias_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
-				   <button class='delRow  web'>&times;</button>
+				   <span class='delRow  web'>&otimes;</span>
 				</td>
 		   </tr>
 		<?php endforeach; ?>
@@ -73,7 +73,7 @@
 			   <td>
 				   <input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='fwd_id[]' value='<?= $alias->alias_id ?>'>
-				   <button class='delRow web'>&times;</button>
+				   <span class='delRow  web'>&otimes;</span>
 				</td>
 		   </tr>
 		<?php endforeach; ?>

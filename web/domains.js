@@ -90,7 +90,7 @@ $(function(){
 						'<input type="hidden" name="dom_id[]" value="0">' +
 						'<input type="checkbox" name="chk" checked>' +
 					  '</td>';
-		button_cell = '<td><button class="delRow  web">&times;</button></td>';
+		button_cell = '<td><span class="delRow  web">&otimes;</span></td>';
 		close_tag 	= '</tr>';
 
 		var tbl = $(this).parents('.atable').get(0);
