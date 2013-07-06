@@ -28,8 +28,7 @@
 				imap:<input type='checkbox' class='formtext' name='imap' value='2' checked >
 		</div>
 		<div class='fieldentry'>
-			<span class='formlabel'>Путь:</span>
-			<button id='path' class='web' >4</button>
+			<div class='formlabel'>Путь:<span id='path' class='web' >&rArr;</span></div>
 
 	   </div>
 

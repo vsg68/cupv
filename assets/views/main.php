@@ -17,10 +17,11 @@
         <div class="container">
 			<div class="mainmenu">
 			<ul>
-				<li id='users'><strong class='web label'>m</strong><a href="/users/">Пользователи</a><div class='whiteline'><div></li>
-				<li id='aliases'><strong class='web label'>'</strong><a href="/aliases/">Алиасы</a><div class='whiteline'><div></li>
-				<li id='domains'><strong class='web label'>ь</strong><a href="/domains/">Домены</a><div class='whiteline'><div></li>
-				<li id='groups'><strong class='web label'>й</strong><a href="/groups/">Группы</a><div class='whiteline'><div></li>
+				<li id='users'><a href="/users/">Пользователи</a><div class='whiteline'><div></li>
+				<li id='aliases'><a href="/aliases/">Алиасы</a><div class='whiteline'><div></li>
+				<li id='domains'><a href="/domains/">Домены</a><div class='whiteline'><div></li>
+				<li id='groups'><a href="/groups/">Группы</a><div class='whiteline'><div></li>
+				<li id='logs'><a href="/logs/">Логи</a><div class='whiteline'><div></li>
 				<li class='helper'></li>
 			</ul>
 			</div>

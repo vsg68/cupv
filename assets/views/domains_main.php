@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<h4>Алиасы доменов</h4>
-	<div class='aliasesplace noedit'>
+	<div class='aliasesplace'>
 		<div>
 			<div class='th'>алиас</div>
 			<div class='th'> домен</div>

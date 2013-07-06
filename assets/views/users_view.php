@@ -26,10 +26,10 @@
 			 <span class='formlabel'>Протоколы:</span>
 				imap:<input type='checkbox' class='formtext' name='imap' value='1' <?php ($user->imap_enable & 1 ) && print ('checked'); ?>  >
 		</div>
-	   <div class='fieldentry'>
-			<span class='formlabel'>Путь:</span><button class='web' id='path'><?= ( $user->path )? '3' : '4' ?></button>
+	   <div class='fieldentry path'>
+			<div class='formlabel'>Путь:<span class='web' id='path'><?= ( $user->path )? "&dArr;" : "&rArr;" ?></span></div>
 			<?php if( $user->path ): ?>
-				<input type='text' class='formtext path' name='path' value='<?= $user->path; ?>'/>
+				<input type='text' class='formtext' name='path' value='<?= $user->path; ?>'/>
 			<?php endif; ?>
 	   </div>
 	   <div class='fieldentry'>
@@ -55,7 +55,7 @@
 			   <td>
 					<input type='hidden' name='alias_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
-				   <button class='delRow  web'>r</button>
+				   <span class='delRow  web'>&otimes;</span>
 				</td>
 		   </tr>
 		<?php endforeach; ?>
@@ -73,7 +73,7 @@
 			   <td>
 				   <input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='fwd_id[]' value='<?= $alias->alias_id ?>'>
-				   <button class='delRow web'>r</button>
+				   <span class='delRow  web'>&otimes;</span>
 				</td>
 		   </tr>
 		<?php endforeach; ?>

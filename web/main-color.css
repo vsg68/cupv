@@ -13,8 +13,11 @@ body {
 	height: 30px;
 	background-color: #f3f3f3;
 }
+.mainmenu li {
+	background-color:#f3f3f3;
+	border: solid 1px #ddd;
+}
 .whiteline {
-	width:200px;
 	height:1px;
 	background-color: #fff;
 	position: absolute;
@@ -26,21 +29,8 @@ body {
 }
 .selected {
 	background-color: #fff  !important;
+	border-color: #ccc !important;
 }
-.mainmenu li {
-	display: inline-block;
-	line-height: 23px;
-	background-color: #f6f7f7 ;
-	border: solid 1px #ccc;
-	width: 200px;
-	height: 30px;
-	border-radius: 6px;
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-	text-align: center;
-	font-weight: bold;
-}
-
 .selected a, .hover_item a, li.hover_item {
 	color: #c96c4c !important;
 }
@@ -73,7 +63,11 @@ body {
 #lb, .formlabel, input {
 	color: #888;
 }
-/*	******************	*/
+.delRow {
+	color: red;
+	font-size: 20px;
+	float: none !important;
+}
 .aliasesplace {
 	background-color: #fff;
 	border-style: groove;
@@ -88,6 +82,12 @@ body {
 }
 .hover_tr, .selected_key {
 	color: #f04a00 !important;
+}
+.hover_tr {
+    background-color: #fdffe1;
+}
+.selected_key {
+    background-color: #d2fdfd !important;
 }
 .fieldentry, .listbox {
 	background-color: #eee;

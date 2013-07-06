@@ -15,9 +15,20 @@
 			 <span class='formlabel'>Транспорт:</span>
 				<input class='formtext' type='text' name='delivery_to' value='<?= $domain->delivery_to; ?>'  />
 		</div>
+		<?php else: ?>
+	   <div class='listbox'>
+			<div class='fieldentry'>
+				<span class='formlabel'>П/Я рассылки:</span>
+				<input class='formtext' type='text' name='all_email' value='<?= preg_replace('/@.+$/','',$domain->all_email); ?>' <?php ($domain->all_enable & 1 ) || print ('disabled'); ?>/>@<?= $domain->domain_name; ?>
+			</div>
+			<div class='fieldentry'>
+				 <span class='formlabel'>Вкл/Выкл:</span>
+				<input class='formtext' type='checkbox' name='all_enable' value='1' <?php ($domain->all_enable & 1 ) && print ('checked'); ?> >
+			</div>
+		</div>
 		<?php endif; ?>
 		<input type='hidden' name='domain_id' value='<?= $domain->domain_id; ?>'  />
-			<input type='hidden' name='dom_alias' value='<?= $domain->domain_name; ?>'  />
+		<input type='hidden' name='domain_name' value='<?= $domain->domain_name; ?>'  />
 <br />
 		<h4>Алиасы домена</h4>
 			<table class='atable'>
@@ -29,7 +40,7 @@
 			   <td>
 					<input type='hidden' name='dom_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='dom_id[]' value='<?= $alias->domain_id ?>'>
-				   <button class='delRow  web'>r</button>
+				   <span class='delRow  web'>&otimes;</span>
 				</td>
 		   </tr>
 		<?php endforeach; ?>

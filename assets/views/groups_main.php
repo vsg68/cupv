@@ -1,5 +1,5 @@
 	<div class="editmenu">
-		<div id='new'></div>
+
 	</div>
 <div id='usrs'>
 <!--	<h4>Группы</h4>
@@ -16,8 +16,5 @@
 		</div>
 	</div>
 -->
-</div>
-<div id='ed'>
-	<?= $groups_block; ?>
 </div>
 

@@ -4,7 +4,6 @@ body {
 	text-align: center;
 }
 .container {
-	background-color: #ccc;
 	margin:0px auto;
 	width: 845px;
 	height: 870px;
@@ -24,7 +23,6 @@ body {
 }
 .mainmenu {
 	height: 30px;
-	background-color: #fff;
 }
 .mainmenu ul {
 	list-style: none;
@@ -35,12 +33,12 @@ body {
 	overflow: hidden;
 	text-align: justify;
 }
+.whiteline, .mainmenu li {
+ 	width: 160px;
+}
 .mainmenu li {
 	display: inline-block;
-	line-height: 23px;
-	background-color: #fff;
-	border: solid 1px #ccc;
-	width: 200px;
+	line-height: 25px;
 	height: 30px;
 	border-radius: 6px;
 	-webkit-border-radius: 6px;
@@ -48,27 +46,17 @@ body {
 	text-align: center;
 	font-weight: bold;
 }
-/*
-.mainmenu ul li.hover_item, .selected {
-	background-color: #ccc  !important;
-}
-*/
-.selected a, .hover_item a {
-	color: #222 !important;
-}
 .mainmenu a {
 	text-decoration: none;
-	color: #888;
 }
 .editmenu {
 	margin: 10px 10px 0 10px;
 	padding: 5px;
+	height: 26px;
+/*
 	border-style: groove;
 	border-width: 2px;
-	overflow: auto;
-}
-.active {
-	background-color: #0cc;
+*/
 }
 .submit {
 	text-align: center;
@@ -76,7 +64,6 @@ body {
 }
 #log {
 	text-align: center;
-
 	margin: 10px 0;
 }
 .menu_item {
@@ -92,7 +79,6 @@ body {
 .label {
 	font-size: 20px;
 	margin: 0 10px 0 0;
-	color: #222;
 }
 .hover_new {
 	background: url(/document-new.png) 0 -24px  !important;
@@ -103,20 +89,16 @@ body {
 .hidden {
 	display: none;
 }
-.delRow {
-	color: red;
-	font-size: 12px;
-}
-.badentry {
-	background-color: pink;
-}
 ul li.helper {
 	width: 100%;
 	height: 0;
 	visibility: hidden;
 }
 .web {
-	font-family: Webdings,Verdana;
+	padding:0 3px;
+	margin: 0 5px;
+	cursor: pointer;
+	float: right;
 }
 .atable{
 	border-collapse:collapse;
@@ -125,16 +107,13 @@ ul li.helper {
 	margin: 0px !important;
 }
 .atable input[type=text]{
-	width: 250px !important;
+	width: 270px;
 }
 .atable th{
-	border:1px solid #fff;
-	background:#4198f9;
 	font-weight:bold;
 }
 .atable td{
 	padding:0px;
-	border:1px solid #fff;
 }
 
 #domains_flt {
@@ -150,14 +129,10 @@ ul li.helper {
 	margin: 0 0 0 80px;
 	font-size: 18px;
 	font-weight: bold;
-	color: #888;
 }
 /*	******************	*/
 .aliasesplace {
 	margin:5px 2px 5px 10px;
-	background-color: #fff;
-	border-style: groove;
-	border-width: 2px;
 }
 .aliases_box  {
 	padding: 2px 25px 2px 0;
@@ -171,7 +146,9 @@ ul li.helper {
 }
 .aliases_box table, .domain_box table {
 	border-collapse:collapse;
+/*
 	color: #222;
+*/
 	text-align:left;
 	width: 420px;
 }
@@ -181,7 +158,6 @@ ul li.helper {
 	line-height: 20px;
 }
 .th {
-	background:#4198f9;
 	font-weight:bold;
 	text-align: center;
 	width: 50%;
@@ -192,12 +168,6 @@ ul li.helper {
 .key {
 	font-weight:bold;
 	min-width: 200px;
-}
-.hover_tr {
-	background-color: #fdffe1 !important;
-}
-.selected_key {
-	background-color: #d2fdfd !important;
 }
 h4{
 	margin: 15px 0 10px 0;
@@ -242,13 +212,8 @@ h4{
 	margin: 2px 0 0 0;
 	text-align: left;
 	line-height: 25px;
-	background-color: #ddd;
 }
 input[type='text'].path  {
 	width: 212px;
 }
-/*
-#path {
-	float: left;
-}
-*/
+

@@ -29,18 +29,18 @@ $(function(){
 
 			$('.path').append(path);
 			$('.path .formtext').focus();
-			$(this).html('&#9660;');
+			$(this).html("&dArr;");
 			// удаляем алиасы и блокируем добавление
 			$('#alias').attr('disabled','true');
 			$('.atable tr').not(':first').remove();
 			// Прячем и очищаем адреса
-			$('.listbox .web').html('&#9658;');
+			$('.listbox .web').html('&rArr;');
 			$('.listbox .formtext').remove();
 
 		}
 		else {
 			$('.path .formtext').remove();
-			$(this).html('&#9658;');
+			$(this).html('&rArr;');
 			$('#alias').removeAttr('disabled');
 		}
 		return false;
@@ -55,17 +55,17 @@ $(function(){
 
 		if( $('.listbox .formtext').size() == 0 ) {
 
-			$(this).html('&#9660;');
+			$(this).html('&dArr;');
 			$('.listbox').append(email);
 			$('.listbox :text').focus();
 			// Удаляем транспорт
 			$('.path .formtext').remove();
-			$('.path .web').html('&#9658;');
+			$('.path .web').html('&rArr;');
 			// Разрешаем алиас
 			$('#alias').removeAttr('disabled');
 		}
 		else {
-			$(this).html('&#9658;');
+			$(this).html('&rArr;');
 			$('.listbox .formtext').remove();
 		}
 		return false;
@@ -90,7 +90,7 @@ $(function(){
 						'<input type="hidden" name="dom_id[]" value="0">' +
 						'<input type="checkbox" name="chk" checked>' +
 					  '</td>';
-		button_cell = '<td><button class="delRow  web">r</button></td>';
+		button_cell = '<td><span class="delRow  web">&otimes;</span></td>';
 		close_tag 	= '</tr>';
 
 		var tbl = $(this).parents('.atable').get(0);
@@ -108,44 +108,33 @@ $(function(){
 
 			var is_ok  = true;
 			var domain_name = $('input[name="domain_name"]').val();
+			var aliasObj = {};
 
-			// проверка на существование домена
-			// для новых записей
-			if( $(':text').is('[name="domain_name"]') ) {
+			// Заполняем массив значениями полей
+			var domainArr = $('tr:not(.noedit) .key').map(function(){ return $(this).text()	});
+			var valuesArr = $(':text[name="domain_name"],:text[name="dom[]"]').map(function(){ return $(this).val() });
+			// Готовим ассоциативный массив [alias]=>domain
+			$('tr.noedit').each(function(){
+							key = $(this).children('.key').text();
+							val = $(this).children('.val').text();
+							aliasObj[key] = val;
+			});
 
-				$(':text[name="domain_name"], :text[name="dom[]"]').each(function(){
 
-					var domain = this;
-					// фильтрую набор по известному содержимому
-					$('.key').each( function(){
+			// проверка на вхождение в массив интересующих значений
+			$(':text[name="domain_name"],:text[name="dom[]"]').not(':hidden').each(function(){
 
-						if ( $(this).text()==$(domain).val()) {
-							alert('Домен "'+ $(domain).val() +'" уже существует');
-							$(domain).val('');
-							return false;
-						}
+							var domain  = $(this).val();
+							lenDomain = $.grep( domainArr, function(val){ return val == domain; }).length;
+							lenVal 	  = $.grep( valuesArr, function(val){ return val == domain; }).length;
 
-					});
-				});
-			}
-			// если записи редактируем
-			else {
-				$(':text[name="dom[]"]').each(function(){
+							if( lenDomain != 0 || lenVal != 1 || ( aliasObj[domain] != undefined && aliasObj[domain] != domain_name)  ) {
+									alert('Домен "'+ $(this).val() +'" уже существует');
+									$(this).val('');
+									return false;
+							}
+			});
 
-					var domain = this;
-					// фильтрую набор по известному содержимому
-					$('.key').not('noactive').each( function(){
-
-						if ( $(this).text()==$(domain).val()) {
-							alert('Домен "'+ $(domain).val() +'" уже существует');
-							$(domain).val('');
-							return false;
-						}
-
-					});
-
-				});
-			}
 			// проверка на правильное заполнение полей
 			$(':text', '#usersform').each(function(){
 
