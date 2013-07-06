@@ -13,11 +13,11 @@
 			<input  class='formtext' type='text' name='domain_notes' value=''  placeholder='text' />
 	   </div>
 	   <div class='fieldentry path'>
-			 <span class='formlabel'>Транспорт:<span id='path' class='web' >4</span></span>
+			 <span class='formlabel'>Транспорт:<span id='path' class='web' >&rarr;</span></span>
 
 		</div>
 	   <div class='fieldentry listbox'>
-			<span class='formlabel'>Рассылка:<span id='all_email' class='web'>4</span></span>
+			<span class='formlabel'>Рассылка:<span id='all_email' class='web'>&rarr;</span></span>
 
 	   </div>
 <br />

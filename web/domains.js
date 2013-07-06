@@ -29,18 +29,18 @@ $(function(){
 
 			$('.path').append(path);
 			$('.path .formtext').focus();
-			$(this).text('6');
+			$(this).html('&#9660;');
 			// удаляем алиасы и блокируем добавление
 			$('#alias').attr('disabled','true');
 			$('.atable tr').not(':first').remove();
 			// Прячем и очищаем адреса
-			$('.listbox .web').text('4');
+			$('.listbox .web').html('&#9658;');
 			$('.listbox .formtext').remove();
 
 		}
 		else {
 			$('.path .formtext').remove();
-			$(this).text('4');
+			$(this).html('&#9658;');
 			$('#alias').removeAttr('disabled');
 		}
 		return false;
@@ -55,17 +55,17 @@ $(function(){
 
 		if( $('.listbox .formtext').size() == 0 ) {
 
-			$(this).text('6');
+			$(this).html('&#9660;');
 			$('.listbox').append(email);
 			$('.listbox :text').focus();
 			// Удаляем транспорт
 			$('.path .formtext').remove();
-			$('.path .web').text('4');
+			$('.path .web').html('&#9658;');
 			// Разрешаем алиас
 			$('#alias').removeAttr('disabled');
 		}
 		else {
-			$(this).text('4');
+			$(this).html('&#9658;');
 			$('.listbox .formtext').remove();
 		}
 		return false;
