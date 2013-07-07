@@ -22,7 +22,7 @@ $(function(){
 
 		$.post(	'/logs/show/', params , function(response) {
 				$('#logplace').empty().html(response);
-				$('#logplace pre:even').css('background-color','#FCFBF4');
+				//$('#logplace pre:even').css('background-color','#FCFBF4');
 				$('#submit_filter').children('img').addClass('hidden');
 		});
 	});

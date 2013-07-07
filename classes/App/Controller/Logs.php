@@ -84,6 +84,8 @@ class Logs extends \PHPixie\Controller {
 
 			array_push($query, array('ReceivedAt','>',$time_start));
 			array_push($query,array('ReceivedAt','<',$time_stop));
+			array_push($query,array($this->pixie->db->expr('LOCATE("cleanup",Y.SysLogTag)'),'>', 0));
+			array_push($query,array($this->pixie->db->expr('LOCATE("qmgr",maillogs.SysLogTag)'),'>', 0));
 
 			if( $server )
 				array_push($query,array('FromHost','=', $server));
@@ -92,25 +94,33 @@ class Logs extends \PHPixie\Controller {
 
 				if( $direction ) { // From
 					array_push($query,array( $this->pixie->db->expr('LOCATE("qmgr",SysLogTag)'),'>', 0));
-					array_push($query,array( $this->pixie->db->expr('Message REGEXP "from=<'.$filter.'"'),'=', 1));
-					$tmpl = $tmpl_From;
+					array_push($query,array( $this->pixie->db->expr('Message REGEXP "'.$filter.'"'),'=', 1));
+					//$tmpl = $tmpl_From;
 				}
 				else {
 					array_push($query,array( $this->pixie->db->expr('LOCATE("pipe",SysLogTag)'),'>', 0));
-					array_push($query,array( $this->pixie->db->expr('Message REGEXP "to=<'.$filter.'"'),'=', 1));
-					$tmpl = $tmpl_To;
+					array_push($query,array( $this->pixie->db->expr('Message REGEXP "'.$filter.'"'),'=', 1));
+					//$tmpl = $tmpl_To;
 				}
 			}
 
-			$entries_addr = array();
+			//$entries_addr = array();
 
-			$entries_addr = $this->pixie->db
-										->query('select','logs')->table("SystemEvents")
-										->fields($this->pixie->db->expr("TRIM(Message) AS Message")	)
-										->where($query)
-										->execute()
-										->as_array();
+			$view->messages = $this->pixie->db
+											->query('select','logs')->table("maillogs")
+											->fields(
+													$this->pixie->db->expr("CAST(A.ReceivedAt as TIME) AS ReceivedAt"),
+													$this->pixie->db->expr("REPLACE(A.SysLogTag,'postfix\/','') AS SysLogTag"),
+													$this->pixie->db->expr('A.MSGID AS MSGID'),
+													$this->pixie->db->expr('A.Message AS Message')
+											)
+											->JOIN(array('maillogs','Y'),array('maillogs.MSGID','Y.MSGID'),'LEFT')
+											->JOIN(array('maillogs','Z'),array('Y.message','Z.message'),'LEFT')
+											->JOIN(array('maillogs','A'),array('A.MSGID','Z.MSGID'),'LEFT')
+											->where($query)
+											->execute();
 
+/*
 			// Итерация первая - вынимаем ID
 			foreach( $entries_addr as $entry) {
 
@@ -173,9 +183,10 @@ class Logs extends \PHPixie\Controller {
 					}
 				}
 			}
+*/
 
-			$this->response->body = ( $all_messages ) ? $all_messages : 'Поиск результатов не дал...';
-
+			//$this->response->body = ( $all_messages ) ? $all_messages : 'Поиск результатов не дал...';
+			$this->response->body = $view->render();
 
 		}
 

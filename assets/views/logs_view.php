@@ -1,7 +1,14 @@
-<pre class='msgblock'>
+<table class='msgblock'>
 <?php
-	foreach ( $messages as $message )
-		echo $message->ReceivedAt." ".$message->SysLogTag." ".htmlspecialchars($message->Message)."\n";
-?>
-</pre>
+		$msgid = '';
+		foreach ( $messages as $message ): ?>
+		<tr class='<?= ($msgid == $message->MSGID) ? 'odd':'';  ?> <?= $msgid ?>'>
+			<td><?= $message->ReceivedAt ?></td>
+			<td><?= $message->SysLogTag ?></td>
+			<td><?= $message->MSGID ?></td>
+			<td><?= htmlspecialchars($message->Message)?> </td>
+		<tr>
+		<?php $msgid = $message->MSGID; ?>
+<?php endforeach; ?>
+</TABLE>
 

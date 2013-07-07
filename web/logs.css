@@ -50,4 +50,8 @@ input {
 .msgblock{
 	margin:0;
 	padding: 5px 2px;
+	border-collapse:collapse;
+}
+.odd {
+	background-color: #FCFBF4;
 }
