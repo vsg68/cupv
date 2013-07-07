@@ -10,7 +10,7 @@ $(function(){
 		$(this).children('img').removeClass('hidden');
 
 		filter = $('#fltr').val();
-		mail_tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
+		mail_tmpl = /^[\w\.-]+@(\w+\.){1,}\w+$/;
 
 		if( ! mail_tmpl.test(filter) && filter ) {
 			 alert('Проверьте правильность адреса!');

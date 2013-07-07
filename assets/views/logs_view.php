@@ -1,8 +1,12 @@
 <table class='msgblock'>
 <?php
-		$msgid = '';
-		foreach ( $messages as $message ): ?>
-		<tr class='<?= ($msgid == $message->MSGID) ? 'odd':'';  ?> <?= $msgid ?>'>
+		$msgid = $myclass = '';
+		foreach ( $messages as $message ):
+
+			if( $msgid != $message->MSGID )
+				$myclass = ($myclass == '') ? 'odd':'';
+		?>
+		<tr class='<?= $myclass ?>'>
 			<td><?= $message->ReceivedAt ?></td>
 			<td><?= $message->SysLogTag ?></td>
 			<td><?= $message->MSGID ?></td>
@@ -10,5 +14,9 @@
 		<tr>
 		<?php $msgid = $message->MSGID; ?>
 <?php endforeach; ?>
+<?php
+	if( ! $msgid )
+		echo "Поиск результатов не дал...";
+?>
 </TABLE>
 
