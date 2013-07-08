@@ -46,7 +46,7 @@ class Logs extends \PHPixie\Controller {
 
 
 			if( $server )
-				array_push($query,array('FromHost','=', $server));
+				array_push($query,array('X.FromHost','=', $server));
 
 			if( $filter ) {
 
