@@ -54,6 +54,9 @@ input {
 	width:180%;
 }
 .odd {
-	background-color: #FCFBF4;
+	background-color: #fdffe1;
+/*
+	#FCFBF4;
+*/
 	margin-left: 10px;
 }

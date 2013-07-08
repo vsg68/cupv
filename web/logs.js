@@ -8,7 +8,7 @@ $(function(){
 	$('#submit_filter').click(function(){
 
 		$(this).children('img').removeClass('hidden');
-
+/*
 		filter = $('#fltr').val();
 		mail_tmpl = /^[\w\.-]+@(\w+\.){1,}\w+$/;
 
@@ -17,12 +17,11 @@ $(function(){
 			 $('#fltr').val('')
 			 return false;
 		}
-
+*/
 		var params =  $('#filterform').serialize();
 
 		$.post(	'/logs/show/', params , function(response) {
 				$('#logplace').empty().html(response);
-				//$('#logplace pre:even').css('background-color','#FCFBF4');
 				$('#submit_filter').children('img').addClass('hidden');
 		});
 	});
