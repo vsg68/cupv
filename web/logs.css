@@ -3,7 +3,7 @@
 	background-image: url('/groups.png');
 }
 */
-input {
+input,select {
 	color: #888;
 }
 .editmenu {
