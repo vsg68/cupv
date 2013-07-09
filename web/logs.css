@@ -6,11 +6,13 @@
 input,select {
 	color: #888;
 }
+/*
 .editmenu {
 	text-align: left;
 	font-size: 10px;
 	background-color: #eee;
 }
+*/
 .date_field {
 	width: 70px;
 }

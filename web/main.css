@@ -53,6 +53,8 @@ body {
 	margin: 10px 10px 0 10px;
 	padding: 5px;
 	height: 26px;
+	text-align: left;
+	font-size: 10px;
 /*
 	border-style: groove;
 	border-width: 2px;

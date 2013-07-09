@@ -37,6 +37,9 @@ body {
 .editmenu, .aliasesplace  {
 	border:1px solid #ccc !important;
 }
+.editmenu {
+	background-color: #f3f3f3;
+}
 .mainmenu a {
 	color: #ccc;
 }
