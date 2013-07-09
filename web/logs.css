@@ -24,6 +24,7 @@ input,select {
 	width: 24px;
 	height: 24px;
 	background: url(/stop.png) 0 -24px no-repeat;
+	background-color: #fff;
 	cursor: pointer;
 	border: 1px solid #ccc;
 }
