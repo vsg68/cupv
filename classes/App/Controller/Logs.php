@@ -42,6 +42,8 @@ class Logs extends \PHPixie\Controller {
 
 			array_push($query,array('X.ReceivedAt','>',$time_start));
 			array_push($query,array('X.ReceivedAt','<',$time_stop));
+			array_push($query,array('A.ReceivedAt','>',$time_start));
+			array_push($query,array('A.ReceivedAt','<',$time_stop));
 			array_push($query,array($this->pixie->db->expr('LOCATE("cleanup",Y.SysLogTag)'),'>', 0));
 
 
@@ -61,7 +63,7 @@ class Logs extends \PHPixie\Controller {
 			}
 			else // С этим запросом отрабатывает быстрее
 				array_push($query,array($this->pixie->db->expr('LOCATE("qmgr",X.SysLogTag)'),'>', 0));
-// CAST(A.ReceivedAt as TIME) AS ReceivedAt,
+
 			$view->messages = $this->pixie->db
 											->query('select','logs')
 											->fields($this->pixie->db->expr('DISTINCT
