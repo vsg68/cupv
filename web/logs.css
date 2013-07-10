@@ -54,7 +54,7 @@ input,select {
 	margin:0;
 	padding: 5px 2px;
 	border-collapse:collapse;
-	width:180%;
+	width:200%;
 }
 .odd {
 	background-color: #fdffe1;
