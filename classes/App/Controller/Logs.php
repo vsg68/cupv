@@ -61,11 +61,11 @@ class Logs extends \PHPixie\Controller {
 			}
 			else // С этим запросом отрабатывает быстрее
 				array_push($query,array($this->pixie->db->expr('LOCATE("qmgr",X.SysLogTag)'),'>', 0));
-
+// CAST(A.ReceivedAt as TIME) AS ReceivedAt,
 			$view->messages = $this->pixie->db
 											->query('select','logs')
 											->fields($this->pixie->db->expr('DISTINCT
-																			CAST(A.ReceivedAt as TIME) AS ReceivedAt,
+																			A.ReceivedAt AS ReceivedAt,
 																			REPLACE(A.SysLogTag,"postfix\/","") AS SysLogTag,
 																			A.MSGID AS MSGID,
 																			A.Message AS Message'
