@@ -15,6 +15,8 @@
     </head>
     <body>
         <div class="container">
+
+			<?php if( $subview != 'login_main' ): ?>
 			<div class="mainmenu">
 			<ul>
 				<li id='users'><a href="/users/">Пользователи</a><div class='whiteline'><div></li>
@@ -25,6 +27,8 @@
 				<li class='helper'></li>
 			</ul>
 			</div>
+			<?php endif; ?>
+
 			<div class='border'>
 			<?php include($subview.'.php'); ?>
 			</div>

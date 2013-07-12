@@ -1,0 +1,29 @@
+
+.border {
+	background-color: #fff;
+	width: 470px;
+	height: 270px;
+	margin:250px auto;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Firefox */
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Safari и Chrome */
+    box-shadow: 0 0 20px rgba(0,0,0,0.3); /* Параметры тени */
+}
+.container{
+	background-color: inherit !important;
+}
+
+.submit_button {
+	border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	width: 100px;
+	height: 50px;
+	border: 1px solid #ccc;
+}
+
+input {
+	width: 200px;
+}

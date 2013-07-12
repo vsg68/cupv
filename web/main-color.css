@@ -95,6 +95,14 @@ body {
 .fieldentry, .listbox {
 	background-color: #eee;
 }
+input[type='text'], input[type='password'] {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	height:20px;
+}
+
 input:-moz-placeholder {
 	color: #ddd;
 }
