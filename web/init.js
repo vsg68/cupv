@@ -21,7 +21,7 @@ $(function(){
 
 
 	// Удаление строк
-	$('button.delRow').live('click', function(){
+	$('.delRow').live('click', function(){
 
 		var tr 		   = $(this).closest('tr.alias');
 		var input_hide = $(tr).find(':hidden:eq(0)');
