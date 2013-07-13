@@ -13,7 +13,7 @@ class Login extends \PHPixie\Controller {
 
         $view = $this->pixie->view('main');
 
-		$view->subview 		= 'login_main';
+		$view->subview 		= 'login_view';
 
 		$view->script_file	= '';
 		$view->css_file 	= '<link rel="stylesheet" href="/login.css" type="text/css" />';

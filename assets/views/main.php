@@ -16,7 +16,7 @@
     <body>
         <div class="container">
 
-			<?php if( $subview != 'login_main' ): ?>
+			<?php if( ! preg_match('/login/',$subview) ): ?>
 			<div class="mainmenu">
 			<ul>
 				<li id='users'><a href="/users/">Пользователи</a><div class='whiteline'><div></li>

@@ -10,12 +10,14 @@ namespace App;
  */
 class Pixie extends \PHPixie\Pixie {
 	protected $modules = array(
-		'db' => '\PHPixie\DB'
+		'db' => '\PHPixie\DB',
+		'auth' => '\PHPixie\Auth',
+		'validate' => '\PHPixie\Validate'
 	);
-	
+
 	protected function after_bootstrap(){
-		//Whatever code you want to run after bootstrap is done.	
+		//Whatever code you want to run after bootstrap is done.
         //$this->debug->display_errors = false;
-	
+
 	}
 }
