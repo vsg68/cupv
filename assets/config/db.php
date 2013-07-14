@@ -20,5 +20,11 @@ return array(
 		'password' => 'tarkvsg',
 		'driver' => 'Mysql',
 		'db' => 'logs',
+	),
+	'login' => array(
+		'user'=>'root',
+		'password' => 'tarkvsg',
+		'driver' => 'PDO',
+		'connection'=>'mysql:host=localhost;dbname=ms',
 	)
 );

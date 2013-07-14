@@ -1,5 +1,5 @@
 	<div class='login'>
-	<form action='#' method='post'>
+	<form action='/login/login' method='post'>
 		<div class='logo'><img src='/gmp.png'></div>
 		<p><input type=text name='username' value='' /></p>
 		<p><input type=password name='passwd' value='' /><p>

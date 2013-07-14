@@ -3,7 +3,7 @@
 	background-color: #fff !important;
 	width: 470px;
 	height: 270px;
-	margin:250px auto;
+	margin: 150px auto;
 	border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -13,6 +13,7 @@
 }
 .container{
 	background-color: inherit !important;
+	height: 770px;
 }
 .border {
 	border: none;
@@ -42,7 +43,7 @@ input[type='text'], input[type='password'] {
 	margin:20px;
 	display: inline-block;
 }
-.theme p {
+p {
 	text-align: center;
 }
 .theme a {

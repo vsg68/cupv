@@ -4,85 +4,66 @@
  */
 namespace App\Controller;
 
-class Login extends \PHPixie\Controller {
+class Login extends \App\Page {
 
    private $logmsg;
 
 
     public function action_view() {
 
-        $view = $this->pixie->view('main');
+       // $view = $this->pixie->view('main');
+		$auth = $this->pixie->auth;
 
-		$view->subview 		= 'login_view';
+		if( ! $auth->user() )
+			$this->view->subview 		= 'login_main';
+		else
+			$this->view->subview = 'login_view';
 
-		$view->script_file	= '';
-		$view->css_file 	= '<link rel="stylesheet" href="/login.css" type="text/css" />';
 
-        $this->response->body	= $view->render();
+
+		$this->view->script_file	= '';
+		$this->view->css_file 	= '<link rel="stylesheet" href="/login.css" type="text/css" />';
+
+        $this->response->body	= $this->view->render();
     }
 
+	public function action_login() {
 
-	public function action_show() {
+        if($this->request->method == 'POST'){
 
-        if ($this->request->method == 'POST') {
+            $login = $this->request->post('username');
+            $password = $this->request->post('passwd');
 
-			$view 	= $this->pixie->view('logs_view');
-			$query	= array();
+            //Attempt to login the user using his
+            //username and password
+            $logged = $this->pixie->auth->provider('Password')->login($login, $password);
 
-			$params = $this->request->post();
+            //On successful login redirect the user to
+            //our protected page
+            if ( $logged)
+		        return $this->redirect('/login/list');
 
-			$time_start = $params['start_date']." ".$params['start_time'].":00";
-			$time_stop  = $params['stop_date']." ".$params['stop_time'].":00";
-			$server		= $params['server'];
-			$filter 	= $params['fltr'];
-			$direction  = $params['direction']; //0-To 1-From
+        }
 
+        return $this->redirect('/');
+    }
 
-			array_push($query,array('X.ReceivedAt','>',$time_start));
-			array_push($query,array('X.ReceivedAt','<',$time_stop));
-			array_push($query,array('A.ReceivedAt','>',$time_start));
-			array_push($query,array('A.ReceivedAt','<',$time_stop));
-			array_push($query,array($this->pixie->db->expr('LOCATE("cleanup",Y.SysLogTag)'),'>', 0));
+    public function action_logout() {
+        $this->pixie->auth->logout();
+        $this->redirect('/');
+    }
 
+	public function action_list() {
 
-			if( $server )
-				array_push($query,array('X.FromHost','=', $server));
+		$auth = $this->pixie->auth;
+echo $auth->has_role('admin1');
+echo "--ss";
+exit;
+		if( ! $auth->user() )
+			return $this->redirect('/login');
 
-			if( $filter ) {
-
-				if( $direction ) { // From
-					array_push($query,array( $this->pixie->db->expr('LOCATE("qmgr",X.SysLogTag)'),'>', 0));
-					array_push($query,array( $this->pixie->db->expr('X.Message REGEXP "'.$filter.'"'),'=', 1));
-				}
-				else {
-					array_push($query,array( $this->pixie->db->expr('LOCATE("pipe",X.SysLogTag)'),'>', 0));
-					array_push($query,array( $this->pixie->db->expr('X.Message REGEXP "'.$filter.'"'),'=', 1));
-				}
-			}
-			else // С этим запросом отрабатывает быстрее
-				array_push($query,array($this->pixie->db->expr('LOCATE("qmgr",X.SysLogTag)'),'>', 0));
-
-			$view->messages = $this->pixie->db
-											->query('select','logs')
-											->fields($this->pixie->db->expr('DISTINCT
-																			A.ReceivedAt AS ReceivedAt,
-																			REPLACE(A.SysLogTag,"postfix\/","") AS SysLogTag,
-																			A.MSGID AS MSGID,
-																			A.Message AS Message'
-											))
-											->table('maillog','X')
-											->JOIN(array('maillog','Y'),array('X.MSGID','Y.MSGID'),'LEFT')
-											->JOIN(array('maillog','Z'),array('Y.message','Z.message'),'LEFT')
-											->JOIN(array('maillog','A'),array('A.MSGID','Z.MSGID'),'LEFT')
-											->where($query)
-											->execute();
-
-			$this->response->body = $view->render() ;
-
-		}
-
+		$this->view->subview = 'login_view';
+		$this->response->body = $this->view->render();
 	}
-
-
 }
 ?>

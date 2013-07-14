@@ -13,5 +13,9 @@
 <div class='theme'>
 	<p><a href='#'>PHONE</a></p>
 </div>
-
+<div class='theme'>
+	<p><a href='#'>PHONE</a></p>
+</div>
 <div class='helper theme'></div>
+
+<a href='/login/logout'>logout<a>

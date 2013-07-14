@@ -22,7 +22,7 @@ class Relation extends \PHPixie\Auth\Role {
 		if($this->type == 'has_many')
 			return $user->$relation
 					->where($this->name_field, $role)
-					//->where($this->page_field, $page)
+					->where($this->page_field, $page)
 					->count_all() > 0;
 
 		if ($this->type == 'belongs_to')

@@ -1,21 +1,23 @@
 <?php
 
 return array('default' => array(
+							'model' => 'login',
 							//Login providers
 							'login' => array(
-								'password' => array(
+								'Password' => array(
 									'login_field' => 'login',
-									'password_field' => 'passwd'
+									'password_field' => 'passwd',
+								//	'hash_method'	=> ''
 									)
 								),
 							'roles' => array(
 									'driver' => 'relation',
-									'type' => 'has_many',
+									'type' => 'belongs_to',
 
 									//Field in the roles table
 									//that holds the models name
-									'name_field' => 'name',
-									'relation' => 'roles'
+									'name_field' => 'role_name',
+									'relation' => 'role'
 								)
 						 )
 );
