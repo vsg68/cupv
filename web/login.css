@@ -1,9 +1,9 @@
 
-.border {
-	background-color: #fff;
+.login, .theme {
+	background-color: #fff !important;
 	width: 470px;
 	height: 270px;
-	margin:250px auto;
+	margin: 150px auto;
 	border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -13,17 +13,56 @@
 }
 .container{
 	background-color: inherit !important;
+	height: 770px;
 }
-
+.border {
+	border: none;
+	text-align: justify;
+	overflow: hidden;
+	margin: 100px auto;
+}
+input[type='text'], input[type='password'] {
+	width: 245px;
+}
 .submit_button {
 	border-radius: 6px;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 	width: 100px;
-	height: 50px;
+	height: 30px;
 	border: 1px solid #ccc;
+	cursor:pointer;
+	margin:10px;
 }
-
-input {
+.logo {
+	margin:5px 10px 30px 10px;
+}
+.theme {
 	width: 200px;
+	height: 200px;
+	margin:20px;
+	display: inline-block;
+}
+p {
+	text-align: center;
+}
+.theme a {
+	color: #ddd;
+	font-size: 40px;
+	line-height: 300px;
+	text-decoration:none;
+}
+.theme a :hover{
+	color: #ddd;
+}
+div.helper {
+	width: 100%;
+	height: 0;
+	visibility: hidden;
+}
+#postfix {
+	background: url(/postfix.jpg) 50% 40% no-repeat;
+}
+#squid {
+	background: url(/squid.jpg) 50% 40% no-repeat;
 }

@@ -3,9 +3,63 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
+<<<<<<< HEAD
     "hash": "851a6f86ec7aa96b95f9b5889b66eba7",
     "packages": [
         {
+=======
+    "hash": "a1850e178ce21ca0a8ac2c3893ce37ff",
+    "packages": [
+        {
+            "name": "phpixie/auth",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dracony/PHPixie-Auth.git",
+                "reference": "b10d7a307a534f489da55145aeffa0c663ab5448"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dracony/PHPixie-Auth/zipball/b10d7a307a534f489da55145aeffa0c663ab5448",
+                "reference": "b10d7a307a534f489da55145aeffa0c663ab5448",
+                "shasum": ""
+            },
+            "require": {
+                "phpixie/orm": "2.*@dev"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "PHPixie": "classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Roman Tsiupa",
+                    "email": "draconyster@gmail.com",
+                    "homepage": "http://dracony.org"
+                }
+            ],
+            "description": "PHPixie Auth library",
+            "homepage": "http://phpixie.com",
+            "keywords": [
+                "Authentication",
+                "authorization",
+                "facebook"
+            ],
+            "time": "2013-07-11 15:15:25"
+        },
+        {
+>>>>>>> refs/remotes/origin/master
             "name": "phpixie/core",
             "version": "dev-master",
             "source": {
@@ -146,6 +200,55 @@
                 "orm"
             ],
             "time": "2013-06-04 14:52:37"
+<<<<<<< HEAD
+=======
+        },
+        {
+            "name": "phpixie/validate",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dracony/PHPixie-validate.git",
+                "reference": "616f17ff2cf5a238276c859a212c94676cce5628"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dracony/PHPixie-validate/zipball/616f17ff2cf5a238276c859a212c94676cce5628",
+                "reference": "616f17ff2cf5a238276c859a212c94676cce5628",
+                "shasum": ""
+            },
+            "require": {
+                "phpixie/core": "2.*@dev"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "PHPixie": "classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Roman Tsiupa",
+                    "email": "draconyster@gmail.com",
+                    "homepage": "http://dracony.org"
+                }
+            ],
+            "description": "Validation library for PHPixie",
+            "homepage": "http://phpixie.com",
+            "keywords": [
+                "validate"
+            ],
+            "time": "2013-05-02 21:27:24"
+>>>>>>> refs/remotes/origin/master
         }
     ],
     "packages-dev": [
@@ -158,7 +261,13 @@
     "stability-flags": {
         "phpixie/core": 20,
         "phpixie/db": 20,
+<<<<<<< HEAD
         "phpixie/orm": 20
+=======
+        "phpixie/orm": 20,
+        "phpixie/auth": 20,
+        "phpixie/validate": 20
+>>>>>>> refs/remotes/origin/master
     },
     "platform": [
 

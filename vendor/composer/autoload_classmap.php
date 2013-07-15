@@ -6,6 +6,15 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'PHPixie\\Auth' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth.php',
+    'PHPixie\\Auth\\Controller\\Facebook' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth/Controller/Facebook.php',
+    'PHPixie\\Auth\\Login\\Facebook' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth/Login/Facebook.php',
+    'PHPixie\\Auth\\Login\\Password' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth/Login/Password.php',
+    'PHPixie\\Auth\\Login\\Provider' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth/Login/Provider.php',
+    'PHPixie\\Auth\\Role\\Driver' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth/Role/Driver.php',
+    'PHPixie\\Auth\\Role\\Field' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth/Role/Field.php',
+    'PHPixie\\Auth\\Role\\Relation' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth/Role/Relation.php',
+    'PHPixie\\Auth\\Service' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth/Service.php',
     'PHPixie\\Config' => $vendorDir . '/phpixie/core/classes/PHPixie/Config.php',
     'PHPixie\\Controller' => $vendorDir . '/phpixie/core/classes/PHPixie/Controller.php',
     'PHPixie\\DB' => $vendorDir . '/phpixie/db/classes/PHPixie/DB.php',
@@ -21,6 +30,8 @@ return array(
     'PHPixie\\DB\\Result' => $vendorDir . '/phpixie/db/classes/PHPixie/DB/Result.php',
     'PHPixie\\Debug' => $vendorDir . '/phpixie/core/classes/PHPixie/Debug.php',
     'PHPixie\\ORM' => $vendorDir . '/phpixie/orm/classes/PHPixie/ORM.php',
+    'PHPixie\\ORM\\Extension' => $vendorDir . '/phpixie/orm/classes/PHPixie/orm/Extension.php',
+    'PHPixie\\ORM\\Extension\\Nested' => $vendorDir . '/phpixie/orm/classes/PHPixie/orm/Extension/Nested.php',
     'PHPixie\\ORM\\Model' => $vendorDir . '/phpixie/orm/classes/PHPixie/ORM/Model.php',
     'PHPixie\\ORM\\Result' => $vendorDir . '/phpixie/orm/classes/PHPixie/ORM/Result.php',
     'PHPixie\\Pixie' => $vendorDir . '/phpixie/core/classes/PHPixie/Pixie.php',
@@ -29,5 +40,7 @@ return array(
     'PHPixie\\Route' => $vendorDir . '/phpixie/core/classes/PHPixie/Route.php',
     'PHPixie\\Router' => $vendorDir . '/phpixie/core/classes/PHPixie/Router.php',
     'PHPixie\\Session' => $vendorDir . '/phpixie/core/classes/PHPixie/Session.php',
+    'PHPixie\\Validate' => $vendorDir . '/phpixie/validate/classes/PHPixie/Validate.php',
+    'PHPixie\\Validate\\Validator' => $vendorDir . '/phpixie/validate/classes/PHPixie/Validate/Validator.php',
     'PHPixie\\View' => $vendorDir . '/phpixie/core/classes/PHPixie/View.php',
 );

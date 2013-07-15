@@ -12,7 +12,7 @@ return array(
 						//~ )),
 	'default' => array('(/<controller>(/<action>))',
 					array(
-						'controller' => 'users',
+						'controller' => 'login',
 						'action' => 'view'
 						)),
 );

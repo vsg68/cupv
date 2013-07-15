@@ -13,6 +13,7 @@ class Service {
 	 * @var \PHPixie\Pixie
 	 */
 	public $pixie;
+<<<<<<< HEAD
 	
 	/**
 	 * Name of the ORM model that represents a user 
@@ -20,35 +21,64 @@ class Service {
 	 */
 	protected $model;
 	
+=======
+
+	/**
+	 * Name of the ORM model that represents a user
+	 * @var string
+	 */
+	protected $model;
+
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * Logged in user
 	 * @var \PHPixie\ORM\Model
 	 */
 	protected $user;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * Name of the login provider that
 	 * the user logged in with.
 	 * @var string
 	 */
 	protected $logged_with;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * Login providers array
 	 * @var array
 	 */
 	protected $login_providers = array();
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * User role driver
 	 * @var \PHPixie\Auth\Role\Driver
 	 */
 	protected $role_driver;
+<<<<<<< HEAD
 	
 	
 	/**
 	 * Constructs an Auth instance for the specified configuration
 	 * 
+=======
+
+
+	/**
+	 * Constructs an Auth instance for the specified configuration
+	 *
+>>>>>>> refs/remotes/origin/master
 	 * @param \PHPixie\Pixie $pixie Pixie dependency container
 	 * @param string $config Name of the configuration.
 	 * @throw \Exception If no login providers were configured
@@ -56,6 +86,7 @@ class Service {
 	public function __construct($pixie, $config = 'default') {
 		$this->pixie = $pixie;
 		$this->model = $pixie->config->get("auth.{$config}.model");
+<<<<<<< HEAD
 		
 		$login_providers = $pixie->config->get("auth.{$config}.login", false);
 		if (!$login_providers)
@@ -74,6 +105,26 @@ class Service {
 	/**
 	 * Sets the logged in user
 	 * 
+=======
+
+		$login_providers = $pixie->config->get("auth.{$config}.login", false);
+		if (!$login_providers)
+			throw new \Exception("No login providers have been configured.");
+
+		foreach(array_keys($login_providers) as $provider)
+			$this->login_providers[$provider] = $pixie->auth->build_login($provider, $this, $config);
+
+		$role_driver = $pixie->config->get("auth.{$config}.roles.driver", false);
+		if ($role_driver)
+			$this->role_driver = $pixie->auth->build_role($role_driver, $config);
+
+		$this->check_login();
+	}
+
+	/**
+	 * Sets the logged in user
+	 *
+>>>>>>> refs/remotes/origin/master
 	 * @param \PHPixie\ORM\Model $user logged in user
 	 * @param strong $logged_with Name of the provider that
 	 *                            performed the login.
@@ -84,7 +135,11 @@ class Service {
 		$this->logged_with = $logged_with;
 	}
 
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * Returns the logged in user
 	 *
@@ -102,7 +157,11 @@ class Service {
 	public function logged_with() {
 		return $this->logged_with;
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * Logs the user out
 	 *
@@ -113,7 +172,11 @@ class Service {
 		$this->logged_with = null;
 		$this->user = null;
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * Checks if the logged in user has the specified role
 	 *
@@ -124,6 +187,7 @@ class Service {
 	public function has_role($role) {
 		if ($this->role_driver == null)
 			throw new \Exception("No role configuration is present.");
+<<<<<<< HEAD
 		
 		if ($this->user == null)
 			return false;
@@ -132,6 +196,16 @@ class Service {
 		
 	}
 	
+=======
+
+		if ($this->user == null)
+			return false;
+
+		return $this->role_driver->has_role($this->user, $role);
+
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * Returns the login provider by name
 	 *
@@ -141,9 +215,15 @@ class Service {
 	public function provider($provider) {
 		return $this->login_providers[$provider];
 	}
+<<<<<<< HEAD
 	
 	/**
 	 * Checks if the user is logged in via any of the 
+=======
+
+	/**
+	 * Checks if the user is logged in via any of the
+>>>>>>> refs/remotes/origin/master
 	 * login providers
 	 *
 	 * @return bool if the user is logged in
@@ -152,7 +232,11 @@ class Service {
 		foreach($this->login_providers as $provider)
 			if ($provider->check_login())
 				return true;
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 
@@ -165,4 +249,8 @@ class Service {
 		return $this->pixie->orm->get($this->model);
 	}
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> refs/remotes/origin/master
