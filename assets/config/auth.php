@@ -13,9 +13,6 @@ return array('default' => array(
 							'roles' => array(
 									'driver' => 'relation',
 									'type' => 'belongs_to',
-
-									//Field in the roles table
-									//that holds the models name
 									'name_field' => 'role_name',
 									'relation' => 'role'
 								)

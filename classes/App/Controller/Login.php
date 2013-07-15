@@ -12,17 +12,19 @@ class Login extends \App\Page {
     public function action_view() {
 
        // $view = $this->pixie->view('main');
-		$auth = $this->pixie->auth;
+		//$auth = $this->pixie->auth;
 
-		if( ! $auth->user() )
-			$this->view->subview 		= 'login_main';
-		else
+		if( $this->is_logged() ) {
+			$this->view->role = $this->user_role;
 			$this->view->subview = 'login_view';
+		}
+		else
+			$this->view->subview = 'login_main';
 
 
 
 		$this->view->script_file	= '';
-		$this->view->css_file 	= '<link rel="stylesheet" href="/login.css" type="text/css" />';
+		$this->view->css_file 		= '<link rel="stylesheet" href="/login.css" type="text/css" />';
 
         $this->response->body	= $this->view->render();
     }
@@ -40,8 +42,8 @@ class Login extends \App\Page {
 
             //On successful login redirect the user to
             //our protected page
-            if ( $logged)
-		        return $this->redirect('/login/list');
+            //~ if ( $logged)
+		        //~ return $this->redirect('/login/list');
 
         }
 
@@ -56,10 +58,8 @@ class Login extends \App\Page {
 	public function action_list() {
 
 		$auth = $this->pixie->auth;
-echo $auth->has_role('admin1');
-echo "--ss";
-exit;
-		if( ! $auth->user() )
+
+		if(  $auth->user() )
 			return $this->redirect('/login');
 
 		$this->view->subview = 'login_view';

@@ -35,7 +35,10 @@ input[type='text'], input[type='password'] {
 	margin:10px;
 }
 .logo {
-	margin:5px 10px 30px 10px;
+	text-align: center;
+}
+.logo img {
+	margin:15px 10px 20px 10px;
 }
 .theme {
 	width: 200px;
