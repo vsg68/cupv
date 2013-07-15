@@ -2,69 +2,41 @@
 
 namespace App\Controller;
 
-class Users extends \PHPixie\Controller {
+class Users extends \App\Page {
  //~
 	private $mailbox;
-	private $logmsg;
-
 
 //	функция для тестирования строк на возможные значения
-    private function sanitize($value,$key,$method) {
 
-		if( is_string($value) ) $value =  trim($value) ;
-
-		switch ( $method ) {
-			case 'empty':
-				$value = isset($value) ? $value : '0';
-				break;
-			case 'notempty':
-				if( $value == '' ) {
-					 $this->logmsg .= "<span class='error'>Field $key can not be empty</span>";
-				 }
-				break;
-			case 'net':
-				if( !preg_match ('!((\d+\.)+\d+(/\d+)?,?\s*)+!', $value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for net in field $key</span>";
-				}
-				break;
-			case 'is_number':
-				if( is_number($value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for field $key</span>";
-				}
-				break;
-			case 'is_mail':
-				if ( ! preg_match('/(\w+)@(\w+\.)+(\w+)/',$value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for mail in field $key</span>";
-				}
-				break;
-			default:
-
-		}
-	}
 
     public function action_view() {
 
-        $view = $this->pixie->view('main');
 
-		$view->subview = 'users_main';
-		$view->script_file = '<script type="text/javascript" src="/users.js"></script>';
-		$view->css_file = '<link rel="stylesheet" href="/users.css" type="text/css" />';
+		$this->view->script_file = '<script type="text/javascript" src="/users.js"></script>';
+		$this->view->css_file = '<link rel="stylesheet" href="/users.css" type="text/css" />';
 
-        $view->users = $this->pixie->db
-							->query('select')->table('users')
-							->order_by('mailbox')
-							->execute();
+		// Проверка легитимности пользователя и его прав
+        if( ! $this->is_logged() || $this->user_role == 'admin' )
+			$this->view->subview = '403';
+		else {
+			$this->view->subview = 'users_main';
 
-		$view->domains = $this->pixie->db
-								->query('select')
-								->fields('domain_name')
-								->table('domains')
-								->where('delivery_to','virtual')
+			$this->view->users = $this->pixie->db
+								->query('select')->table('users')
+								->order_by('mailbox')
 								->execute();
 
-		$view->users_block = $this->action_single();
+			$this->view->domains = $this->pixie->db
+									->query('select')
+									->fields('domain_name')
+									->table('domains')
+									->where('delivery_to','virtual')
+									->execute();
+		}
 
-        $this->response->body = $view->render();
+		$this->view->users_block = $this->action_single();
+
+        $this->response->body = $this->view->render();
     }
 
 	public function action_new() {

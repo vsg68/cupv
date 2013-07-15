@@ -16,27 +16,28 @@ class Page extends \PHPixie\Controller {
 
 	protected function is_logged(){
 
-        if( $this->pixie->auth->user() == null )
-            return false;
+        if( $this->pixie->auth->user() == null ) {
+			$this->redirect('/login/login');
+            return;
+        }
 
 		$name = $this->pixie->auth->user()->login;
 		$ctrl = $this->request->param('controller');
 
-		$result = $this->pixie->db->query('select')->fields('X.role_name')
-												->table('roles','X')
-												->join(array('auth','Y'),array('Y.id','X.auth_id'),'LEFT')
-												->where('Y.login',$name)
-												->where('X.ctrl_name',strtolower($ctrl))
-												->execute()
-												->current();
+		$result = $this->pixie->db->query('select')
+											->fields('X.role_name')
+											->table('roles','X')
+											->join(array('auth','Y'),array('Y.id','X.auth_id'),'LEFT')
+											->where('Y.login',$name)
+											->where('X.ctrl_name',strtolower($ctrl))
+											->execute()
+											->current();
 
-		$this->user_role = strtolower($result->role_name);
+		if( $result )
+			$this->user_role = strtolower($result->role_name);
 
-		if( ! $this->user_role ) {
-            $this->response->body = "You don't have the permissions to access this page";
-            $this->execute=false;
-            return false;
-		}
+		if( ! $this->user_role )
+			$this->redirect('/login/view/403');
 
         return true;
     }

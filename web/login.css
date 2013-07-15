@@ -55,8 +55,8 @@ p {
 	line-height: 300px;
 	text-decoration:none;
 }
-.theme a :hover{
-	color: #ddd;
+.theme a:hover{
+	color: #e77307 !important;
 }
 div.helper {
 	width: 100%;

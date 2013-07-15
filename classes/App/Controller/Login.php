@@ -6,25 +6,21 @@ namespace App\Controller;
 
 class Login extends \App\Page {
 
-   private $logmsg;
+     public function action_view() {
+
+ 		$this->view->script_file	= '';
+		$this->view->css_file 		= '<link rel="stylesheet" href="/login.css" type="text/css" />';
 
 
-    public function action_view() {
-
-       // $view = $this->pixie->view('main');
-		//$auth = $this->pixie->auth;
-
-		if( $this->is_logged() ) {
+		if( $this->request->param('id') == '403' )
+			$this->view->subview = 'login_403';
+		elseif( $this->is_logged() ) {
 			$this->view->role = $this->user_role;
 			$this->view->subview = 'login_view';
 		}
 		else
 			$this->view->subview = 'login_main';
 
-
-
-		$this->view->script_file	= '';
-		$this->view->css_file 		= '<link rel="stylesheet" href="/login.css" type="text/css" />';
 
         $this->response->body	= $this->view->render();
     }
@@ -33,18 +29,10 @@ class Login extends \App\Page {
 
         if($this->request->method == 'POST'){
 
-            $login = $this->request->post('username');
-            $password = $this->request->post('passwd');
+            $login 		= $this->request->post('username');
+            $password 	= $this->request->post('passwd');
 
-            //Attempt to login the user using his
-            //username and password
-            $logged = $this->pixie->auth->provider('Password')->login($login, $password);
-
-            //On successful login redirect the user to
-            //our protected page
-            //~ if ( $logged)
-		        //~ return $this->redirect('/login/list');
-
+            $logged 	= $this->pixie->auth->provider('Password')->login($login, $password);
         }
 
         return $this->redirect('/');
@@ -55,15 +43,6 @@ class Login extends \App\Page {
         $this->redirect('/');
     }
 
-	public function action_list() {
 
-		$auth = $this->pixie->auth;
-
-		if(  $auth->user() )
-			return $this->redirect('/login');
-
-		$this->view->subview = 'login_view';
-		$this->response->body = $this->view->render();
-	}
 }
 ?>

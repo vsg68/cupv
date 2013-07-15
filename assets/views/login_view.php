@@ -1,6 +1,6 @@
 <?php if($role == 'admin' || $role == 'editor'): ?>
 	<div id='postfix' class='theme'>
-			<p class='name'><a href='#'>POSTFIX</a></p>
+			<p class='name'><a href='/users/'>MAIL</a></p>
 		</div>
 	<div id='squid' class='theme'>
 			<p><a href='#'>SQUID</a></p>

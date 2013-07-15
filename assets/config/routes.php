@@ -10,7 +10,7 @@ return array(
 						//~ 'controller' => 'aliases',
 						//~ 'action' => 'view'
 						//~ )),
-	'default' => array('(/<controller>(/<action>))',
+	'default' => array('(/<controller>(/<action>(/<id>)))',
 					array(
 						'controller' => 'login',
 						'action' => 'view'
