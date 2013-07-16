@@ -5,8 +5,13 @@ class Page extends \PHPixie\Controller {
 
 	protected $view;
 	protected $auth;
-	protected $user_role;
+	protected $user_level;
 	protected $logmsg;
+	const RIGHTS_ERROR = 'Не хватает прав для данной операции.';
+	const READ_LEVEL = 0;
+	const WRITE_LEVEL = 1;
+	const ADMIN_LEVEL = 2;
+
 
 	public function before() {
 
@@ -14,32 +19,26 @@ class Page extends \PHPixie\Controller {
 	}
 
 
-	protected function is_logged(){
-
-        if( $this->pixie->auth->user() == null ) {
-			$this->redirect('/login/login');
-            return;
-        }
+	protected function is_approve($security_level = 0){
 
 		$name = $this->pixie->auth->user()->login;
 		$ctrl = $this->request->param('controller');
 
 		$result = $this->pixie->db->query('select')
-											->fields('X.role_name')
+											->fields($this->pixie->db->expr('count(*) as cnt'))
 											->table('roles','X')
 											->join(array('auth','Y'),array('Y.id','X.auth_id'),'LEFT')
 											->where('Y.login',$name)
-											->where('X.ctrl_name',strtolower($ctrl))
+											->where('X.control_name',strtolower($ctrl))
+											->where('X.slevel','>=',$security_level)
 											->execute()
 											->current();
 
-		if( $result )
-			$this->user_role = strtolower($result->role_name);
+		if(	$result->cnt )
+			return true;
+		else
+			return false;
 
-		if( ! $this->user_role )
-			$this->redirect('/login/view/403');
-
-        return true;
     }
 
     protected function sanitize($value,$key,$method) {

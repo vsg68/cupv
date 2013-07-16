@@ -1,4 +1,4 @@
-<?php if($role == 'admin' || $role == 'editor'): ?>
+<?php if($role): ?>
 	<div id='postfix' class='theme'>
 			<p class='name'><a href='/users/'>MAIL</a></p>
 		</div>

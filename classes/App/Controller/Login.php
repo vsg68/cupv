@@ -12,10 +12,8 @@ class Login extends \App\Page {
 		$this->view->css_file 		= '<link rel="stylesheet" href="/login.css" type="text/css" />';
 
 
-		if( $this->request->param('id') == '403' )
-			$this->view->subview = 'login_403';
-		elseif( $this->is_logged() ) {
-			$this->view->role = $this->user_role;
+		if( $this->pixie->auth->user() ) {
+			$this->view->role = $this->is_approve($this::WRITE_LEVEL);
 			$this->view->subview = 'login_view';
 		}
 		else
@@ -33,6 +31,9 @@ class Login extends \App\Page {
             $password 	= $this->request->post('passwd');
 
             $logged 	= $this->pixie->auth->provider('Password')->login($login, $password);
+            //~ if( $this->is_logged() )
+				//~ setcookie('SECURITY_LEVEL',$this->user_level);
+
         }
 
         return $this->redirect('/');
