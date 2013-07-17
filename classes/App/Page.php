@@ -23,6 +23,7 @@ class Page extends \PHPixie\Controller {
 
 		$name = $this->pixie->auth->user()->login;
 		$ctrl = $this->request->param('controller');
+		$act  = $this->request->param('action');
 
 		$result = $this->pixie->db->query('select')
 											->fields($this->pixie->db->expr('count(*) as cnt'))
@@ -30,10 +31,10 @@ class Page extends \PHPixie\Controller {
 											->join(array('auth','Y'),array('Y.id','X.auth_id'),'LEFT')
 											->where('Y.login',$name)
 											->where('X.control_name',strtolower($ctrl))
+											//->where('X.action_name',strtolower($act))  //задел на будущее
 											->where('X.slevel','>=',$security_level)
 											->execute()
 											->current();
-
 		if(	$result->cnt )
 			return true;
 		else

@@ -4,28 +4,24 @@
  */
 namespace App\Controller;
 
-class Login extends \App\Page {
+class Admin extends \App\Page {
 
      public function action_view() {
 
  		$this->view->script_file	= '';
-		$this->view->css_file 		= '<link rel="stylesheet" href="/login.css" type="text/css" />';
+		$this->view->css_file 		= '<link rel="stylesheet" href="/admin.css" type="text/css" />';
+
+		$this->view->subview = 'admin_main';
 
 
-		if( $name = $this->pixie->auth->user() ) {
+		$this->view->sections = $this->pixie->db
+												->query('select')
+												->table('sections')
+												->execute();
 
-			//~ $roles = $this->pixie->db->query('select')
-											//~ ->table('roles','X')
-											//~ ->join(array('auth','Y'),array('Y.id','X.auth_id'),'LEFT')
-											//~ ->where('Y.login',$name)
-											//~ ->execute();
-//~
-			//~ $this->view->role = $roles;
-			$this->view->subview = 'login_view';
-		}
-		else
-			$this->view->subview = 'login_main';
-
+		$this->view->users = $this->pixie->db->query('select')
+											->table('auth')
+											->execute();
 
         $this->response->body	= $this->view->render();
     }

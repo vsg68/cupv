@@ -17,10 +17,9 @@ class Users extends \App\Page {
 
 		// Проверка легитимности пользователя и его прав
         if( ! $this->is_approve($this::ADMIN_LEVEL) ) {
-
 			$this->view->subview = '403';
 			$this->response->body = $this->view->render();
-			$this->execute=false;
+			//$this->execute=false;
 			return;
 		}
 
