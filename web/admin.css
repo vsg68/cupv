@@ -1,0 +1,19 @@
+#ed {
+	background-image: url('/domains.png');
+}
+.aliasesplace {
+	float: none !important;
+}
+.section_box  {
+	height: 736px;
+	overflow-y: scroll;
+}
+.noedit{
+	cursor: default !important;
+}
+.listbox input[type="text"]{
+	width: 100px !important;
+}
+.listbox input[type="checkbox"]{
+	float:left;
+}

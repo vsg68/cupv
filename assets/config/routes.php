@@ -15,4 +15,5 @@ return array(
 						'controller' => 'login',
 						'action' => 'view'
 						)),
+
 );
