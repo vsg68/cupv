@@ -1,31 +1,45 @@
+
+<script type='text/javascript'>
+			var ctrl_cell 	= '<select name="ctrl_class[]">' +
+				<?php	foreach($options as $opt): ?>
+						+ '<option value="<?= $opt ?>"><?= $opt ?></option>'
+				<?php endforeach; ?>
+						+ '</select>';
+</script>
+
 <div id='log'><?= $log ?></div>
-<form id='usersform' action='#' method='post'>
+<form action='/admin/add' method='post' enctype='multipart/form-data' onsubmit='return validateForm();'>
 		<div class='fieldentry'>
 			<span class='formlabel'>Aктивен:</span>
 			<input type='checkbox' class='formtext' name='active' value='1' checked>
 	   </div>
 	   <div class='fieldentry'>
-			<span class='formlabel'>Домен:</span>
-			<input class='formtext' type='text' name='domain_name' value='' placeholder='domain.name'  />
+			<span class='formlabel'>Раздел:</span>
+			<input class='formtext' type='text' name='section_name' value='' placeholder='название'  />
 	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Описание:</span>
-			<input  class='formtext' type='text' name='domain_notes' value=''  placeholder='text' />
+			<input  class='formtext' type='text' name='section_note' value=''  placeholder='описание' />
 	   </div>
-	   <div class='fieldentry path'>
-			 <span class='formlabel'>Транспорт:<span id='path' class='web' >&rarr;</span></span>
-
+	   <div class='fieldentry'>
+			<span class='formlabel'>Доступ:</span>
+			<select  class='formtext' name='slevel_id'>
+				<?php foreach( $slevels as $slevel): ?>
+				<option value='<?= $slevel->id ?>' <?= ($slevel->slevel) ? '' : ' selected' ?> ><?= $slevel->name ?></option>
+				<?php endforeach; ?>
+			</select>
+	   </div>
+	   <div class='fieldentry'>
+			 <span class='formlabel'>Логотип:</span>
+			 <?= $logo ?>
 		</div>
-	   <div class='fieldentry listbox'>
-			<span class='formlabel'>Рассылка:<span id='all_email' class='web'>&rarr;</span></span>
 
-	   </div>
 <br />
-		<h4>Алиасы домена</h4>
+		<h4>Страницы(контроллеры) раздела</h4>
 		<table class='atable'>
-			<tr><th  class='txt'>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+			<tr><th  class='txt'>Вкладка</th><th  class='txt'>Page</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
 		</table>
 
-	<div class='submit'><input type='submit' id='submit_domain' value='Изменить'></div>
+	<div class='submit'><input type='submit' id='submit_ctrl' value='Изменить'></div>
 </form>
 

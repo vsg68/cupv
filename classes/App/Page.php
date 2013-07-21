@@ -74,4 +74,10 @@ class Page extends \PHPixie\Controller {
 
 		}
 	}
+
+	/* Берем или значение или значение по умолчанию */
+	protected function getVar(& $var, $val=null) {
+
+		return isset($var) ? $var : $val ;
+	}
 }

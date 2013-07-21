@@ -8,4 +8,5 @@ $loader->add('PHPixie',$root.'/vendor/phpixie/orm/classes/');
 
 $pixie = new \App\Pixie();
 $pixie->bootstrap($root)->http_request()->execute()->send_headers()->send_body();
+
 ?>

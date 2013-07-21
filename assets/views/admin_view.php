@@ -8,11 +8,11 @@
 	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Название:</span>
-			<input  class='formtext' type='text' name='secton_notes' value='<?= $section->secton_notes; ?>'  />
+			<input  class='formtext' type='text' name='secton_notes' value='<?= $section->name; ?>'  />
 	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Описание:</span>
-			<input  class='formtext' type='text' name='secton_notes' value='<?= $section->secton_notes; ?>'  />
+			<input  class='formtext' type='text' name='secton_notes' value='<?= $section->notes; ?>'  />
 	   </div>
 		<div class='fieldentry'>
 			<span class='formlabel'>Доступ:</span>

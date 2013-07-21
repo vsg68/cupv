@@ -11,9 +11,14 @@
 .noedit{
 	cursor: default !important;
 }
-.listbox input[type="text"]{
+.alias input[type="text"]{
 	width: 100px !important;
 }
 .listbox input[type="checkbox"]{
 	float:left;
 }
+/*
+select  {
+	width: 200px;
+}
+*/

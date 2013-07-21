@@ -21,55 +21,7 @@ $(function(){
 												$('#alias').attr('disabled','true');
 											})
 								});
-	// Транспорт
-	$('#path').live('click',function(){
-		path = '<input class="formtext" type="text" name="delivery_to" value="" placeholder="proto:[ip_addr]" />';
-		// если уже есть одно поле, то остальные пропускаем
-		if( $('.path .formtext').size() == 0 ) {
 
-			$('.path').append(path);
-			$('.path .formtext').focus();
-			$(this).html("&dArr;");
-			// удаляем алиасы и блокируем добавление
-			$('#alias').attr('disabled','true');
-			$('.atable tr').not(':first').remove();
-			// Прячем и очищаем адреса
-			$('.listbox .web').html('&rArr;');
-			$('.listbox .formtext').remove();
-
-		}
-		else {
-			$('.path .formtext').remove();
-			$(this).html('&rArr;');
-			$('#alias').removeAttr('disabled');
-		}
-		return false;
-	});
-
-	// Адрес рассылки
-	$('#all_email').live('click',function(){
-
-		email = "<div class='formtext'>"+
-				"<input type='text' name='all_email' value='' placeholder='mailbox_name'/>@domain.name"+
-				"<input type='hidden' name='all_enable' value='1'></div>";
-
-		if( $('.listbox .formtext').size() == 0 ) {
-
-			$(this).html('&dArr;');
-			$('.listbox').append(email);
-			$('.listbox :text').focus();
-			// Удаляем транспорт
-			$('.path .formtext').remove();
-			$('.path .web').html('&rArr;');
-			// Разрешаем алиас
-			$('#alias').removeAttr('disabled');
-		}
-		else {
-			$(this).html('&rArr;');
-			$('.listbox .formtext').remove();
-		}
-		return false;
-	});
 
 	// Блокирование поля email (disable)
 	$(':checkbox[name="all_enable"]').live('click', function(){
@@ -84,10 +36,11 @@ $(function(){
 	$('.else').live('click',function(){
 
 		open_tag 	= '<tr class="alias">';
-		alias_cell 	= '<td><input type="text" name="dom[]" value="" placeholder="название домена"></td>';
+		name_cell	= '<td>'+ '<input type="text" name="ctrl_name[]" value="">' +'</td>';
+		alias_cell 	= '<td>'+ ctrl_cell +'</td>';
 		chkbox_cell = '<td>'+
-						'<input type="hidden" name="dom_st[]" value="1">' +
-						'<input type="hidden" name="dom_id[]" value="0">' +
+						'<input type="hidden" name="ctrl_st[]" value="1">' +
+						'<input type="hidden" name="ctrl_id[]" value="0">' +
 						'<input type="checkbox" name="chk" checked>' +
 					  '</td>';
 		button_cell = '<td><span class="delRow  web">&otimes;</span></td>';
@@ -95,21 +48,19 @@ $(function(){
 
 		var tbl = $(this).parents('.atable').get(0);
 
-		$(tbl).append( open_tag + alias_cell + chkbox_cell + button_cell + close_tag );
-
-
+		$(tbl).append( open_tag + name_cell + alias_cell + chkbox_cell + button_cell + close_tag );
 
 		return false;
 	});
 
-	$('#submit_domain').live('click', function(event){
+	$('#submit_ctrl1').live('click', function(event){
 
 			event.preventDefault();
 
 			var is_ok  = true;
 			var domain_name = $('input[name="domain_name"]').val();
 			var aliasObj = {};
-
+/*
 			// Заполняем массив значениями полей
 			var domainArr = $('tr:not(.noedit) .key').map(function(){ return $(this).text()	});
 			var valuesArr = $(':text[name="domain_name"],:text[name="dom[]"]').map(function(){ return $(this).val() });
@@ -146,7 +97,7 @@ $(function(){
 				else
 					$(this).removeClass('badentry');
 			});
-
+*/
 			// проверка окончена
 			if( ! is_ok )	{
 
@@ -160,13 +111,13 @@ $(function(){
 
 			var params =  $('#usersform').serialize();
 
-			$.post(	'/domains/add/', params , function(response) {
+			$.post(	'/admin/add/', params , function(response) {
 
-								dom_id = /^\d+$/;
+							//	dom_id = /^\d+$/;
 
-								if( dom_id.test(response) )
-									window.location = '/domains/view/?name=' + response;
-								else
+							//	if( dom_id.test(response) )
+							//		window.location = '/admin/view/?name=' + response;
+							//	else
 									$('#ed').empty().html(response);
 							});
 			return false;
