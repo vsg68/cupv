@@ -8,7 +8,7 @@
 </script>
 
 <div id='log'><?= $log ?></div>
-<form action='/admin/add' method='post' enctype='multipart/form-data' onsubmit='return validateForm();'>
+<form id='usersform' action='#' method='post' >
 		<div class='fieldentry'>
 			<span class='formlabel'>Aктивен:</span>
 			<input type='checkbox' class='formtext' name='active' value='1' checked>
@@ -29,10 +29,7 @@
 				<?php endforeach; ?>
 			</select>
 	   </div>
-	   <div class='fieldentry'>
-			 <span class='formlabel'>Логотип:</span>
-			 <?= $logo ?>
-		</div>
+
 
 <br />
 		<h4>Страницы(контроллеры) раздела</h4>

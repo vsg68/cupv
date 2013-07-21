@@ -42,14 +42,13 @@ class Admin extends \App\Page {
 	public function action_single() {
 
 		$view 		= $this->pixie->view('admin_view');
-		$view->log 	= isset($this->logmsg) ?  $this->logmsg : '';
+		$view->log 	= $this->getVar($this->logmsg,'');
 
 		if( ! $this->request->get('name') )
 			//return "<img class='lb' src=/domains.png />";
 			return;
 
-		if( ! isset($this->section_id) )
-			$this->section_id = $this->request->get('name');
+		$this->section_id = $this->getVar($this->section_id, $this->request->get('name'));
 
 		$section = $this->pixie->db
 								->query('select')->table('sections')
@@ -74,7 +73,7 @@ class Admin extends \App\Page {
 
 		// Собираем все контроллеры(страницы)
 		$view->controllers = $this->pixie->db
-											->query('select')->table('controls')
+											->query('select')->table('controllers')
 											->where('section_id', $this->section_id)
 											->execute();
 
@@ -87,18 +86,15 @@ class Admin extends \App\Page {
 
 	public function action_new() {
 
-		$view 		= $this->pixie->view('admin_new');
-		$view->log 	= $this->getVar($this->logmsg));
-
-		if( ! isset($this->logmsg) )
-			$view->log = '<strong>Создание нового раздела.</strong>';
+		$view 	   = $this->pixie->view('admin_new');
+		$view->log = $this->getVar($this->logmsg,'<strong>Создание нового раздела.</strong>');
 
 		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute();
 		$view->options = $this->get_ctrl();
 
 		// Рисуем логотип, если такой файл есть.
 		$logo_image = dirname($_SERVER["SCRIPT_FILENAME"]) .'/'. strtolower(explode('\\',get_class($this))[2]).'.png';
-		$view->logo	= file_exists($logo_image) ? $logo_image : '';
+		$view->logo	= file_exists($logo_image) ? "<img src ='/".basename($logo_image)."' />" : '';
 
 		$this->response->body = $view->render();
 	}
@@ -114,9 +110,7 @@ class Admin extends \App\Page {
 //			array_walk($params,array($this,'sanitize'),'notempty');
 
 			// Инициируем, чтоб не было ошибки при обработке несуществующего массива
-			if( ! isset($params['ctrl_class']) ) $params['ctrl_class'] = array();
-			if( ! isset($params['ctrl_name']) )   $params['ctrl_name'] = array();
-// Как обрабатывается картинка ?
+			$params['ctrl_name'] = $this->getVar($params['ctrl_name'],array());
 
 			// Если нет ошибок заполнения - проходим в обработку
 			if( ! isset($this->logmsg) ) {
@@ -124,17 +118,18 @@ class Admin extends \App\Page {
 				// Приходит обработка либо новой записи, либо изменение существующего
 				//
 				$entry = array( 'name' 		=> $params['section_name'],
-								'note'		=> $params['section_note'],
+								'note'		=> $this->getVar( $params['section_note'] ),
 								'slevel_id' => $params['slevel_id'],
-								'active'	=> $this->getVar($params['active'],0)
+								'active'	=> $this->getVar( $params['active'],0 )
 								);
 
 				if ( ! isset($params['section_id']) ) {
 				// новая запись
-					$this->pixie->db->query('insert')->table('paramss')
+					$this->pixie->db->query('insert')->table('sections')
 									->data($entry)
 									->execute();
 
+					$params['section_id'] = $this->pixie->db->insert_id();
 				}
 				else {
 				// Запись существует
@@ -144,64 +139,32 @@ class Admin extends \App\Page {
 									->execute();
 				}
 
-				// Обработка алиасов
-				foreach ($params['alias'] as $key=>$alias ) {
+				// Обработка контроллеров
+				foreach ($params['ctrl_name'] as $key=>$ctrl ) {
+					// Готовим массив данных
+					$entry = array(	'name'  	 => $ctrl,
+									'class' 	 => $params['ctrl_class'][$key],
+									'section_id' => $params['section_id'],
+									'active'	 => $params['ctrl_st'][$key]
+									);
 
-					if( $params['alias_st'][$key] == 2 ) {
+					if( $params['ctrl_st'][$key] == 2 ) {
 					// Удаление
-						$this->pixie->db->query('delete')->table('aliases')
-										->where('alias_id',$params['alias_id'][$key])
+						$this->pixie->db->query('delete')->table('controllers')
+										->where('id',$params['ctrl_id'][$key])
 										->execute();
 					}
-					elseif( $params['alias_id'][$key] == 0 ) {
+					elseif( $params['ctrl_id'][$key] == 0 ) {
 					// Новый
-						$this->pixie->db->query('insert')->table('aliases')
-										->data(array(
-											'alias_name' => $alias,
-											'delivery_to'=> $params['mailbox'],
-											'active'	 => $params['alias_st'][$key]
-										))->execute();
+						$this->pixie->db->query('insert')->table('controllers')
+										->data($entry)
+										->execute();
 					}
 					else {
 					// Изменение
-						$this->pixie->db->query('update')->table('aliases')
-										->data(array(
-											'alias_name' => $alias,
-											'delivery_to'=> $params['mailbox'],
-											'active'	 => $params['alias_st'][$key]
-										))
-										->where('alias_id', $params['alias_id'][$key])
-										->execute();
-					}
-				}
-
-				// Обработка форварда
-				foreach ($params['fwd'] as $key=>$fwd ) {
-
-					if( $params['fwd_st'][$key] == 2 ) {
-					// Удаление
-						$this->pixie->db->query('delete')->table('aliases')
-										->where('alias_id',$params['fwd_id'][$key])
-										->execute();
-					}
-					elseif( $params['fwd_id'][$key] == 0 ) {
-					// Новый
-						$this->pixie->db->query('insert')->table('aliases')
-										->data(array(
-											'alias_name' => $params['mailbox'],
-											'delivery_to'=> $fwd,
-											'active'	 => $params['fwd_st'][$key]
-										))->execute();
-					}
-					else {
-					// Изменение
-						$this->pixie->db->query('update')->table('aliases')
-										->data(array(
-											'alias_name' => $params['mailbox'],
-											'delivery_to'=> $fwd,
-											'active'	 => $params['fwd_st'][$key]
-										))
-										->where('alias_id', $params['fwd_id'][$key])
+						$this->pixie->db->query('update')->table('controllers')
+										->data($entry)
+										->where('ctrl_id', $params['ctrl_id'][$key])
 										->execute();
 					}
 				}
@@ -211,16 +174,16 @@ class Admin extends \App\Page {
 			// Ошибки имели место
 			if( isset( $this->logmsg ) ) {
 
-				if ( $params['params_id'] ) {
+				if ( $params['section_id'] ) {
 					// Ошибка во время редактирования
-					$this->mailbox = $params['mailbox'];
+					$this->section_id = $params['section_id'];
 					$this->action_single();
 				}
 				else
 					$this->action_new();
 			}
 			else
-				$this->response->body = $params['mailbox'];
+				$this->response->body = $params['section_id'];
 		}
 
 	}

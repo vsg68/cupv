@@ -8,11 +8,11 @@
 	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Название:</span>
-			<input  class='formtext' type='text' name='secton_notes' value='<?= $section->name; ?>'  />
+			<input  class='formtext' type='text' name='secton_name' value='<?= $section->name; ?>'  />
 	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Описание:</span>
-			<input  class='formtext' type='text' name='secton_notes' value='<?= $section->notes; ?>'  />
+			<input  class='formtext' type='text' name='secton_note' value='<?= $section->note; ?>'  />
 	   </div>
 		<div class='fieldentry'>
 			<span class='formlabel'>Доступ:</span>
@@ -23,19 +23,25 @@
 			</select>
 		</div>
 
-		<input type='hidden' name='secton_id' value='<?= $secton->id; ?>'  />
+		<input type='hidden' name='secton_id' value='<?= $section->id; ?>'  />
 
 <br />
 		<h4>Контроллеры(страницы)</h4>
 			<table class='atable'>
-				<tr><th  class='txt'>контроллер</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+				<tr><th  class='txt'>Вкладка</th><th  class='txt'>Page</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
 		<?php foreach ($controllers as $control): ?>
 		   <tr class="alias">
-			   <td><input type='text' name='dom[]' value='<?= $control->name ?>' <?php ($control->active & 1 ) || print ('disabled'); ?> ></td>
+			   <td><input type='text' name='ctrl_name[]' value='<?= $control->name ?>' <?php ($control->active & 1 ) || print ('disabled'); ?> ></td>
+			   <td><select name='ctrl_class[]'>
+					   <?php foreach( $slevels as $slevel): ?>
+						<option value='<?= $slevel->id ?>' <?= ($slevel->id != $control->slevel_id) ? '' : ' selected' ?> ><?= $slevel->name ?></option>
+						<?php endforeach; ?>
+				    </select>
+			    </td>
 			   <td><input type='checkbox' name='chk' <?php ($control->active & 1 ) && print ('checked'); ?>></td>
 			   <td>
-					<input type='hidden' name='dom_st[]' value='<?= $control->active ?>'>
-				   <input type='hidden' name='dom_id[]' value='<?= $control->section_id ?>'>
+					<input type='hidden' name='ctrl_st[]' value='<?= $control->active ?>'>
+				   <input type='hidden' name='ctrl_id[]' value='<?= $control->id ?>'>
 				   <span class='delRow  web'>&otimes;</span>
 				</td>
 		   </tr>

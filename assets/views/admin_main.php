@@ -8,7 +8,7 @@
 			<div class='th'>Раздел</div>
 			<div class='th'>Описание</div>
 		</div>
-		<div class='section_box' id='local'>
+		<div class='aliases_box'>
 			<table>
 			<?php foreach( $sections as $section ): ?>
 			   <tr id="i-<?= $section->id ?>" >

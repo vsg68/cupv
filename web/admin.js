@@ -53,7 +53,7 @@ $(function(){
 		return false;
 	});
 
-	$('#submit_ctrl1').live('click', function(event){
+	$('#submit_ctrl').live('click', function(event){
 
 			event.preventDefault();
 
@@ -85,7 +85,7 @@ $(function(){
 									return false;
 							}
 			});
-
+*/
 			// проверка на правильное заполнение полей
 			$(':text', '#usersform').each(function(){
 
@@ -97,7 +97,7 @@ $(function(){
 				else
 					$(this).removeClass('badentry');
 			});
-*/
+
 			// проверка окончена
 			if( ! is_ok )	{
 
@@ -113,12 +113,12 @@ $(function(){
 
 			$.post(	'/admin/add/', params , function(response) {
 
-							//	dom_id = /^\d+$/;
+							dom_id = /^\d+$/;
 
-							//	if( dom_id.test(response) )
-							//		window.location = '/admin/view/?name=' + response;
-							//	else
-									$('#ed').empty().html(response);
+							if( dom_id.test(response) )
+								window.location = '/admin/view/?name=' + response;
+							else
+								$('#ed').empty().html(response);
 							});
 			return false;
 

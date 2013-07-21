@@ -2,10 +2,13 @@
 	background-image: url('/domains.png');
 }
 .aliasesplace {
+/*
 	float: none !important;
+*/
 }
-.section_box  {
-	height: 736px;
+.aliases_box  {
+	height: 707px;
+	padding: 2px 2px 2px 0;
 	overflow-y: scroll;
 }
 .noedit{
@@ -17,8 +20,7 @@
 .listbox input[type="checkbox"]{
 	float:left;
 }
-/*
-select  {
-	width: 200px;
+
+.key  {
+	width: 50% !important;
 }
-*/
