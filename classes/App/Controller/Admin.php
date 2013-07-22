@@ -37,7 +37,7 @@ class Admin extends \App\Page {
 
 		$this->view->controllers = $this->pixie->db
 											->query('select')
-											->fields($this->pixie->db->expr('S.name AS s_name, C.class AS c_class'))
+											->fields($this->pixie->db->expr('S.id AS s_id, S.name AS s_name, C.class AS c_class'))
 											->table('controllers','C')
 											->join(array('sections','S'),array('C.section_id','S.id'))
 											->execute();

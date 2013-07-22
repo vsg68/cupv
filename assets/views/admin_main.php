@@ -29,7 +29,7 @@
 		<div class='domain_box'>
 			<table>
 			<?php foreach( $controllers as $control ): ?>
-			   <tr class='noedit'>
+			   <tr class='noedit n-<?= $control->s_id ?>' >
 				   <td class="key" ><?= $control->c_class ?></td>
 				   <td class="val"><?= $control->s_name ?></td>
 			   </tr>
