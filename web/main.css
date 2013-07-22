@@ -205,6 +205,8 @@ h4{
 }
 .fieldentry input[type='text'] {
 	width: 245px;
+	height: 19px;
+	margin: 1px 0 0 0;
 }
 .fieldentry input[type='text'], .formlabel {
 	float: left;

@@ -41,7 +41,8 @@ $(function(){
 	$(':checkbox').live('click', function(){
 
 		var input_text = $(this).closest('tr.alias').find(':text:eq(0)');
-		var input_hide = $(this).closest('tr.alias').find(':hidden:eq(0)');
+		//var input_hide = $(this).closest('tr.alias').find(':hidden:eq(0)');
+		var input_hide = $(this).closest('tr.alias').find(':hidden[name="stat[]"]');
 
 		if ( $(this).attr('checked') ) {
 			$(input_text).removeAttr('disabled');

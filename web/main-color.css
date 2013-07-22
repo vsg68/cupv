@@ -63,7 +63,7 @@ body {
 	border:1px solid #ccc;
 }
 
-#lb, .formlabel, input {
+#lb, .formlabel, input, select {
 	color: #888;
 }
 .delRow {
@@ -95,7 +95,7 @@ body {
 .fieldentry, .listbox {
 	background-color: #eee;
 }
-input[type='text'], input[type='password'] {
+input[type='text'], input[type='password'], select {
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;

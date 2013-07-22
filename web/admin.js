@@ -5,50 +5,37 @@ $(function(){
 	$('#i-' + key).addClass('selected_key');
 
 	// Запрос на редактирование
-	$('tr','.domain_box').not('.noedit').click( function(){
+	$('tr','.domain_box').not('.noedit').click(function(){
 
-									reg = /i-/;
-									// Выбор записи
-									$('.selected_key').removeClass('selected_key');
-									$(this).addClass('selected_key');
-									// Запрос
-									name = $(this).attr('id').replace('i-','');
-									$.get('/domains/single/',{'name':name, 'act':'1'},function(response){
-											$('#ed').empty().append(response);
+							reg = /i-/;
+							// Выбор записи
+							$('.selected_key').removeClass('selected_key');
+							$(this).addClass('selected_key');
+							// Запрос
+							name = $(this).attr('id').replace('i-','');
 
-											// Если имеем дело с транспортом - блокируем алиасы
-											if( $(':text[name="delivery_to"]').val() != undefined )
-												$('#alias').attr('disabled','true');
-											})
-								});
+							$.get('/admin/single/',{'name':name, 'act':'1'},function(response){
+									$('#ed').empty().append(response);
 
-
-	// Блокирование поля email (disable)
-	$(':checkbox[name="all_enable"]').live('click', function(){
-
-		if ( $(this).attr('checked') )
-			$(':text[name="all_email"]').removeAttr('disabled');
-		else
-			$(':text[name="all_email"]').attr('disabled','true');
+							});
 	});
-
 	// Добавление alias
-	$('.else').live('click',function(){
+	$('.else').live('click',function(event){
+		event.preventDefault();
 
 		open_tag 	= '<tr class="alias">';
 		name_cell	= '<td>'+ '<input type="text" name="ctrl_name[]" value="">' +'</td>';
 		alias_cell 	= '<td>'+ ctrl_cell +'</td>';
 		chkbox_cell = '<td>'+
-						'<input type="hidden" name="ctrl_st[]" value="1">' +
+						'<input type="hidden" name="st[]" value="1">' +
 						'<input type="hidden" name="ctrl_id[]" value="0">' +
 						'<input type="checkbox" name="chk" checked>' +
 					  '</td>';
 		button_cell = '<td><span class="delRow  web">&otimes;</span></td>';
 		close_tag 	= '</tr>';
 
-		var tbl = $(this).parents('.atable').get(0);
-
-		$(tbl).append( open_tag + name_cell + alias_cell + chkbox_cell + button_cell + close_tag );
+		$(this).parents('.atable')
+				.append( open_tag + name_cell + alias_cell + chkbox_cell + button_cell + close_tag );
 
 		return false;
 	});

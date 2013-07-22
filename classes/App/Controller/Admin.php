@@ -7,6 +7,7 @@ namespace App\Controller;
 class Admin extends \App\Page {
 
 	private $section_id;
+	private $pages;
 
 	 /* получаем название имеющихся контроллеров */
 	private function get_ctrl() {
@@ -34,6 +35,13 @@ class Admin extends \App\Page {
 											->table('sections')
 											->execute();
 
+		$this->view->controllers = $this->pixie->db
+											->query('select')
+											->fields($this->pixie->db->expr('S.name AS s_name, C.class AS c_class'))
+											->table('controllers','C')
+											->join(array('sections','S'),array('C.section_id','S.id'))
+											->execute();
+
 		$this->view->sections_block = $this->action_single();
 
         $this->response->body	= $this->view->render();
@@ -55,27 +63,28 @@ class Admin extends \App\Page {
 								->where('id', $this->section_id)
 								->execute()
 								->current();
-
-
-		$view->options = $this->get_ctrl();
-
-		$view->slevels = $this->pixie->db
-										->query('select')
-										->table('slevels')
-										->execute();
-
 		//Если ответ пустой
 		if( ! count($section) )
 			return "<strong>Раздела с ID ".$this->section_id." не существует.</strong>";
 
 		$view->section = $section;
 
+		$view->options = $this->get_ctrl();
+
+		$view->slevels = $this->pixie->db
+										->query('select')
+										->table('slevels')
+										->execute()
+										->as_array();
 
 		// Собираем все контроллеры(страницы)
 		$view->controllers = $this->pixie->db
 											->query('select')->table('controllers')
 											->where('section_id', $this->section_id)
 											->execute();
+
+		// Если массив пуст - инициируем пустым массивом
+	//	$view->controllers = $this->getVar($view->controllers, array());
 
 		// Редактирование
 		if( ! $this->request->get('act') )
@@ -90,10 +99,12 @@ class Admin extends \App\Page {
 		$view->log = $this->getVar($this->logmsg,'<strong>Создание нового раздела.</strong>');
 
 		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute();
+		// Выбираем контроллеры(класс) массив
 		$view->options = $this->get_ctrl();
 
 		// Рисуем логотип, если такой файл есть.
-		$logo_image = dirname($_SERVER["SCRIPT_FILENAME"]) .'/'. strtolower(explode('\\',get_class($this))[2]).'.png';
+		$path_arr   = explode('\\',get_class($this));
+		$logo_image = dirname( $_SERVER["SCRIPT_FILENAME"] ).'/'. strtolower($path_arr[2]).'.png';
 		$view->logo	= file_exists($logo_image) ? "<img src ='/".basename($logo_image)."' />" : '';
 
 		$this->response->body = $view->render();
@@ -139,16 +150,18 @@ class Admin extends \App\Page {
 									->execute();
 				}
 
-				// Обработка контроллеров
+			//
+			// Обработка контроллеров
+			//
 				foreach ($params['ctrl_name'] as $key=>$ctrl ) {
 					// Готовим массив данных
 					$entry = array(	'name'  	 => $ctrl,
 									'class' 	 => $params['ctrl_class'][$key],
 									'section_id' => $params['section_id'],
-									'active'	 => $params['ctrl_st'][$key]
+									'active'	 => $params['stat'][$key]
 									);
 
-					if( $params['ctrl_st'][$key] == 2 ) {
+					if( $params['stat'][$key] == 2 ) {
 					// Удаление
 						$this->pixie->db->query('delete')->table('controllers')
 										->where('id',$params['ctrl_id'][$key])
@@ -164,7 +177,7 @@ class Admin extends \App\Page {
 					// Изменение
 						$this->pixie->db->query('update')->table('controllers')
 										->data($entry)
-										->where('ctrl_id', $params['ctrl_id'][$key])
+										->where('id', $params['ctrl_id'][$key])
 										->execute();
 					}
 				}

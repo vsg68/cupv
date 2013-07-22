@@ -6,8 +6,8 @@
 	float: none !important;
 */
 }
-.aliases_box  {
-	height: 707px;
+.domain_box  {
+	height: 307px;
 	padding: 2px 2px 2px 0;
 	overflow-y: scroll;
 }
