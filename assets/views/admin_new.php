@@ -1,12 +1,4 @@
 
-<script type='text/javascript'>
-			var ctrl_cell 	= '<select name="ctrl_class[]">' +
-				<?php	foreach($options as $opt): ?>
-						+ '<option value="<?= $opt ?>"><?= $opt ?></option>'
-				<?php endforeach; ?>
-						+ '</select>';
-</script>
-
 <div id='log'><?= $log ?></div>
 <form id='usersform' action='#' method='post' >
 		<div class='fieldentry'>

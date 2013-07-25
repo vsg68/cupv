@@ -7,7 +7,6 @@ $(function(){
 	// Запрос на редактирование
 	$('tr','.domain_box').not('.noedit').click(function(){
 
-							reg = /i-/;
 							// Выбор записи
 							$('.selected_key').removeClass('selected_key');
 							$(this).addClass('selected_key');
@@ -47,64 +46,49 @@ $(function(){
 			var is_ok  = true;
 			var section_name = $('input[name="section_name"]').val();
 			var section_id = $(':hidden[name="section_id"]').val();
-			//var selectedArr = $(':select:selected');
 
-			var reg = /i-/;
 			// Заполняем массив значениями полей - названия разделов
-			var sectionArr = $('tr:not(.noedit) .key').map(function(){ return $(this).text()	});
-			//var ctrlArr = $(':text[name="domain_name"]').map(function(){ return $(this).val() });
+			var sectionArr = $('tr:not(.noedit) .key').map(function(){ return $(this).text() });
+
 			// Заполняем массив значениями полей - контроллеры
-			var ctrlArr = $('tr.noedit .key').map(function(){ return $(this).val() });
+			var ctrlArr = $('tr.noedit .key').map(function(){ return $(this).text() });
+
+			// Массив названий страниц(контролов) в текущим разделе(section).
+			var optArr = $('.alias option:selected').map(function(){ return $(this).val() });
 
 			// количество вхождений названия раздела в имеющиеся
-			//lenSect = $.grep( sectionArr, function(val){ return val == section_name; }).length;
+			lenSect = $.grep( sectionArr, function(val){ return val == section_name; }).length;
 
-			if( section_id == undefined  ) {
-			// новая запись
-				if( $.grep( sectionArr, function(val){ return val == section_name; }).length )
-					$('input[name="section_name"]').val('');
-			}
-			else {
-			// редактируем
-				if( $('#i-' + section_id + ' .key').text() != sc_name_field.val() )
-					sc_name_field.val('');
-			}
+			// Если НЕ существ. значения для такого id - пишем пустое
+			sectVal = $('#i-' + section_id + ' .key').text();
+			if( sectVal == undefined ) 	sectVal = '';
 
-			//~ $(':select:selected').each(function(){
-				//~ if( section_id == undefined ) {
-					//~ if( $.inArray(ctrlArr, this.val()) )
-						//~ alert('none');
-				//~ }
-				//~ //else
-//~
-			//~ });
-			//~ $('tr:not(.noedit)').each(function(){
-//~
-							//~ key = $(this).children('.key').text();		// value
-							//~ val = $(this).attr('id').replace(reg,'');  // id
-//~
-							//~ if( key == sc_name_field.val() && val != section_id ) {
-								//~ $('input[name="section_name"]').val('');
-								//~ alert('Такое название уже есть.');
-								//~ return false;
-							//~ }
-			//~ });
-//~
-			//~ //
+			if( (lenSect == 1 && sectVal != section_name ) )
+				$('input[name="section_name"]').val('');
 
-			// проверка на вхождение в массив интересующих значений
-			//$(':text[name="domain_name"],:text[name="dom[]"]').not(':hidden').each(function(){
-			$(':select:selected').each(function(){
 
-							var domain  = $(this).val();
+			// работаем с реверсивным массивом
+			$($('.alias option:selected').get().reverse()).each(function(){
 
-							lenVal 	  = $.grep( valuesArr, function(val){ return val == domain; }).length;
+				control_name  = $(this).text();
+				control_id	  = $(this).closest('.alias').find(':hidden[name="ctrl_id[]"]').val();
 
-							if( lenDomain != 0 || lenVal != 1 || ( aliasObj[domain] != undefined && aliasObj[domain] != domain_name)  ) {
-									alert('Домен "'+ $(this).val() +'" уже существует');
-									$(this).val('');
-									return false;
-							}
+				// ищем название имеющегося контрола по имеющемуся id (если такой есть)
+				ctrlVal = $('#n-' + control_id + ' .key').text();
+				if( ctrlVal == undefined ) 	ctrlVal = '';
+
+				// отбираем из всех имеющихся страниц(control) те, которые совпадают с вновь введенными
+				lenVal 	  = $.grep( ctrlArr, function(val){ return val == control_name; }).length;
+
+				// проверка на дубли во введенном масиве контролов
+				optVal 	  = $.grep( optArr, function(val){ return val == control_name; }).length;
+
+				if( (optVal != 1) || (lenVal == 1) && ( ctrlVal != control_name ) ) {
+
+					$(this).siblings('.zero').attr('selected','true');
+					$(this).removeAttr('selected');
+					return false;
+				}
 			});
 
 			// проверка на правильное заполнение полей
@@ -132,15 +116,14 @@ $(function(){
 
 			var params =  $('#usersform').serialize();
 
-			//~ $.post(	'/admin/add/', params , function(response) {
-//~
-							//~ dom_id = /^\d+$/;
-//~
-							//~ if( dom_id.test(response) )
-								//~ window.location = '/admin/view/?name=' + response;
-							//~ else
-								//~ $('#ed').empty().html(response);
-							//~ });
+			$.post(	'/admin/add/', params , function(response) {
+
+							dom_id = /^\d+$/;
+							if( dom_id.test(response) )
+								window.location = '/admin/view/?name=' + response;
+							else
+								$('#ed').empty().html(response);
+							});
 			return false;
 
 		});

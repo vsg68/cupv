@@ -1,10 +1,4 @@
-<script type='text/javascript'>
-var ctrl_cell 	= '<select name="ctrl_class[]">' +
-	<?php	foreach($options as $opt): ?>
-			+ '<option value="<?= $opt ?>"><?= $opt ?></option>'
-	<?php endforeach; ?>
-			+ '</select>';
-</script>
+
 <div id='log'><?= $log ?></div>
 <form id='usersform' action='' method='post'>
 
@@ -40,6 +34,7 @@ var ctrl_cell 	= '<select name="ctrl_class[]">' +
 		   <tr class="alias">
 			   <td><input type='text' name='ctrl_name[]' value='<?= $control->name ?>' <?php ($control->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td><select name='ctrl_class[]'>
+						<option value="" class="zero"></option>
 					   <?php foreach( $options as $opt): ?>
 						<option value='<?= $opt ?>' <?= ($opt != $control->class) ? '' : ' selected' ?> ><?= $opt ?></option>
 						<?php endforeach; ?>

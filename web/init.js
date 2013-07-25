@@ -201,6 +201,9 @@ function checkfield(obj) {
 			if( ! $('input:checked').is('[name="all_enable"]') ) return false
 			reg = new RegExp(word_tmpl,'i')
 			break
+		case 'section_note':
+			// не проверяем
+			return false
 		default:
 			if( ! value )
 				return true

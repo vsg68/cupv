@@ -121,8 +121,8 @@ $(function(){
 			});
 
 
-			// проверка на вхождение в массив интересующих значений
-			$(':text[name="domain_name"],:text[name="dom[]"]').not(':hidden').each(function(){
+			// проверка на вхождение в РЕВЕРСИВНЫЙ массив интересующих значений
+			$($(':text[name="domain_name"],:text[name="dom[]"]').not(':hidden').get().reverse()).each(function(){
 
 							var domain  = $(this).val();
 							lenDomain = $.grep( domainArr, function(val){ return val == domain; }).length;

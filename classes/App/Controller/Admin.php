@@ -42,6 +42,9 @@ class Admin extends \App\Page {
 											->join(array('sections','S'),array('C.section_id','S.id'))
 											->execute();
 
+		// Выбираем контроллеры(класс) массив
+		$this->view->options = $this->get_ctrl();
+
 		$this->view->sections_block = $this->action_single();
 
         $this->response->body	= $this->view->render();
@@ -68,7 +71,6 @@ class Admin extends \App\Page {
 			return "<strong>Раздела с ID ".$this->section_id." не существует.</strong>";
 
 		$view->section = $section;
-
 		$view->options = $this->get_ctrl();
 
 		$view->slevels = $this->pixie->db
@@ -99,8 +101,6 @@ class Admin extends \App\Page {
 		$view->log = $this->getVar($this->logmsg,'<strong>Создание нового раздела.</strong>');
 
 		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute();
-		// Выбираем контроллеры(класс) массив
-		$view->options = $this->get_ctrl();
 
 		// Рисуем логотип, если такой файл есть.
 		$path_arr   = explode('\\',get_class($this));

@@ -29,7 +29,7 @@
 		<div class='domain_box'>
 			<table>
 			<?php foreach( $controllers as $control ): ?>
-			   <tr class='noedit n-<?= $control->s_id ?>' >
+			   <tr class='noedit' id='n-<?= $control->s_id ?>' >
 				   <td class="key" ><?= $control->c_class ?></td>
 				   <td class="val"><?= $control->s_name ?></td>
 			   </tr>
@@ -41,4 +41,11 @@
 <div id='ed'>
 	<?= $sections_block; ?>
 </div>
-
+<script type='text/javascript'>
+var ctrl_cell 	= '<select name="ctrl_class[]">' +
+				  '<option value="" class="zero"></option>' +
+	<?php	foreach($options as $opt): ?>
+			'<option value="<?= $opt ?>"><?= $opt ?></option>'+
+	<?php endforeach; ?>
+			'</select>';
+</script>
