@@ -91,40 +91,41 @@ $(function(){
 				}
 			});
 
-			// проверка на правильное заполнение полей
-			$(':text', '#usersform').each(function(){
-
-				if( checkfield( $(this) ) ) {
-
-					$(this).addClass('badentry');
-					is_ok = false;
-				}
-				else
-					$(this).removeClass('badentry');
-			});
-
-			// проверка окончена
-			if( ! is_ok )	{
-
-				$('.badentry:first').focus();
-				return false;
-			}
-
-			// удаляем атрибут, чтобы поле ушло на сервер
-			// иначе получим рассогласование длины массивов
-			$(':disabled','.alias, .listbox').removeAttr('disabled');
-
-			var params =  $('#usersform').serialize();
-
-			$.post(	'/admin/add/', params , function(response) {
-
-							dom_id = /^\d+$/;
-							if( dom_id.test(response) )
-								window.location = '/admin/view/?name=' + response;
-							else
-								$('#ed').empty().html(response);
-							});
+			try_submit();
 			return false;
+			//~ // проверка на правильное заполнение полей
+			//~ $(':text', '#usersform').each(function(){
+//~
+				//~ if( checkfield( $(this) ) ) {
+//~
+					//~ $(this).addClass('badentry');
+					//~ is_ok = false;
+				//~ }
+				//~ else
+					//~ $(this).removeClass('badentry');
+			//~ });
+//~
+			//~ // проверка окончена
+			//~ if( ! is_ok )	{
+//~
+				//~ $('.badentry:first').focus();
+				//~ return false;
+			//~ }
+//~
+			//~ // удаляем атрибут, чтобы поле ушло на сервер
+			//~ // иначе получим рассогласование длины массивов
+			//~ $(':disabled','.alias, .listbox').removeAttr('disabled');
+//~
+			//~ var params =  $('#usersform').serialize();
+//~
+			//~ $.post(	'/admin/add/', params , function(response) {
+//~
+							//~ dom_id = /^\d+$/;							if( dom_id.test(response) )
+								//~ window.location = '/admin/view/?name=' + response;
+							//~ else
+								//~ $('#ed').empty().html(response);
+							//~ });
+			//~ return false;
 
 		});
 

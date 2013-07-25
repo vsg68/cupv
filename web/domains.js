@@ -97,8 +97,6 @@ $(function(){
 
 		$(tbl).append( open_tag + alias_cell + chkbox_cell + button_cell + close_tag );
 
-
-
 		return false;
 	});
 
@@ -135,40 +133,41 @@ $(function(){
 							}
 			});
 
-			// проверка на правильное заполнение полей
-			$(':text', '#usersform').each(function(){
-
-				if( checkfield( $(this) ) ) {
-
-					$(this).addClass('badentry');
-					is_ok = false;
-				}
-				else
-					$(this).removeClass('badentry');
-			});
-
-			// проверка окончена
-			if( ! is_ok )	{
-
-				$('.badentry:first').focus();
-				return false;
-			}
-
-			// удаляем атрибут, чтобы поле ушло на сервер
-			// иначе получим рассогласование длины массивов
-			$(':disabled','.alias, .listbox').removeAttr('disabled');
-
-			var params =  $('#usersform').serialize();
-
-			$.post(	'/domains/add/', params , function(response) {
-
-								dom_id = /^\d+$/;
-
-								if( dom_id.test(response) )
-									window.location = '/domains/view/?name=' + response;
-								else
-									$('#ed').empty().html(response);
-							});
+			//~ // проверка на правильное заполнение полей
+			//~ $(':text', '#usersform').each(function(){
+//~
+				//~ if( checkfield( $(this) ) ) {
+//~
+					//~ $(this).addClass('badentry');
+					//~ is_ok = false;
+				//~ }
+				//~ else
+					//~ $(this).removeClass('badentry');
+			//~ });
+//~
+			//~ // проверка окончена
+			//~ if( ! is_ok )	{
+//~
+				//~ $('.badentry:first').focus();
+				//~ return false;
+			//~ }
+//~
+			//~ // удаляем атрибут, чтобы поле ушло на сервер
+			//~ // иначе получим рассогласование длины массивов
+			//~ $(':disabled','.alias, .listbox').removeAttr('disabled');
+//~
+			//~ var params =  $('#usersform').serialize();
+//~
+			//~ $.post(	'/domains/add/', params , function(response) {
+//~
+								//~ dom_id = /^\d+$/;
+//~
+								//~ if( dom_id.test(response) )
+									//~ window.location = '/domains/view/?name=' + response;
+								//~ else
+									//~ $('#ed').empty().html(response);
+							//~ });
+			try_submit();
 			return false;
 
 		});

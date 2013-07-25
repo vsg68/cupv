@@ -149,9 +149,12 @@ function try_submit() {
 
 	$.post(	'/'+ ctrl +'/add/', params , function(response) {
 
-						mail_tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
+						if( ctrl == 'domain' || ctrl == 'admin' )
+							tmpl = /^\d+$/;
+						else
+							tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
 
-						if( mail_tmpl.test(response) )
+						if( tmpl.test(response) )
 							window.location = '/'+ ctrl +'/view/?name=' + response;
 						else
 							$('#ed').empty().html(response);
