@@ -11,7 +11,7 @@
 		<div class='domain_box'>
 			<table>
 			<?php foreach( $sections as $section ): ?>
-			   <tr id="i-<?= $section->id ?>" >
+			   <tr sid='<?= $section->id ?>' sname='<?= $section->name ?>' >
 				   <td class="key <?= $section->active == 0 ? 'nonactive':''; ?>"><?= $section->name ?></td>
 				   <td class="val"><?= $section->note ?></td>
 			   </tr>
@@ -29,8 +29,8 @@
 		<div class='domain_box'>
 			<table>
 			<?php foreach( $controllers as $control ): ?>
-			   <tr class='noedit' id='n-<?= $control->s_id ?>' >
-				   <td class="key" ><?= $control->c_class ?></td>
+			   <tr class='noedit' sid='<?= $control->s_id ?>' cname='<?= $control->c_class ?>' >
+				   <td class="key"><?= $control->c_class ?></td>
 				   <td class="val"><?= $control->s_name ?></td>
 			   </tr>
 			<?php endforeach; ?>

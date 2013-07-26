@@ -41,8 +41,6 @@ $(function(){
 
 	$('#submit_ctrl').live('click', function(event){
 
-			event.preventDefault();
-
 			var is_ok  = true;
 			var section_name = $('input[name="section_name"]').val();
 			var section_id = $(':hidden[name="section_id"]').val();
@@ -60,7 +58,7 @@ $(function(){
 			lenSect = $.grep( sectionArr, function(val){ return val == section_name; }).length;
 
 			// Если НЕ существ. значения для такого id - пишем пустое
-			sectVal = $('#i-' + section_id + ' .key').text();
+			sectVal = $('#i-' + section_id).children('key').text();
 			if( sectVal == undefined ) 	sectVal = '';
 
 			if( (lenSect == 1 && sectVal != section_name ) )
@@ -71,11 +69,13 @@ $(function(){
 			$($('.alias option:selected').get().reverse()).each(function(){
 
 				control_name  = $(this).text();
-				control_id	  = $(this).closest('.alias').find(':hidden[name="ctrl_id[]"]').val();
+				// Интересует section_id
+				//control_id	  = $(this).closest('.alias').find(':hidden[name="ctrl_id[]"]').val();
 
-				// ищем название имеющегося контрола по имеющемуся id (если такой есть)
-				ctrlVal = $('#n-' + control_id + ' .key').text();
-				if( ctrlVal == undefined ) 	ctrlVal = '';
+				// if exist контрол с данным id
+				ctrlElseExist = $('#' + section_id +'_'+ control_name).length;
+				//ctrlVal = $('#n-' + section_id).children('.key[txt="'+ control_name +'"]').text();
+				//if( ctrlVal == undefined ) 	ctrlVal = '';
 
 				// отбираем из всех имеющихся страниц(control) те, которые совпадают с вновь введенными
 				lenVal 	  = $.grep( ctrlArr, function(val){ return val == control_name; }).length;
@@ -83,15 +83,17 @@ $(function(){
 				// проверка на дубли во введенном масиве контролов
 				optVal 	  = $.grep( optArr, function(val){ return val == control_name; }).length;
 
-				if( (optVal != 1) || (lenVal == 1) && ( ctrlVal != control_name ) ) {
+				if( (optVal != 1) || (lenVal == 1) && ( ! ctrlElseExist ) ) {
 
 					$(this).siblings('.zero').attr('selected','true');
-					$(this).removeAttr('selected');
+					$(this).closest('.alias').find(':text').val('');
+					//$(this).removeAttr('selected');
+
 					return false;
 				}
 			});
 
-			try_submit();
+			//try_submit();
 			return false;
 			//~ // проверка на правильное заполнение полей
 			//~ $(':text', '#usersform').each(function(){
