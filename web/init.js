@@ -94,16 +94,30 @@ $(function(){
 
 	// Выбор записи
 	key = window.location.search.split('=')[1];
+	//?????
 	$('.key','.aliases_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
 
+	$('tr','.domain_box').filter('[sid="' +  key + '"]').addClass('selected_key');
+
 	// Запрос на редактирование
-	$('tr','.aliases_box').click( function(){
+	//$('tr','.aliases_box').click( function(){
+	$('#usrs tr').click( function(){
 									// Выбор записи
 									$('.selected_key').removeClass('selected_key');
 									$(this).addClass('selected_key');
 									// Запрос
-									name = $('.key', this).text();
-									$.get('/'+ ctrl + '/single/',{'name':name, 'act':'1'},function(response){ $('#ed').empty().append(response);})
+									if( $(this).closest('.aliases_box').length )
+										name = $('.key', this).text();
+									else if( $(this).closest('.domain_box').length )
+										name = $(this).attr('sid');
+
+									$.get('/'+ ctrl + '/single/',{'name':name, 'act':'1'},function(response){
+										 $('#ed').empty().append(response);
+
+										 // Если имеем дело с транспортом - блокируем алиасы
+										 if( $(':text[name="delivery_to"]').val() != undefined )
+										  	$('#alias').attr('disabled','true');
+									})
 								});
 
 	//Новый пользователь

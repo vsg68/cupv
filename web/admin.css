@@ -15,10 +15,12 @@
 	cursor: default !important;
 }
 .alias input[type="text"]{
-	width: 100px !important;
+	width: 120px !important;
+	height: 19px;
 }
-.listbox input[type="checkbox"]{
-	float:left;
+select {
+	height: 23px;
+	width: 120px;
 }
 
 .key  {

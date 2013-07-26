@@ -1,26 +1,10 @@
 $(function(){
 
 	// Выбор записи
-	key = window.location.search.split('=')[1];
-	$('#i-' + key).addClass('selected_key');
+	//key = window.location.search.split('=')[1];
+	//$('#i-' + key).addClass('selected_key');
 
-	// Запрос на редактирование
-	$('tr','.domain_box').not('.noedit').click( function(){
 
-									reg = /i-/;
-									// Выбор записи
-									$('.selected_key').removeClass('selected_key');
-									$(this).addClass('selected_key');
-									// Запрос
-									name = $(this).attr('id').replace('i-','');
-									$.get('/domains/single/',{'name':name, 'act':'1'},function(response){
-											$('#ed').empty().append(response);
-
-											// Если имеем дело с транспортом - блокируем алиасы
-											if( $(':text[name="delivery_to"]').val() != undefined )
-												$('#alias').attr('disabled','true');
-											})
-								});
 	// Транспорт
 	$('#path').live('click',function(){
 		path = '<input class="formtext" type="text" name="delivery_to" value="" placeholder="proto:[ip_addr]" />';
