@@ -24,6 +24,7 @@ class Page extends \PHPixie\Controller {
 										->table('controllers','X')
 										->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
 										->where('X.class',strtolower($this->request->param('controller')))
+										->where('X.active',1)
 										->order_by('Y.arrange')
 										->execute();
 	}

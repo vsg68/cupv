@@ -96,7 +96,7 @@ $(function(){
 	//?????
 	$('.key','.aliases_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
 
-	$('tr','.domain_box').filter('[sid="' +  key + '"]').addClass('selected_key');
+	$('tr','.domain_box').not('.noedit').filter('[sid="' +  key + '"]').addClass('selected_key');
 
 	// Запрос на редактирование
 	$('#usrs tr').click( function(){

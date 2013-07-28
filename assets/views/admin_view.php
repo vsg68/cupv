@@ -33,7 +33,7 @@
 		<?php foreach ($controllers as $control): ?>
 		   <tr class="alias">
 			   <td>
-				   <span class='up'>&#9650;</span>
+				   <div class='up'>&#9650;</div>
 				   <input type='text' name='ctrl_name[]' value='<?= $control->name ?>' <?php ($control->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td><select name='ctrl_class[]'>
 						<option value="" class="zero"></option>

@@ -17,17 +17,26 @@
 .alias input[type="text"]{
 	width: 120px !important;
 	height: 19px;
+	float:left;
+	padding: 0;
+	margin: 0;
 }
 select {
-	height: 23px;
+	height: 21px;
 	width: 120px;
+	background-color: #fff;
 }
 
 .key  {
-	width: 50% !important;
+/*
+	min-width: 140px !important;
+*/
 }
 .up{
 	font-size: 20px;
 	color: #ddd;
 	cursor: pointer;
+	float:left;
+	width: 20px;
+
 }

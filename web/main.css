@@ -142,7 +142,7 @@ ul li.helper {
 	overflow-y: scroll !important;
 }
 .aliases_box, .domain_box, #ed  {
-	line-height: 18px;
+	line-height: 17px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }

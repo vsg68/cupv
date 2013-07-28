@@ -10,7 +10,10 @@ $(function(){
 
 
 					open_tag 	= '<tr class="alias">';
-					name_cell	= '<td><i class="up">&#9650;</i>'+ '<input type="text" name="ctrl_name[]" value="">' +'</td>';
+					name_cell	= '<td>'+
+									'<div class="up">&#9650;</div>'+
+									'<input type="text" name="ctrl_name[]" value="">' +
+									'</td>';
 					alias_cell 	= '<td>'+ ctrl_cell +'</td>';
 					chkbox_cell = '<td>'+
 									'<input type="hidden" name="stat[]" value="1">' +
