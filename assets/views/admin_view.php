@@ -32,7 +32,9 @@
 				<tr><th  class='txt'>Имя вкладки</th><th  class='txt'>Page</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
 		<?php foreach ($controllers as $control): ?>
 		   <tr class="alias">
-			   <td><input type='text' name='ctrl_name[]' value='<?= $control->name ?>' <?php ($control->active & 1 ) || print ('disabled'); ?> ></td>
+			   <td>
+				   <span class='up'>&#9650;</span>
+				   <input type='text' name='ctrl_name[]' value='<?= $control->name ?>' <?php ($control->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td><select name='ctrl_class[]'>
 						<option value="" class="zero"></option>
 					   <?php foreach( $options as $opt): ?>
@@ -42,8 +44,9 @@
 			    </td>
 			   <td><input type='checkbox' name='chk' <?php ($control->active & 1 ) && print ('checked'); ?>></td>
 			   <td>
-					<input type='hidden' name='stat[]' value='<?= $control->active ?>'>
-				   <input type='hidden' name='ctrl_id[]' value='<?= $control->id ?>'>
+				   <input type='hidden' name='num[]' value='<?= $control->arrange ?>'>
+				   <input type='hidden' name='stat[]' value='<?= $control->active ?>'>
+				   <input type='hidden' name='fid[]' value='<?= $control->id ?>'>
 				   <span class='delRow  web'>&otimes;</span>
 				</td>
 		   </tr>

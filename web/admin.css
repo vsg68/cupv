@@ -26,3 +26,8 @@ select {
 .key  {
 	width: 50% !important;
 }
+.up{
+	font-size: 20px;
+	color: #ddd;
+	cursor: pointer;
+}

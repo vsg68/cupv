@@ -30,6 +30,7 @@ class Domains extends \App\Page {
 
     public function action_view() {
 
+
 		$this->view->subview 		= 'domains_main';
 
 		$this->view->script_file	= '<script type="text/javascript" src="/domains.js"></script>';
@@ -155,16 +156,16 @@ class Domains extends \App\Page {
 									);
 					$data_update = array(
 									'domain_type' => '1',
-									'active'	  => $params['dom_st'][$key]
+									'active'	  => $params['stat'][$key]
 									);
 
-					if( $params['dom_st'][$key] == 2 ) {
+					if( $params['stat'][$key] == 2 ) {
 					// Удаление
 						$this->pixie->db->query('delete')->table('domains')
-										->where('domain_id',$params['dom_id'][$key])
+										->where('domain_id',$params['fid'][$key])
 										->execute();
 					}
-					elseif( $params['dom_id'][$key] == 0 ) {
+					elseif( $params['fid'][$key] == 0 ) {
 					// Новый
 						$this->pixie->db->query('insert')->table('domains')
 										->data(array_merge($data_insert, $data_update))
@@ -174,7 +175,7 @@ class Domains extends \App\Page {
 					// Изменение
 						$this->pixie->db->query('update')->table('domains')
 										->data($data_update)
-										->where('domain_id', $params['dom_id'][$key])
+										->where('domain_id', $params['fid'][$key])
 										->execute();
 					}
 				}

@@ -70,8 +70,8 @@ $(function(){
 		open_tag 	= '<tr class="alias">';
 		alias_cell 	= '<td><input type="text" name="dom[]" value="" placeholder="название домена"></td>';
 		chkbox_cell = '<td>'+
-						'<input type="hidden" name="dom_st[]" value="1">' +
-						'<input type="hidden" name="dom_id[]" value="0">' +
+						'<input type="hidden" name="stat[]" value="1">' +
+						'<input type="hidden" name="fid[]" value="0">' +
 						'<input type="checkbox" name="chk" checked>' +
 					  '</td>';
 		button_cell = '<td><span class="delRow  web">&otimes;</span></td>';

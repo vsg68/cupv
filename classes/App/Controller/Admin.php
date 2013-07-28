@@ -83,6 +83,7 @@ class Admin extends \App\Page {
 		$view->controllers = $this->pixie->db
 											->query('select')->table('controllers')
 											->where('section_id', $this->section_id)
+											->order_by('arrange')
 											->execute();
 
 		// Если массив пуст - инициируем пустым массивом
@@ -158,16 +159,17 @@ class Admin extends \App\Page {
 					$entry = array(	'name'  	 => $ctrl,
 									'class' 	 => $params['ctrl_class'][$key],
 									'section_id' => $params['section_id'],
+									'arrange' 	 => $params['num'][$key],
 									'active'	 => $params['stat'][$key]
 									);
 
 					if( $params['stat'][$key] == 2 ) {
 					// Удаление
 						$this->pixie->db->query('delete')->table('controllers')
-										->where('id',$params['ctrl_id'][$key])
+										->where('id',$params['fid'][$key])
 										->execute();
 					}
-					elseif( $params['ctrl_id'][$key] == 0 ) {
+					elseif( $params['fid'][$key] == 0 ) {
 					// Новый
 						$this->pixie->db->query('insert')->table('controllers')
 										->data($entry)
@@ -177,7 +179,7 @@ class Admin extends \App\Page {
 					// Изменение
 						$this->pixie->db->query('update')->table('controllers')
 										->data($entry)
-										->where('id', $params['ctrl_id'][$key])
+										->where('id', $params['fid'][$key])
 										->execute();
 					}
 				}

@@ -68,7 +68,7 @@ body {
 }
 .delRow {
 	color: red;
-	font-size: 20px;
+	font-size: 26px;
 	float: none !important;
 }
 .aliasesplace {
@@ -102,7 +102,6 @@ input[type='text'], input[type='password'], select {
 	-moz-border-radius: 3px;
 	height:20px;
 }
-
 input:-moz-placeholder {
 	color: #ddd;
 }

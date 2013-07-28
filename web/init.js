@@ -23,14 +23,13 @@ $(function(){
 	// Удаление строк
 	$('.delRow').live('click', function(){
 
-		var tr 		   = $(this).closest('tr.alias');
-		var input_hide = $(tr).find(':hidden:eq(0)');
+		var tr 		   = $(this).closest('.alias');
 
-		// Если есть таг - то поле создано вручную
-		if( $(input_hide).attr('tag') )
+		// Если FID = 0 - то поле создано вручную
+		if( $(tr).find(':hidden[name="fid[]"]').val() == 0 )
 			$(tr).remove();
 		else {
-			$(input_hide).val('2');
+			$(tr).find(':hidden[name="stat[]"]').val('2');
 			$(tr).addClass('hidden');
 		}
 		return false;
@@ -100,7 +99,6 @@ $(function(){
 	$('tr','.domain_box').filter('[sid="' +  key + '"]').addClass('selected_key');
 
 	// Запрос на редактирование
-	//$('tr','.aliases_box').click( function(){
 	$('#usrs tr').click( function(){
 									// Выбор записи
 									$('.selected_key').removeClass('selected_key');

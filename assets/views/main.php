@@ -16,18 +16,17 @@
     <body>
         <div class="container">
 
-			<?php if( ! preg_match('/login/',$subview) ): ?>
 			<div class="mainmenu">
-			<ul>
-				<li id='users'><a href="/users/">Пользователи</a><div class='whiteline'><div></li>
-				<li id='aliases'><a href="/aliases/">Алиасы</a><div class='whiteline'><div></li>
-				<li id='domains'><a href="/domains/">Домены</a><div class='whiteline'><div></li>
-				<li id='groups'><a href="/groups/">Группы</a><div class='whiteline'><div></li>
-				<li id='logs'><a href="/logs/">Логи</a><div class='whiteline'><div></li>
+				<ul>
+				<?php foreach( $menuitems as $item ): ?>
+					<li id='<?= $item->class ?>'>
+						<a href="/<?= $item->class ?>/"><?= $item->name ?></a>
+						<div class='whiteline'><div>
+					</li>
+				<?php endforeach; ?>
 				<li class='helper'></li>
-			</ul>
+				</ul>
 			</div>
-			<?php endif; ?>
 
 			<div class='border'>
 			<?php include($subview.'.php'); ?>

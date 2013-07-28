@@ -1,44 +1,49 @@
 $(function(){
 
-	// Выбор записи
-	//key = window.location.search.split('=')[1];
-
-	//$('tr','.domain_box').filter('[sid="' +  key + '"]').addClass('selected_key');
-
-	// Запрос на редактирование
-	//~ $('tr','.domain_box').not('.noedit').click(function(){
-//~
-							//~ // Выбор записи
-							//~ $('.selected_key').removeClass('selected_key');
-							//~ $(this).addClass('selected_key');
-							//~ // Запрос
-							//~ name = $(this).attr('sid');
-//~
-							//~ $.get('/admin/single/',{'name':name, 'act':'1'},function(response){
-									//~ $('#ed').empty().append(response);
-//~
-							//~ });
-	//~ });
 	// Добавление alias
 	$('.else').live('click',function(event){
-		event.preventDefault();
+					event.preventDefault();
+					// Смотрим последний порядковый номер
+					num	= $(this).closest('table').find(':hidden[name="num[]"]:last').val() - 0;
 
-		open_tag 	= '<tr class="alias">';
-		name_cell	= '<td>'+ '<input type="text" name="ctrl_name[]" value="">' +'</td>';
-		alias_cell 	= '<td>'+ ctrl_cell +'</td>';
-		chkbox_cell = '<td>'+
-						'<input type="hidden" name="stat[]" value="1">' +
-						'<input type="hidden" name="ctrl_id[]" value="0">' +
-						'<input type="checkbox" name="chk" checked>' +
-					  '</td>';
-		button_cell = '<td><span class="delRow  web">&otimes;</span></td>';
-		close_tag 	= '</tr>';
+					num = isNaN(num) ? 0 : num+1;
 
-		$(this).parents('.atable')
-				.append( open_tag + name_cell + alias_cell + chkbox_cell + button_cell + close_tag );
 
-		return false;
-	});
+					open_tag 	= '<tr class="alias">';
+					name_cell	= '<td><i class="up">&#9650;</i>'+ '<input type="text" name="ctrl_name[]" value="">' +'</td>';
+					alias_cell 	= '<td>'+ ctrl_cell +'</td>';
+					chkbox_cell = '<td>'+
+									'<input type="hidden" name="stat[]" value="1">' +
+									'<input type="hidden" name="fid[]" value="0">' +
+									'<input type="hidden" name="num[]" value="'+ num +'">' +
+									'<input type="checkbox" name="chk" checked>' +
+								  '</td>';
+					button_cell = '<td><span class="delRow  web">&otimes;</span></td>';
+					close_tag 	= '</tr>';
+
+					$(this).parents('.atable')
+							.append( open_tag + name_cell + alias_cell + chkbox_cell + button_cell + close_tag );
+
+					return false;
+				});
+
+	$('.up').live('click', function(){
+
+					var tr_now = $(this).closest('tr');
+					var tr_arr = $(this).closest('table').find('tr');
+
+					// Если дошли до хидера - дальше не идем
+					if( tr_arr.index($(this).closest('tr').prev('tr')) ) {
+						// получение значений
+						oldval = tr_now.find(':hidden[name="num[]"]').val();
+						newval = tr_now.prev('tr').find(':hidden[name="num[]"]').val();
+						// Смена значений
+						tr_now.prev('tr').find(':hidden[name="num[]"]').val(oldval);
+						tr_now.find(':hidden[name="num[]"]').val(newval);
+						// Вствка
+						tr_now.prev('tr').before(tr_now);
+					}
+				});
 
 	$('#submit_ctrl').live('click', function(event){
 
