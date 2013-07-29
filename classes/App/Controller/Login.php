@@ -12,7 +12,7 @@ class Login extends \App\Page {
 		$this->view->css_file 		= '<link rel="stylesheet" href="/login.css" type="text/css" />';
 
 
-		if( $name = $this->pixie->auth->user() ) {
+		if( $name = $this->pixie->auth->user()->login ) {
 
 			//~ $roles = $this->pixie->db->query('select')
 											//~ ->table('roles','X')
@@ -23,9 +23,12 @@ class Login extends \App\Page {
 			//~ $this->view->role = $roles;
 			$this->view->subview = 'login_view';
 		}
-		else
+		else {
 			$this->view->subview = 'login_main';
-
+			$this->pages = $this->pixie->db->query('select')
+											->table('sections')
+											->where()
+		}
 
         $this->response->body	= $this->view->render();
     }
