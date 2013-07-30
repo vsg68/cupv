@@ -12,25 +12,34 @@ class Login extends \App\Page {
 		$this->view->css_file 		= '<link rel="stylesheet" href="/login.css" type="text/css" />';
 
 
-		if( $name = $this->pixie->auth->user()->login ) {
+		if( $name = $this->pixie->auth->user() ) {
 
-			//~ $roles = $this->pixie->db->query('select')
-											//~ ->table('roles','X')
-											//~ ->join(array('auth','Y'),array('Y.id','X.auth_id'),'LEFT')
-											//~ ->where('Y.login',$name)
-											//~ ->execute();
-//~
-			//~ $this->view->role = $roles;
+$name = $this->pixie->auth->user()->login;
+			$this->view->pages = $this->pixie->db->query('select')
+											->fields($this->pixie->db->expr('S.*, COALESCE(C.class,"#") AS link'))
+											->table('sections','S')
+											->join(array('slevels','SL'),array('SL.id','S.slevel_id'),'LEFT')
+											->join(array('controllers','C'),array('S.id','C.section_id'),'LEFT')
+											->join(array('roles','R'),array('C.id','R.control_id'),'LEFT')
+											->join(array('slevels','CL'),array('CL.id','R.slevel_id'),'LEFT')
+											->join(array('auth','A'),array('A.id','R.auth_id'),'LEFT')
+											->where('A.login',$name)
+											->where('S.active','1')
+											->where($this->pixie->db->expr('IFNULL(CL.slevel,"0") >= SL.slevel'),'1')
+											->where('or',array('SL.slevel',0))
+											->execute()
+											->as_array();
+
+
 			$this->view->subview = 'login_view';
 		}
 		else {
 			$this->view->subview = 'login_main';
-			$this->pages = $this->pixie->db->query('select')
-											->table('sections')
-											->where()
+
+
 		}
 
-        $this->response->body	= $this->view->render();
+        $this->response->body = $this->view->render();
     }
 
 	public function action_login() {
