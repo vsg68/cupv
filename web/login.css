@@ -63,22 +63,23 @@ div.helper {
 	height: 0;
 	visibility: hidden;
 }
-#postfix {
+#mail {
 	background: url(/postfix.jpg) 50% 40% no-repeat;
 }
 #squid {
 	background: url(/squid.jpg) 50% 40% no-repeat;
 }
 #logout{
+	position: absolute;
 	float:right;
 	text-align:center;
-	background: #fff;
+	background-color: #fff;
 	font-size: 20px;
 	line-height:22px;
 	color: #ccc;
 	width: 25px;
 	height: 25px;
-	margin:10px;
+	margin-left: 850px;
 	cursor:pointer;
 	border: 1px solid #ccc;
 	border-radius: 20px;

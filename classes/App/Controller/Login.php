@@ -25,8 +25,8 @@ class Login extends \App\Page {
 											->join(array('auth','A'),array('A.id','R.auth_id'),'LEFT')
 											->join(array('controllers','LN'),array('S.id','LN.section_id'),'LEFT')
 											->where('A.login',$name)
-											->where('S.active','1')
-											->where('LN.arrange','0')
+											->where('S.active',1)
+											->where('LN.arrange',0)
 											->where($this->pixie->db->expr('IFNULL(CL.slevel,"0") >= SL.slevel'),1)
 											->where('or',array('SL.slevel',0))
 											->execute();
