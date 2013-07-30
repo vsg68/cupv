@@ -3,7 +3,7 @@
 return array(
 	'default' => array(
 		'user'=>'root',
-		'password' => 'tarkvsg',
+		'password' => '',
 		//'password' => 'boo1aKeisoot',
 		'driver' => 'Mysql',
 
@@ -17,13 +17,13 @@ return array(
 	'logs' => array(
 		'host'=>'localhost',
 		'user'=>'root',
-		'password' => 'tarkvsg',
+		'password' => '',
 		'driver' => 'Mysql',
 		'db' => 'logs',
 	),
 	'login' => array(
 		'user'=>'root',
-		'password' => 'tarkvsg',
+		'password' => '',
 		'driver' => 'PDO',
 		'connection'=>'mysql:host=localhost;dbname=ms',
 	)

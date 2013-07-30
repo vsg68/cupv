@@ -55,7 +55,7 @@ p {
 	line-height: 300px;
 	text-decoration:none;
 }
-.theme a:hover{
+.theme a:hover, #logout :hover{
 	color: #e77307 !important;
 }
 div.helper {
@@ -68,4 +68,23 @@ div.helper {
 }
 #squid {
 	background: url(/squid.jpg) 50% 40% no-repeat;
+}
+#logout{
+	float:right;
+	text-align:center;
+	background: #fff;
+	font-size: 20px;
+	line-height:22px;
+	color: #ccc;
+	width: 25px;
+	height: 25px;
+	margin:10px;
+	cursor:pointer;
+	border: 1px solid #ccc;
+	border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Firefox */
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Safari и Chrome */
+    box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Параметры тени */
 }
