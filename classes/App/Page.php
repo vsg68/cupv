@@ -13,7 +13,7 @@ class Page extends \PHPixie\Controller {
 	//~ const ADMIN_LEVEL = 2;
 	//protected $menuitems;
 
-	public function before_1() {
+	public function before() {
 
 		 $this->view = $this->pixie->view('main');
 
