@@ -8,11 +8,12 @@ class Login extends \App\Page {
 
      public function action_view() {
 
- 		$this->view->script_file	= '';
+ 		$this->view->script_file	= '<script type="text/javascript" src="/login.js"></script>';
 		$this->view->css_file 		= '<link rel="stylesheet" href="/login.css" type="text/css" />';
 
+		if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
 
-		if( $name = $this->pixie->auth->user()->login ) {
+			$name = $this->auth->user()->login ;
 
 			$this->view->pages = $this->pixie->db->query('select')
 											->fields($this->pixie->db->expr('DISTINCT S.*, COALESCE(LN.class,"#") AS link'))
@@ -47,17 +48,13 @@ class Login extends \App\Page {
             $login 		= $this->request->post('username');
             $password 	= $this->request->post('passwd');
 
-            $logged 	= $this->pixie->auth->provider('Password')->login($login, $password);
-            //~ if( $this->is_logged() )
-				//~ setcookie('SECURITY_LEVEL',$this->user_level);
-
+            $this->auth->provider('Password')->login($login, $password);
         }
-
         return $this->redirect('/');
     }
 
     public function action_logout() {
-        $this->pixie->auth->logout();
+        $this->auth->logout();
         $this->redirect('/');
     }
 

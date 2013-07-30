@@ -17,6 +17,8 @@ class Page extends \PHPixie\Controller {
 
 		 $this->view = $this->pixie->view('main');
 
+		 $this->auth = $this->pixie->auth;
+
 		 /* Определяем все контроллеры с одинаковыми ID */
 		 $this->view->menuitems = $this->pixie->db
 										->query('select')
