@@ -1,4 +1,7 @@
-
+.mainmenu {
+	background-color: #f3f3f3;
+	height: 0px;
+}
 .login, .theme {
 	background-color: #fff !important;
 	width: 470px;
@@ -35,10 +38,9 @@ input[type='text'], input[type='password'] {
 	margin:10px;
 }
 .logo {
-	text-align: center;
-}
-.logo img {
-	margin:15px 10px 20px 10px;
+	margin: 45px 30px 0px 30px;
+	width: 130px;
+	height: 98px;
 }
 .theme {
 	width: 200px;
@@ -46,28 +48,32 @@ input[type='text'], input[type='password'] {
 	margin:20px;
 	display: inline-block;
 }
-p {
+.name {
 	text-align: center;
+	font-size: 40px;
 }
 .theme a {
 	color: #ddd;
-	font-size: 40px;
-	line-height: 300px;
 	text-decoration:none;
 }
-.theme a:hover, #logout :hover{
-	color: #e77307 !important;
+.hover, #logout :hover{
+	color: #FFA32D !important;
+	background-position: 0 -98px !important;
 }
+
 div.helper {
 	width: 100%;
 	height: 0;
 	visibility: hidden;
 }
 #mail {
-	background: url(/postfix.jpg) 50% 40% no-repeat;
+	margin-left: 35px;
+	background: url(/postfix.png) 0 0 no-repeat;
 }
+
 #squid {
-	background: url(/squid.jpg) 50% 40% no-repeat;
+	margin-left: 50px;
+	background: url(/squid.png) 0 0 no-repeat;
 }
 #logout{
 	position: absolute;
