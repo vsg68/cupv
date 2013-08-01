@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-class Domains extends \App\Page {
+class Roles extends \App\Page {
 
-   private $domain_id;
+   private $role_id;
 
    protected function sanitize(&$value, $method) {
 
@@ -17,7 +17,7 @@ class Domains extends \App\Page {
 					return true;
 				}
 				break;
-			case 'is_domain':
+			case 'is_role':
 				if ( ! preg_match('/(\w+\.)+(\w+)/',$value) ) {
 					$this->logmsg .= "<span class='error'>Wrong entry for mail in field $value</span>";
 					return true;
@@ -31,19 +31,19 @@ class Domains extends \App\Page {
     public function action_view() {
 
 
-		$this->view->subview 		= 'domains_main';
+		$this->view->subview 		= 'roles_main';
 
-		$this->view->script_file	= '<script type="text/javascript" src="/domains.js"></script>';
-		$this->view->css_file 		= '<link rel="stylesheet" href="/domains.css" type="text/css" />';
+		$this->view->script_file	= '';//<script type="text/javascript" src="/roles.js"></script>';
+		$this->view->css_file 		= '<link rel="stylesheet" href="/roles.css" type="text/css" />';
 
 
-		$this->view->domains = $this->pixie->db
+		$this->view->roles = $this->pixie->db
 											->query('select')
-											->table('domains')
+											->table('roles')
 											->execute()
 											->as_array();
 
-		$this->view->domains_block 	= $this->action_single();
+		$this->view->roles_block 	= $this->action_single();
 
         $this->response->body = $this->view->render();
     }
@@ -51,31 +51,26 @@ class Domains extends \App\Page {
 
 	public function action_single() {
 
-		$view 		= $this->pixie->view('domains_view');
+		$view 		= $this->pixie->view('roles_view');
 		$view->log 	= $this->getVar($this->logmsg,'');
 
 		if( ! $this->request->get('name') )
-			//return "<img class='lb' src=/domains.png />";
+			//return "<img class='lb' src=/roles.png />";
 			return;
 
-		$this->domain_id = $this->getVar($this->domain_id, $this->request->get('name'));
+		$this->role_id = $this->getVar($this->role_id, $this->request->get('name'));
 
-		$domain = $this->pixie->db
-								->query('select')->table('domains')
-								->where('domain_id', $this->domain_id)
+		$role = $this->pixie->db
+								->query('select')->table('roles')
+								->where('id', $this->role_id)
 								->execute()
 								->current();
 		//Если ответ пустой
-		if( ! count($domain) )
-			return "<strong>Домена с ID ".$this->domain_id." не существует.</strong>";
+		if( ! count($role) )
+			return "<strong>Домена с ID ".$this->role_id." не существует.</strong>";
 
-		$view->domain = $domain;
+		$view->role = $role;
 
-		// Собираем алиасы домена
-		$view->aliases = $this->pixie->db
-									->query('select')->table('domains')
-									->where('delivery_to', $domain->domain_name)
-									->execute();
 
 		// Редактирование
 		if( ! $this->request->get('act') )
@@ -86,8 +81,12 @@ class Domains extends \App\Page {
 
 	public function action_new() {
 
-		$view 		= $this->pixie->view('domains_new');
-		$view->log 	= $this->getVar($this->logmsg,'<strong>Ввод нового домена.</strong>');
+		$view 		= $this->pixie->view('roles_new');
+		$view->log 	= $this->getVar($this->logmsg,'<strong>Ввод новой роли.</strong>');
+
+		$pages = $this->pixie->db->query('select')->table('controllers')->execute();
+
+		$view->pages = $this->getVar($pages,array());
 
 		$this->response->body = $view->render();
 	}
@@ -101,28 +100,28 @@ class Domains extends \App\Page {
 			$params['dom']  = $this->getVar($params['dom'], array());
 
 			// Проверка на правильность заполнения (Новая запись)
-			if( isset($params['domain_name']) )
-				$this->sanitize($params['domain_name'], 'is_domain' );
+			if( isset($params['role_name']) )
+				$this->sanitize($params['role_name'], 'is_role' );
 
 			// Проверка типа домена
 			if( isset($params['delivery_to']) ) {
 				$this->sanitize( $params['delivery_to'], 'net');
-				$params['domain_type'] = '2';
+				$params['role_type'] = '2';
 			}
 			else {
 				$params['delivery_to'] = 'virtual';
-				$params['domain_type'] = '0';
+				$params['role_type'] = '0';
 			}
 
 			$data_insert = array(
-								'domain_name' 	=> $params['domain_name'],
+								'role_name' 	=> $params['role_name'],
 								'delivery_to' 	=> $params['delivery_to'],
-								'domain_type' 	=> $params['domain_type']
+								'role_type' 	=> $params['role_type']
 								);
 			$data_update = array(
-								'domain_notes'	=> $params['domain_notes'],
+								'role_notes'	=> $params['role_notes'],
 								'all_enable'	=> $this->getVar($params['all_enable'],0),
-								'all_email'		=> isset( $params['all_email'] ) ? $params['all_email'].'@'.$params['domain_name'] : '',
+								'all_email'		=> isset( $params['all_email'] ) ? $params['all_email'].'@'.$params['role_name'] : '',
 								'active'		=> $this->getVar($params['active'],0)
 								);
 
@@ -130,19 +129,19 @@ class Domains extends \App\Page {
 			if( ! isset($this->logmsg) ) {
 
 				// Если запись новая
-				if( ! isset($params['domain_id']) ) {
+				if( ! isset($params['role_id']) ) {
 
-					$this->pixie->db->query('insert')->table('domains')
+					$this->pixie->db->query('insert')->table('roles')
 									->data(array_merge($data_insert,$data_update))
 									->execute();
 
-					$params['domain_id'] = $this->pixie->db->insert_id();
+					$params['role_id'] = $this->pixie->db->insert_id();
 				}
 				// Если редактируем
 				else {
-					$this->pixie->db->query('update')->table('domains')
+					$this->pixie->db->query('update')->table('roles')
 									->data($data_update)
-									->where('domain_id', $params['domain_id'])
+									->where('role_id', $params['role_id'])
 									->execute();
 				}
 
@@ -151,31 +150,31 @@ class Domains extends \App\Page {
 				foreach ($params['dom'] as $key=>$alias ) {
 
 					$data_insert = array(
-									'domain_name' => $alias,
-									'delivery_to' => $params['domain_name'],
+									'role_name' => $alias,
+									'delivery_to' => $params['role_name'],
 									);
 					$data_update = array(
-									'domain_type' => '1',
+									'role_type' => '1',
 									'active'	  => $params['stat'][$key]
 									);
 
 					if( $params['stat'][$key] == 2 ) {
 					// Удаление
-						$this->pixie->db->query('delete')->table('domains')
-										->where('domain_id',$params['fid'][$key])
+						$this->pixie->db->query('delete')->table('roles')
+										->where('role_id',$params['fid'][$key])
 										->execute();
 					}
 					elseif( $params['fid'][$key] == 0 ) {
 					// Новый
-						$this->pixie->db->query('insert')->table('domains')
+						$this->pixie->db->query('insert')->table('roles')
 										->data(array_merge($data_insert, $data_update))
 										->execute();
 					}
 					else {
 					// Изменение
-						$this->pixie->db->query('update')->table('domains')
+						$this->pixie->db->query('update')->table('roles')
 										->data($data_update)
-										->where('domain_id', $params['fid'][$key])
+										->where('role_id', $params['fid'][$key])
 										->execute();
 					}
 				}
@@ -183,16 +182,16 @@ class Domains extends \App\Page {
 			// Ошибки имели место - возвращаем форму
 			if( isset( $this->logmsg ) ) {
 
-				if ( isset($params['domain_id']) ) {
+				if ( isset($params['role_id']) ) {
 
-					$this->domain_id = $params['domain_id'];
+					$this->role_id = $params['role_id'];
 					$this->action_single();
 				}
 				else
 					$this->action_new();
 			}
 			else
-				$this->response->body = $params['domain_id'];
+				$this->response->body = $params['role_id'];
 
 		}
 

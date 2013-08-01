@@ -29,31 +29,54 @@ class Page extends \PHPixie\Controller {
 										->where('Y.active',1)
 										->order_by('Y.arrange')
 										->execute();
+
+		// Проверка легитимности пользователя и его прав
+       // if( ! $this->check_permissions() )
+		//	return false;
 	}
 
 	/* Проверка на предоставление доступа к разделу */
-	protected function is_approve($security_level = 0){
+	protected function is_approve(){
+
+		//~ if(  $this->auth->user() )
+			//~ return false;
 
 		$name = $this->pixie->auth->user()->login;
 		$ctrl = $this->request->param('controller');
-		$act  = $this->request->param('action');
+//		$act  = $this->request->param('action');
 
 		$result = $this->pixie->db->query('select')
-									->fields($this->pixie->db->expr('count(*) as cnt'))
-									->table('roles','X')
-									->join(array('auth','Y'),array('Y.id','X.auth_id'),'LEFT')
-									->where('Y.login',$name)
-									->where('X.control_name',strtolower($ctrl))
-									//->where('X.action_name',strtolower($act))  //задел на будущее
-									->where('X.slevel','>=',$security_level)
+									->fields($this->pixie->db->expr('if(strcmp("'.$ctrl.'","login")=0, 100, count(*)) as cnt'))
+									->table('auth','A')
+									->join(array('roles','R'),array('A.id','R.auth_id'),'LEFT')
+									->join(array('controllers','C'),array('C.id','R.control_id'),'LEFT') // связь юзера и страницы
+									->join(array('slevels','AL'),array('AL.id','R.slevel_id'),'LEFT') // какой уроветь доступа пользователя к странице
+									->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')  // что за раздел, к которому принадлежит страница
+									->join(array('slevels','SL'),array('SL.id','S.slevel_id'),'LEFT')  // ее уровень доступа
+									->where('A.login',$name)
+									->where('S.active',1)
+									->where('C.class',$ctrl)
+									->where($this->pixie->db->expr('IFNULL(AL.slevel,0) >= SL.slevel'),1)
 									->execute()
 									->current();
+//echo $name.",".$ctrl.",".$result->cnt."__"; exit;
 		if(	$result->cnt )
 			return true;
-		else
-			return false;
+
+		return false;
 
     }
+
+	protected function check_permissions(){
+
+	//	if( ! $this->is_approve() )
+			return true;
+
+		$this->view->subview = '403';
+		$this->response->body = $this->view->render();
+		//$this->execute=false;
+		return false;
+	}
 
     //~ protected function sanitize($value,$key,$method) {
 //~

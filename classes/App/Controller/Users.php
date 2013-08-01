@@ -15,27 +15,23 @@ class Users extends \App\Page {
 		$this->view->script_file = '<script type="text/javascript" src="/users.js"></script>';
 		$this->view->css_file = '<link rel="stylesheet" href="/users.css" type="text/css" />';
 
-		// Проверка легитимности пользователя и его прав
-        if( ! $this->is_approve($this::ADMIN_LEVEL) ) {
-			$this->view->subview = '403';
-			$this->response->body = $this->view->render();
-			//$this->execute=false;
-			return;
-		}
+		//~ // Проверка легитимности пользователя и его прав
+        //~ if( ! $this->check_permissions() )
+			//~ return false;
+
 
 		$this->view->subview = 'users_main';
 
-		$this->view->users = $this->pixie->db
-							->query('select')->table('users')
-							->order_by('mailbox')
-							->execute();
+		$this->view->users 	 = $this->pixie->db->query('select')
+												->table('users')
+												->order_by('mailbox')
+												->execute();
 
-		$this->view->domains = $this->pixie->db
-								->query('select')
-								->fields('domain_name')
-								->table('domains')
-								->where('delivery_to','virtual')
-								->execute();
+		$this->view->domains = $this->pixie->db->query('select')
+												->fields('domain_name')
+												->table('domains')
+												->where('delivery_to','virtual')
+												->execute();
 
 		$this->view->users_block = $this->action_single();
 
@@ -44,7 +40,7 @@ class Users extends \App\Page {
 
 	public function action_new() {
 
-		if( ! $this->is_approve($this::ADMIN_LEVEL) ) {
+		if( ! $this->is_approve() ) {
 			$this->response->body = $this::RIGHTS_ERROR;
 			return;
 		}
@@ -65,7 +61,7 @@ class Users extends \App\Page {
 
 	public function action_single() {
 
-		if( ! $this->is_approve($this::ADMIN_LEVEL) ) {
+		if( ! $this->is_approve() ) {
 			$this->response->body = $this::RIGHTS_ERROR;
 			return;
 		}

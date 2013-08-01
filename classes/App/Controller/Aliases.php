@@ -4,9 +4,8 @@
  */
 namespace App\Controller;
 
-class Aliases extends \PHPixie\Controller {
+class Aliases extends \App\Page {
 
-	private $logmsg;
 	private $alias_name;
 	private $alias_block;
 
