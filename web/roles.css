@@ -1,0 +1,49 @@
+
+td.txt1{
+	text-align: left;
+	padding: 0 0 0 20px;
+}
+#ed {
+	background-image: url('/domains.png');
+	line-height: 22px;
+}
+.aliasesplace {
+	float: none !important;
+}
+.domain_box  {
+	padding: 2px 25px 2px 0;
+	height: 150px;
+	overflow-y: scroll;
+}
+ul.atable {
+	list-style:none;
+	border:0;
+	margin:0;
+	padding:0;
+}
+.p-name, .p-access {
+	float: left;
+	width: 170px;
+	text-align: left;
+	margin: 0 0 0 3px;
+}
+.p-access {
+	width: 200px;
+}
+.one_sect {
+	overflow: auto;
+}
+
+.head {
+	background-color: #fff !important;
+}
+.head .formlabel {
+	color: #888 !important;
+}
+.atable .formlabel {
+	color: #c96c4c;
+}
+h3{
+	margin: 3px 0 3px 15px;
+	text-align: left;
+}

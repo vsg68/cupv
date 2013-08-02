@@ -33,15 +33,13 @@ class Roles extends \App\Page {
 
 		$this->view->subview 		= 'roles_main';
 
-		$this->view->script_file	= '';//<script type="text/javascript" src="/roles.js"></script>';
+		$this->view->script_file	= '<script type="text/javascript" src="/roles.js"></script>';
 		$this->view->css_file 		= '<link rel="stylesheet" href="/roles.css" type="text/css" />';
 
 
-		$this->view->roles = $this->pixie->db
-											->query('select')
+		$this->view->roles = $this->pixie->db->query('select')
 											->table('roles')
-											->execute()
-											->as_array();
+											->execute();
 
 		$this->view->roles_block 	= $this->action_single();
 
@@ -60,17 +58,18 @@ class Roles extends \App\Page {
 
 		$this->role_id = $this->getVar($this->role_id, $this->request->get('name'));
 
-		$role = $this->pixie->db
-								->query('select')->table('roles')
+		$view->role = $this->pixie->db->query('select')->table('roles')
 								->where('id', $this->role_id)
 								->execute()
 								->current();
-		//Если ответ пустой
-		if( ! count($role) )
-			return "<strong>Домена с ID ".$this->role_id." не существует.</strong>";
 
-		$view->role = $role;
+		$view->pages = $this->pixie->db->query('select')
+								->table('page_roles','P')
+								->join(array('controllers','C'),array('C.id','P.control_id'),'LEFT')
+								->where('role_id', $this->role_id)
+								->execute();
 
+		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute()->as_array();
 
 		// Редактирование
 		if( ! $this->request->get('act') )
@@ -84,9 +83,18 @@ class Roles extends \App\Page {
 		$view 		= $this->pixie->view('roles_new');
 		$view->log 	= $this->getVar($this->logmsg,'<strong>Ввод новой роли.</strong>');
 
-		$pages = $this->pixie->db->query('select')->table('controllers')->execute();
-
+		$pages = $this->pixie->db->query('select')
+									->fields($this->pixie->db->expr('C.id AS ctrl_id, C.name AS ctrl_name, S.name AS sect_name'))
+									->table('controllers','C')
+									->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
+									//->group_by('section_id')
+									->order_by('section_id')
+									->order_by('arrange')
+									->execute();
 		$view->pages = $this->getVar($pages,array());
+
+		// Доступ
+		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute()->as_array();
 
 		$this->response->body = $view->render();
 	}
@@ -97,33 +105,14 @@ class Roles extends \App\Page {
 
 			$params = $this->request->post();
 
-			$params['dom']  = $this->getVar($params['dom'], array());
-
-			// Проверка на правильность заполнения (Новая запись)
-			if( isset($params['role_name']) )
-				$this->sanitize($params['role_name'], 'is_role' );
-
-			// Проверка типа домена
-			if( isset($params['delivery_to']) ) {
-				$this->sanitize( $params['delivery_to'], 'net');
-				$params['role_type'] = '2';
-			}
-			else {
-				$params['delivery_to'] = 'virtual';
-				$params['role_type'] = '0';
-			}
-
-			$data_insert = array(
-								'role_name' 	=> $params['role_name'],
-								'delivery_to' 	=> $params['delivery_to'],
-								'role_type' 	=> $params['role_type']
-								);
-			$data_update = array(
-								'role_notes'	=> $params['role_notes'],
-								'all_enable'	=> $this->getVar($params['all_enable'],0),
-								'all_email'		=> isset( $params['all_email'] ) ? $params['all_email'].'@'.$params['role_name'] : '',
+			$role_entry = array(
+								'name' 	=> $params['role_name'],
+								'notes'	=> $this->getVar($params['role_notes'],''),
 								'active'		=> $this->getVar($params['active'],0)
 								);
+
+			// Это новая запись?
+			$is_update = $this->getVar($params['role_id'], 0);
 
 			// Если нет ошибок заполнения - проходим в обработку
 			if( ! isset($this->logmsg) ) {
@@ -132,7 +121,7 @@ class Roles extends \App\Page {
 				if( ! isset($params['role_id']) ) {
 
 					$this->pixie->db->query('insert')->table('roles')
-									->data(array_merge($data_insert,$data_update))
+									->data($role_entry)
 									->execute();
 
 					$params['role_id'] = $this->pixie->db->insert_id();
@@ -140,41 +129,33 @@ class Roles extends \App\Page {
 				// Если редактируем
 				else {
 					$this->pixie->db->query('update')->table('roles')
-									->data($data_update)
-									->where('role_id', $params['role_id'])
+									->data($role_entry)
+									->where('id', $params['role_id'])
 									->execute();
 				}
 
 
-				// Обработка алиасов
-				foreach ($params['dom'] as $key=>$alias ) {
+				// Обработка ролей
+				foreach ($params['page'] as $key=>$page_id ) {
 
-					$data_insert = array(
-									'role_name' => $alias,
-									'delivery_to' => $params['role_name'],
-									);
-					$data_update = array(
-									'role_type' => '1',
-									'active'	  => $params['stat'][$key]
+					$roleInPage = array(
+									'role_id'	 => $params['role_id'],
+									'control_id' => $page_id,
+									'slevel_id'	 => $params['p-'.$page_id]
 									);
 
-					if( $params['stat'][$key] == 2 ) {
-					// Удаление
-						$this->pixie->db->query('delete')->table('roles')
-										->where('role_id',$params['fid'][$key])
-										->execute();
-					}
-					elseif( $params['fid'][$key] == 0 ) {
+					if( !$is_update ) {
 					// Новый
-						$this->pixie->db->query('insert')->table('roles')
-										->data(array_merge($data_insert, $data_update))
+						$this->pixie->db->query('insert')->table('page_roles')
+										->data($roleInPage)
 										->execute();
 					}
 					else {
 					// Изменение
-						$this->pixie->db->query('update')->table('roles')
-										->data($data_update)
-										->where('role_id', $params['fid'][$key])
+						$this->pixie->db->query('update')->table('page_roles')
+										->data($roleInPage)
+										->where('role_id', $params['role_id'])
+										->where('control_id', $page_id)
 										->execute();
 					}
 				}
@@ -182,7 +163,7 @@ class Roles extends \App\Page {
 			// Ошибки имели место - возвращаем форму
 			if( isset( $this->logmsg ) ) {
 
-				if ( isset($params['role_id']) ) {
+				if ( $is_update ) {
 
 					$this->role_id = $params['role_id'];
 					$this->action_single();

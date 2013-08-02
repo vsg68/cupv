@@ -1,51 +1,37 @@
 <div id='log'><?= $log ?></div>
 <form id='usersform' action='#' method='post'>
 
-	<h4><?= $domain->domain_name; ?></h4>
+	<h4><?= $role->name ?></h4>
 		<div class='fieldentry'>
 			<span class='formlabel'>Aктивен:</span>
-			<input type='checkbox' class='formtext' name='active' value='1' <?php ($domain->active == 1) && print ('checked'); ?> >
+			<input type='checkbox' class='formtext' name='active' value='1' <?php ($role->active == 1) && print ('checked'); ?> >
+	   </div>
+	   <div class='fieldentry'>
+			<span class='formlabel'>Название:</span>
+			<input type='text' class='formtext' name='role_name' value='<?= $role->name ?>' >
 	   </div>
 	   <div class='fieldentry'>
 			<span class='formlabel'>Описание:</span>
-			<input  class='formtext' type='text' name='domain_notes' value='<?= $domain->domain_notes; ?>'  />
+			<input  class='formtext' type='text' name='role_notes' value='<?= $role->notes; ?>'  />
 	   </div>
-	   <?php if( $domain->delivery_to != 'virtual' ): ?>
-	   <div class='fieldentry'>
-			 <span class='formlabel'>Транспорт:</span>
-				<input class='formtext' type='text' name='delivery_to' value='<?= $domain->delivery_to; ?>'  />
-		</div>
-		<?php else: ?>
-	   <div class='listbox'>
-			<div class='fieldentry'>
-				<span class='formlabel'>П/Я рассылки:</span>
-				<input class='formtext' type='text' name='all_email' value='<?= preg_replace('/@.+$/','',$domain->all_email); ?>' <?php ($domain->all_enable & 1 ) || print ('disabled'); ?>/>@<?= $domain->domain_name; ?>
-			</div>
-			<div class='fieldentry'>
-				 <span class='formlabel'>Вкл/Выкл:</span>
-				<input class='formtext' type='checkbox' name='all_enable' value='1' <?php ($domain->all_enable & 1 ) && print ('checked'); ?> >
-			</div>
-		</div>
-		<?php endif; ?>
-		<input type='hidden' name='domain_id' value='<?= $domain->domain_id; ?>'  />
-		<input type='hidden' name='domain_name' value='<?= $domain->domain_name; ?>'  />
+		<input type='hidden' name='role_id' value='<?= $role->id; ?>'  />
 <br />
-		<h4>Алиасы домена</h4>
-			<table class='atable'>
-				<tr><th  class='txt'>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
-		<?php foreach ($aliases as $alias): ?>
-		   <tr class="alias">
-			   <td><input type='text' name='dom[]' value='<?= $alias->domain_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
-			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
-			   <td>
-					<input type='hidden' name='dom_st[]' value='<?= $alias->active ?>'>
-				   <input type='hidden' name='dom_id[]' value='<?= $alias->domain_id ?>'>
-				   <span class='delRow  web'>&otimes;</span>
+		<h4>Права на страницы</h4>
+		<table class='atable'>
+			<tr><th  class='txt1'>страница</th><th>права</th></tr>
+			<?php foreach($pages as $page): ?>
+			<tr>
+				<td class='txt1'><?= $page->name ?></td>
+				<td>
+					<input type='hidden' name='page[]' value='<?= $page->control_id ?>'>
+					<?php foreach($slevels as $slevel): ?>
+					<input type='radio' name='p-<?= $page->control_id ?>' value='<?= $slevel->id ?>' <?php ($slevel->id == $page->slevel_id) && print ' checked' ?>><?= $slevel->name ?>
+					<?php endforeach; ?>
 				</td>
-		   </tr>
-		<?php endforeach; ?>
-			</table>
+			</tr>
+			<?php endforeach; ?>
+		</table>
 
-		<div class='submit'><input type='submit' id='submit_domain' value='Изменить'></div>
+	<div class='submit'><input type='submit' id='submit_roles' value='Изменить'></div>
 </form>
 

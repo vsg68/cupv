@@ -161,7 +161,7 @@ function try_submit() {
 
 	$.post(	'/'+ ctrl +'/add/', params , function(response) {
 
-						if( ctrl == 'domain' || ctrl == 'admin' )
+						if( ctrl == 'domains' || ctrl == 'admin' || ctrl == 'roles' )
 							tmpl = /^\d+$/;
 						else
 							tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
@@ -217,6 +217,9 @@ function checkfield(obj) {
 			reg = new RegExp(word_tmpl,'i')
 			break
 		case 'section_note':
+			// не проверяем
+			return false
+		case 'role_note':
 			// не проверяем
 			return false
 		default:
