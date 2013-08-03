@@ -43,9 +43,11 @@ body {
 .mainmenu a {
 	color: #ccc;
 }
+/*
 .active {
 	background-color: #0cc;
 }
+*/
 .label {
 	color: #222;
 }

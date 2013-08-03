@@ -27,7 +27,7 @@ class Login extends \App\Page {
 											->where('A.login',$name)
 											->where('S.active',1)
 											->where('LN.arrange',0)
-											->where($this->pixie->db->expr('IFNULL(CL.slevel,"0") >= SL.slevel'),1)
+											->where($this->pixie->db->expr('IFNULL(CL.slevel,0) >= SL.slevel'),1)
 											->where('or',array('SL.slevel',0))
 											->execute();
 

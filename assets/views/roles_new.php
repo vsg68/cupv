@@ -15,26 +15,45 @@
 
 <br />
 		<h4>Права на страницы</h4>
-		<ul class='atable'>
-			<?php $sect=''; foreach($pages as $page): ?>
-			<?php if($sect != $page->sect_name): ?>
-			<li><h3><?= $page->sect_name ?></h3>
-				<div class='fieldentry head'><span class='formlabel'>страница</span><span class='formlabel'>права</span></div>
-			<?php endif; ?>
-				<div class='fieldentry'>
-					<span class='formlabel'><?= $page->ctrl_name ?></span>
-					<div class='fortext'>
-						<input type='hidden' name='page[]' value='<?= $page->ctrl_id ?>'>
-						<?php foreach($slevels as $slevel): ?>
-						<input type='radio' name='p-<?= $page->ctrl_id ?>' value='<?= $slevel->id ?>' <?= ( ! $slevel->slevel)|| print 'checked' ?>><?= $slevel->name ?>
-						<?php endforeach; ?>
+		<ul class='atable accordion'>
+		<?php
+			$sect='';
+			$is_change = 1;
+			foreach($pages as $page) {
+
+				if($sect != $page->sect_name) {
+
+					$sect = $page->sect_name;
+
+					if( $is_change = ($is_change) ? 0 : 1 )
+						echo "</div></li>";
+		?>
+			<li><h3><span class='ptr'></span><?= $page->sect_name ?></h3>
+				<div class='panel'>
+					<div class='fieldentry head'><span class='formlabel'>страница</span><span class='formlabel'>права</span></div>
+		<?php
+				} // enfif
+		?>
+					<div class='fieldentry'>
+						<span class='formlabel'><?= $page->ctrl_name ?></span>
+						<div class='fortext'>
+							<input type='hidden' name='page[]' value='<?= $page->ctrl_id ?>'>
+
+							<?php foreach($slevels as $slevel): ?>
+							<input type='radio' name='p-<?= $page->ctrl_id ?>' value='<?= $slevel->id ?>' <?php ( ! $slevel->slevel) && print 'checked' ?>><?= $slevel->name ?>
+							<?php endforeach; ?>
+
+						</div>
 					</div>
+		<?php
+
+			} // endforeach
+		 ?>
 				</div>
-			<?php $sect = $page->sect_name; ?>
 			</li>
-			<?php endforeach; ?>
 		</ul>
 
 	<div class='submit'><input type='submit' id='submit_roles' value='Изменить'></div>
 </form>
 
+<?= $addscript ?>

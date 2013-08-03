@@ -21,6 +21,7 @@ ul.atable {
 	margin:0;
 	padding:0;
 }
+/*
 .p-name, .p-access {
 	float: left;
 	width: 170px;
@@ -33,17 +34,73 @@ ul.atable {
 .one_sect {
 	overflow: auto;
 }
+*/
 
 .head {
 	background-color: #fff !important;
 }
-.head .formlabel {
-	color: #888 !important;
-}
 .atable .formlabel {
-	color: #c96c4c;
+	width: 160px ;
+}
+.atable .fortext {
+/*
+	color: #888 ;
+*/
+}
+.ptr {
+	background: url(/ui-icons_454545_256x240.png) -32px -16px no-repeat;
+	height: 16px;
+	width: 16px;
+	float:left;
+}
+.ptr-hover {
+	background-position: -64px -16px !important;
+	border-bottom: none !important;
 }
 h3{
-	margin: 3px 0 3px 15px;
 	text-align: left;
+	line-height: 16px;
+	border: 1px solid #ddd;
+	padding: 0 0 2px 0;
+}
+/* Menu -----------------------------------------------------------------------------*/
+
+.accordion h3 {
+	margin: 0px 0;
+}
+.accordion-opener {
+	padding: 0 0 0 5px;
+}
+.panel {
+	overflow: auto;
+}
+/**  accordion  **/
+ul.accordion,
+ol.accordion {
+    margin: 0;
+    padding: 0;
+}
+.accordion li {
+    list-style-type: none;
+    margin: 10px auto !important;
+    padding: 0;
+}
+.accordion li:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+    *zoom: 1;
+}
+.accordion li li {
+    list-style-type: disc;
+    margin-left: 1em;
+}
+.accordion a {
+    color: inherit;
+    text-decoration: inherit;
+}
+.accordion .loading {
+    display: none;
 }

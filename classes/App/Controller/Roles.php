@@ -6,42 +6,23 @@ class Roles extends \App\Page {
 
    private $role_id;
 
-   protected function sanitize(&$value, $method) {
-
-		$value =  trim($value) ;
-
-		switch ( $method ) {
-			case 'transport':
-				if( !preg_match ('/\w+:\[(\d+\.)+\d+\]/', $value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for net in field $value</span>";
-					return true;
-				}
-				break;
-			case 'is_role':
-				if ( ! preg_match('/(\w+\.)+(\w+)/',$value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for mail in field $value</span>";
-					return true;
-				}
-				break;
-			default:
-				return false;
-		}
-	}
 
     public function action_view() {
 
 
 		$this->view->subview 		= 'roles_main';
 
-		$this->view->script_file	= '<script type="text/javascript" src="/roles.js"></script>';
+		$this->view->script_file	= '<script type="text/javascript" src="/roles.js"></script>'.
+									  '<script type="text/javascript" src="/jquery.accordion.2.0.min.js"></script>'	;
 		$this->view->css_file 		= '<link rel="stylesheet" href="/roles.css" type="text/css" />';
+									  //'<link rel="stylesheet" href="/accordion.css" type="text/css" />'	;
 
 
 		$this->view->roles = $this->pixie->db->query('select')
 											->table('roles')
 											->execute();
 
-		$this->view->roles_block 	= $this->action_single();
+		$this->view->roles_block = $this->action_single();
 
         $this->response->body = $this->view->render();
     }
@@ -64,12 +45,19 @@ class Roles extends \App\Page {
 								->current();
 
 		$view->pages = $this->pixie->db->query('select')
+								->fields($this->pixie->db->expr('C.name AS ctrl_name, S.name AS sect_name, P.*'))
 								->table('page_roles','P')
 								->join(array('controllers','C'),array('C.id','P.control_id'),'LEFT')
+								->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
 								->where('role_id', $this->role_id)
-								->execute();
+								->execute()
+								->as_array();
+
 
 		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute()->as_array();
+
+
+		$view->addscript = '<script type="text/javascript" src="/roles-2.js"></script>';
 
 		// Редактирование
 		if( ! $this->request->get('act') )
@@ -83,18 +71,20 @@ class Roles extends \App\Page {
 		$view 		= $this->pixie->view('roles_new');
 		$view->log 	= $this->getVar($this->logmsg,'<strong>Ввод новой роли.</strong>');
 
-		$pages = $this->pixie->db->query('select')
+		$view->pages = $this->pixie->db->query('select')
 									->fields($this->pixie->db->expr('C.id AS ctrl_id, C.name AS ctrl_name, S.name AS sect_name'))
 									->table('controllers','C')
 									->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
-									//->group_by('section_id')
 									->order_by('section_id')
 									->order_by('arrange')
 									->execute();
-		$view->pages = $this->getVar($pages,array());
+
+		//$view->pages = $this->getVar($pages,array());
 
 		// Доступ
 		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute()->as_array();
+
+		$view->addscript = '<script type="text/javascript" src="/roles-2.js"></script>';
 
 		$this->response->body = $view->render();
 	}

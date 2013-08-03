@@ -11,7 +11,7 @@
 		<div class='domain_box' id='local'>
 			<table>
 			<?php foreach( $roles as $role ): ?>
-			   <tr sid="<?= $role->id ?>" dname='<?= $role->name ?>'>
+			   <tr sid="<?= $role->id ?>" sname='<?= $role->name ?>'>
 				   <td class="key <?= $role->active == 0 ? 'nonactive':''; ?>"><?= $role->name ?></td>
 				   <td class="val"><?= $role->notes ?></td>
 			   </tr>

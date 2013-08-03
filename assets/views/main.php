@@ -24,7 +24,9 @@
 						<div class='whiteline'><div>
 					</li>
 				<?php endforeach; ?>
+<!--
 				<li class='helper'></li>
+-->
 				</ul>
 			</div>
 
