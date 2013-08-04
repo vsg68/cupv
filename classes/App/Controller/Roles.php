@@ -15,12 +15,40 @@ class Roles extends \App\Page {
 		$this->view->script_file	= '<script type="text/javascript" src="/roles.js"></script>'.
 									  '<script type="text/javascript" src="/jquery.accordion.2.0.min.js"></script>'	;
 		$this->view->css_file 		= '<link rel="stylesheet" href="/roles.css" type="text/css" />';
-									  //'<link rel="stylesheet" href="/accordion.css" type="text/css" />'	;
 
+		$roles = array();
 
 		$this->view->roles = $this->pixie->db->query('select')
 											->table('roles')
 											->execute();
+
+		$matrix = $this->pixie->db->query('select')
+								->fields($this->pixie->db->expr(
+									'C.name AS ctrl_name, R.name AS role_name, LEFT(L.name,1) AS slevel'
+									))
+								->table('page_roles','P')
+								->join(array('controllers','C'),array('C.id','P.control_id'),'LEFT')
+								->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
+								->join(array('roles','R'),array('R.id','P.role_id'),'LEFT')
+								->where($this->pixie->db->expr('R.name IS NOT NULL'),1)
+								->order_by('C.name')
+								->order_by('R.name')
+								->execute()
+								->as_array();
+
+
+		foreach($matrix as $m) {
+
+			$mroles[$m->role_name] = 1; // собираю роли в отдельный массив
+
+			if( !isset($ctrls[$m->ctrl_name]) )   // Ининциализируем
+				$ctrls[$m->ctrl_name] = array();
+
+			$ctrls[$m->ctrl_name][] = $m->slevel;
+		}
+
+		$this->view->mroles = array_keys($mroles);
+		$this->view->ctrls = $ctrls;
 
 		$this->view->roles_block = $this->action_single();
 

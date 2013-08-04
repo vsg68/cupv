@@ -21,8 +21,22 @@
 	</div>
 
 	<h4>Матрица ролей</h4>
-	<div class='aliasesplace'>
-
+	<div class='matrixplace'>
+		<table class='matrix'>
+			<tr><td></td>
+		<?php foreach($mroles as $mrole) : 	?>
+			<td class='rotateText'><?= $mrole ?></td>
+		<?php endforeach; ?>
+			</tr>
+		<?php foreach($ctrls as $name=>$ctrl) : 	?>
+			<tr>
+				<td class='ctrl'><?= $name ?> </td>
+			  <?php foreach( $ctrl as $key=>$val): ?>
+					<td class='slevel'><?= $val ?> </td>
+			  <?php endforeach; ?>
+			</tr>
+		<?php endforeach; ?>
+		</table>
 	</div>
 </div>
 <div id='ed'>
