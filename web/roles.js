@@ -24,5 +24,15 @@ $(function(){
 
 		});
 
+	$('.matrix td').hover(function(){
+									ind = $(this).parent().find('td').index(this);
+									if(!ind) return false;
+									$('.matrix td').filter('tr td:nth-child('+(ind+1)+')').addClass('hover_tr');
+								},
+						  function(){
+									ind = $(this).parent().find('td').index(this);
+									$('.matrix td').filter('tr td:nth-child('+(ind+1)+')').removeClass('hover_tr');
+								})
+
 
 });

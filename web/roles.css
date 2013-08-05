@@ -44,20 +44,24 @@ h3{
 	padding: 0 0 2px 0;
 }
 .rotateText {
-	width: 20px;
     height: 120px;
 }
-text.somet{
-	color:red;
+text{
+	fill:#888;
+}
+svg {
+	height:120px;
+	width:20px;
 }
 .matrix{
 	width: 429px;
 	height: 500px;
-	overflow-y: auto;
-	overflow-x: auto;
+	overflow: auto;
 }
 .matrix table, .matrix td{
 	border-collapse:collapse;
+	border: 1px solid #ddd;
+	color: #888;
 	margin:0;
 	padding:0;
 }
@@ -66,11 +70,10 @@ text.somet{
 }
 .matrix td {
 	padding: 3px 5px;
-	min-width:10px;
-	min-height:10px;
+	width:20px;
 }
 .ctrl {
-	width: 120px;
+	width: 120px !important;
 	text-align: left;
 	padding: 1px 3px !important;
 }

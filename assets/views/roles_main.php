@@ -21,13 +21,13 @@
 	</div>
 
 	<h4>Матрица ролей</h4>
-	<div class='aliasesplace'>
+	<div class='matrixplace'>
 		<div class='matrix'>
 			<table>
 				<tr><td></td>
 			<?php foreach($mroles as $mrole) : 	?>
 				<td class='rotateText'>
-						<svg><text x="-120" y="15" transform="rotate(270)"  class='somet'><?= $mrole ?></text></svg>
+						<svg><text x="-120" y="15" transform="rotate(270)"><?= $mrole ?></text></svg>
 				</td>
 			<?php endforeach; ?>
 				</tr>

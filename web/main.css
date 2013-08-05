@@ -133,7 +133,7 @@ ul li.helper {
 	font-weight: bold;
 }
 /*	******************	*/
-.aliasesplace {
+.aliasesplace, .matrixplace {
 	margin:5px 2px 5px 10px;
 }
 .aliases_box  {
