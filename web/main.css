@@ -148,9 +148,6 @@ ul li.helper {
 }
 .aliases_box table, .domain_box table {
 	border-collapse:collapse;
-/*
-	color: #222;
-*/
 	text-align:left;
 	width: 420px;
 }

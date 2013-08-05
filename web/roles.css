@@ -4,7 +4,7 @@ td.txt1{
 	padding: 0 0 0 20px;
 }
 #ed {
-	background-image: url('/domains.png');
+	background-image: url('/roles.png');
 	line-height: 22px;
 }
 .aliasesplace {
@@ -21,31 +21,11 @@ ul.atable {
 	margin:0;
 	padding:0;
 }
-/*
-.p-name, .p-access {
-	float: left;
-	width: 170px;
-	text-align: left;
-	margin: 0 0 0 3px;
-}
-.p-access {
-	width: 200px;
-}
-.one_sect {
-	overflow: auto;
-}
-*/
-
 .head {
 	background-color: #fff !important;
 }
 .atable .formlabel {
 	width: 160px ;
-}
-.atable .fortext {
-/*
-	color: #888 ;
-*/
 }
 .ptr {
 	background: url(/ui-icons_454545_256x240.png) -32px -16px no-repeat;
@@ -63,6 +43,39 @@ h3{
 	border: 1px solid #ddd;
 	padding: 0 0 2px 0;
 }
+td.rotateText {
+   -moz-transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    writing-mode: tb-rl;
+    width: 20px;
+    height: 120px;
+}
+.matrix{
+	width: 429px;
+	height: 500px;
+	overflow-y: auto;
+	overflow-x: auto;
+}
+.matrix table, .matrix td{
+	border-collapse:collapse;
+	margin:0;
+	padding:0;
+}
+.matrix tr:nth-child(even){
+	background-color: #eee;
+}
+.matrix td {
+	padding: 3px 5px;
+	min-width:10px;
+	min-height:10px;
+}
+.ctrl {
+	width: 120px;
+	text-align: left;
+	padding: 1px 3px !important;
+}
+
 /* Menu -----------------------------------------------------------------------------*/
 
 .accordion h3 {
@@ -103,26 +116,4 @@ ol.accordion {
 }
 .accordion .loading {
     display: none;
-}
-.rotateText {
-    -moz-transform: rotate(270deg);
-    -webkit-transform: rotate(270deg);
-    -o-transform: rotate(270deg);
-    writing-mode: tb-rl;
-    width: 20px;
-    height: 80px;
-}
-table.matrix, .matrix td{
-	border-collapse:collapse;
-	border: 1px solid #ddd;
-	margin:0;
-	padding:0;
-}
-.matrixplace {
-	margin:5px 2px 5px 10px;
-}
-.ctrl {
-	width: 130px;
-	text-align: left;
-	padding: 1px 3px !important;
 }
