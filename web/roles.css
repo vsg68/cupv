@@ -43,13 +43,12 @@ h3{
 	border: 1px solid #ddd;
 	padding: 0 0 2px 0;
 }
-td.rotateText {
-   -moz-transform: rotate(270deg);
-    -webkit-transform: rotate(270deg);
-    -o-transform: rotate(270deg);
-    writing-mode: tb-rl;
-    width: 20px;
+.rotateText {
+	width: 20px;
     height: 120px;
+}
+text.somet{
+	color:red;
 }
 .matrix{
 	width: 429px;

@@ -26,7 +26,9 @@
 			<table>
 				<tr><td></td>
 			<?php foreach($mroles as $mrole) : 	?>
-				<td class='rotateText'><?= $mrole ?></td>
+				<td class='rotateText'>
+						<svg><text x="-120" y="15" transform="rotate(270)"  class='somet'><?= $mrole ?></text></svg>
+				</td>
 			<?php endforeach; ?>
 				</tr>
 			<?php foreach($ctrls as $name=>$ctrl) : 	?>
