@@ -40,10 +40,10 @@ class Users extends \App\Page {
 
 	public function action_new() {
 
-		if( ! $this->is_approve() ) {
-			$this->response->body = $this::RIGHTS_ERROR;
-			return;
-		}
+		//~ if( ! $this->is_approve() ) {
+			//~ $this->response->body = $this::RIGHTS_ERROR;
+			//~ return;
+		//~ }
 
         $view = $this->pixie->view('users_new');
 
@@ -61,10 +61,10 @@ class Users extends \App\Page {
 
 	public function action_single() {
 
-		if( ! $this->is_approve() ) {
-			$this->response->body = $this::RIGHTS_ERROR;
-			return;
-		}
+		//~ if( ! $this->is_approve() ) {
+			//~ $this->response->body = $this::RIGHTS_ERROR;
+			//~ return;
+		//~ }
 
 		$view = $this->pixie->view('users_view');
 

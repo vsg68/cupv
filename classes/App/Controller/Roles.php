@@ -48,7 +48,7 @@ class Roles extends \App\Page {
 		}
 
 		$this->view->mroles = array_keys($mroles);
-		$this->view->ctrls = $ctrls;
+		$this->view->ctrls  = $ctrls;
 
 		$this->view->roles_block = $this->action_single();
 
