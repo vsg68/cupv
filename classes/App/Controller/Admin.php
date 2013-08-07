@@ -73,12 +73,6 @@ class Admin extends \App\Page {
 		$view->section = $section;
 		$view->options = $this->get_ctrl();
 
-		$view->slevels = $this->pixie->db
-										->query('select')
-										->table('slevels')
-										->execute()
-										->as_array();
-
 		// Собираем все контроллеры(страницы)
 		$view->controllers = $this->pixie->db
 											->query('select')->table('controllers')
@@ -100,8 +94,6 @@ class Admin extends \App\Page {
 
 		$view 	   = $this->pixie->view('admin_new');
 		$view->log = $this->getVar($this->logmsg,'<strong>Создание нового раздела.</strong>');
-
-		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute();
 
 		// Рисуем логотип, если такой файл есть.
 		$path_arr   = explode('\\',get_class($this));
@@ -131,7 +123,6 @@ class Admin extends \App\Page {
 				//
 				$entry = array( 'name' 		=> $params['section_name'],
 								'note'		=> $this->getVar( $params['section_note'] ),
-								'slevel_id' => $params['slevel_id'],
 								'active'	=> $this->getVar( $params['active'],0 )
 								);
 

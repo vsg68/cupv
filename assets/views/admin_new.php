@@ -13,15 +13,6 @@
 			<span class='formlabel'>Описание:</span>
 			<input  class='formtext' type='text' name='section_note' value=''  placeholder='описание' />
 	   </div>
-	   <div class='fieldentry'>
-			<span class='formlabel'>Доступ:</span>
-			<select  class='formtext' name='slevel_id'>
-				<?php foreach( $slevels as $slevel): ?>
-				<option value='<?= $slevel->id ?>' <?= ($slevel->slevel) ? '' : ' selected' ?> ><?= $slevel->name ?></option>
-				<?php endforeach; ?>
-			</select>
-	   </div>
-
 
 <br />
 		<h4>Страницы(контроллеры) раздела</h4>

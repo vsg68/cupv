@@ -15,14 +15,6 @@
 			<span class='formlabel'>Описание:</span>
 			<input  class='formtext' type='text' name='section_note' value='<?= $section->note; ?>'  />
 	   </div>
-		<div class='fieldentry'>
-			<span class='formlabel'>Доступ:</span>
-			<select class='formtext' name='slevel_id'>
-				<?php foreach ($slevels as $slevel): ?>
-				<option value='<?= $slevel->id ?>' <?php ($slevel->id == $section->slevel_id ) && print ('selected')?> > <?= $slevel->name ?>
-				<?php endforeach; ?>
-			</select>
-		</div>
 
 		<input type='hidden' name='section_id' value='<?= $section->id ?>'  />
 

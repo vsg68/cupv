@@ -16,19 +16,21 @@ class Login extends \App\Page {
 			$name = $this->auth->user()->login ;
 
 			$this->view->pages = $this->pixie->db->query('select')
-											->fields($this->pixie->db->expr('DISTINCT S.*, COALESCE(LN.class,"#") AS link'))
+											->fields($this->pixie->db->expr('S.name, S.note, COALESCE(C.class,"#") AS link'))
 											->table('sections','S')
-											->join(array('slevels','SL'),array('SL.id','S.slevel_id'),'LEFT')
 											->join(array('controllers','C'),array('S.id','C.section_id'),'LEFT')
-											->join(array('page_roles','R'),array('C.id','R.control_id'),'LEFT')
-											->join(array('slevels','CL'),array('CL.id','R.slevel_id'),'LEFT')
-											->join(array('auth','A'),array('A.role_id','R.role_id'),'LEFT')
-											->join(array('controllers','LN'),array('S.id','LN.section_id'),'LEFT')
+											->join(array('page_roles','P'),array('C.id','P.control_id'),'LEFT')
+											->join(array('roles','R'),array('R.id','P.role_id'),'LEFT')
+											->join(array('slevels','SL'),array('SL.id','P.slevel_id'),'LEFT')
+											->join(array('auth','A'),array('A.role_id','P.role_id'),'LEFT')
 											->where('A.login',$name)
 											->where('S.active',1)
-											->where('LN.arrange',0)
-											->where($this->pixie->db->expr('IFNULL(CL.slevel,0) >= SL.slevel'),1)
-											->where('or',array('SL.slevel',0))
+											->where('R.active',1)
+											->where('C.active',1)
+											->where('A.active',1)
+											->where('C.arrange',0)
+											->where('SL.slevel','>',0)
+											->group_by('S.name')
 											->execute();
 
 			$this->view->subview = 'login_view';
