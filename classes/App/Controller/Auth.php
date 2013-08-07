@@ -92,7 +92,7 @@ class Auth extends \App\Page {
 								'active'  => $this->getVar( $params['active'],0 )
 								);
 				if( isset( $params['auth_passwd']) )
-								$entry['passwd']  = $this->pixie->db->expr('MD5("'.$params['auth_passwd'].'")');
+								$entry['passwd']  = $this->auth->provider('Password')->hash_password($params['auth_passwd']); // хешируем пароль средством модля
 
 
 				if ( ! isset($params['auth_id']) ) {
