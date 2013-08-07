@@ -15,8 +15,8 @@
 			<span class='formlabel'>ФИО:</span>
 			<input  class='formtext' type='text' name='auth_note' value='<?= $auth->note; ?>'  />
 	   </div>
-	  <div class='fieldentry path'>
-			<div class='formlabel'>Пароль:<span class='web' id='path'>&rArr;</span></div>
+	  <div class='fieldentry'>
+			<div class='formlabel'>Пароль:<span class='web' id='passwd'>&rArr;</span></div>
 	   </div>
 		<div class='fieldentry'>
 			<span class='formlabel'>Профиль:</span>

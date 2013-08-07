@@ -92,7 +92,7 @@ class Auth extends \App\Page {
 								'active'  => $this->getVar( $params['active'],0 )
 								);
 				if( isset( $params['auth_passwd']) )
-								$entry['passwd']  = $params['auth_passwd'];
+								$entry['passwd']  = $this->pixie->db->expr('MD5("'.$params['auth_passwd'].'")');
 
 
 				if ( ! isset($params['auth_id']) ) {
@@ -115,16 +115,16 @@ class Auth extends \App\Page {
 			// Ошибки имели место
 			if( isset( $this->logmsg ) ) {
 
-				if ( $params['role_id'] ) {
+				if ( $params['auth_id'] ) {
 					// Ошибка во время редактирования
-					$this->role_id = $params['role_id'];
+					$this->role_id = $params['auth_id'];
 					$this->action_single();
 				}
 				else
 					$this->action_new();
 			}
 			else
-				$this->response->body = $params['role_id'];
+				$this->response->body = $params['auth_id'];
 		}
 
 	}

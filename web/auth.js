@@ -1,6 +1,20 @@
 
 $(function(){
 
+	$('#passwd').live('click',function(){
+
+			if( $(this).parent().siblings().is(':text') ) {
+				$(this).parent().siblings(':text').remove();
+				$(this).html('&rArr;');
+			}
+			else {
+				$(this).parent().after("<input  class='formtext' type='text' name='auth_passwd' value='"+ mkpasswd() +"'  />");
+				$(this).html('&dArr;');
+			}
+	});
+
+
+
 	$('#submit_auth').live('click', function(event){
 
 			// проверка на совпадающие имена

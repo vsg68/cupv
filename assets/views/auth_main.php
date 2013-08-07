@@ -18,21 +18,6 @@
 			</table>
 		</div>
 	</div>
-<!--
-<br />
-	<h4>Используемые страницы</h4>
-	<div class='aliasesplace'>
-		<div>
-			<div class='th'>Контроллер</div>
-			<div class='th'>Название раздела</div>
-		</div>
-		<div class='domain_box'>
-			<table>
-
-			</table>
-		</div>
-	</div>
--->
 </div>
 
 <div id='ed'>
