@@ -31,50 +31,43 @@ class Page extends \PHPixie\Controller {
 										->execute();
 
 		// Проверка легитимности пользователя и его прав
-       // if( ! $this->check_permissions() )
-		//	return false;
+        if( $this->request->param('controller') != 'login' && ! $this->check_permissions()  )
+			return false;
 	}
 
 	/* Проверка на предоставление доступа к разделу */
 	protected function is_approve(){
 
-		//~ if(  $this->auth->user() )
-			//~ return false;
-
 		$name = $this->pixie->auth->user()->login;
 		$ctrl = $this->request->param('controller');
-//		$act  = $this->request->param('action');
 
+		// вынимаем уровень доступа для страницы для пользователя
 		$result = $this->pixie->db->query('select')
-									->fields($this->pixie->db->expr('if(strcmp("'.$ctrl.'","login")=0, 100, count(*)) as cnt'))
-									->table('auth','A')
-									->join(array('roles','R'),array('A.id','R.auth_id'),'LEFT')
-									->join(array('controllers','C'),array('C.id','R.control_id'),'LEFT') // связь юзера и страницы
-									->join(array('slevels','AL'),array('AL.id','R.slevel_id'),'LEFT') // какой уроветь доступа пользователя к странице
-									->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')  // что за раздел, к которому принадлежит страница
-									->join(array('slevels','SL'),array('SL.id','S.slevel_id'),'LEFT')  // ее уровень доступа
+									->fields('S.slevel')
+									->table('controllers','C')
+									->join(array('page_roles','P'),array('C.id','P.control_id'),'LEFT')
+									->join(array('roles','R'),array('R.id','P.role_id'),'LEFT')
+									->join(array('slevels','S'),array('S.id','P.slevel_id'),'LEFT')
+									->join(array('auth','A'),array('A.role_id','P.role_id'),'LEFT')
 									->where('A.login',$name)
-									->where('S.active',1)
 									->where('C.class',$ctrl)
-									->where($this->pixie->db->expr('IFNULL(AL.slevel,0) >= SL.slevel'),1)
+									->where('R.active',1)
+									->where('C.active',1)
+									->where('A.active',1)
 									->execute()
 									->current();
-//echo $name.",".$ctrl.",".$result->cnt."__"; exit;
-		if(	$result->cnt )
-			return true;
 
-		return false;
-
+			return $this->getVar($result->slevel,0);
     }
 
 	protected function check_permissions(){
 
-	//	if( ! $this->is_approve() )
+		if( ! $this->is_approve() )
 			return true;
 
 		$this->view->subview = '403';
 		$this->response->body = $this->view->render();
-		//$this->execute=false;
+		$this->execute=false;
 		return false;
 	}
 
