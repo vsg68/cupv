@@ -96,7 +96,7 @@ $(function(){
 	//?????
 	$('.key','.aliases_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
 
-	$('tr','.domain_box').not('.noedit').filter('[sid="' +  key + '"]').addClass('selected_key');
+	$('tr','.domain_box, .aliases_box').not('.noedit').filter('[sid="' +  key + '"]').addClass('selected_key');
 
 	// Запрос на редактирование
 	$('#usrs tr').click( function(){
@@ -105,7 +105,8 @@ $(function(){
 									$(this).addClass('selected_key');
 									// Запрос
 									if( $(this).closest('.aliases_box').length )
-										name = $('.key', this).text();
+// !!!!!!!!!							name = $('.key', this).text();
+										name = $(this).attr('sid');
 									else if( $(this).closest('.domain_box').length )
 										name = $(this).attr('sid');
 
@@ -161,7 +162,7 @@ function try_submit() {
 
 	$.post(	'/'+ ctrl +'/add/', params , function(response) {
 
-						if( ctrl == 'domains' || ctrl == 'admin' || ctrl == 'roles' )
+						if( ctrl == 'domains' || ctrl == 'admin' || ctrl == 'roles' || ctrl == 'auth' )
 							tmpl = /^\d+$/;
 						else
 							tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;

@@ -173,6 +173,7 @@ h4{
 }
 .nonactive {
 	text-decoration: line-through;
+	color: #bbb;
 }
 .txt {
 	width: 275px;
