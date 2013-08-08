@@ -27,7 +27,7 @@
 				imap:<input type='checkbox' class='formtext' name='imap' value='1' <?php ($user->imap_enable & 1 ) && print ('checked'); ?>  >
 		</div>
 	   <div class='fieldentry path'>
-			<div class='formlabel'>Путь:<span class='web' id='path'><?= ( $user->path )? "&dArr;" : "&rArr;" ?></span></div>
+			<div class='formlabel'>Путь:<span class='ptr <?= ( $user->path )? "ptr_hover;" : "" ?>' id='path'></span></div>
 			<?php if( $user->path ): ?>
 				<input type='text' class='formtext' name='path' value='<?= $user->path; ?>'/>
 			<?php endif; ?>
@@ -51,12 +51,12 @@
 			<?php  if( $alias->alias_name == $user->mailbox) { continue; } ?>
 		   <tr class="alias">
 			   <td><input class='autocomp' type='text' name='alias[]' value='<?= $alias->alias_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
-			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
 			   <td>
 					<input type='hidden' name='alias_st[]' value='<?= $alias->active ?>'>
-				   <input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
-				   <span class='delRow  web'>&otimes;</span>
-				</td>
+					<input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
+					<input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>>
+			   </td>
+			   <td><span class='web'></span></td>
 		   </tr>
 		<?php endforeach; ?>
 			</table>

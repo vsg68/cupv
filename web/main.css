@@ -97,10 +97,17 @@ ul li.helper {
 	visibility: hidden;
 }
 .web {
+/*
 	padding:0 3px;
 	margin: 0 5px;
+*/
 	cursor: pointer;
+/*
 	float: right;
+*/
+	background: url(/ui-icons_454545_256x240.png) -16px -192px no-repeat;
+	height: 16px;
+	width: 16px;
 }
 .atable{
 	border-collapse:collapse;
@@ -218,4 +225,14 @@ h4{
 input[type='text'].path  {
 	width: 212px;
 }
-
+.ptr {
+	background: url(/ui-icons_454545_256x240.png) -32px -16px no-repeat;
+	height: 16px;
+	width: 16px;
+	margin: 4px 5px 0 0;
+	float: right;
+	cursor: pointer;
+}
+.ptr-hover {
+	background-position: -64px -16px !important;
+}

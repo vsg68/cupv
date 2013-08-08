@@ -40,11 +40,11 @@ $(function(){
 
 			$('.path').append(path);
 			$('.path .formtext').focus();
-			$(this).html('&dArr;');
+			$(this).toggleClass('ptr-hover');
 		}
 		else {
 			$('.path .formtext').remove();
-			$(this).html('&rArr;');
+			$(this).toggleClass('ptr-hover');
 		}
 		return false;
 	});
@@ -57,15 +57,12 @@ $(function(){
 			// Если новый пользователь
 			var mailbox = $(':text[name="login"]').val() + '@' + $('.domain option:selected').val();
 
-			if( mailbox != '@' ) {
+			if( mailbox != '@' ) { // при редактировании сюда не попадаем
 
-				$('.key:contains("' + mailbox + '")').each( function(){
-
-						if( $(this).text() == mailbox ) {
-							alert('Почтовый ящик '+ mailbox +' уже существует!');
-							$(':text[name="login"]').val('');
-						}
-				});
+				if( $('tr').filter('[sname="' + mailbox + '"]').length ) {
+					alert('Почтовый ящик '+ mailbox +' уже существует!');
+					$(':text[name="login"]').val('');
+				}
 			}
 
 			try_submit();
@@ -88,7 +85,6 @@ $(function(){
 			$(input_hide).val('0');
 		}
 	});
-
 
 
  })

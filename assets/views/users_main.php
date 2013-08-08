@@ -21,7 +21,7 @@
 		<div class='aliases_box'>
 			<table>
 			<?php foreach( $users as $user ): ?>
-			   <tr id="<?= $user->user_id ?>">
+			   <tr sid="<?= $user->user_id ?>" cname="<?= $user->mailbox ?>">
 				   <td class="key <?= $user->active == 0 ? 'nonactive':''; ?>"><?= $user->mailbox ?></td>
 				   <td class="val"><?= $user->username ?></td>
 			   </tr>
