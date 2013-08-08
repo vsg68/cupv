@@ -96,18 +96,15 @@ ul li.helper {
 	height: 0;
 	visibility: hidden;
 }
-.web {
-/*
-	padding:0 3px;
-	margin: 0 5px;
-*/
+div.delRow, div.else {
+	margin: 0 auto;
 	cursor: pointer;
-/*
-	float: right;
-*/
 	background: url(/ui-icons_454545_256x240.png) -16px -192px no-repeat;
 	height: 16px;
 	width: 16px;
+}
+div.else {
+	background: url(/ui-icons_454545_256x240.png) -0px -192px no-repeat;
 }
 .atable{
 	border-collapse:collapse;
@@ -184,6 +181,7 @@ h4{
 }
 .txt {
 	width: 275px;
+	height: 23px;
 }
 .lb {
 	border:0;

@@ -34,11 +34,11 @@
 
 		   <h4>Алиасы</h4>
 			<table class='atable'>
-				<tr><th class='txt'>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+				<tr><th class='txt'>alias</th><th>on/off</th><th><div id='alias' class='else'></div></th></tr>
 			</table>
 		 <h4>Пересылка</h4>
 		 <table class='atable'>
-			<tr><th class='txt'>mailbox</th><th>on/off</th><th><button id='fwd' class='else'>+</button></th></tr>
+			<tr><th class='txt'>mailbox</th><th>on/off</th><th><div id='fwd' class='else'></div></th></tr>
 		</table>
 
 	<div class='submit'><input type='submit' id='submit_view' value='Добавить'></div>

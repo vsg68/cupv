@@ -46,7 +46,7 @@
 
 		<h4>Алиасы</h4>
 			<table class='atable'>
-				<tr><th  class='txt'>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+				<tr><th  class='txt'>alias</th><th>on/off</th><th><div id='alias' class='else'></div></th></tr>
 		<?php foreach ($aliases as $alias): ?>
 			<?php  if( $alias->alias_name == $user->mailbox) { continue; } ?>
 		   <tr class="alias">
@@ -56,14 +56,14 @@
 					<input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
 					<input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>>
 			   </td>
-			   <td><span class='web'></span></td>
+			   <td><div class='delRow'></div></td>
 		   </tr>
 		<?php endforeach; ?>
 			</table>
 
 		   <h4>Пересылка</h4>
 		   <table class='atable'>
-				<tr><th class='txt'>forward</th><th>on/off</th><th><button id='fwd' class='else'>+</button></th></tr>
+				<tr><th class='txt'>forward</th><th>on/off</th><th><div id='fwd' class='else'></div></th></tr>
 
 		<?php foreach ($aliases as $alias): ?>
 		<?php  if( $alias->alias_name != $user->mailbox) { continue; } ?>
@@ -73,7 +73,7 @@
 			   <td>
 				   <input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='fwd_id[]' value='<?= $alias->alias_id ?>'>
-				   <span class='delRow  web'>&otimes;</span>
+				   <div class='delRow'></div>
 				</td>
 		   </tr>
 		<?php endforeach; ?>

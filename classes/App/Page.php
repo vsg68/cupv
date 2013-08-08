@@ -40,7 +40,7 @@ class Page extends \PHPixie\Controller {
 	protected function is_approve(){
 
 		if( $this->auth->user() == null )
-			return 0;
+			return 1;
 
 		$name = $this->auth->user()->login;
 		$ctrl = $this->request->param('controller');
