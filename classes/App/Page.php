@@ -5,12 +5,13 @@ class Page extends \PHPixie\Controller {
 
 	protected $view;
 	protected $auth;
-	protected $user_level;
 	protected $logmsg;
+	protected $permissiion;
 	const RIGHTS_ERROR = 'Не хватает прав для данной операции.';
-	//~ const READ_LEVEL = 0;
-	//~ const WRITE_LEVEL = 1;
-	//~ const ADMIN_LEVEL = 2;
+	const NONE_LEVEL = 0;
+	const READ_LEVEL = 1;
+	const WRITE_LEVEL = 2;
+
 	//protected $menuitems;
 
 	public function before() {
@@ -31,14 +32,16 @@ class Page extends \PHPixie\Controller {
 										->execute();
 
 		// Проверка легитимности пользователя и его прав
-        if( $this->request->param('controller') != 'login' && ! $this->check_permissions()  )
-			return false;
+        if( $this->request->param('controller') != 'login' )
+			$this->permissions = $this->is_approve();
 	}
 
 	/* Проверка на предоставление доступа к разделу */
 	protected function is_approve(){
 
-		$name = $this->pixie->auth->user()->login;
+		if( $this->auth->user() == null ) return 0;
+
+		$name = $this->auth->user()->login;
 		$ctrl = $this->request->param('controller');
 
 		// вынимаем уровень доступа для страницы для пользователя
@@ -57,20 +60,16 @@ class Page extends \PHPixie\Controller {
 									->execute()
 									->current();
 
-			return $this->getVar($result->slevel,0);
+		return $this->getVar($result->slevel,0);
     }
 
-	protected function check_permissions(){
-
-		if( ! $this->is_approve() )
-			return true;
+	protected function noperm() {
 
 		$this->view->subview = '403';
 		$this->response->body = $this->view->render();
 		$this->execute=false;
 		return false;
 	}
-
     //~ protected function sanitize($value,$key,$method) {
 //~
 		//~ if( is_string($value) ) $value =  trim($value) ;

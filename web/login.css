@@ -71,6 +71,7 @@ div.helper {
 	height: 0;
 	visibility: hidden;
 }
+/*
 #mail {
 	margin-left: 35px;
 	background: url(/postfix.png) 0 0 no-repeat;
@@ -80,6 +81,11 @@ div.helper {
 	margin-left: 50px;
 	background: url(/squid.png) 0 0 no-repeat;
 }
+#admin {
+	margin-left: 50px;
+	background: url(/admin.png) 0 0 no-repeat;
+}
+*/
 #logout{
 	position: absolute;
 	float:right;

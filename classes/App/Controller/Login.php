@@ -35,11 +35,8 @@ class Login extends \App\Page {
 
 			$this->view->subview = 'login_view';
 		}
-		else {
+		else
 			$this->view->subview = 'login_main';
-
-
-		}
 
         $this->response->body = $this->view->render();
     }

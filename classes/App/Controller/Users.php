@@ -15,10 +15,11 @@ class Users extends \App\Page {
 		$this->view->script_file = '<script type="text/javascript" src="/users.js"></script>';
 		$this->view->css_file = '<link rel="stylesheet" href="/users.css" type="text/css" />';
 
-		//~ // Проверка легитимности пользователя и его прав
-        //~ if( ! $this->check_permissions() )
-			//~ return false;
-
+		// Проверка легитимности пользователя и его прав
+        if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
 
 		$this->view->subview = 'users_main';
 
@@ -40,10 +41,10 @@ class Users extends \App\Page {
 
 	public function action_new() {
 
-		//~ if( ! $this->is_approve() ) {
-			//~ $this->response->body = $this::RIGHTS_ERROR;
-			//~ return;
-		//~ }
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
 
         $view = $this->pixie->view('users_new');
 
@@ -61,10 +62,10 @@ class Users extends \App\Page {
 
 	public function action_single() {
 
-		//~ if( ! $this->is_approve() ) {
-			//~ $this->response->body = $this::RIGHTS_ERROR;
-			//~ return;
-		//~ }
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
 
 		$view = $this->pixie->view('users_view');
 
