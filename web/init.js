@@ -95,7 +95,7 @@ $(function(){
 	//key = window.location.search.split('=')[1];
 	key = window.location.pathname.split('/')[3];
 	//?????
-	$('.key','.aliases_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
+	//$('.key','.aliases_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
 
 	$('tr','.domain_box, .aliases_box').not('.noedit').filter('[sid="' +  key + '"]').addClass('selected_key');
 
@@ -105,12 +105,12 @@ $(function(){
 									$('.selected_key').removeClass('selected_key');
 									$(this).addClass('selected_key');
 									// Запрос
-									////if( $(this).closest('.aliases_box').length )
-// !!!!!!!!!							name = $('.key', this).text();
+									//if( $(this).closest('#alias-main').length )
+										//id = $('.key', this).text();
 										////name = $(this).attr('sid');
 									////else if( $(this).closest('.domain_box').length )
 
-										id = $(this).attr('sid');
+									id = $(this).attr('sid');
 
 									$.get('/'+ ctrl + '/single/'+id,{'act':'1'},function(response){
 										 $('#ed').empty().append(response);

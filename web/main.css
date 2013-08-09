@@ -96,15 +96,18 @@ ul li.helper {
 	height: 0;
 	visibility: hidden;
 }
-div.delRow, div.else {
+div.delRow, .else div {
 	margin: 0 auto;
 	cursor: pointer;
 	background: url(/ui-icons_454545_256x240.png) -16px -192px no-repeat;
 	height: 16px;
 	width: 16px;
 }
-div.else {
+.else div {
 	background: url(/ui-icons_454545_256x240.png) -0px -192px no-repeat;
+}
+.else {
+	width:23px;
 }
 .atable{
 	border-collapse:collapse;
@@ -117,6 +120,7 @@ div.else {
 }
 .atable th{
 	font-weight:bold;
+	height: 23px;
 }
 .atable td{
 	padding:1px;

@@ -21,13 +21,13 @@ $(function(){
 	$('.else').live('click',function(){
 
 		open_tag 	= '<tr class="alias">';
-		alias_cell 	= '<td><input class="autocomp" type="text" name="fwd[]" value="" placeholder="введите почтовый адрес"></td>';
+		alias_cell 	= '<td><input class="autocomp" type="text" name="fname[]" value="" placeholder="введите почтовый адрес"></td>';
 		chkbox_cell = '<td>'+
-						'<input type="hidden" name="fwd_st[]" value="1">' +
-						'<input type="hidden" name="fwd_id[]" value="0">' +
+						'<input type="hidden" name="stat[]" value="1">' +
+						'<input type="hidden" name="fid[]" value="0">' +
 						'<input type="checkbox" name="chk" checked>' +
 					  '</td>';
-		button_cell = '<td><span class="delRow  web">&otimes;</span>'+
+		button_cell = '<td><div class="delRow"></div></td>';
 		close_tag 	= '</tr>';
 
 		var tbl = $(this).parents('.atable').get(0);
