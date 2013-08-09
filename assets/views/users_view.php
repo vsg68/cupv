@@ -15,7 +15,7 @@
 	   </div>
 
 	   <div class='fieldentry'>
-			<span class='formlabel'>Пароль:</span>
+			<span class='formlabel mkpwd' title='создать пароль'>Пароль:</span>
 			<input class='formtext' type='text' name='password' value='<?= $user->password; ?>'   />
 	   </div>
 	   <div class='fieldentry'>
@@ -46,7 +46,7 @@
 
 		<h4>Алиасы</h4>
 			<table class='atable'>
-				<tr><th  class='txt'>alias</th><th>on/off</th><th><div id='alias' class='else'></div></th></tr>
+				<tr><th  class='txt'>alias</th><th>on/off</th><th><div id='alias' class='else' title='Добавить'></div></th></tr>
 		<?php foreach ($aliases as $alias): ?>
 			<?php  if( $alias->alias_name == $user->mailbox) { continue; } ?>
 		   <tr class="alias">
@@ -56,7 +56,7 @@
 					<input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
 					<input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>>
 			   </td>
-			   <td><div class='delRow'></div></td>
+			   <td><div class='delRow' title='удалить'></div></td>
 		   </tr>
 		<?php endforeach; ?>
 			</table>
@@ -73,7 +73,7 @@
 			   <td>
 				   <input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'>
 				   <input type='hidden' name='fwd_id[]' value='<?= $alias->alias_id ?>'>
-				   <div class='delRow'></div>
+				   <div class='delRow' title='удалить'></div>
 				</td>
 		   </tr>
 		<?php endforeach; ?>

@@ -45,17 +45,3 @@ $(function(){
 
 });
 
-function mkpasswd(num_var) {
-
-			if(!num_var)
-				num_var = 8;
-
-			passwd = '';
-			str = "OPQRSTUVWXYZ0123456789abcdefjhigklmABCDEFJHIGKLMNnopqrstuvwxyz_=-";
-
-			for(i=0;i<num_var;i++) {
-				n = Math.floor(Math.random() * str.length);
-				passwd += str[n];
-			}
-			return passwd;
-}

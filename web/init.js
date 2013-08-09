@@ -119,12 +119,15 @@ $(function(){
 									})
 								});
 
-	//Новый пользователь
+	//Новая запись
 	$('#new').click(function(){
 					$.get('/'+ ctrl +'/new/', function(response) {$('#ed').empty().html(response);});
 	});
 
+	$('.mkpwd').live('click', function(){
 
+			$(this).siblings(':text').val(mkpasswd());
+		})
 });
 
 
@@ -162,13 +165,14 @@ function try_submit() {
 
 	$.post(	'/'+ ctrl +'/add/', params , function(response) {
 
-						if( ctrl == 'domains' || ctrl == 'admin' || ctrl == 'roles' || ctrl == 'auth' )
+						//if( ctrl == 'domains' || ctrl == 'admin' || ctrl == 'roles' || ctrl == 'auth' )
 							tmpl = /^\d+$/;
-						else
-							tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
+						//else
+						//	tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
 
 						if( tmpl.test(response) )
-							window.location = '/'+ ctrl +'/view/?name=' + response;
+							//window.location = '/'+ ctrl +'/view/?name=' + response;
+							window.location = '/'+ ctrl +'/view/' + response;
 						else
 							$('#ed').empty().html(response);
 					});
@@ -235,4 +239,19 @@ function checkfield(obj) {
 	else
 		return true;
 
+}
+
+function mkpasswd(num_var) {
+
+			if(!num_var)
+				num_var = 8;
+
+			passwd = '';
+			str = "OPQRSTUVWXYZ0123456789abcdefjhigklmABCDEFJHIGKLMNnopqrstuvwxyz_=-";
+
+			for(i=0;i<num_var;i++) {
+				n = Math.floor(Math.random() * str.length);
+				passwd += str[n];
+			}
+			return passwd;
 }

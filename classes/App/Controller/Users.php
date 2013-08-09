@@ -116,8 +116,8 @@ class Users extends \App\Page {
 			$params['fwd']	= $this->getVar($params['fwd'],array());
 
 			// Проверка на почтовый адрес
-			array_walk( $params['alias'],array($this,'sanitize'),'is_mail' );
-			array_walk( $params['fwd'],array($this,'sanitize'),'is_mail' );
+			//array_walk( $params['alias'],array($this,'sanitize'),'is_mail' );
+			//array_walk( $params['fwd'],array($this,'sanitize'),'is_mail' );
 
 			$entry = array('username' 		=> $params['username'],
 							'password' 		=> $params['password'],
@@ -129,7 +129,7 @@ class Users extends \App\Page {
 					);
 			// для нового пользователя добавляем mailbox
 			if(! isset($params['user_id']))
-				array_push($entry, array('mailbox'	=> $params['login'].'@'.$params['domain']));
+				$entry['mailbox'] = $params['mailbox'] = $params['login'].'@'.$params['domain'];
 
 			// Если нет ошибок заполнения - проходим в обработку
 			if( ! isset($this->logmsg) ) {
@@ -148,7 +148,7 @@ class Users extends \App\Page {
 					$this->pixie->db->query('update')
 									->table('users')
 									->data($entry)
-									->where('uesr_id',$params['user_id'])
+									->where('user_id',$params['user_id'])
 									->execute();
 				}
 

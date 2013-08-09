@@ -121,7 +121,10 @@ div.else {
 .atable td{
 	padding:1px;
 }
-
+.mkpwd {
+	cursor: pointer;
+	text-decoration: underline;
+}
 #domains_flt {
 	font-size: 10px;
 	float: left;
