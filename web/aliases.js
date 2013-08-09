@@ -6,12 +6,14 @@ $(function(){
 
 		$('.hidden_filter').removeClass('hidden_filter');
 
-		search_str = $(this).val();
+		var search_str = $(this).val();
 
 		if( search_str )
-			$('td.val:not(:contains("' + search_str + '"))', '#aliases_box')
-			.parent()
-			.addClass('hidden_filter');
+
+			$('td.val').filter(function(){
+								return $(this).children('div:contains("' + search_str + '")').length == 0; })
+				.closest('tr')
+				.addClass('hidden_filter');
 
 	});
 
@@ -44,23 +46,29 @@ $(function(){
 			event.preventDefault();
 
 			// Проверка на существование такого алиаса
-			var alias = $(':text[name="alias_name"]').val();
 
-			$('.key:contains("' + alias +'")').each( function(){
-					if( $(this).text() == alias ) {
-						alert('Алиас '+ alias +' уже существует!');
-						$(':text[name="newalias"]').val('');
-					}
-			});
+			name = $(':text[name="alias_name"]').val();
+			id = $(':hidden[name="alias_uid"]').val();
+
+			existNameId = $('tr')
+							.filter('[sid="' + id + '"]')
+							.filter('[sname="' + name + '"]')
+							.length;
+
+			existName = $('tr')
+							.filter('[sname="' + name + '"]')
+							.length;
+
+			if( ! existNameId && existName ) {
+				alert('Алиас '+ name +' уже существует!');
+				$('input[name="alias_name"]').val('');
+			}
 
 			try_submit();
 			return false;
 	});
 
-	//~ //Новый alias
-	//~ $('#new').click(function(){
-		//~ $.get('/aliases/new/',function(response) { $('#ed').empty().html(response); });
-	//~ });
+
 
 
 

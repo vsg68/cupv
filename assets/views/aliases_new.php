@@ -16,4 +16,4 @@
 	</table>
 	<div class='submit'><input type='submit' id='submit_view' value='Изменить'></div>
 </form>
-<script type="text/javascript">$('.autocomp').autocomplete(options);</script>
+<script type="text/javascript">$('.autocomp').autocomplete( { serviceUrl:'/users/searchdomain/',type:'post'} );</script>
