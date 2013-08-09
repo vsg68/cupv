@@ -92,7 +92,8 @@ $(function(){
 								});
 
 	// Выбор записи
-	key = window.location.search.split('=')[1];
+	//key = window.location.search.split('=')[1];
+	key = window.location.pathname.split('/')[3];
 	//?????
 	$('.key','.aliases_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
 
@@ -104,13 +105,14 @@ $(function(){
 									$('.selected_key').removeClass('selected_key');
 									$(this).addClass('selected_key');
 									// Запрос
-									if( $(this).closest('.aliases_box').length )
+									////if( $(this).closest('.aliases_box').length )
 // !!!!!!!!!							name = $('.key', this).text();
-										name = $(this).attr('sid');
-									else if( $(this).closest('.domain_box').length )
-										name = $(this).attr('sid');
+										////name = $(this).attr('sid');
+									////else if( $(this).closest('.domain_box').length )
 
-									$.get('/'+ ctrl + '/single/',{'name':name, 'act':'1'},function(response){
+										id = $(this).attr('sid');
+
+									$.get('/'+ ctrl + '/single/'+id,{'act':'1'},function(response){
 										 $('#ed').empty().append(response);
 
 										 // Если имеем дело с транспортом - блокируем алиасы
@@ -188,7 +190,7 @@ function checkfield(obj) {
 
 	one_net	  =	"(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?";
 	net_tmpl  = "^\\s*" + one_net + "(\\s*,\\s*" + one_net + ")*\\s*$";
-	mail_tmpl = "^[\\w\\.]+@(\\w+\\.){1,}\\w+$";
+	mail_tmpl = "^[-_\\w\\.]+@(\\w+\\.){1,}\\w+$";
 	word_tmpl = "^[\\w\\.]+$";
 	transp_tmpl	= "^\\w+:\\[(\\d{1,3}\\.){3}\\d{1,3}\\]$";
 	domain_tmpl	= "^(\\w+\\.)+\\w+$";

@@ -70,10 +70,10 @@ class Users extends \App\Page {
 		$view->log = $this->getVar($this->logmsg,'');
 
 		// если не редактирование,т.е. начальный вход
-		if( ! $this->request->get('name') )
+		if( ! $this->request->param('id') )
 			return; // "<img class='lb' src='/users.png' />";
 
-		$this->user_id = $this->getVar($this->user_id, $this->request->get('name'));
+		$this->user_id = $this->getVar($this->user_id, $this->request->param('id'));
 
 		$view->user = $this->pixie->db->query('select')
 										->table('users')
