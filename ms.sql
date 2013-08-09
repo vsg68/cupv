@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Авг 02 2013 г., 18:03
+-- Время создания: Авг 09 2013 г., 18:42
 -- Версия сервера: 5.1.40-community
 -- Версия PHP: 5.3.13
 
@@ -20,6 +20,85 @@ SET time_zone = "+00:00";
 -- База данных: `ms`
 --
 
+DELIMITER $$
+--
+-- Процедуры
+--
+CREATE DEFINER=`gkv`@`%` PROCEDURE `get_aliases`(IN incmail VARCHAR(100))
+BEGIN
+
+DECLARE dmail, dname VARCHAR(100);
+
+SELECT all_email, domain_name FROM domains WHERE active = 1 AND domain_type = 0 AND all_enable = 1 AND all_email = incmail LIMIT 1 INTO dmail, dname;
+
+IF dmail IS NULL THEN
+	-- Is not alias for all domain users - check aliases table
+	SELECT delivery_to FROM aliases WHERE active = 1 AND alias_name = check_email(incmail);
+ELSE
+	SELECT mailbox as delivery_to FROM users WHERE active = 1 AND mailbox LIKE CONCAT('%@',dname);
+END IF;
+
+
+END$$
+
+CREATE DEFINER=`gkv`@`%` PROCEDURE `get_all`()
+BEGIN
+
+DECLARE i INT DEFAULT 0;
+DECLARE id INT DEFAULT 0;
+DECLARE dname, dmail VARCHAR(100);
+DECLARE myquery TEXT;
+DECLARE dlist cursor FOR SELECT domain_name, all_email from domains WHERE active = 1 AND domain_type = 0 AND all_enable = 1;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET i = 1;
+
+SET myquery = 'SELECT alias_name, delivery_to FROM aliases WHERE active = 1';
+SET id = 1;
+OPEN dlist;
+
+WHILE i = 0 DO
+	FETCH dlist INTO dname, dmail;
+	IF id > 0 THEN 
+		SET myquery = CONCAT(myquery, ' UNION ');
+	END IF;
+	SET myquery = CONCAT(myquery, ' SELECT \'', dmail ,'\' as alias_name, mailbox as delivery_to FROM users WHERE active=1 and mailbox like \'%', dname,'\'');
+	SET id = id+1;
+END WHILE;
+
+CLOSE dlist;
+
+-- SET @myquery = 'SELECT * FROM users'; -- myquery;
+SET @myquery = myquery;
+
+PREPARE res FROM @myquery;
+EXECUTE res ;
+
+
+
+END$$
+
+--
+-- Функции
+--
+CREATE DEFINER=`gkv`@`%` FUNCTION `check_email`(email_address VARCHAR(255)) RETURNS text CHARSET latin1
+BEGIN
+
+DECLARE sdomain VARCHAR(255);
+DECLARE ddomain VARCHAR(255);
+
+
+SELECT SUBSTRING(email_address, INSTR(email_address, '@')+1) INTO sdomain;
+
+SELECT delivery_to FROM domains 
+	WHERE domain_name = sdomain AND active = 1 AND domain_type = 1 LIMIT 1 INTO ddomain;
+
+IF ddomain IS NOT NULL THEN
+	SELECT REPLACE(email_address, sdomain, ddomain) INTO email_address;
+END IF;
+
+RETURN email_address;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -35,22 +114,22 @@ CREATE TABLE IF NOT EXISTS `aliases` (
   `active` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`alias_id`),
   KEY `alias_name` (`alias_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=74 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=84 ;
 
 --
 -- Дамп данных таблицы `aliases`
 --
 
 INSERT INTO `aliases` (`alias_id`, `alias_name`, `delivery_to`, `alias_notes`, `active`) VALUES
-(1, 'test@t1.gmpro.ru', 'admin@t1.gmpro.ru', NULL, 1),
+(1, 'admin@t1.gmpro.ru', 'admin@t1.gmpro.ru', NULL, 1),
 (2, 'test@t1.gmpro.ru', 'test@t1.gmpro.ru', NULL, 1),
 (3, 'gkv@t1.gmpro.ru', 'gkv@gmpro.ru', NULL, 1),
 (4, 'oivaschenko@gmpro.ru', 'oivaschenko@zimbra.gmp.ru', NULL, 1),
 (5, 'mvb@gmpro.ru', 'amt@gmpro.ru', NULL, 1),
 (6, 'alex.teplitsky@gmpro.ru', 'amt@zimbra.gmp.ru', NULL, 1),
-(7, 'amt@gmpro.ru', 'amt@zimbra.gmp.ru', NULL, 1),
-(8, 'amt@gmpro.ru', 'oivaschenko@zimbra.gmp.ru', NULL, 1),
-(9, 'amt@gmpro.ru', 'ann@gmpro.ru', NULL, 0),
+(7, '7', 'amt@zimbra.gmp.ru', NULL, 1),
+(8, '7', 'oivaschenko@zimbra.gmp.ru', NULL, 1),
+(9, '7', 'ann@gmpro.ru', NULL, 0),
 (10, 'semenovykh@gmpro.ru', 'amt@zimbra.gmp.ru', NULL, 1),
 (11, 'semenovykh@gmpro.ru', 'oivaschenko@zimbra.gmp.ru', NULL, 1),
 (12, 'corpfin@gmpro.ru', 'ann@gmpro.ru', NULL, 1),
@@ -89,7 +168,7 @@ INSERT INTO `aliases` (`alias_id`, `alias_name`, `delivery_to`, `alias_notes`, `
 (45, 'remizova@gmpro.ru', 'remizova@gmpro.ru', NULL, 1),
 (46, 'remizova@gmpro.ru', 'oivaschenko@zimbra.gmp.ru', NULL, 1),
 (47, 'gureev@gmpro.ru', 'egur@gmpro.ru', NULL, 1),
-(48, 'kazarinov@gmpro.ru', 'akazarin@gmpro.ru', NULL, 1),
+(48, 'akazarin@gmpro.ru', 'akazarin@gmpro.ru', NULL, 1),
 (49, 'kostina.tatiana@gmpro.ru', 'kts@gmpro.ru', NULL, 1),
 (50, 'kts@gmpro.ru', 'kts@gmpro.ru', NULL, 1),
 (51, 'kts@gmpro.ru', 'oivaschenko@zimbra.gmp.ru', NULL, 1),
@@ -113,7 +192,14 @@ INSERT INTO `aliases` (`alias_id`, `alias_name`, `delivery_to`, `alias_notes`, `
 (69, 'marina@eruvil.ru', 'marina@gmpro.ru', NULL, 1),
 (71, 'pek@gmpro.ru', 'pek@gmpro.ru', NULL, 1),
 (72, 'pek@gmpro.ru', 'p_ek@me.com', NULL, 1),
-(73, 'maria@gmpro.ru', 'maria@dhr.ru', NULL, 0);
+(73, 'maria@gmpro.ru', 'maria@dhr.ru', NULL, 0),
+(75, 'gop@t1.gmpro.ru', 'pupo@gmpro.ru', NULL, 1),
+(76, 'wert@gmpro.ru', 'pips@t1.gmpro.ru', NULL, 1),
+(77, 'dleo@gmpro.ru', 'vvdleo@some2.com', NULL, 1),
+(79, 'alex.teplitsky@gmpro.ru', 'prosto@t1.gmpro.ru', NULL, 1),
+(81, 'immun@t1.gmpro.ru', 'alex@gmpro.ru', NULL, 1),
+(82, 'dro-4p@t1.gmpro.ru', 'alex@gmpro.ru', NULL, 1),
+(83, 'iddut@t1.gmpro.ru', 'amt@gmpro.ru', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -144,17 +230,21 @@ CREATE TABLE IF NOT EXISTS `anyone_shares` (
 
 CREATE TABLE IF NOT EXISTS `auth` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `note` varchar(255) NOT NULL,
   `login` varchar(255) NOT NULL,
   `passwd` varchar(255) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `active` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- Дамп данных таблицы `auth`
 --
 
-INSERT INTO `auth` (`id`, `login`, `passwd`) VALUES
-(1, 'vsg', 'c60d060b946d6dd6145dcbad5c4ccf6f:8');
+INSERT INTO `auth` (`id`, `note`, `login`, `passwd`, `role_id`, `active`) VALUES
+(1, 'Владимир', 'vsg', 'b3256b17a12ddd3f1de69789db520c24:23115202370d5a57a', 15, 1),
+(2, 'Гайдуков Константин Владимирович', 'gkv', 'd3f427fbda2ec2b435b119c022bec1f2', 16, 1);
 
 -- --------------------------------------------------------
 
@@ -170,7 +260,7 @@ CREATE TABLE IF NOT EXISTS `controllers` (
   `arrange` int(11) NOT NULL,
   `active` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 --
 -- Дамп данных таблицы `controllers`
@@ -183,7 +273,8 @@ INSERT INTO `controllers` (`id`, `name`, `class`, `section_id`, `arrange`, `acti
 (11, 'Группы', 'groups', '1', 3, 0),
 (12, 'Логи', 'logs', '1', 4, 1),
 (13, 'Разделы сайта', 'admin', '4', 0, 1),
-(14, 'Роли', 'roles', '4', 1, 1);
+(14, 'Роли', 'roles', '4', 1, 1),
+(15, 'Пользователи', 'auth', '4', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -251,7 +342,35 @@ INSERT INTO `page_roles` (`role_id`, `control_id`, `slevel_id`) VALUES
 (14, 11, 1),
 (14, 12, 2),
 (14, 13, 2),
-(14, 14, 1);
+(14, 14, 1),
+(15, 8, 3),
+(15, 9, 3),
+(15, 10, 3),
+(15, 11, 3),
+(15, 12, 3),
+(15, 13, 3),
+(15, 14, 3),
+(16, 8, 2),
+(16, 9, 2),
+(16, 10, 2),
+(16, 11, 2),
+(16, 12, 2),
+(16, 13, 2),
+(16, 14, 2),
+(17, 8, 2),
+(17, 9, 2),
+(17, 10, 2),
+(17, 11, 2),
+(17, 12, 2),
+(17, 13, 1),
+(17, 14, 1),
+(18, 8, 2),
+(18, 9, 2),
+(18, 10, 2),
+(18, 11, 3),
+(18, 12, 2),
+(18, 13, 1),
+(18, 14, 1);
 
 -- --------------------------------------------------------
 
@@ -265,14 +384,18 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `notes` varchar(128) NOT NULL,
   `active` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
 
 --
 -- Дамп данных таблицы `roles`
 --
 
 INSERT INTO `roles` (`id`, `name`, `notes`, `active`) VALUES
-(14, 'Default', 'Дефолтный профиль', 1);
+(14, 'Default', 'Дефолтный профиль', 1),
+(15, 'Администратор', 'Папа', 1),
+(16, 'Читатель', 'Те, кто умеет читать', 1),
+(17, 'Оператор', 'Доступ к логам', 1),
+(18, 'Редактор', 'Тестовый профиль', 1);
 
 -- --------------------------------------------------------
 
@@ -300,7 +423,7 @@ INSERT INTO `sections` (`id`, `name`, `slevel_id`, `note`, `active`) VALUES
 (3, 'SQUID', 1, 'Группы squid', 1),
 (4, 'ADMIN', 3, 'Права пользователей', 1),
 (5, 'RADIUS', 1, 'Пользователи WI-FI', 1),
-(6, 'PHONE', 1, 'Телефонный справочник', 1);
+(6, 'DNS', 1, 'ДНС сервер', 1);
 
 -- --------------------------------------------------------
 
@@ -353,7 +476,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `mailbox` (`mailbox`),
   KEY `username` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=100 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=107 ;
 
 --
 -- Дамп данных таблицы `users`
@@ -364,7 +487,7 @@ INSERT INTO `users` (`user_id`, `username`, `mailbox`, `password`, `md5password`
 (2, 'Admin Account', 'admin@t1.gmpro.ru', 'kucorasa', '7ded130528bd116707438140d608d931', NULL, 0, '192.168.0.0/24', NULL, 1),
 (3, 'Konstantin V. Gaidukov', 'gkv@gmpro.ru', '', '757341fba0b515f42eb197083d0b2bf8', NULL, 1, '192.168.0.0/24, 127.0.0.1/32, 192.168.109.10/32', 'gmpro_it', 1),
 (4, 'Andrey V. Kazarinov', 'akazarin@gmpro.ru', 'Gu2sPqm', '95f0455facefa784ea7a14ff0e9c5bf8', NULL, 0, '192.168.0.0/24', NULL, 1),
-(5, 'Alexey D. Zharkov', 'azharkov@gmpro.ru', 'Dim_Alex87', '7d8e9c0d1c264986912c154be951cfe2', NULL, 0, '192.168.0.0/24', NULL, 1),
+(5, 'Alexey D. Zharkov', 'azharkov@gmpro.ru', 'Dim_Alex87', '7d8e9c0d1c264986912c154be951cfe2', NULL, 1, '192.168.0.0/24', NULL, 1),
 (6, 'Anastasia A. Birukova', 'baa@gmpro.ru', 'Giv7cho', '5d3c86556ef1655a0a2c5494e35c8fb6', NULL, 1, '192.168.0.0/24', NULL, 1),
 (7, 'Vladimir V. Belousov', 'belousov@gmpro.ru', 'suim6Be', '9813d070a9c49af0b321f5d6db8aa906', NULL, 0, '192.168.0.0/24', NULL, 1),
 (8, 'BI_ROBOT', 'bi-robot2@gmpro.ru', 'Mbx456alsdjf', 'ec1a10313b52b99f1d36fccec2418ebc', NULL, 1, '192.168.0.0/24', NULL, 1),
@@ -457,7 +580,9 @@ INSERT INTO `users` (`user_id`, `username`, `mailbox`, `password`, `md5password`
 (96, '(ERUVIL.RU)', 'eruvil@gmpro.ru', 'abc154HPx', 'd2cf55626b0f8819644640bcd7056bac', NULL, 0, '192.168.0.0/24, 192.168.12.0/24', NULL, 1),
 (97, 'Гордюнин Владимир Сергеевич', 'vsg@gmpro.ru', '', 'd3f427fbda2ec2b435b119c022bec1f2', NULL, 1, '192.168.0.0/24,127.0.0.1', 'gmpro_it', 1),
 (98, 'IT Dept Group Mail List', 'it@t1.gmpro.ru', 'kajsdkfja778', '09573e3e0aaf6dd02b303982286bdacd', NULL, 0, '192.168.0.0/24', NULL, 1),
-(99, 'Синюгин Никита А.', 'nik@gmpro.ru', 'reide8P', 'f45ff63b314f2e5c0a78fca8feb66ce4', NULL, 1, '192.168.0.0/24', NULL, 1);
+(99, 'Синюгин Никита А.', 'nik@gmpro.ru', 'reide8P', 'f45ff63b314f2e5c0a78fca8feb66ce4', NULL, 1, '192.168.0.0/24', NULL, 1),
+(102, 'Пупкин Тимофей', 'pupo@gmpro.ru', 'm2uP5uTp', '16e683384b187819a6c11d16fa391235', NULL, 1, '192.168.0.0/24', NULL, 0),
+(106, 'Ogg', 'wert@gmpro.ru', '2isWieSY', '73019a2165daebf9cb03906f37fd3e1e', NULL, 1, '192.168.0.0/24', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -534,83 +659,3 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-DELIMITER $$
---
--- Процедуры
---
-CREATE DEFINER=`gkv`@`%` PROCEDURE `get_aliases`(IN incmail VARCHAR(100))
-BEGIN
-
-DECLARE dmail, dname VARCHAR(100);
-
-SELECT all_email, domain_name FROM domains WHERE active = 1 AND domain_type = 0 AND all_enable = 1 AND all_email = incmail LIMIT 1 INTO dmail, dname;
-
-IF dmail IS NULL THEN
-	-- Is not alias for all domain users - check aliases table
-	SELECT delivery_to FROM aliases WHERE active = 1 AND alias_name = check_email(incmail);
-ELSE
-	SELECT mailbox as delivery_to FROM users WHERE active = 1 AND mailbox LIKE CONCAT('%@',dname);
-END IF;
-
-
-END$$
-
-CREATE DEFINER=`gkv`@`%` PROCEDURE `get_all`()
-BEGIN
-
-DECLARE i INT DEFAULT 0;
-DECLARE id INT DEFAULT 0;
-DECLARE dname, dmail VARCHAR(100);
-DECLARE myquery TEXT;
-DECLARE dlist cursor FOR SELECT domain_name, all_email from domains WHERE active = 1 AND domain_type = 0 AND all_enable = 1;
-DECLARE CONTINUE HANDLER FOR NOT FOUND SET i = 1;
-
-SET myquery = 'SELECT alias_name, delivery_to FROM aliases WHERE active = 1';
-SET id = 1;
-OPEN dlist;
-
-WHILE i = 0 DO
-	FETCH dlist INTO dname, dmail;
-	IF id > 0 THEN
-		SET myquery = CONCAT(myquery, ' UNION ');
-	END IF;
-	SET myquery = CONCAT(myquery, ' SELECT \'', dmail ,'\' as alias_name, mailbox as delivery_to FROM users WHERE active=1 and mailbox like \'%', dname,'\'');
-	SET id = id+1;
-END WHILE;
-
-CLOSE dlist;
-
--- SET @myquery = 'SELECT * FROM users'; -- myquery;
-SET @myquery = myquery;
-
-PREPARE res FROM @myquery;
-EXECUTE res ;
-
-
-
-END$$
-
---
--- Функции
---
-CREATE DEFINER=`gkv`@`%` FUNCTION `check_email`(email_address VARCHAR(255)) RETURNS text CHARSET latin1
-BEGIN
-
-DECLARE sdomain VARCHAR(255);
-DECLARE ddomain VARCHAR(255);
-
-
-SELECT SUBSTRING(email_address, INSTR(email_address, '@')+1) INTO sdomain;
-
-SELECT delivery_to FROM domains
-	WHERE domain_name = sdomain AND active = 1 AND domain_type = 1 LIMIT 1 INTO ddomain;
-
-IF ddomain IS NOT NULL THEN
-	SELECT REPLACE(email_address, sdomain, ddomain) INTO email_address;
-END IF;
-
-RETURN email_address;
-END$$
-
-DELIMITER ;
-

@@ -4,9 +4,6 @@ namespace App\Controller;
 
 class Users extends \App\Page {
 
-	private $user_id;
-
-
     public function action_view() {
 
 
@@ -73,11 +70,11 @@ class Users extends \App\Page {
 		if( ! $this->request->param('id') )
 			return; // "<img class='lb' src='/users.png' />";
 
-		$this->user_id = $this->getVar($this->user_id, $this->request->param('id'));
+		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
 
 		$view->user = $this->pixie->db->query('select')
 										->table('users')
-										->where('user_id',$this->user_id)
+										->where('user_id',$this->_id)
 										->execute()
 										->current();
 
@@ -86,8 +83,8 @@ class Users extends \App\Page {
 										->table('aliases','A')
 										->join(array('users','U1'),array('U1.mailbox','A.alias_name'))
 										->join(array('users','U2'),array('U2.mailbox','A.delivery_to'))
-										->where('U1.user_id',$this->user_id)
-										->where('or',array('U2.user_id',$this->user_id))
+										->where('U1.user_id',$this->_id)
+										->where('or',array('U2.user_id',$this->_id))
 										->execute()
 										->as_array();
 
@@ -110,14 +107,8 @@ class Users extends \App\Page {
 			$params = $this->request->post();
 			unset($params['chk']);
 
-
 			// Инициируем, чтоб не было ошибки при обработке несуществующего массива
-			$params['alias']	= $this->getVar($params['alias'],array());
-			$params['fwd']	= $this->getVar($params['fwd'],array());
-
-			// Проверка на почтовый адрес
-			//array_walk( $params['alias'],array($this,'sanitize'),'is_mail' );
-			//array_walk( $params['fwd'],array($this,'sanitize'),'is_mail' );
+			$params['fname']	= $this->getVar($params['fname'],array());
 
 			$entry = array('username' 		=> $params['username'],
 							'password' 		=> $params['password'],
@@ -152,22 +143,27 @@ class Users extends \App\Page {
 									->execute();
 				}
 
-				// Обработка алиасов
-				foreach ($params['alias'] as $key=>$alias ) {
+				// Обработка алиасов  и форварда
+				foreach ($params['fname'] as $key=>$fname ) {
 
-					$dataArr = array('alias_name' => $alias,
-									 'delivery_to'=> $params['mailbox'],
-									 'active'	 => $params['alias_st'][$key]
+					/*	 0 - alias; 1 - forward
+					 *	 alias_name => fname
+					 *   delivery_to => mailbox
+					 *   и наоборот для форварда
+					 */
+					$dataArr = array('alias_name' 	=> ( $params['ftype'][$key] ) ? $params['mailbox'] : $fname,
+									 'delivery_to'	=> ( $params['ftype'][$key] ) ? $fname : $params['mailbox'],
+									 'active'		=> $params['stat'][$key]
 							        );
 
-					if( $params['alias_st'][$key] == 2 ) {
+					if( $params['stat'][$key] == 2 ) {
 					// Удаление
 						$this->pixie->db->query('delete')
 										->table('aliases')
-										->where('alias_id',$params['alias_id'][$key])
+										->where('alias_id',$params['fid'][$key])
 										->execute();
 					}
-					elseif( $params['alias_id'][$key] == 0 ) {
+					elseif( $params['fid'][$key] == 0 ) {
 					// Новый
 						$this->pixie->db->query('insert')
 										->table('aliases')
@@ -179,50 +175,17 @@ class Users extends \App\Page {
 						$this->pixie->db->query('update')
 										->table('aliases')
 										->data($dataArr)
-										->where('alias_id', $params['alias_id'][$key])
+										->where('alias_id', $params['fid'][$key])
 										->execute();
 					}
 				}
-
-				// Обработка форварда
-				foreach ($params['fwd'] as $key=>$fwd ) {
-
-					$dataArr = array('alias_name' => $params['mailbox'],
-									 'delivery_to'=> $fwd,
-									 'active'	 => $params['fwd_st'][$key]
-									 );
-
-					if( $params['fwd_st'][$key] == 2 ) {
-					// Удаление
-						$this->pixie->db->query('delete')->table('aliases')
-										->where('alias_id',$params['fwd_id'][$key])
-										->execute();
-					}
-					elseif( $params['fwd_id'][$key] == 0 ) {
-					// Новый
-						$this->pixie->db->query('insert')
-										->table('aliases')
-										->data($dataArr)
-										->execute();
-					}
-					else {
-					// Изменение
-						$this->pixie->db->query('update')
-										->table('aliases')
-										->data($dataArr)
-										->where('alias_id', $params['fwd_id'][$key])
-										->execute();
-					}
-				}
-
 			}
-
 			// Ошибки имели место
 			if( isset( $this->logmsg ) ) {
 
 				if ( $params['user_id'] ) {
 					// Ошибка во время редактирования
-					$this->user_id = $params['user_id'];
+					$this->_id = $params['user_id'];
 					$this->action_single();
 				}
 				else

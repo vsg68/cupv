@@ -7,25 +7,20 @@ $(function(){
 	// добавление строк
 	$('.else').live('click',function(){
 
-		name 		= $(this).attr('id');
-		email		= ( $('input[name="mailbox"]').size() == 1) ? $('input[name="mailbox"]').val() : 'mailbox@domain.ru';
-		open_tag 	= '<tr class="alias">';
-		mail_cell 	= '<td>'+
-					 '</td>';
-		alias_cell 	= '<td><input class="autocomp" type="text" name="' + name + '[]" value="" placeholder="введите почтовый адрес"></td>';
-		fwd_cell 	= '<td><input class="autocomp" type="text" name="' + name + '[]" value="" placeholder="введите почтовый адрес"></td>';
-		chkbox_cell = '<td><input type="checkbox" name="chk" checked></td>';
-		button_cell = '<td>'+
-							'<input type="hidden" name="' + name + '_st[]" value="1">' +
-							'<input type="hidden" name="' + name + '_id[]" value="0">' +
-							'<div class="delRow"></div>' +
-					  '</td>';
-		close_tag 	= '</tr>';
+		name 		= $('div',this).attr('id');
+		type_tag	= (name == 'fwd') ? '1' : '0';
+//		email		= ( $('input[name="mailbox"]').size() == 1) ? $('input[name="mailbox"]').val() : 'mailbox@domain.ru';
+		new_tr  	= '<tr class="alias">' +
+					  '<td><input class="autocomp" type="text" name="fname[]" value="" placeholder="введите почтовый адрес"></td>'+
+					  '<td><input type="checkbox" name="chk" checked></td>'	+
+					  '<td>'												+
+							'<input type="hidden" name="stat[]" value="1">' +
+							'<input type="hidden" name="fid[]" value="0">'  +
+							'<input type="hidden" name="ftype[]" value="'	+ type_tag +'">'+
+							'<div class="delRow"></div>'					+
+					  '</td></tr>';
 
-		var tbl = $(this).parents('.atable').get(0);
-		tr 	= name == 'alias' ? open_tag + alias_cell + chkbox_cell + button_cell + close_tag :
-								open_tag + fwd_cell + chkbox_cell + button_cell + close_tag;
-		$(tbl).append( tr );
+		$(this).closest('.atable').append(new_tr);
 
 		$('.autocomp').autocomplete({ serviceUrl:'/users/searchdomain/',type:'post'});
 

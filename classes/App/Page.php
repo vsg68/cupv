@@ -3,6 +3,7 @@ namespace App;
 
 class Page extends \PHPixie\Controller {
 
+	protected $_id;
 	protected $view;
 	protected $auth;
 	protected $logmsg;
