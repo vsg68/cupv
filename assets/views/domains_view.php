@@ -32,15 +32,15 @@
 <br />
 		<h4>Алиасы домена</h4>
 			<table class='atable'>
-				<tr><th  class='txt'>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+				<tr><th  class='txt'>alias</th><th>on/off</th><th class='else'><div title='Добавить'></div></th></tr>
 		<?php foreach ($aliases as $alias): ?>
 		   <tr class="alias">
-			   <td><input type='text' name='dom[]' value='<?= $alias->domain_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
+			   <td><input type='text' name='fname[]' value='<?= $alias->domain_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
 			   <td>
-					<input type='hidden' name='dom_st[]' value='<?= $alias->active ?>'>
-				   <input type='hidden' name='dom_id[]' value='<?= $alias->domain_id ?>'>
-				   <span class='delRow  web'>&otimes;</span>
+					<input type='hidden' name='stat[]' value='<?= $alias->active ?>'>
+				   <input type='hidden' name='fid[]' value='<?= $alias->domain_id ?>'>
+				   <div class='delRow' title='удалить'></div>
 				</td>
 		   </tr>
 		<?php endforeach; ?>

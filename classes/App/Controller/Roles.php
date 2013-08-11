@@ -61,14 +61,14 @@ class Roles extends \App\Page {
 		$view 		= $this->pixie->view('roles_view');
 		$view->log 	= $this->getVar($this->logmsg,'');
 
-		if( ! $this->request->get('name') )
+		if( ! $this->request->param('id') )
 			//return "<img class='lb' src=/roles.png />";
 			return;
 
-		$this->role_id = $this->getVar($this->role_id, $this->request->get('name'));
+		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
 
 		$view->role = $this->pixie->db->query('select')->table('roles')
-								->where('id', $this->role_id)
+								->where('id', $this->_id)
 								->execute()
 								->current();
 
@@ -77,10 +77,20 @@ class Roles extends \App\Page {
 								->table('page_roles','P')
 								->join(array('controllers','C'),array('C.id','P.control_id'),'LEFT')
 								->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
-								->where('role_id', $this->role_id)
+								->where('role_id', $this->_id)
 								->execute()
 								->as_array();
-
+//~
+			//~ $view->pages = $this->pixie->db->query('select')
+								//~ ->fields($this->pixie->db->expr('C.name AS ctrl_name, S.name AS sect_name, IFNULL(slevel,0) AS slevel, P.*'))
+								//~ ->table('controllers','C')
+								//~ ->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
+								//~ ->join(array('page_roles','P'),array('C.id','P.role_id'),'LEFT')
+								//~ ->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
+								//~ ->where('role_id', $this->_id)
+								//~ ->where('or',array($this->pixie->db->expr('role_id is null'),1))
+								//~ ->execute()
+								//~ ->as_array();
 
 		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute()->as_array();
 
@@ -183,7 +193,7 @@ class Roles extends \App\Page {
 
 				if ( $is_update ) {
 
-					$this->role_id = $params['role_id'];
+					$this->_id = $params['role_id'];
 					$this->action_single();
 				}
 				else

@@ -9,23 +9,22 @@ $(function(){
 					num = isNaN(num) ? 0 : num+1;
 
 
-					open_tag 	= '<tr class="alias">';
-					name_cell	= '<td>'+
-									'<div class="up">&#9650;</div>'+
-									'<input type="text" name="ctrl_name[]" value="">' +
-									'</td>';
-					alias_cell 	= '<td>'+ ctrl_cell +'</td>';
-					chkbox_cell = '<td>'+
-									'<input type="hidden" name="stat[]" value="1">' +
-									'<input type="hidden" name="fid[]" value="0">' +
-									'<input type="hidden" name="num[]" value="'+ num +'">' +
-									'<input type="checkbox" name="chk" checked>' +
-								  '</td>';
-					button_cell = '<td><span class="delRow  web">&otimes;</span></td>';
-					close_tag 	= '</tr>';
+					new_tr 	= '<tr class="alias">'											+
+								'<td>'														+
+									'<div class="up">&#9650;</div>'							+
+									'<input type="text" name="fname[]" value="">' 			+
+									'</td>'													+
+									'<td>'+ ctrl_cell +'</td>'								+
+									'<td>'													+
+									'<input type="hidden" name="stat[]" value="1">' 		+
+									'<input type="hidden" name="fid[]" value="0">' 			+
+									'<input type="hidden" name="num[]" value="'+ num +'">'	+
+									'<input type="checkbox" name="chk" checked>'			+
+								  '</td>'													+
+								  '<td><div class="delRow"></div></td>'						+
+								  '</tr>';
 
-					$(this).parents('.atable')
-							.append( open_tag + name_cell + alias_cell + chkbox_cell + button_cell + close_tag );
+					$(this).closest('.atable').append(new_tr);
 
 					return false;
 				});

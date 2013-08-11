@@ -3,14 +3,12 @@ $(function(){
 
 	$('#passwd').live('click',function(){
 
-			if( $(this).parent().siblings().is(':text') ) {
+			if( $(this).parent().siblings().is(':text') )
 				$(this).parent().siblings(':text').remove();
-				$(this).html('&rArr;');
-			}
-			else {
+			else
 				$(this).parent().after("<input  class='formtext' type='text' name='auth_passwd' value='"+ mkpasswd() +"'  />");
-				$(this).html('&dArr;');
-			}
+
+			$(this).toggleClass('ptr-hover');
 	});
 
 

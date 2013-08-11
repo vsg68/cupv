@@ -28,10 +28,8 @@ ul.atable {
 	width: 160px ;
 }
 .ptr {
-	background: url(/ui-icons_454545_256x240.png) -32px -16px no-repeat;
-	height: 16px;
-	width: 16px;
 	float:left;
+	margin: auto 4px;
 }
 .ptr-hover {
 	background-position: -64px -16px !important;

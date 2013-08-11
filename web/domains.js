@@ -1,10 +1,5 @@
 $(function(){
 
-	// Выбор записи
-	//key = window.location.search.split('=')[1];
-	//$('#i-' + key).addClass('selected_key');
-
-
 	// Транспорт
 	$('#path').live('click',function(){
 		path = '<input class="formtext" type="text" name="delivery_to" value="" placeholder="proto:[ip_addr]" />';
@@ -13,18 +8,18 @@ $(function(){
 
 			$('.path').append(path);
 			$('.path .formtext').focus();
-			$(this).html("&dArr;");
+			$(this).addClass("ptr-hover");
 			// удаляем алиасы и блокируем добавление
 			$('#alias').attr('disabled','true');
 			$('.atable tr').not(':first').remove();
 			// Прячем и очищаем адреса
-			$('.listbox .web').html('&rArr;');
+			$('.listbox .ptr').removeClass('ptr-hover');
 			$('.listbox .formtext').remove();
 
 		}
 		else {
 			$('.path .formtext').remove();
-			$(this).html('&rArr;');
+			$(this).removeClass('ptr-hover');
 			$('#alias').removeAttr('disabled');
 		}
 		return false;
@@ -39,17 +34,17 @@ $(function(){
 
 		if( $('.listbox .formtext').size() == 0 ) {
 
-			$(this).html('&dArr;');
+			$(this).addClass('ptr-hover');
 			$('.listbox').append(email);
 			$('.listbox :text').focus();
 			// Удаляем транспорт
 			$('.path .formtext').remove();
-			$('.path .web').html('&rArr;');
+			$('.path .ptr').removeClass('ptr-hover');
 			// Разрешаем алиас
 			$('#alias').removeAttr('disabled');
 		}
 		else {
-			$(this).html('&rArr;');
+			$(this).removeClass('ptr-hover');
 			$('.listbox .formtext').remove();
 		}
 		return false;
@@ -67,19 +62,18 @@ $(function(){
 	// Добавление alias
 	$('.else').live('click',function(){
 
-		open_tag 	= '<tr class="alias">';
-		alias_cell 	= '<td><input type="text" name="dom[]" value="" placeholder="название домена"></td>';
-		chkbox_cell = '<td>'+
+		new_tr	= '<tr class="alias">'+
+					'<td><input type="text" name="fname[]" value="" placeholder="название домена"></td>'+
+					'<td>'												+
 						'<input type="hidden" name="stat[]" value="1">' +
-						'<input type="hidden" name="fid[]" value="0">' +
-						'<input type="checkbox" name="chk" checked>' +
-					  '</td>';
-		button_cell = '<td><span class="delRow  web">&otimes;</span></td>';
-		close_tag 	= '</tr>';
+						'<input type="hidden" name="fid[]" value="0">'	+
+						'<input type="checkbox" name="chk" checked>'	+
+					  '</td>'											+
+					'<td><div class="delRow"></div></td>'				+
+					'</tr>';
 
-		var tbl = $(this).parents('.atable').get(0);
+		$(this).closest('.atable').append(new_tr);
 
-		$(tbl).append( open_tag + alias_cell + chkbox_cell + button_cell + close_tag );
 
 		return false;
 	});
@@ -88,69 +82,70 @@ $(function(){
 
 			event.preventDefault();
 
-			var is_ok  = true;
-			var domain_name = $('input[name="domain_name"]').val();
-			var aliasObj = {};
-
-			// Заполняем массив значениями полей
-			var domainArr = $('tr:not(.noedit) .key').map(function(){ return $(this).text()	});
-			var valuesArr = $(':text[name="domain_name"],:text[name="dom[]"]').map(function(){ return $(this).val() });
-			// Готовим ассоциативный массив [alias]=>domain
-			$('tr.noedit').each(function(){
-							key = $(this).children('.key').text();
-							val = $(this).children('.val').text();
-							aliasObj[key] = val;
-			});
-
-
-			// проверка на вхождение в РЕВЕРСИВНЫЙ массив интересующих значений
-			$($(':text[name="domain_name"],:text[name="dom[]"]').not(':hidden').get().reverse()).each(function(){
-
-							var domain  = $(this).val();
-							lenDomain = $.grep( domainArr, function(val){ return val == domain; }).length;
-							lenVal 	  = $.grep( valuesArr, function(val){ return val == domain; }).length;
-
-							if( lenDomain != 0 || lenVal != 1 || ( aliasObj[domain] != undefined && aliasObj[domain] != domain_name)  ) {
-									alert('Домен "'+ $(this).val() +'" уже существует');
-									$(this).val('');
-									return false;
-							}
-			});
-
-			//~ // проверка на правильное заполнение полей
-			//~ $(':text', '#usersform').each(function(){
+			//~ var is_ok  = true;
+			//~ var domain_name = $('input[name="domain_name"]').val();
+			//~ var aliasObj = {};
 //~
-				//~ if( checkfield( $(this) ) ) {
-//~
-					//~ $(this).addClass('badentry');
-					//~ is_ok = false;
-				//~ }
-				//~ else
-					//~ $(this).removeClass('badentry');
+			//~ // Заполняем массив значениями полей
+			//~ var domainArr = $('tr:not(.noedit) .key').map(function(){ return $(this).text()	});
+			//~ var valuesArr = $(':text[name="domain_name"],:text[name="fname[]"]').map(function(){ return $(this).val() });
+			//~ // Готовим ассоциативный массив [alias]=>domain
+			//~ $('tr.noedit').each(function(){
+							//~ key = $(this).children('.key').text();
+							//~ val = $(this).children('.val').text();
+							//~ aliasObj[key] = val;
 			//~ });
 //~
-			//~ // проверка окончена
-			//~ if( ! is_ok )	{
 //~
-				//~ $('.badentry:first').focus();
-				//~ return false;
-			//~ }
+			//~ // проверка на вхождение в РЕВЕРСИВНЫЙ массив интересующих значений
+			//~ $($(':text[name="domain_name"],:text[name="fname[]"]').not(':hidden').get().reverse()).each(function(){
 //~
-			//~ // удаляем атрибут, чтобы поле ушло на сервер
-			//~ // иначе получим рассогласование длины массивов
-			//~ $(':disabled','.alias, .listbox').removeAttr('disabled');
+							//~ var domain  = $(this).val();
+							//~ lenDomain = $.grep( domainArr, function(val){ return val == domain; }).length;
+							//~ lenVal 	  = $.grep( valuesArr, function(val){ return val == domain; }).length;
 //~
-			//~ var params =  $('#usersform').serialize();
-//~
-			//~ $.post(	'/domains/add/', params , function(response) {
-//~
-								//~ dom_id = /^\d+$/;
-//~
-								//~ if( dom_id.test(response) )
-									//~ window.location = '/domains/view/?name=' + response;
-								//~ else
-									//~ $('#ed').empty().html(response);
-							//~ });
+							//~ if( lenDomain != 0 || lenVal != 1 || ( aliasObj[domain] != undefined && aliasObj[domain] != domain_name)  ) {
+									//~ alert('Домен "'+ $(this).val() +'" уже существует');
+									//~ $(this).val('');
+									//~ return false;
+							//~ }
+			//~ });
+			var name 	= $(':text[name="domain_name"]').val();
+			var id	 	= $(':hidden[name="domain_id"]').val();
+
+
+			existNameId = $('tr')
+							.filter('[sid="' + id + '"]')
+							.filter('[sname="' + name + '"]')
+							.length;
+
+			existName = $('tr')
+							.filter('[sname="' + name + '"]')
+							.length;
+
+			if( ! existNameId && existName ) {
+					alert('Запись "'+ name +'" уже существует');
+					$(':text[name="domain_name"]').val('');
+					return false;
+			}
+
+			var arrVal 	= $(':text[name="domain_name"],:text[name="fname[]"]');
+
+			$($(arrVal).not(':hidden').get().reverse()).each(function(){
+
+					var name = this.val();
+
+					insertName = $(arrVal)
+									.filter( function(){ return $(this).val() == name} )
+									.length;
+
+					if( insertName !=1 ) {
+						alert('Запись "'+ $(this).val() +'" уже существует');
+						$(this).val('');
+						return false;
+					}
+			});
+
 			try_submit();
 			return false;
 

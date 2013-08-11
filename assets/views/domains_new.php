@@ -13,17 +13,17 @@
 			<input  class='formtext' type='text' name='domain_notes' value=''  placeholder='text' />
 	   </div>
 	   <div class='fieldentry path'>
-			 <span class='formlabel'>Транспорт:<span id='path' class='web' >&rarr;</span></span>
+			 <span class='formlabel'>Транспорт:<span class='ptr' id='path'></span></span>
 
 		</div>
 	   <div class='fieldentry listbox'>
-			<span class='formlabel'>Рассылка:<span id='all_email' class='web'>&rarr;</span></span>
+			<span class='formlabel'>Рассылка:<span id='all_email' class='ptr'></span></span>
 
 	   </div>
 <br />
 		<h4>Алиасы домена</h4>
 		<table class='atable'>
-			<tr><th  class='txt'>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+			<tr><th  class='txt'>alias</th><th>on/off</th><th class='else'><div title='Добавить'></div></th></th></tr>
 		</table>
 
 	<div class='submit'><input type='submit' id='submit_domain' value='Изменить'></div>

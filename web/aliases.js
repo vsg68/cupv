@@ -47,22 +47,40 @@ $(function(){
 
 			// Проверка на существование такого алиаса
 
-			name = $(':text[name="alias_name"]').val();
-			id = $(':hidden[name="alias_uid"]').val();
+			var name 	= $(':text[name="alias_name"]').val();
+			var id	 	= $(':hidden[name="alias_uid"]').val();
 
 			existNameId = $('tr')
-							.filter('[sid="' + id + '"]')
-							.filter('[sname="' + name + '"]')
-							.length;
+								.filter('[sid="' + id + '"]')
+								.filter('[sname="' + name + '"]')
+								.length;
 
 			existName = $('tr')
-							.filter('[sname="' + name + '"]')
-							.length;
+								.filter('[sname="' + name + '"]')
+								.length;
 
 			if( ! existNameId && existName ) {
-				alert('Алиас '+ name +' уже существует!');
-				$('input[name="alias_name"]').val('');
+					alert('Запись '+ name +' уже существует!');
+					$(':text[name="alias_name"]').val('');
+					return false;
 			}
+
+			var arrVal 	= $(':text[name="alias_name"],:text[name="fname[]"]');
+
+			$($(arrVal).not(':hidden').get().reverse()).each(function(){
+
+				var name = $(this).val();
+
+				insertName = $(':text[name="fname[]"]')
+								.filter( function(){ return $(this).val() == name} )
+								.length;
+
+				if( insertName != 1) {
+					alert('Запись '+ name +' уже существует!');
+					$(this).val('');
+					return false;
+				}
+			});
 
 			try_submit();
 			return false;

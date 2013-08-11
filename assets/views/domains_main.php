@@ -12,7 +12,7 @@
 			<table>
 			<?php foreach( $domains as $domain ): ?>
 			<?php if( $domain->domain_type != '0')  continue; ?>
-			   <tr sid="<?= $domain->domain_id ?>" dname='<?= $domain->domain_name ?>'>
+			   <tr sid="<?= $domain->domain_id ?>" sname='<?= $domain->domain_name ?>'>
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->domain_notes ?></td>
 			   </tr>
@@ -30,7 +30,7 @@
 			<table>
 			<?php foreach( $domains as $domain ): ?>
 			<?php if( $domain->domain_type != '1')  continue; ?>
-			   <tr class='noedit' sid="<?= $domain->domain_id ?>" dname='<?= $domain->domain_name ?>'>
+			   <tr class='noedit' sid="<?= $domain->domain_id ?>" sname='<?= $domain->domain_name ?>'>
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->delivery_to ?></td>
 			   </tr>
@@ -48,7 +48,7 @@
 			<table>
 			<?php foreach( $domains as $domain ): ?>
 			<?php if( $domain->domain_type != '2')  continue; ?>
-			   <tr sid="<?= $domain->domain_id ?>" dname='<?= $domain->domain_name ?>'>
+			   <tr sid="<?= $domain->domain_id ?>" sname='<?= $domain->domain_name ?>'>
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->delivery_to ?></td>
 			   </tr>

@@ -21,12 +21,12 @@
 <br />
 		<h4>Контроллеры(страницы)</h4>
 			<table class='atable'>
-				<tr><th  class='txt'>Имя вкладки</th><th  class='txt'>Page</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+				<tr><th  class='txt'>Имя вкладки</th><th  class='txt'>Page</th><th>on/off</th><th class='else'><div title='Добавить'></div></th></tr>
 		<?php foreach ($controllers as $control): ?>
 		   <tr class="alias">
 			   <td>
 				   <div class='up'>&#9650;</div>
-				   <input type='text' name='ctrl_name[]' value='<?= $control->name ?>' <?php ($control->active & 1 ) || print ('disabled'); ?> ></td>
+				   <input type='text' name='fname[]' value='<?= $control->name ?>' <?php ($control->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td><select name='ctrl_class[]'>
 						<option value="" class="zero"></option>
 					   <?php foreach( $options as $opt): ?>
@@ -39,7 +39,7 @@
 				   <input type='hidden' name='num[]' value='<?= $control->arrange ?>'>
 				   <input type='hidden' name='stat[]' value='<?= $control->active ?>'>
 				   <input type='hidden' name='fid[]' value='<?= $control->id ?>'>
-				   <span class='delRow  web'>&otimes;</span>
+				   <div class='delRow' title='удалить'></div>
 				</td>
 		   </tr>
 		<?php endforeach; ?>

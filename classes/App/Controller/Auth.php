@@ -6,7 +6,6 @@ namespace App\Controller;
 
 class Auth extends \App\Page {
 
-	private $auth_id;
 	private $pages;
 
     public function action_view() {
@@ -34,14 +33,14 @@ class Auth extends \App\Page {
 		$view 		= $this->pixie->view('auth_view');
 		$view->log 	= $this->getVar($this->logmsg,'');
 
-		if( ! $this->request->get('name') )
-			//return "<img class='lb' src=/domains.png />";
+		if( ! $this->request->param('id') )
+			//return "<img class='lb' src=/roles.png />";
 			return;
 
-		$this->auth_id = $this->getVar($this->auth_id, $this->request->get('name'));
+		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
 
 		$view->auth = $this->pixie->db->query('select')->table('auth')
-										->where('id', $this->auth_id)
+										->where('id', $this->_id)
 										->execute()
 										->current();
 
@@ -62,8 +61,7 @@ class Auth extends \App\Page {
 		$view 	   = $this->pixie->view('auth_new');
 		$view->log = $this->getVar($this->logmsg,'<strong>Создание нового пользователя.</strong>');
 
-		$view->roles = $this->pixie->db
-										->query('select')
+		$view->roles = $this->pixie->db->query('select')
 										->table('roles')
 										->execute();
 		$view->auth = '';

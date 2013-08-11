@@ -30,17 +30,15 @@ class Admin extends \App\Page {
 
 		$this->view->subview = 'admin_main';
 
-		$this->view->sections = $this->pixie->db
-											->query('select')
-											->table('sections')
-											->execute();
+		$this->view->sections = $this->pixie->db->query('select')
+												->table('sections')
+												->execute();
 
-		$this->view->controllers = $this->pixie->db
-											->query('select')
-											->fields($this->pixie->db->expr('S.id AS s_id, S.name AS s_name, C.class AS c_class'))
-											->table('controllers','C')
-											->join(array('sections','S'),array('C.section_id','S.id'))
-											->execute();
+		$this->view->controllers = $this->pixie->db->query('select')
+													->fields($this->pixie->db->expr('S.id AS s_id, S.name AS s_name, C.class AS c_class'))
+													->table('controllers','C')
+													->join(array('sections','S'),array('C.section_id','S.id'))
+													->execute();
 
 		// Выбираем контроллеры(класс) массив
 		$this->view->options = $this->get_ctrl();
@@ -55,28 +53,27 @@ class Admin extends \App\Page {
 		$view 		= $this->pixie->view('admin_view');
 		$view->log 	= $this->getVar($this->logmsg,'');
 
-		if( ! $this->request->get('name') )
+		if( ! $this->request->param('id'))
 			//return "<img class='lb' src=/domains.png />";
 			return;
 
-		$this->section_id = $this->getVar($this->section_id, $this->request->get('name'));
+		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
 
 		$section = $this->pixie->db
 								->query('select')->table('sections')
-								->where('id', $this->section_id)
+								->where('id', $this->_id)
 								->execute()
 								->current();
 		//Если ответ пустой
 		if( ! count($section) )
-			return "<strong>Раздела с ID ".$this->section_id." не существует.</strong>";
+			return "<strong>Раздела с ID ".$this->_id." не существует.</strong>";
 
 		$view->section = $section;
 		$view->options = $this->get_ctrl();
 
 		// Собираем все контроллеры(страницы)
-		$view->controllers = $this->pixie->db
-											->query('select')->table('controllers')
-											->where('section_id', $this->section_id)
+		$view->controllers = $this->pixie->db->query('select')->table('controllers')
+											->where('section_id', $this->_id)
 											->order_by('arrange')
 											->execute();
 
@@ -145,9 +142,9 @@ class Admin extends \App\Page {
 			//
 			// Обработка контроллеров
 			//
-				foreach ($params['ctrl_name'] as $key=>$ctrl ) {
+				foreach ($params['fname'] as $key=>$fname ) {
 					// Готовим массив данных
-					$entry = array(	'name'  	 => $ctrl,
+					$entry = array(	'name'  	 => $fname,
 									'class' 	 => $params['ctrl_class'][$key],
 									'section_id' => $params['section_id'],
 									'arrange' 	 => $params['num'][$key],
@@ -182,7 +179,7 @@ class Admin extends \App\Page {
 
 				if ( $params['section_id'] ) {
 					// Ошибка во время редактирования
-					$this->section_id = $params['section_id'];
+					$this->_id = $params['section_id'];
 					$this->action_single();
 				}
 				else

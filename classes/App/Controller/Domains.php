@@ -37,11 +37,10 @@ class Domains extends \App\Page {
 		$this->view->css_file 		= '<link rel="stylesheet" href="/domains.css" type="text/css" />';
 
 
-		$this->view->domains = $this->pixie->db
-											->query('select')
-											->table('domains')
-											->execute()
-											->as_array();
+		$this->view->domains = $this->pixie->db->query('select')
+												->table('domains')
+												->execute()
+												->as_array();
 
 		$this->view->domains_block 	= $this->action_single();
 
@@ -54,17 +53,17 @@ class Domains extends \App\Page {
 		$view 		= $this->pixie->view('domains_view');
 		$view->log 	= $this->getVar($this->logmsg,'');
 
-		if( ! $this->request->get('name') )
+		if( ! $this->request->param('id') )
 			//return "<img class='lb' src=/domains.png />";
 			return;
 
-		$this->domain_id = $this->getVar($this->domain_id, $this->request->get('name'));
+		$this->domain_id = $this->getVar($this->domain_id, $this->request->param('id'));
 
-		$domain = $this->pixie->db
-								->query('select')->table('domains')
-								->where('domain_id', $this->domain_id)
-								->execute()
-								->current();
+		$domain = $this->pixie->db->query('select')
+									->table('domains')
+									->where('domain_id', $this->domain_id)
+									->execute()
+									->current();
 		//Если ответ пустой
 		if( ! count($domain) )
 			return "<strong>Домена с ID ".$this->domain_id." не существует.</strong>";
@@ -72,10 +71,10 @@ class Domains extends \App\Page {
 		$view->domain = $domain;
 
 		// Собираем алиасы домена
-		$view->aliases = $this->pixie->db
-									->query('select')->table('domains')
-									->where('delivery_to', $domain->domain_name)
-									->execute();
+		$view->aliases = $this->pixie->db->query('select')
+										->table('domains')
+										->where('delivery_to', $domain->domain_name)
+										->execute();
 
 		// Редактирование
 		if( ! $this->request->get('act') )
@@ -98,7 +97,7 @@ class Domains extends \App\Page {
 
 			$params = $this->request->post();
 
-			$params['dom']  = $this->getVar($params['dom'], array());
+			$params['fname']  = $this->getVar($params['fname'], array());
 
 			// Проверка на правильность заполнения (Новая запись)
 			if( isset($params['domain_name']) )
@@ -132,7 +131,8 @@ class Domains extends \App\Page {
 				// Если запись новая
 				if( ! isset($params['domain_id']) ) {
 
-					$this->pixie->db->query('insert')->table('domains')
+					$this->pixie->db->query('insert')
+									->table('domains')
 									->data(array_merge($data_insert,$data_update))
 									->execute();
 
@@ -140,7 +140,8 @@ class Domains extends \App\Page {
 				}
 				// Если редактируем
 				else {
-					$this->pixie->db->query('update')->table('domains')
+					$this->pixie->db->query('update')
+									->table('domains')
 									->data($data_update)
 									->where('domain_id', $params['domain_id'])
 									->execute();
@@ -148,10 +149,10 @@ class Domains extends \App\Page {
 
 
 				// Обработка алиасов
-				foreach ($params['dom'] as $key=>$alias ) {
+				foreach ($params['fname'] as $key=>$fname ) {
 
 					$data_insert = array(
-									'domain_name' => $alias,
+									'domain_name' => $fname,
 									'delivery_to' => $params['domain_name'],
 									);
 					$data_update = array(
@@ -161,19 +162,22 @@ class Domains extends \App\Page {
 
 					if( $params['stat'][$key] == 2 ) {
 					// Удаление
-						$this->pixie->db->query('delete')->table('domains')
+						$this->pixie->db->query('delete')
+										->table('domains')
 										->where('domain_id',$params['fid'][$key])
 										->execute();
 					}
 					elseif( $params['fid'][$key] == 0 ) {
 					// Новый
-						$this->pixie->db->query('insert')->table('domains')
+						$this->pixie->db->query('insert')
+										->table('domains')
 										->data(array_merge($data_insert, $data_update))
 										->execute();
 					}
 					else {
 					// Изменение
-						$this->pixie->db->query('update')->table('domains')
+						$this->pixie->db->query('update')
+										->table('domains')
 										->data($data_update)
 										->where('domain_id', $params['fid'][$key])
 										->execute();

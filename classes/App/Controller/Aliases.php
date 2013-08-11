@@ -58,10 +58,9 @@ class Aliases extends \App\Page {
 		$aliases_arr = array();
 
         $this->view->aliases = $this->pixie->db->query('select')
-									//->fields('alias_name','delivery_to','active')
-									->table('aliases')
-									->order_by('alias_name')
-									->execute();
+												->table('aliases')
+												->order_by('alias_name')
+												->execute();
 
 		$this->view->domains = $this->pixie->db->query('select')
 												->fields('domain_name')
@@ -69,17 +68,6 @@ class Aliases extends \App\Page {
 												->where('delivery_to','virtual')
 												->execute();
 
-		//~ foreach ($aliases as $alias) {
-//~
-			//~ if( ! isset($aliases_arr[$alias->alias_name]) )
-				//~ $aliases_arr[$alias->alias_name] = array();
-			//~ // Если алиас неактивный - форматируем
-			//~ $alias->delivery_to = ( $alias->active == 1 ) ? $alias->delivery_to : "<strike>".$alias->delivery_to."</strike>";
-//~
-			//~ array_push( $aliases_arr[$alias->alias_name], $alias->delivery_to);
-		//~ }
-
-		//$this->view->aliases_arr 		= $aliases_arr;
 		$this->view->aliases_block 	= $this->action_single();
 
         $this->response->body	= $this->view->render();
@@ -152,17 +140,14 @@ class Aliases extends \App\Page {
 			// Инициируем, чтоб не было ошибки при обработке несуществующего массива
 			$params['fname'] = $this->getVar($params['fname'], array());
 
-			// Проверка на почтовый адрес
-			//array_walk( $params['fwd'] ,array($this,'sanitize'),'is_mail' );
-
 			// Если ошибок все еще нет
 			if( ! isset( $this->logmsg ) ) {
 				// Обработка алиасов
-				foreach ($params['fname'] as $key=>$alias ) {
+				foreach ($params['fname'] as $key=>$fname ) {
 
 					$entry = array(
 									'alias_name' => $params['alias_name'],
-									'delivery_to'=> $alias,
+									'delivery_to'=> $fname,
 									'active'	 => $params['stat'][$key]
 									);
 

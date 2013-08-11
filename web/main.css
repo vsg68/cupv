@@ -134,7 +134,7 @@ div.delRow, .else div {
 	float: left;
 }
 #domains_flt select {
-	width: 149px;
+	width: 135px;
 }
 #lb {
 	width: 400px;
@@ -241,3 +241,4 @@ input[type='text'].path  {
 .ptr-hover {
 	background-position: -64px -16px !important;
 }
+

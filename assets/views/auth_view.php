@@ -16,7 +16,7 @@
 			<input  class='formtext' type='text' name='auth_note' value='<?= $auth->note; ?>'  />
 	   </div>
 	  <div class='fieldentry'>
-			<div class='formlabel'>Пароль:<span class='web' id='passwd'>&rArr;</span></div>
+			<div class='formlabel'>Пароль:<span class='ptr' id='passwd'></span></div>
 	   </div>
 		<div class='fieldentry'>
 			<span class='formlabel'>Профиль:</span>

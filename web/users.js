@@ -57,8 +57,26 @@ $(function(){
 				if( $('tr').filter('[sname="' + mailbox + '"]').length ) {
 					alert('Почтовый ящик '+ mailbox +' уже существует!');
 					$(':text[name="login"]').val('');
+					return false;
 				}
 			}
+
+			var arrVal 	= $(':text[name="mailbox"],:text[name="fname[]"]');
+
+			$($(arrVal).not(':hidden').get().reverse()).each(function(){
+
+					var name = this.val();
+
+					insertName = $(arrVal)
+									.filter( function(){ return $(this).val() == name} )
+									.length;
+
+					if( insertName !=1 ) {
+						alert('Запись "'+ $(this).val() +'" уже существует');
+						$(this).val('');
+						return false;
+					}
+			});
 
 			try_submit();
 			return false;
