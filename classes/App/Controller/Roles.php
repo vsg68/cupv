@@ -23,9 +23,10 @@ class Roles extends \App\Page {
 											->execute();
 
 		$matrix = $this->pixie->db->query('select')
-								->fields($this->pixie->db->expr(
-									'C.name AS ctrl_name, R.name AS role_name, LEFT(L.name,1) AS slevel'
-									))
+								->fields(array('C.name','ctrl_name'),
+										 array('R.name','role_name'),
+										 array($this->pixie->db->expr('LEFT(IFNULL(L.name,"N"),1)'),'slevel')
+										 )
 								->table('page_roles','P')
 								->join(array('controllers','C'),array('C.id','P.control_id'),'LEFT')
 								->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
@@ -72,25 +73,22 @@ class Roles extends \App\Page {
 								->execute()
 								->current();
 
+
 		$view->pages = $this->pixie->db->query('select')
-								->fields($this->pixie->db->expr('C.name AS ctrl_name, S.name AS sect_name, P.*'))
-								->table('page_roles','P')
-								->join(array('controllers','C'),array('C.id','P.control_id'),'LEFT')
+								->fields(array('C.name','ctrl_name'),
+										 array('S.name','sect_name'),
+										 array( $this->pixie->db->expr('IFNULL(L.slevel,0)'),'slevel'),
+										 array('C.id','control_id ')
+										 )
+								->table('controllers','C')
 								->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
-								->where('role_id', $this->_id)
+								->join(array('page_roles','P'),array('C.id','P.control_id'),'LEFT')
+								->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
+								->where('P.role_id', $this->_id)
+								->where('or',array($this->pixie->db->expr('P.role_id is null'),1))
+								->order_by('S.id')
 								->execute()
 								->as_array();
-//~
-			//~ $view->pages = $this->pixie->db->query('select')
-								//~ ->fields($this->pixie->db->expr('C.name AS ctrl_name, S.name AS sect_name, IFNULL(slevel,0) AS slevel, P.*'))
-								//~ ->table('controllers','C')
-								//~ ->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
-								//~ ->join(array('page_roles','P'),array('C.id','P.role_id'),'LEFT')
-								//~ ->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
-								//~ ->where('role_id', $this->_id)
-								//~ ->where('or',array($this->pixie->db->expr('role_id is null'),1))
-								//~ ->execute()
-								//~ ->as_array();
 
 		$view->slevels = $this->pixie->db->query('select')->table('slevels')->execute()->as_array();
 
@@ -162,7 +160,6 @@ class Roles extends \App\Page {
 									->execute();
 				}
 
-
 				// Обработка ролей
 				foreach ($params['page'] as $key=>$page_id ) {
 
@@ -172,20 +169,19 @@ class Roles extends \App\Page {
 									'slevel_id'	 => $params['p-'.$page_id]
 									);
 
-					if( !$is_update ) {
-					// Новый
-						$this->pixie->db->query('insert')->table('page_roles')
-										->data($roleInPage)
-										->execute();
-					}
-					else {
-					// Изменение
-						$this->pixie->db->query('update')->table('page_roles')
-										->data($roleInPage)
-										->where('role_id', $params['role_id'])
+
+					// сначала удаляем
+						$this->pixie->db->query('delete')
+										->table('page_roles')
 										->where('control_id', $page_id)
+										->where('role_id', $params['role_id'])
 										->execute();
-					}
+
+					// добавляем снова
+						$this->pixie->db->query('insert')
+										->table('page_roles')
+										->data($roleInPage)
+										->execute();
 				}
 			}
 			// Ошибки имели место - возвращаем форму

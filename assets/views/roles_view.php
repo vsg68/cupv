@@ -43,7 +43,7 @@
 							<input type='hidden' name='page[]' value='<?= $page->control_id ?>'>
 
 							<?php foreach($slevels as $slevel): ?>
-							<input type='radio' name='p-<?= $page->control_id ?>' value='<?= $slevel->id ?>' <?php ( $slevel->id == $page->slevel_id) && print 'checked' ?>><?= $slevel->name ?>
+							<input type='radio' name='p-<?= $page->control_id ?>' value='<?= $slevel->id ?>' <?php ( $slevel->slevel == $page->slevel) && print 'checked' ?>><?= $slevel->name ?>
 							<?php endforeach; ?>
 
 						</div>
