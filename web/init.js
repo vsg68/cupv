@@ -8,7 +8,7 @@ $(function(){
 
 // onmouseover
 	//$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
-	$('#home').click( function(){ window.location = 'http://cup/'});
+	$('#home').click( function(){ window.location = '/'});
 
 	$(".mainmenu ul li").hover(function(){$(this).addClass("hover_item");}, function(){$(this).removeClass("hover_item")});
 	$(".mainmenu ul li a").click(function(){
@@ -191,7 +191,7 @@ function checkfield(obj) {
 
 	one_net	  =	"(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?";
 	net_tmpl  = "^\\s*" + one_net + "(\\s*,\\s*" + one_net + ")*\\s*$";
-	mail_tmpl = "^[\\w-_\\.]+@(\\w+\\.){1,}\\w+$";
+	mail_tmpl = "^[-_\\w\\.]+@(\\w+\\.){1,}\\w+$";
 	word_tmpl = "^[\\w\\.]+$";
 	transp_tmpl	= "^\\w+:\\[(\\d{1,3}\\.){3}\\d{1,3}\\]$";
 	domain_tmpl	= "^(\\w+\\.)+\\w+$";
