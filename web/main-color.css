@@ -107,3 +107,6 @@ input:-moz-placeholder {
 input::-webkit-input-placeholder {
 	color: #ddd;
 }
+input[type='text']:disabled{
+	background-color: #f1f1f1;
+}

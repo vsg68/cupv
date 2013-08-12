@@ -13,6 +13,11 @@ class Auth extends \App\Page {
  		$this->view->script_file	= '<script type="text/javascript" src="/auth.js"></script>';
 		$this->view->css_file 		= '<link rel="stylesheet" href="/auth.css" type="text/css" />';
 
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
+
 		$this->view->subview = 'auth_main';
 
 		$this->view->users = $this->pixie->db
@@ -29,6 +34,11 @@ class Auth extends \App\Page {
     }
 
 	public function action_single() {
+
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
 
 		$view 		= $this->pixie->view('auth_view');
 		$view->log 	= $this->getVar($this->logmsg,'');
@@ -58,6 +68,11 @@ class Auth extends \App\Page {
 
 	public function action_new() {
 
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
+
 		$view 	   = $this->pixie->view('auth_new');
 		$view->log = $this->getVar($this->logmsg,'<strong>Создание нового пользователя.</strong>');
 
@@ -72,6 +87,11 @@ class Auth extends \App\Page {
     public function action_add() {
 
        if ($this->request->method == 'POST') {
+
+			if( $this->permissions != $this::WRITE_LEVEL ) {
+				$this->noperm();
+				return false;
+			}
 
 			$params = $this->request->post();
 			unset($params['chk']);

@@ -71,20 +71,32 @@ body {
 .menu_item {
 	margin: 5px;
 }
-#new {
+#new, #home {
+	background: url(/new.png) -24px -48px;
+/*
 	background: url(/document-new.png) -24px -48px;
+*/
 	float: right;
 	width: 24px;
 	height: 24px;
+	margin: auto 5px;
 	cursor: pointer;
+}
+#home {
+	background: url(/home.png) -24px -48px;
+}
+#home:hover, #new:hover {
+	background-position: 0 -24px !important;
 }
 .label {
 	font-size: 20px;
 	margin: 0 10px 0 0;
 }
+/*
 .hover_new {
 	background: url(/document-new.png) 0 -24px  !important;
 }
+*/
 .error {
 	color: red;
 }

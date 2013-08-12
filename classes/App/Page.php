@@ -35,13 +35,14 @@ class Page extends \PHPixie\Controller {
 		// Проверка легитимности пользователя и его прав
         if( $this->request->param('controller') != 'login' )
 			$this->permissions = $this->is_approve();
+
 	}
 
 	/* Проверка на предоставление доступа к разделу */
 	protected function is_approve(){
 
 		if( $this->auth->user() == null )
-			return 1;
+			return 0;
 
 		$name = $this->auth->user()->login;
 		$ctrl = $this->request->param('controller');

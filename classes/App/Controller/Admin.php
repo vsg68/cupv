@@ -28,6 +28,11 @@ class Admin extends \App\Page {
  		$this->view->script_file	= '<script type="text/javascript" src="/admin.js"></script>';
 		$this->view->css_file 		= '<link rel="stylesheet" href="/admin.css" type="text/css" />';
 
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
+
 		$this->view->subview = 'admin_main';
 
 		$this->view->sections = $this->pixie->db->query('select')
@@ -35,7 +40,7 @@ class Admin extends \App\Page {
 												->execute();
 
 		$this->view->controllers = $this->pixie->db->query('select')
-													->fields($this->pixie->db->expr('S.id AS s_id, S.name AS s_name, C.class AS c_class'))
+													->fields(array('S.id','s_id'), array('S.name','s_name'),array('C.class','c_class'))
 													->table('controllers','C')
 													->join(array('sections','S'),array('C.section_id','S.id'))
 													->execute();
@@ -49,6 +54,11 @@ class Admin extends \App\Page {
     }
 
 	public function action_single() {
+
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
 
 		$view 		= $this->pixie->view('admin_view');
 		$view->log 	= $this->getVar($this->logmsg,'');
@@ -77,9 +87,6 @@ class Admin extends \App\Page {
 											->order_by('arrange')
 											->execute();
 
-		// Если массив пуст - инициируем пустым массивом
-	//	$view->controllers = $this->getVar($view->controllers, array());
-
 		// Редактирование
 		if( ! $this->request->get('act') )
 			return $view->render();
@@ -104,6 +111,10 @@ class Admin extends \App\Page {
 
        if ($this->request->method == 'POST') {
 
+			if( $this->permissions != $this::WRITE_LEVEL ) {
+				$this->noperm();
+				return false;
+			}
 			$params = $this->request->post();
 			unset($params['chk']);
 
@@ -122,6 +133,12 @@ class Admin extends \App\Page {
 								'note'		=> $this->getVar( $params['section_note'] ),
 								'active'	=> $this->getVar( $params['active'],0 )
 								);
+				// Для заполнения связей ролей дефолтными значениями
+				$roles = $this->pixie->db->query('select')
+										->table('roles')
+										->execute()
+										->as_array();
+
 
 				if ( ! isset($params['section_id']) ) {
 				// новая запись
@@ -156,12 +173,36 @@ class Admin extends \App\Page {
 						$this->pixie->db->query('delete')->table('controllers')
 										->where('id',$params['fid'][$key])
 										->execute();
+
+						// Удалить связи
+						foreach( $roles as $role) {
+							$this->pixie->db->query('delete')
+										->table('page_roles')
+										->where('control_id',$params['fid'][$key])
+										->where('role_id',$role->id)
+										->execute();
+						}
+
 					}
 					elseif( $params['fid'][$key] == 0 ) {
 					// Новый
 						$this->pixie->db->query('insert')->table('controllers')
 										->data($entry)
 										->execute();
+
+						$fid = $this->pixie->db->insert_id();
+
+						// заполняем дефолтными значениями имеющиеся роли
+						foreach( $roles as $role) {
+							$this->pixie->db->query('insert')
+										->table('page_roles')
+										->data(array(
+													'control_id' => $fid,
+													'slevel_id'  => 1,
+													'role_id'	 => $role->id
+											))
+										->execute();
+						}
 					}
 					else {
 					// Изменение

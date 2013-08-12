@@ -7,7 +7,8 @@ $(function(){
 	options = { serviceUrl:'/users/searchdomain/',type:'post'};
 
 // onmouseover
-	$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
+	//$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
+	$('#home').click( function(){ window.location = 'http://cup/'});
 
 	$(".mainmenu ul li").hover(function(){$(this).addClass("hover_item");}, function(){$(this).removeClass("hover_item")});
 	$(".mainmenu ul li a").click(function(){

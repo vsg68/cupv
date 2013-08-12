@@ -9,6 +9,10 @@ class Roles extends \App\Page {
 
     public function action_view() {
 
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
 
 		$this->view->subview 		= 'roles_main';
 
@@ -32,7 +36,7 @@ class Roles extends \App\Page {
 								->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
 								->join(array('roles','R'),array('R.id','P.role_id'),'LEFT')
 								->where($this->pixie->db->expr('R.name IS NOT NULL'),1)
-								->order_by('C.name')
+								->order_by('C.id')
 								->order_by('R.name')
 								->execute()
 								->as_array();
@@ -58,6 +62,11 @@ class Roles extends \App\Page {
 
 
 	public function action_single() {
+
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
 
 		$view 		= $this->pixie->view('roles_view');
 		$view->log 	= $this->getVar($this->logmsg,'');
@@ -85,7 +94,6 @@ class Roles extends \App\Page {
 								->join(array('page_roles','P'),array('C.id','P.control_id'),'LEFT')
 								->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
 								->where('P.role_id', $this->_id)
-								->where('or',array($this->pixie->db->expr('P.role_id is null'),1))
 								->order_by('S.id')
 								->execute()
 								->as_array();
@@ -103,6 +111,11 @@ class Roles extends \App\Page {
 	}
 
 	public function action_new() {
+
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
 
 		$view 		= $this->pixie->view('roles_new');
 		$view->log 	= $this->getVar($this->logmsg,'<strong>Ввод новой роли.</strong>');
@@ -128,6 +141,11 @@ class Roles extends \App\Page {
 	public function action_add() {
 
         if ($this->request->method == 'POST') {
+
+			if( $this->permissions != $this::WRITE_LEVEL ) {
+				$this->noperm();
+				return false;
+			}
 
 			$params = $this->request->post();
 

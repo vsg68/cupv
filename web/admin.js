@@ -66,7 +66,10 @@ $(function(){
 
 
 			// Массив названий страниц(контролов) в текущим разделе(section).
-			var optArr = $('.alias option:selected').map(function(){ return $(this).val() });
+			var optArr = $('tr.alias')
+								.not(':hidden')
+								.find('option:selected')
+								.map(function(){ return $(this).val() });
 
 			// работаем с реверсивным массивом
 			$($('.alias option:selected').get().reverse()).each(function(){
@@ -86,7 +89,7 @@ $(function(){
 				// проверка на дубли во введенном масиве контролов
 				optVal 	  = $.grep( optArr, function(val){ return val == control_name; }).length;
 
-				if( (optVal != 1) || ( ! existNameId && existName ) ) {
+				if( (optVal != 1 && optArr.length ) || ( ! existNameId && existName ) ) {
 
 					alert('Страница с таким контроллером уже существует.');
 					$(this).siblings('.zero').attr('selected','true');

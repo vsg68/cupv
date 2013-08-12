@@ -10,6 +10,7 @@
 	<div class='lb_filter'> Mail (filter):
 		<input type='text' id='fltr'>
 	</div>
+	<div id='home'></div>
 	<div id='new'></div>
 </div>
 <div id='usrs'>

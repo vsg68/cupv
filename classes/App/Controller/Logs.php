@@ -4,29 +4,34 @@
  */
 namespace App\Controller;
 
-class Logs extends \PHPixie\Controller {
-
-   private $logmsg;
-
+class Logs extends \App\Page {
 
     public function action_view() {
 
-        $view = $this->pixie->view('main');
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
 
-		$view->subview 		= 'logs_main';
+		$this->view->subview 		= 'logs_main';
 
-		$view->script_file	= '<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>'.
+		$this->view->script_file	= '<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>'.
 								'<script type="text/javascript" src="/logs.js"></script>';
-		$view->css_file 	= '<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />'.
+		$this->view->css_file 	= '<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />'.
 								'<link rel="stylesheet" href="/logs.css" type="text/css" />';
 
-        $this->response->body	= $view->render();
+        $this->response->body	= $this->view->render();
     }
 
 
 	public function action_show() {
 
         if ($this->request->method == 'POST') {
+
+			if( $this->permissions == $this::NONE_LEVEL ) {
+				$this->noperm();
+				return false;
+			}
 
 			$view 	= $this->pixie->view('logs_view');
 			$query	= array();
