@@ -3,7 +3,6 @@ RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule .* index.php?$0 [PT,L,QSA]
 
-
-
+RewriteRule ^backuppc /usr/local/www/backuppc/cgi-bin/BackupPC_Admin [L]
 
 
