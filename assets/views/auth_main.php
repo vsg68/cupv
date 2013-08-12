@@ -1,6 +1,6 @@
 	<div class="editmenu">
-		<div id='home'></div>
-		<div id='new'></div>
+		<div id='home' title='главная'></div>
+		<div id='new' title='новая запись'></div>
 	</div>
 <div id='usrs'>
 	<div class='aliasesplace'>
