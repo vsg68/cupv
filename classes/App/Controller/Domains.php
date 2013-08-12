@@ -1,15 +1,12 @@
 <?php
-/*
 
- */
 namespace App\Controller;
 
-class Domains extends \PHPixie\Controller {
+class Domains extends \App\Page {
 
-   private $logmsg;
    private $domain_id;
 
-   private function sanitize(&$value, $method) {
+   protected function sanitize(&$value, $method) {
 
 		$value =  trim($value) ;
 
@@ -33,43 +30,40 @@ class Domains extends \PHPixie\Controller {
 
     public function action_view() {
 
-        $view = $this->pixie->view('main');
 
-		$view->subview 		= 'domains_main';
+		$this->view->subview 		= 'domains_main';
 
-		$view->script_file	= '<script type="text/javascript" src="/domains.js"></script>';
-		$view->css_file 	= '<link rel="stylesheet" href="/domains.css" type="text/css" />';
+		$this->view->script_file	= '<script type="text/javascript" src="/domains.js"></script>';
+		$this->view->css_file 		= '<link rel="stylesheet" href="/domains.css" type="text/css" />';
 
 
-		$view->domains = $this->pixie->db
-								->query('select')
-								->table('domains')
-								->execute()
-								->as_array();
+		$this->view->domains = $this->pixie->db->query('select')
+												->table('domains')
+												->execute()
+												->as_array();
 
-		$view->domains_block 	= $this->action_single();
+		$this->view->domains_block 	= $this->action_single();
 
-        $this->response->body	= $view->render();
+        $this->response->body = $this->view->render();
     }
 
 
 	public function action_single() {
 
 		$view 		= $this->pixie->view('domains_view');
-		$view->log 	= isset($this->logmsg) ?  $this->logmsg : '';
+		$view->log 	= $this->getVar($this->logmsg,'');
 
-		if( ! $this->request->get('name') )
+		if( ! $this->request->param('id') )
 			//return "<img class='lb' src=/domains.png />";
 			return;
 
-		if( ! isset($this->domain_id) )
-			$this->domain_id = $this->request->get('name');
+		$this->domain_id = $this->getVar($this->domain_id, $this->request->param('id'));
 
-		$domain = $this->pixie->db
-								->query('select')->table('domains')
-								->where('domain_id', $this->domain_id)
-								->execute()
-								->current();
+		$domain = $this->pixie->db->query('select')
+									->table('domains')
+									->where('domain_id', $this->domain_id)
+									->execute()
+									->current();
 		//Если ответ пустой
 		if( ! count($domain) )
 			return "<strong>Домена с ID ".$this->domain_id." не существует.</strong>";
@@ -77,10 +71,10 @@ class Domains extends \PHPixie\Controller {
 		$view->domain = $domain;
 
 		// Собираем алиасы домена
-		$view->aliases = $this->pixie->db
-									->query('select')->table('domains')
-									->where('delivery_to', $domain->domain_name)
-									->execute();
+		$view->aliases = $this->pixie->db->query('select')
+										->table('domains')
+										->where('delivery_to', $domain->domain_name)
+										->execute();
 
 		// Редактирование
 		if( ! $this->request->get('act') )
@@ -92,11 +86,7 @@ class Domains extends \PHPixie\Controller {
 	public function action_new() {
 
 		$view 		= $this->pixie->view('domains_new');
-		$view->log 	= isset($this->logmsg) ?  $this->logmsg : '';
-
-		if( ! isset($this->logmsg) )
-
-			$view->log = '<strong>Ввод нового домена.</strong>';
+		$view->log 	= $this->getVar($this->logmsg,'<strong>Ввод нового домена.</strong>');
 
 		$this->response->body = $view->render();
 	}
@@ -107,12 +97,7 @@ class Domains extends \PHPixie\Controller {
 
 			$params = $this->request->post();
 
-			// Инициируем, чтоб не было ошибки при обработке несуществующего параметра
-			if( ! isset( $params['active'] ) )  	$params['active'] = 0;
-			if( ! isset( $params['all_enable'] ) )  $params['all_enable'] = 0;
-			$params['all_email'] = isset( $params['all_email'] ) ? $params['all_email'].'@'.$params['domain_name'] : '';
-			if( ! isset( $params['dom']) ) 			$params['dom'] = array();
-
+			$params['fname']  = $this->getVar($params['fname'], array());
 
 			// Проверка на правильность заполнения (Новая запись)
 			if( isset($params['domain_name']) )
@@ -128,75 +113,77 @@ class Domains extends \PHPixie\Controller {
 				$params['domain_type'] = '0';
 			}
 
+			$data_insert = array(
+								'domain_name' 	=> $params['domain_name'],
+								'delivery_to' 	=> $params['delivery_to'],
+								'domain_type' 	=> $params['domain_type']
+								);
+			$data_update = array(
+								'domain_notes'	=> $params['domain_notes'],
+								'all_enable'	=> $this->getVar($params['all_enable'],0),
+								'all_email'		=> isset( $params['all_email'] ) ? $params['all_email'].'@'.$params['domain_name'] : '',
+								'active'		=> $this->getVar($params['active'],0)
+								);
+
 			// Если нет ошибок заполнения - проходим в обработку
 			if( ! isset($this->logmsg) ) {
 
 				// Если запись новая
 				if( ! isset($params['domain_id']) ) {
 
-					$this->pixie->db
-									->query('insert')->table('domains')
-									->data(array(
-												'domain_name' 	=> $params['domain_name'],
-												'delivery_to' 	=> $params['delivery_to'],
-												'domain_type' 	=> $params['domain_type'],
-												'domain_notes'	=> $params['domain_notes'],
-												'all_enable'	=> $params['all_enable'],
-												'all_email'		=> $params['all_email'],
-												'active'		=> $params['active']
-												))
+					$this->pixie->db->query('insert')
+									->table('domains')
+									->data(array_merge($data_insert,$data_update))
 									->execute();
 
 					$params['domain_id'] = $this->pixie->db->insert_id();
-
 				}
 				// Если редактируем
 				else {
-					$this->pixie->db
-									->query('update')->table('domains')
-									->data(array(
-												'domain_notes'	=> $params['domain_notes'],
-												'active'		=> $params['active'],
-												'all_enable'	=> $params['all_enable'],
-												'all_email'		=> $params['all_email'],
-												))
+					$this->pixie->db->query('update')
+									->table('domains')
+									->data($data_update)
 									->where('domain_id', $params['domain_id'])
 									->execute();
 				}
 
+
+				// Обработка алиасов
+				foreach ($params['fname'] as $key=>$fname ) {
+
+					$data_insert = array(
+									'domain_name' => $fname,
+									'delivery_to' => $params['domain_name'],
+									);
+					$data_update = array(
+									'domain_type' => '1',
+									'active'	  => $params['stat'][$key]
+									);
+
+					if( $params['stat'][$key] == 2 ) {
+					// Удаление
+						$this->pixie->db->query('delete')
+										->table('domains')
+										->where('domain_id',$params['fid'][$key])
+										->execute();
+					}
+					elseif( $params['fid'][$key] == 0 ) {
+					// Новый
+						$this->pixie->db->query('insert')
+										->table('domains')
+										->data(array_merge($data_insert, $data_update))
+										->execute();
+					}
+					else {
+					// Изменение
+						$this->pixie->db->query('update')
+										->table('domains')
+										->data($data_update)
+										->where('domain_id', $params['fid'][$key])
+										->execute();
+					}
+				}
 			}
-
-			// Обработка алиасов
-			foreach ($params['dom'] as $key=>$alias ) {
-
-				if( $params['dom_st'][$key] == 2 ) {
-				// Удаление
-					$this->pixie->db->query('delete')->table('domains')
-									->where('domain_id',$params['dom_id'][$key])
-									->execute();
-				}
-				elseif( $params['dom_id'][$key] == 0 ) {
-				// Новый
-					$this->pixie->db->query('insert')->table('domains')
-									->data(array(
-										'domain_name' => $alias,
-										'delivery_to' => $params['domain_name'],
-										'domain_type' => '1',
-										'active'	  => $params['dom_st'][$key]
-									))->execute();
-				}
-				else {
-				// Изменение
-					$this->pixie->db->query('update')->table('domains')
-									->data(array(
-										'domain_name' => $alias,
-										'active'	 => $params['dom_st'][$key]
-									))
-									->where('domain_id', $params['dom_id'][$key])
-									->execute();
-				}
-			}
-
 			// Ошибки имели место - возвращаем форму
 			if( isset( $this->logmsg ) ) {
 

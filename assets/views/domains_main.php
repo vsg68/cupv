@@ -1,5 +1,6 @@
 	<div class="editmenu">
-		<div id='new'></div>
+		<div id='home' title='главная'></div>
+		<div id='new' title='новая запись'></div>
 	</div>
 <div id='usrs'>
 	<h4>Локальные домены</h4>
@@ -12,7 +13,7 @@
 			<table>
 			<?php foreach( $domains as $domain ): ?>
 			<?php if( $domain->domain_type != '0')  continue; ?>
-			   <tr id="i-<?= $domain->domain_id ?>" >
+			   <tr sid="<?= $domain->domain_id ?>" sname='<?= $domain->domain_name ?>'>
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->domain_notes ?></td>
 			   </tr>
@@ -30,7 +31,7 @@
 			<table>
 			<?php foreach( $domains as $domain ): ?>
 			<?php if( $domain->domain_type != '1')  continue; ?>
-			   <tr class='noedit' >
+			   <tr class='noedit' sid="<?= $domain->domain_id ?>" sname='<?= $domain->domain_name ?>'>
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->delivery_to ?></td>
 			   </tr>
@@ -48,7 +49,7 @@
 			<table>
 			<?php foreach( $domains as $domain ): ?>
 			<?php if( $domain->domain_type != '2')  continue; ?>
-			   <tr id="i-<?= $domain->domain_id ?>">
+			   <tr sid="<?= $domain->domain_id ?>" sname='<?= $domain->domain_name ?>'>
 				   <td class="key <?= $domain->active == 0 ? 'nonactive':''; ?>"><?= $domain->domain_name ?></td>
 				   <td class="val"><?= $domain->delivery_to ?></td>
 			   </tr>

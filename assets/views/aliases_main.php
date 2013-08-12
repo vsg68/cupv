@@ -10,7 +10,8 @@
 	<div class='lb_filter'> Mail (filter):
 		<input type='text' id='fltr'>
 	</div>
-	<div id='new'></div>
+		<div id='home' title='главная'></div>
+		<div id='new' title='новая запись'></div>
 </div>
 <div id='usrs'>
 	<div class='aliasesplace'>
@@ -20,12 +21,30 @@
 		</div>
 		<div class='aliases_box'>
 			<table>
-			<?php foreach( $aliases_arr as $alias => $delivered ): ?>
-			   <tr>
-				   <td class="key"><?=  $alias ?></td>
-				   <td class="val"><?php  sort($delivered); echo implode(',<br>', $delivered); ?></td>
-			   </tr>
-			<?php endforeach; ?>
+			<?php
+			$sect='';
+			$is_change = 1;
+
+			foreach($aliases as $alias) {
+
+				if($sect != $alias->alias_name) {
+
+					$sect = $alias->alias_name;
+
+					if( $is_change = ($is_change) ? 0 : 1 )
+						echo "</td></tr>";
+			?>
+			   <tr sid="<?= $alias->alias_id ?>" sname="<?= $alias->alias_name ?>">
+				   <td class="key"><?=  $alias->alias_name ?></td>
+				   <td class="val">
+
+			<?php
+				}  // endif
+
+				echo "<div class='". ($alias->active == 0 ? 'nonactive' : '') ."'>".$alias->delivery_to."</div>";
+
+			}   // endforeach
+			 ?>
 			</table>
 		</div>
 	</div>

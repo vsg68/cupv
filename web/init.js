@@ -7,7 +7,8 @@ $(function(){
 	options = { serviceUrl:'/users/searchdomain/',type:'post'};
 
 // onmouseover
-	$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
+	//$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
+	$('#home').click( function(){ window.location = 'http://cup/'});
 
 	$(".mainmenu ul li").hover(function(){$(this).addClass("hover_item");}, function(){$(this).removeClass("hover_item")});
 	$(".mainmenu ul li a").click(function(){
@@ -23,14 +24,13 @@ $(function(){
 	// Удаление строк
 	$('.delRow').live('click', function(){
 
-		var tr 		   = $(this).closest('tr.alias');
-		var input_hide = $(tr).find(':hidden:eq(0)');
+		var tr 		   = $(this).closest('.alias');
 
-		// Если есть таг - то поле создано вручную
-		if( $(input_hide).attr('tag') )
+		// Если FID = 0 - то поле создано вручную
+		if( $(tr).find(':hidden[name="fid[]"]').val() == 0 )
 			$(tr).remove();
 		else {
-			$(input_hide).val('2');
+			$(tr).find(':hidden[name="stat[]"]').val('2');
 			$(tr).addClass('hidden');
 		}
 		return false;
@@ -41,7 +41,8 @@ $(function(){
 	$(':checkbox').live('click', function(){
 
 		var input_text = $(this).closest('tr.alias').find(':text:eq(0)');
-		var input_hide = $(this).closest('tr.alias').find(':hidden:eq(0)');
+		//var input_hide = $(this).closest('tr.alias').find(':hidden:eq(0)');
+		var input_hide = $(this).closest('tr.alias').find(':hidden[name="stat[]"]');
 
 		if ( $(this).attr('checked') ) {
 			$(input_text).removeAttr('disabled');
@@ -92,25 +93,44 @@ $(function(){
 								});
 
 	// Выбор записи
-	key = window.location.search.split('=')[1];
-	$('.key','.aliases_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
+	//key = window.location.search.split('=')[1];
+	key = window.location.pathname.split('/')[3];
+	//?????
+	//$('.key','.aliases_box').filter(':contains("' + key + '")').parent().addClass('selected_key');
+
+	$('tr','.domain_box, .aliases_box').not('.noedit').filter('[sid="' +  key + '"]').addClass('selected_key');
 
 	// Запрос на редактирование
-	$('tr','.aliases_box').click( function(){
+	$('#usrs tr').click( function(){
 									// Выбор записи
 									$('.selected_key').removeClass('selected_key');
 									$(this).addClass('selected_key');
 									// Запрос
-									name = $('.key', this).text();
-									$.get('/'+ ctrl + '/single/',{'name':name, 'act':'1'},function(response){ $('#ed').empty().append(response);})
+									//if( $(this).closest('#alias-main').length )
+										//id = $('.key', this).text();
+										////name = $(this).attr('sid');
+									////else if( $(this).closest('.domain_box').length )
+
+									id = $(this).attr('sid');
+
+									$.get('/'+ ctrl + '/single/'+id,{'act':'1'},function(response){
+										 $('#ed').empty().append(response);
+
+										 // Если имеем дело с транспортом - блокируем алиасы
+										 if( $(':text[name="delivery_to"]').val() != undefined )
+										  	$('#alias').attr('disabled','true');
+									})
 								});
 
-	//Новый пользователь
+	//Новая запись
 	$('#new').click(function(){
 					$.get('/'+ ctrl +'/new/', function(response) {$('#ed').empty().html(response);});
 	});
 
+	$('.mkpwd').live('click', function(){
 
+			$(this).siblings(':text').val(mkpasswd());
+		})
 });
 
 
@@ -148,10 +168,14 @@ function try_submit() {
 
 	$.post(	'/'+ ctrl +'/add/', params , function(response) {
 
-						mail_tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
+						//if( ctrl == 'domains' || ctrl == 'admin' || ctrl == 'roles' || ctrl == 'auth' )
+							tmpl = /^\d+$/;
+						//else
+						//	tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
 
-						if( mail_tmpl.test(response) )
-							window.location = '/'+ ctrl +'/view/?name=' + response;
+						if( tmpl.test(response) )
+							//window.location = '/'+ ctrl +'/view/?name=' + response;
+							window.location = '/'+ ctrl +'/view/' + response;
 						else
 							$('#ed').empty().html(response);
 					});
@@ -200,6 +224,12 @@ function checkfield(obj) {
 			if( ! $('input:checked').is('[name="all_enable"]') ) return false
 			reg = new RegExp(word_tmpl,'i')
 			break
+		case 'section_note':
+			// не проверяем
+			return false
+		case 'role_note':
+			// не проверяем
+			return false
 		default:
 			if( ! value )
 				return true
@@ -212,4 +242,19 @@ function checkfield(obj) {
 	else
 		return true;
 
+}
+
+function mkpasswd(num_var) {
+
+			if(!num_var)
+				num_var = 8;
+
+			passwd = '';
+			str = "OPQRSTUVWXYZ0123456789abcdefjhigklmABCDEFJHIGKLMNnopqrstuvwxyz_=-";
+
+			for(i=0;i<num_var;i++) {
+				n = Math.floor(Math.random() * str.length);
+				passwd += str[n];
+			}
+			return passwd;
 }

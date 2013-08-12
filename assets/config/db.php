@@ -14,5 +14,12 @@ return array(
 		'password' => 'FibieNg1uT2p',
 		'driver' => 'Mysql',
 		'db' => 'logs',
+	),
+	'login' => array(
+		'user'=>'mailserver',
+		'password' => 'boo1aKeisoot',
+		'driver' => 'PDO',
+		'connection'=>'mysql:host=localhost;dbname=mailserver'
 	)
+
 );

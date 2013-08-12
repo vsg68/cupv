@@ -1,8 +1,19 @@
 <?php
 return array(
-	'default' => array('(/<controller>(/<action>))',
+	//~ 'r1' => array('/users(/<action>(/<id>))',
+					//~ array(
+						//~ 'controller' => 'users',
+						//~ 'action' => 'view'
+						//~ )),
+	//~ 'r2' => array('/aliases(/<action>(/<id>))',
+					//~ array(
+						//~ 'controller' => 'aliases',
+						//~ 'action' => 'view'
+						//~ )),
+	'default' => array('(/<controller>(/<action>(/<id>)))',
 					array(
-						'controller' => 'users',
+						'controller' => 'login',
 						'action' => 'view'
 						)),
+
 );

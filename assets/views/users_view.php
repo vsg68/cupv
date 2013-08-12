@@ -15,7 +15,7 @@
 	   </div>
 
 	   <div class='fieldentry'>
-			<span class='formlabel'>Пароль:</span>
+			<span class='formlabel mkpwd' title='создать пароль'>Пароль:</span>
 			<input class='formtext' type='text' name='password' value='<?= $user->password; ?>'   />
 	   </div>
 	   <div class='fieldentry'>
@@ -27,7 +27,7 @@
 				imap:<input type='checkbox' class='formtext' name='imap' value='1' <?php ($user->imap_enable & 1 ) && print ('checked'); ?>  >
 		</div>
 	   <div class='fieldentry path'>
-			<div class='formlabel'>Путь:<span class='web' id='path'><?= ( $user->path )? "&dArr;" : "&rArr;" ?></span></div>
+			<div class='formlabel'>Путь:<span class='ptr <?= ( $user->path )? "ptr_hover;" : "" ?>' id='path'></span></div>
 			<?php if( $user->path ): ?>
 				<input type='text' class='formtext' name='path' value='<?= $user->path; ?>'/>
 			<?php endif; ?>
@@ -46,34 +46,36 @@
 
 		<h4>Алиасы</h4>
 			<table class='atable'>
-				<tr><th  class='txt'>alias</th><th>on/off</th><th><button id='alias' class='else'>+</button></th></tr>
+				<tr><th  class='txt'>alias</th><th>on/off</th><th class='else'><div id='alias' title='Добавить'></div></th></tr>
 		<?php foreach ($aliases as $alias): ?>
 			<?php  if( $alias->alias_name == $user->mailbox) { continue; } ?>
 		   <tr class="alias">
-			   <td><input class='autocomp' type='text' name='alias[]' value='<?= $alias->alias_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
-			   <td><input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
+			   <td><input class='autocomp' type='text' name='fname[]' value='<?= $alias->alias_name ?>' <?php ($alias->active & 1 ) || print ('disabled'); ?> ></td>
 			   <td>
-					<input type='hidden' name='alias_st[]' value='<?= $alias->active ?>'>
-				   <input type='hidden' name='alias_id[]' value='<?= $alias->alias_id ?>'>
-				   <span class='delRow  web'>&otimes;</span>
-				</td>
+					<input type='hidden' name='stat[]' value='<?= $alias->active ?>'>
+					<input type='hidden' name='fid[]' value='<?= $alias->alias_id ?>'>
+					<input type='hidden' name='ftype[]' value='0'>
+					<input type='checkbox' name='chk' <?php ($alias->active & 1 ) && print ('checked'); ?>>
+			   </td>
+			   <td><div class='delRow' title='удалить'></div></td>
 		   </tr>
 		<?php endforeach; ?>
 			</table>
 
 		   <h4>Пересылка</h4>
 		   <table class='atable'>
-				<tr><th class='txt'>forward</th><th>on/off</th><th><button id='fwd' class='else'>+</button></th></tr>
+				<tr><th class='txt'>forward</th><th>on/off</th><th class='else'><div id='fwd'></div></th></tr>
 
 		<?php foreach ($aliases as $alias): ?>
 		<?php  if( $alias->alias_name != $user->mailbox) { continue; } ?>
 		   <tr class="alias">
-			   <td><input type='text' name='fwd[]' value='<?= $alias->delivery_to ?>'  <?php ($alias->active & 1 ) || print ('disabled'); ?> /></td>
+			   <td><input type='text' name='fname[]' value='<?= $alias->delivery_to ?>'  <?php ($alias->active & 1 ) || print ('disabled'); ?> /></td>
 			   <td><input type='checkbox' name='chk' value='' <?php ($alias->active & 1 ) && print ('checked'); ?>></td>
 			   <td>
-				   <input type='hidden' name='fwd_st[]' value='<?= $alias->active ?>'>
-				   <input type='hidden' name='fwd_id[]' value='<?= $alias->alias_id ?>'>
-				   <span class='delRow  web'>&otimes;</span>
+				   <input type='hidden' name='stat[]' value='<?= $alias->active ?>'>
+				   <input type='hidden' name='fid[]' value='<?= $alias->alias_id ?>'>
+				   <input type='hidden' name='ftype[]' value='1'>
+				   <div class='delRow' title='удалить'></div>
 				</td>
 		   </tr>
 		<?php endforeach; ?>
@@ -82,4 +84,4 @@
 	<div class='submit'><input type='submit' id='submit_view' value='Изменить'></div>
 
 </form>
-<script type="text/javascript">$('.autocomp').autocomplete(options);</script>
+<script type="text/javascript">$('.autocomp').autocomplete({serviceUrl:'/users/searchdomain/',type:'post'});</script>

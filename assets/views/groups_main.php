@@ -1,5 +1,6 @@
 	<div class="editmenu">
-
+		<div id='home'></div>
+		<div id='new'></div>
 	</div>
 <div id='usrs'>
 <!--	<h4>Группы</h4>

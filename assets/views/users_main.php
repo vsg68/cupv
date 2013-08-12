@@ -10,7 +10,8 @@
 	<div class='lb_filter'> ФИО (filter):
 		<input type='text' id='fltr'>
 	</div>
-	<div id='new'></div>
+		<div id='home' title='главная'></div>
+		<div id='new' title='новая запись'></div>
 </div>
 <div id='usrs'>
 	<div class='aliasesplace'>
@@ -21,8 +22,8 @@
 		<div class='aliases_box'>
 			<table>
 			<?php foreach( $users as $user ): ?>
-			   <tr id="<?= $user->user_id ?>">
-				   <td class="key <?= $user->active == 0 ? 'nonactive':''; ?>"><?= $user->mailbox ?></td>
+			   <tr sid="<?= $user->user_id ?>" sname="<?= $user->mailbox ?>" class='<?= $user->active == 0 ? 'nonactive':''; ?>'>
+				   <td class="key"><?= $user->mailbox ?></td>
 				   <td class="val"><?= $user->username ?></td>
 			   </tr>
 			<?php endforeach; ?>

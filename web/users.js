@@ -7,25 +7,20 @@ $(function(){
 	// добавление строк
 	$('.else').live('click',function(){
 
-		name 		= $(this).attr('id');
-		email		= ( $('input[name="mailbox"]').size() == 1) ? $('input[name="mailbox"]').val() : 'mailbox@domain.ru';
-		open_tag 	= '<tr class="alias">';
-		mail_cell 	= '<td>'+
-					 '</td>';
-		alias_cell 	= '<td><input class="autocomp" type="text" name="' + name + '[]" value="" placeholder="введите почтовый адрес"></td>';
-		fwd_cell 	= '<td><input class="autocomp" type="text" name="' + name + '[]" value="" placeholder="введите почтовый адрес"></td>';
-		chkbox_cell = '<td><input type="checkbox" name="chk" checked></td>';
-		button_cell = '<td>'+
-							'<input type="hidden" name="' + name + '_st[]" value="1">' +
-							'<input type="hidden" name="' + name + '_id[]" value="0">' +
-							'<span class="delRow  web">&otimes;</span>' +
-					  '</td>';
-		close_tag 	= '</tr>';
+		name 		= $('div',this).attr('id');
+		type_tag	= (name == 'fwd') ? '1' : '0';
+//		email		= ( $('input[name="mailbox"]').size() == 1) ? $('input[name="mailbox"]').val() : 'mailbox@domain.ru';
+		new_tr  	= '<tr class="alias">' +
+					  '<td><input class="autocomp" type="text" name="fname[]" value="" placeholder="введите почтовый адрес"></td>'+
+					  '<td><input type="checkbox" name="chk" checked></td>'	+
+					  '<td>'												+
+							'<input type="hidden" name="stat[]" value="1">' +
+							'<input type="hidden" name="fid[]" value="0">'  +
+							'<input type="hidden" name="ftype[]" value="'	+ type_tag +'">'+
+							'<div class="delRow"></div>'					+
+					  '</td></tr>';
 
-		var tbl = $(this).parents('.atable').get(0);
-		tr 	= name == 'alias' ? open_tag + alias_cell + chkbox_cell + button_cell + close_tag :
-								open_tag + fwd_cell + chkbox_cell + button_cell + close_tag;
-		$(tbl).append( tr );
+		$(this).closest('.atable').append(new_tr);
 
 		$('.autocomp').autocomplete({ serviceUrl:'/users/searchdomain/',type:'post'});
 
@@ -40,11 +35,11 @@ $(function(){
 
 			$('.path').append(path);
 			$('.path .formtext').focus();
-			$(this).html('&dArr;');
+			$(this).toggleClass('ptr-hover');
 		}
 		else {
 			$('.path .formtext').remove();
-			$(this).html('&rArr;');
+			$(this).toggleClass('ptr-hover');
 		}
 		return false;
 	});
@@ -57,16 +52,31 @@ $(function(){
 			// Если новый пользователь
 			var mailbox = $(':text[name="login"]').val() + '@' + $('.domain option:selected').val();
 
-			if( mailbox != '@' ) {
+			if( mailbox != '@' ) { // при редактировании сюда не попадаем
 
-				$('.key:contains("' + mailbox + '")').each( function(){
-
-						if( $(this).text() == mailbox ) {
-							alert('Почтовый ящик '+ mailbox +' уже существует!');
-							$(':text[name="login"]').val('');
-						}
-				});
+				if( $('tr').filter('[sname="' + mailbox + '"]').length ) {
+					alert('Почтовый ящик '+ mailbox +' уже существует!');
+					$(':text[name="login"]').val('');
+					return false;
+				}
 			}
+
+			var arrVal 	= $(':text[name="mailbox"],:text[name="fname[]"]');
+
+			$($(arrVal).not(':hidden').get().reverse()).each(function(){
+
+					var name = this.val();
+
+					insertName = $(arrVal)
+									.filter( function(){ return $(this).val() == name} )
+									.length;
+
+					if( insertName !=1 ) {
+						alert('Запись "'+ $(this).val() +'" уже существует');
+						$(this).val('');
+						return false;
+					}
+			});
 
 			try_submit();
 			return false;
@@ -88,7 +98,6 @@ $(function(){
 			$(input_hide).val('0');
 		}
 	});
-
 
 
  })

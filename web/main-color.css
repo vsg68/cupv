@@ -43,9 +43,11 @@ body {
 .mainmenu a {
 	color: #ccc;
 }
+/*
 .active {
 	background-color: #0cc;
 }
+*/
 .label {
 	color: #222;
 }
@@ -63,13 +65,8 @@ body {
 	border:1px solid #ccc;
 }
 
-#lb, .formlabel, input {
+#lb, .formlabel, input, select {
 	color: #888;
-}
-.delRow {
-	color: red;
-	font-size: 20px;
-	float: none !important;
 }
 .aliasesplace {
 	background-color: #fff;
@@ -95,9 +92,21 @@ body {
 .fieldentry, .listbox {
 	background-color: #eee;
 }
+input[type='text'], input[type='password'], select {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	height:20px;
+	padding-left: 2px;
+	background-color: #fff;
+}
 input:-moz-placeholder {
 	color: #ddd;
 }
 input::-webkit-input-placeholder {
 	color: #ddd;
+}
+input[type='text']:disabled{
+	background-color: #f1f1f1;
 }

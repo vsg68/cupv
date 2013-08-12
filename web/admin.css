@@ -1,0 +1,42 @@
+#ed {
+	background-image: url('/domains.png');
+}
+.aliasesplace {
+/*
+	float: none !important;
+*/
+}
+.domain_box  {
+	height: 307px;
+	padding: 2px 2px 2px 0;
+	overflow-y: scroll;
+}
+.noedit{
+	cursor: default !important;
+}
+.alias input[type="text"]{
+	width: 120px !important;
+	height: 19px;
+	float:left;
+	padding: 0;
+	margin: 0;
+}
+select {
+	height: 21px;
+	width: 120px;
+	background-color: #fff;
+}
+
+.key  {
+/*
+	min-width: 140px !important;
+*/
+}
+.up{
+	font-size: 20px;
+	color: #ddd;
+	cursor: pointer;
+	float:left;
+	width: 20px;
+
+}

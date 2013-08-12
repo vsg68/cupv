@@ -6,12 +6,14 @@ $(function(){
 
 		$('.hidden_filter').removeClass('hidden_filter');
 
-		search_str = $(this).val();
+		var search_str = $(this).val();
 
 		if( search_str )
-			$('td.val:not(:contains("' + search_str + '"))', '#aliases_box')
-			.parent()
-			.addClass('hidden_filter');
+
+			$('td.val').filter(function(){
+								return $(this).children('div:contains("' + search_str + '")').length == 0; })
+				.closest('tr')
+				.addClass('hidden_filter');
 
 	});
 
@@ -20,19 +22,17 @@ $(function(){
 	// Добавление полей
 	$('.else').live('click',function(){
 
-		open_tag 	= '<tr class="alias">';
-		alias_cell 	= '<td><input class="autocomp" type="text" name="fwd[]" value="" placeholder="введите почтовый адрес"></td>';
-		chkbox_cell = '<td>'+
-						'<input type="hidden" name="fwd_st[]" value="1">' +
-						'<input type="hidden" name="fwd_id[]" value="0">' +
-						'<input type="checkbox" name="chk" checked>' +
-					  '</td>';
-		button_cell = '<td><span class="delRow  web">&otimes;</span>'+
-		close_tag 	= '</tr>';
+		new_tr 	= '<tr class="alias">' +
+				  '<td><input class="autocomp" type="text" name="fname[]" value="" placeholder="введите почтовый адрес"></td>'+
+				  '<td>'												+
+						'<input type="hidden" name="stat[]" value="1">' +
+						'<input type="hidden" name="fid[]" value="0">' 	+
+						'<input type="checkbox" name="chk" checked>'	+
+				  '</td>'												+
+				  '<td><div class="delRow"></div></td>'					+
+				  '</tr>';
 
-		var tbl = $(this).parents('.atable').get(0);
-
-		$(tbl).append( open_tag + alias_cell + chkbox_cell + button_cell + close_tag );
+		$(this).closest('.atable').append(new_tr);
 
 		$('.autocomp').autocomplete({ serviceUrl:'/users/searchdomain/',type:'post'});
 
@@ -46,23 +46,47 @@ $(function(){
 			event.preventDefault();
 
 			// Проверка на существование такого алиаса
-			var alias = $(':text[name="newalias"]').val();
 
-			$('.key:contains("' + alias +'")').each( function(){
-					if( $(this).text() == alias ) {
-						alert('Алиас '+ alias +' уже существует!');
-						$(':text[name="newalias"]').val('');
-					}
+			var name 	= $(':text[name="alias_name"]').val();
+			var id	 	= $(':hidden[name="alias_uid"]').val();
+
+			existNameId = $('tr')
+								.filter('[sid="' + id + '"]')
+								.filter('[sname="' + name + '"]')
+								.length;
+
+			existName = $('tr')
+								.filter('[sname="' + name + '"]')
+								.length;
+
+			if( ! existNameId && existName ) {
+					alert('Запись '+ name +' уже существует!');
+					$(':text[name="alias_name"]').val('');
+					return false;
+			}
+
+			var arrVal 	= $(':text[name="alias_name"],:text[name="fname[]"]');
+
+			$($(arrVal).not(':hidden').get().reverse()).each(function(){
+
+				var name = $(this).val();
+
+				insertName = $(':text[name="fname[]"]')
+								.filter( function(){ return $(this).val() == name} )
+								.length;
+
+				if( insertName != 1) {
+					alert('Запись '+ name +' уже существует!');
+					$(this).val('');
+					return false;
+				}
 			});
 
 			try_submit();
 			return false;
 	});
 
-	//~ //Новый alias
-	//~ $('#new').click(function(){
-		//~ $.get('/aliases/new/',function(response) { $('#ed').empty().html(response); });
-	//~ });
+
 
 
 
