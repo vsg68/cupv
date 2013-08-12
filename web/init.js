@@ -8,7 +8,7 @@ $(function(){
 
 // onmouseover
 	//$('#new').hover( function(){ $(this).addClass('hover_new')}, function(){ $(this).removeClass('hover_new')});
-	$('#home').click( function(){ window.location = 'http://cup/'});
+	$('#home').click( function(){ window.location = '/'});
 
 	$(".mainmenu ul li").hover(function(){$(this).addClass("hover_item");}, function(){$(this).removeClass("hover_item")});
 	$(".mainmenu ul li a").click(function(){
