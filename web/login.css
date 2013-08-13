@@ -39,7 +39,7 @@ input[type='text'], input[type='password'] {
 	cursor:pointer;
 	margin:10px;
 }
-.logo {
+.logomin {
 	margin: 30px 50px 10px 50px;
 
 /*
@@ -65,7 +65,7 @@ input[type='text'], input[type='password'] {
 	color: #ddd;
 	text-decoration:none;
 }
-.theme:hover, #logout :hover{
+.hover, #logout :hover{
 	color: #FFA32D !important;
 	background-position: 0 -98px !important;
 }

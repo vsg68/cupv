@@ -3,7 +3,7 @@
 
 <?php foreach($pages as $page): ?>
 	<div class='theme'>
-		<div class='logo' title='<?= $page->note ?>'
+		<div class='logomin' title='<?= $page->note ?>'
 		<?php
 			$filename = $_SERVER['DOCUMENT_ROOT'].'/'.strtolower($page->name).'.png';
 			//echo $filename;
