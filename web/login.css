@@ -40,8 +40,11 @@ input[type='text'], input[type='password'] {
 	margin:10px;
 }
 .logo {
-	margin: 45px 20px 0px 20px;
+	margin: 30px 50px 10px 50px;
+
+/*
 	width: 130px;
+*/
 	height: 98px;
 }
 .logo img {
@@ -52,6 +55,7 @@ input[type='text'], input[type='password'] {
 	height: 200px;
 	margin:20px;
 	display: inline-block;
+	cursor: pointer;
 }
 .name {
 	text-align: center;
@@ -61,7 +65,7 @@ input[type='text'], input[type='password'] {
 	color: #ddd;
 	text-decoration:none;
 }
-.hover, #logout :hover{
+.theme:hover, #logout :hover{
 	color: #FFA32D !important;
 	background-position: 0 -98px !important;
 }
