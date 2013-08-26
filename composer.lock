@@ -3,12 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-<<<<<<< HEAD
-    "hash": "851a6f86ec7aa96b95f9b5889b66eba7",
-    "packages": [
-        {
-=======
-    "hash": "a1850e178ce21ca0a8ac2c3893ce37ff",
+    "hash": "ea3e549d26023744a8356dd7fd015c85",
     "packages": [
         {
             "name": "phpixie/auth",
@@ -16,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-Auth.git",
-                "reference": "b10d7a307a534f489da55145aeffa0c663ab5448"
+                "reference": "c05a0b128bd1529b6cacf61e0bbbc3010417921c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-Auth/zipball/b10d7a307a534f489da55145aeffa0c663ab5448",
-                "reference": "b10d7a307a534f489da55145aeffa0c663ab5448",
+                "url": "https://api.github.com/repos/dracony/PHPixie-Auth/zipball/c05a0b128bd1529b6cacf61e0bbbc3010417921c",
+                "reference": "c05a0b128bd1529b6cacf61e0bbbc3010417921c",
                 "shasum": ""
             },
             "require": {
@@ -56,21 +51,20 @@
                 "authorization",
                 "facebook"
             ],
-            "time": "2013-07-11 15:15:25"
+            "time": "2013-07-14 18:13:15"
         },
         {
->>>>>>> refs/remotes/origin/master
             "name": "phpixie/core",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-Core.git",
-                "reference": "54a53b6b7c932bc7e0131a52c1aa8392e9d19bc6"
+                "reference": "11092a22456ecb30f488fc246def5a16ffa47abf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-Core/zipball/54a53b6b7c932bc7e0131a52c1aa8392e9d19bc6",
-                "reference": "54a53b6b7c932bc7e0131a52c1aa8392e9d19bc6",
+                "url": "https://api.github.com/repos/dracony/PHPixie-Core/zipball/11092a22456ecb30f488fc246def5a16ffa47abf",
+                "reference": "11092a22456ecb30f488fc246def5a16ffa47abf",
                 "shasum": ""
             },
             "require": {
@@ -103,7 +97,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-06-23 21:03:10"
+            "time": "2013-07-17 12:57:49"
         },
         {
             "name": "phpixie/db",
@@ -111,12 +105,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-DB.git",
-                "reference": "4a3706193b0064a18d5c3115e6f1831c9f14de2e"
+                "reference": "56f77deeb0c606193853cdc391827a98550aba48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-DB/zipball/4a3706193b0064a18d5c3115e6f1831c9f14de2e",
-                "reference": "4a3706193b0064a18d5c3115e6f1831c9f14de2e",
+                "url": "https://api.github.com/repos/dracony/PHPixie-DB/zipball/56f77deeb0c606193853cdc391827a98550aba48",
+                "reference": "56f77deeb0c606193853cdc391827a98550aba48",
                 "shasum": ""
             },
             "require": {
@@ -152,7 +146,7 @@
                 "postgresql",
                 "sqlite"
             ],
-            "time": "2013-06-22 22:25:03"
+            "time": "2013-07-31 22:41:32"
         },
         {
             "name": "phpixie/orm",
@@ -160,12 +154,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-ORM.git",
-                "reference": "b081caf676e2af832c6856c44ec4695a10064d83"
+                "reference": "526ffdb542656a401ba92ce2e53b8859484a11b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-ORM/zipball/b081caf676e2af832c6856c44ec4695a10064d83",
-                "reference": "b081caf676e2af832c6856c44ec4695a10064d83",
+                "url": "https://api.github.com/repos/dracony/PHPixie-ORM/zipball/526ffdb542656a401ba92ce2e53b8859484a11b8",
+                "reference": "526ffdb542656a401ba92ce2e53b8859484a11b8",
                 "shasum": ""
             },
             "require": {
@@ -199,9 +193,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2013-06-04 14:52:37"
-<<<<<<< HEAD
-=======
+            "time": "2013-08-03 17:01:37"
         },
         {
             "name": "phpixie/validate",
@@ -209,12 +201,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-validate.git",
-                "reference": "616f17ff2cf5a238276c859a212c94676cce5628"
+                "reference": "72a5b0d68b1b471b3087361eb1243df201323a0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-validate/zipball/616f17ff2cf5a238276c859a212c94676cce5628",
-                "reference": "616f17ff2cf5a238276c859a212c94676cce5628",
+                "url": "https://api.github.com/repos/dracony/PHPixie-validate/zipball/72a5b0d68b1b471b3087361eb1243df201323a0d",
+                "reference": "72a5b0d68b1b471b3087361eb1243df201323a0d",
                 "shasum": ""
             },
             "require": {
@@ -247,8 +239,7 @@
             "keywords": [
                 "validate"
             ],
-            "time": "2013-05-02 21:27:24"
->>>>>>> refs/remotes/origin/master
+            "time": "2013-07-31 19:47:56"
         }
     ],
     "packages-dev": [
@@ -261,13 +252,9 @@
     "stability-flags": {
         "phpixie/core": 20,
         "phpixie/db": 20,
-<<<<<<< HEAD
-        "phpixie/orm": 20
-=======
         "phpixie/orm": 20,
         "phpixie/auth": 20,
         "phpixie/validate": 20
->>>>>>> refs/remotes/origin/master
     },
     "platform": [
 

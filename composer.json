@@ -1,13 +1,5 @@
 {
 "require": {
-<<<<<<< HEAD
-	"phpixie/core": "2.*@dev",
-	"phpixie/db": "2.*@dev",
-	"phpixie/orm": "2.*@dev",
-	"phpixie/auth": "2.*@dev"
-    }	
-}
-=======
         "phpixie/core": "2.*@dev",
         "phpixie/db": "2.*@dev",
         "phpixie/orm": "2.*@dev",
@@ -15,4 +7,3 @@
         "phpixie/validate":"2.*@dev"
     }   
 }
->>>>>>> refs/remotes/origin/master

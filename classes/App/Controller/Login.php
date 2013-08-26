@@ -48,7 +48,7 @@ class Login extends \App\Page {
             $login 		= $this->request->post('username');
             $password 	= $this->request->post('passwd');
 
-            $this->auth->provider('Password')->login($login, $password);
+            $this->auth->provider('password')->login($login, $password);
         }
         return $this->redirect('/');
     }
