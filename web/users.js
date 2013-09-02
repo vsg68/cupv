@@ -65,7 +65,7 @@ $(function(){
 
 			$($(arrVal).not(':hidden').get().reverse()).each(function(){
 
-					var name = this.val();
+					var name = $(this).val();
 
 					insertName = $(arrVal)
 									.filter( function(){ return $(this).val() == name} )
