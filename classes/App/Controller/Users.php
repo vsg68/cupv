@@ -142,7 +142,6 @@ class Users extends \App\Page {
 									->where('user_id',$params['user_id'])
 									->execute();
 				}
-
 				// Обработка алиасов  и форварда
 				foreach ($params['fname'] as $key=>$fname ) {
 
