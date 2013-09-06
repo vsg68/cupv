@@ -82,34 +82,6 @@ $(function(){
 
 			event.preventDefault();
 
-			//~ var is_ok  = true;
-			//~ var domain_name = $('input[name="domain_name"]').val();
-			//~ var aliasObj = {};
-//~
-			//~ // Заполняем массив значениями полей
-			//~ var domainArr = $('tr:not(.noedit) .key').map(function(){ return $(this).text()	});
-			//~ var valuesArr = $(':text[name="domain_name"],:text[name="fname[]"]').map(function(){ return $(this).val() });
-			//~ // Готовим ассоциативный массив [alias]=>domain
-			//~ $('tr.noedit').each(function(){
-							//~ key = $(this).children('.key').text();
-							//~ val = $(this).children('.val').text();
-							//~ aliasObj[key] = val;
-			//~ });
-//~
-//~
-			//~ // проверка на вхождение в РЕВЕРСИВНЫЙ массив интересующих значений
-			//~ $($(':text[name="domain_name"],:text[name="fname[]"]').not(':hidden').get().reverse()).each(function(){
-//~
-							//~ var domain  = $(this).val();
-							//~ lenDomain = $.grep( domainArr, function(val){ return val == domain; }).length;
-							//~ lenVal 	  = $.grep( valuesArr, function(val){ return val == domain; }).length;
-//~
-							//~ if( lenDomain != 0 || lenVal != 1 || ( aliasObj[domain] != undefined && aliasObj[domain] != domain_name)  ) {
-									//~ alert('Домен "'+ $(this).val() +'" уже существует');
-									//~ $(this).val('');
-									//~ return false;
-							//~ }
-			//~ });
 			var name 	= $(':text[name="domain_name"]').val();
 			var id	 	= $(':hidden[name="domain_id"]').val();
 

@@ -71,7 +71,7 @@ body {
 .menu_item {
 	margin: 5px;
 }
-#new, #home {
+#new, #home, #del {
 	background: url(/new.png) -24px -48px;
 /*
 	background: url(/document-new.png) -24px -48px;
@@ -85,7 +85,10 @@ body {
 #home {
 	background: url(/home.png) -24px -48px;
 }
-#home:hover, #new:hover {
+#del {
+	background: url(/del.png) -24px -48px;
+}
+#home:hover, #new:hover, #del:hover {
 	background-position: 0 -24px !important;
 }
 .label {

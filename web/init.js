@@ -127,6 +127,14 @@ $(function(){
 					$.get('/'+ ctrl +'/new/', function(response) {$('#ed').empty().html(response);});
 	});
 
+	$('#del').click(function(){
+
+					if( sid = $('.selected_key').attr('sid') ) {
+						if( confirm('Уверенны, что надо удалить зону?') )
+							$.post('/'+ ctrl +'/del/',{id: sid},function() {window.location = '/' + ctrl});
+					}
+	});
+
 	$('.mkpwd').live('click', function(){
 
 			$(this).siblings(':text').val(mkpasswd());
@@ -168,13 +176,9 @@ function try_submit() {
 
 	$.post(	'/'+ ctrl +'/add/', params , function(response) {
 
-						//if( ctrl == 'domains' || ctrl == 'admin' || ctrl == 'roles' || ctrl == 'auth' )
-							tmpl = /^\d+$/;
-						//else
-						//	tmpl = /^[\w\.]+@(\w+\.){1,}\w+$/;
+						tmpl = /^\d+$/;
 
 						if( tmpl.test(response) )
-							//window.location = '/'+ ctrl +'/view/?name=' + response;
 							window.location = '/'+ ctrl +'/view/' + response;
 						else
 							$('#ed').empty().html(response);
