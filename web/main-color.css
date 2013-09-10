@@ -55,7 +55,7 @@ body {
 	color: red;
 }
 .badentry {
-	background-color: pink;
+	background-color: pink !important;
 }
 .atable th{
 	border:1px solid #ccc;
