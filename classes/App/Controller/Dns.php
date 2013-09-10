@@ -108,8 +108,7 @@ class Dns extends \App\Page {
         if ($this->request->method == 'POST') {
 
 			$params = $this->request->post();
-print_r($params);
-exit;
+
 			if ( ! isset($params['domain_id']) ) {
 				// новая зона
 				$this->pixie->db->query('insert','dns')
@@ -120,6 +119,12 @@ exit;
 
 				$params['domain_id'] = $this->pixie->db->insert_id('dns');
 
+				//for($i=0; $i < count($params['fname']); $i++)
+				foreach( $params['fname'] as $fname)
+				{
+					$params['stat'][] = 1;
+					$params['fid'][] = 0;
+				}
 			}
 
 			// Обработка записей
@@ -131,7 +136,18 @@ exit;
 								'ttl'		=> $params['ttl'],
 								'domain_id' => $params['domain_id']
 						);
+				// добавляем приоритет (для записи MX)
+				if(  $params['ftype'][$key] == 'MX' ) {
 
+					if( preg_match('/((?:\w+\.)+\w+)\s*\(\s*(\d+)\s*\)/', $params['faddr'][$key], $matches) ) {
+
+						$entry['content'] = $matches[1];
+						$entry['prio'] 	  =  $matches[2];
+					}
+					else
+						$entry['prio'] 	  =  '10';
+				}
+//print_r($entry); continue;
 
 				if( $params['stat'][$key] == 2 ) {
 				// Удаление
@@ -156,6 +172,7 @@ exit;
 									->execute();
 				}
 			}
+//exit;
 			// Ошибки имели место
 			if( isset( $this->logmsg ) ) {
 

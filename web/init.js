@@ -234,6 +234,9 @@ function checkfield(obj) {
 		case 'role_note':
 			// не проверяем
 			return false
+		case 'contact':
+			reg = new RegExp(mail_tmpl,'i')
+			break
 		default:
 			if( ! value )
 				return true

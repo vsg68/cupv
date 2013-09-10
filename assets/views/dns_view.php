@@ -13,7 +13,7 @@
 		<h4><?= $record->name ?></h4>
 		<div class='fieldentry'>
 			<span class='formlabel' title='admin E-MAIL'>Контакт:</span>
-			<input class='formtext' type='text' name='content' value='<?php $c = explode(' ',$record->content); echo preg_replace('/\./','@',$c[1],1); ?>'  />
+			<input class='formtext' type='text' name='contact' value='<?php $c = explode(' ',$record->content); echo preg_replace('/\./','@',$c[1],1); ?>'  />
 	   </div>
 	    <div class='fieldentry'>
 			<span class='formlabel' title='время обновления записи'>TTL:</span>
@@ -33,7 +33,7 @@
 				<?php endforeach; ?>
 				</select>
 		   </td>
-		   <td><input type='text' name='faddr[]' value='<?= $record->content ?>'></td>
+		   <td><input type='text' name='faddr[]' value='<?= $record->prio ? $record->content. ' ('.$record->prio. ')' : $record->content ?>'></td>
 		   <td>
 				<input type='hidden' name='fid[]' value='<?= $record->id ?>'>
 				<input type='hidden' name='stat[]' value='1'>

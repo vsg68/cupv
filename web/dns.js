@@ -13,7 +13,7 @@ $(function(){
 							'<option value="CNAME">CNAME'				+
 						'</select>'										+
 					  '</td>'											+
-					  '<td><input type="text" name="faddr[]" placeholder="IP адрес"></td>'+
+					  '<td><input type="text" name="faddr[]" placeholder="IP адрес (приоритет)"></td>'+
 					'<td>'												+
 						'<input type="hidden" name="stat[]" value="1">' +
 						'<input type="hidden" name="fid[]" value="0">' 	+
@@ -33,25 +33,20 @@ $(function(){
 			faddr = $(':text[name="faddr[]"]').val() + ' ' + ($(':text[name="contact"]').val()).replace('@','.');
 			$(':hidden[name="faddr[]"]').val(faddr);
 
-			// пустые поля fname[] для записей NS должны получать значение zname
-			$(':hidden[name="fname[]"]').val( $(':text[name="zname"]').val() );
+			// пустые поля fname[] для записей NS должны получать значение zname для новой записи
+			if( $(':text[name="zname"]').val() )
+				$(':hidden[name="fname[]"]').val( $(':text[name="zname"]').val() );
+
 
 			// проверка на совпадающие имена
 			var _name = $(':text[name="zname"]').val();
-			var _id   = $(':hidden[name="domain_id"]').val();
-
-			existNameId = $('tr')
-							.filter('[sid="' + _id + '"]')
-							.filter('[sname="' + _name + '"]')
-							.length;
 
 			existName = $('tr')
 							.filter('[sname="' + _name + '"]')
 							.length;
 
-			if( ! existNameId && existName )
-				$('input[name="auth_login"]').val('');
-
+			if( existName )
+				$('input[name="zname"]').val('');
 
 			try_submit();
 			return false;
