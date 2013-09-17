@@ -1,0 +1,10 @@
+#usrs {
+	width: 241px;
+}
+#ed {
+	width: 582px;
+}
+.aliases_box {
+	overflow: auto !important;
+	height: 734px;
+}
