@@ -1,0 +1,39 @@
+#usrs {
+	width: 241px;
+}
+#ed {
+	width: 582px;
+}
+.headwin {
+	background-color: #eee;
+	font-weight: bold;
+	height: 24px;
+	border-bottom: 1px solid #ddd;
+	margin: 0 0 10px 0;
+	line-height: 22px;
+}
+.aliases_box {
+	overflow: auto !important;
+	padding: 0;
+	height: 740px;
+}
+ul.dynatree-container {
+	border: none !important;
+}
+ul.dynatree-container li {
+	background-image: none !important;
+	text-align: left;
+}
+
+#del_min, #new_min {
+	float: right;
+	height: 16px;
+	width: 16px;
+	margin: 3px;
+	cursor: pointer;
+	background: url(/ui-icons_454545_256x240.png) -64px -128px no-repeat;
+	border: 1px solid #ccc;
+ }
+#new_min {
+	background: url(/ui-icons_454545_256x240.png) -32px -128px no-repeat;
+}

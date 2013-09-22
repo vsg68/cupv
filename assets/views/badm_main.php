@@ -4,23 +4,22 @@
 	<div id='del' title='удалить запись'></div>
 </div>
 <div id='usrs'>
-<h4>ggg</h4>
+
 	<div class='aliasesplace'>
+	<div class='headwin'> blablabla
+		<div id='new_min' title='добавить'></div>
+		<div id='del_min' title='удалить'></div>
+
+	</div>
 <!--
 		<div class='th'>domain</div>
 -->
-		<div class='aliases_box'>
-			<table>
-			<?php foreach( $domains as $domain ): ?>
-			   <tr sid="<?= $domain->id ?>" sname="<?= $domain->name ?>" >
-				   <td class="key"><?= $domain->name ?></td>
-			   </tr>
-			<?php endforeach; ?>
-			</table>
+		<div class='aliases_box' id='tree'>
+
 		</div>
 	</div>
 </div>
 <div id='ed'>
-	<?= $dns_block ?>
+	<?= $badm_block ?>
 </div>
 
