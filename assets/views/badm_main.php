@@ -6,7 +6,7 @@
 <div id='usrs'>
 
 	<div class='aliasesplace'>
-	<div class='headwin'> blablabla
+	<div class='headwin'>
 		<div id='new_min' title='добавить'></div>
 		<div id='del_min' title='удалить'></div>
 

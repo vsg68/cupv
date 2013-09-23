@@ -60,10 +60,11 @@ $(function(){
 
 	$('#tree').dynatree({
 		initAjax: {
-			url: "/bAdm/getTree"
+			url: "/badm/getTree"
 		},
 		onActivate: function(node) {
-			//alert(node.data.title);
+			//alert(node.data.key);
+			alert('parent:' + node.getParent().data.key + '\n self: ' + node.data.key);
 		},
 		onRender: function(node, nodeSpan) {
 
@@ -73,17 +74,14 @@ $(function(){
 				//alert(nodeSpan.isFolder);
 			}
 		},
+
 		dnd: {
 			  onDragStart: function(node) {
-				/** This function MUST be defined to enable dragging for the tree.
-				 *  Return false to cancel dragging of node.
-				 */
-				logMsg("tree.onDragStart(%o)", node);
-				return true;
+					return true;
 			  },
 			  onDragStop: function(node) {
-				// This function is optional.
-				logMsg("tree.onDragStop(%o)", node);
+//					alert(node.getParent().data.key);
+
 			  },
 			  autoExpandMS: 1000,
 			  preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
@@ -99,10 +97,6 @@ $(function(){
 				return true;
 			  },
 			  onDragOver: function(node, sourceNode, hitMode) {
-				/** Return false to disallow dropping this node.
-				 *
-				 */
-				logMsg("tree.onDragOver(%o, %o, %o)", node, sourceNode, hitMode);
 				// Prevent dropping a parent below it's own child
 				if(node.isDescendantOf(sourceNode)){
 				  return false;
@@ -116,22 +110,31 @@ $(function(){
 				/** This function MUST be defined to enable dropping of items on
 				 * the tree.
 				 */
-				logMsg("tree.onDrop(%o, %o, %s)", node, sourceNode, hitMode);
 				sourceNode.move(node, hitMode);
 				// expand the drop target
 		//        sourceNode.expand(true);
 			  },
-			  onDragLeave: function(node, sourceNode) {
-				/** Always called if onDragEnter was called.
-				 */
-				logMsg("tree.onDragLeave(%o, %o)", node, sourceNode);
-			  }
 		}
 	});
 
 	$('#new_min').click(function(){
 
-		$("#tree").dynatree("getRoot").addChild({"title":"new-node"});
+		$("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
+
+		var node = $("#tree").dynatree("getTree").getNodeByKey('00');
+
+		$.post('/badm/addNode','{"id":"0"}', function(responce){
+
+						tmpl = /^\d+$/;
+
+						if( tmpl.test(response) )
+							node.data.key = response;
+						else {
+							node.remove();
+							alert('при сохранении произошла ошибка');
+						}
+
+			})
 	});
 
 
@@ -141,4 +144,9 @@ $(function(){
 	});
 
 });
+
+function saveChange() {
+
+	//$.post('',)
+}
 

@@ -14,9 +14,9 @@ class ItBase extends Page {
 				$chidls = $this->RecursiveTree($rs,$row->id);
 
 				//$prn_child = ($chidls) ? ', "isFolder":"true", "key":"folder2", "children": ['.$chidls.']' : '';
-				$prn_child = ($chidls) ? ', "key":"folder2", "children": ['.$chidls.']' : '';
+				$prn_child = ($chidls) ? ', "children": ['.$chidls.']' : '';
 
-				$out .= '{"title":"'.$row->name. '"' . $prn_child .'},';
+				$out .= '{"title":"'.$row->name. '", "key":"'.$row->id.'"' . $prn_child .'},';
 		}
 
 		return $out;

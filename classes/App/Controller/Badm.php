@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-class BAdm extends \App\ItBase {
+class Badm extends \App\ItBase {
 
 
     public function action_view() {
