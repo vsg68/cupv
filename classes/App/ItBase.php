@@ -38,8 +38,7 @@ class ItBase extends Page {
 		}
 
 		$tree_struct = str_replace('},]', '}]', '['. $this->RecursiveTree($rs,0) .']') ;
-//$tree_struct = '[{"title": "Item3333 1"},{"title": "Sub-item 2.1"},{"title": "Sub-item 2.2"}]';
-//$tree_struct = '[{"title": "aaaaa"},{"title": "bbbb", "isFolder":"true", "key":"folder2", "children": [{"title":"dddd", "isFolder":"true", "key":"folder2", "children": [{"title":"ffff"},{"title":"eeee"}]},{"title":"cccc"}]}]';
+
 		$this->response->body =  $tree_struct;
 
 	}

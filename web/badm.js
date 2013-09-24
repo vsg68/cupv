@@ -53,10 +53,7 @@ $(function(){
 
 		});
 
-	$('.mkpwd').live('click', function(){
 
-			$(this).siblings(':text').val(mkpasswd());
-		})
 
 	$('#tree').dynatree({
 		initAjax: {
@@ -64,15 +61,27 @@ $(function(){
 		},
 		onActivate: function(node) {
 			//alert(node.data.key);
-			alert('parent:' + node.getParent().data.key + '\n self: ' + node.data.key);
+			//alert('parent:' + node.getParent().data.key + '\n self: ' + node.data.key);
 		},
 		onRender: function(node, nodeSpan) {
 
 			if( node.hasChildren() === true ) {
 
-				$(nodeSpan).addClass('dynatree-ico-cf');//isFolder = true;
-				//alert(nodeSpan.isFolder);
+				$(nodeSpan).addClass('dynatree-ico-cf');
 			}
+		},
+		onClick: function(node, event) {
+			  if( event.shiftKey ){
+				editNode(node);
+				return false;
+			  }
+		},
+		onKeydown: function(node, event) {
+			  if( event.which == 113) {
+			  // [F2]
+				editNode(node);
+				return false;
+			  }
 		},
 
 		dnd: {
@@ -81,21 +90,12 @@ $(function(){
 			  },
 			  onDragStop: function(node) {
 //					alert(node.getParent().data.key);
+					//alert(node.data.title);
 
 			  },
 			  autoExpandMS: 1000,
 			  preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-			  onDragEnter: function(node, sourceNode) {
-				/** sourceNode may be null for non-dynatree droppables.
-				 *  Return false to disallow dropping on node. In this case
-				 *  onDragOver and onDragLeave are not called.
-				 *  Return 'over', 'before, or 'after' to force a hitMode.
-				 *  Return ['before', 'after'] to restrict available hitModes.
-				 *  Any other return value will calc the hitMode from the cursor position.
-				 */
-				logMsg("tree.onDragEnter(%o, %o)", node, sourceNode);
-				return true;
-			  },
+			  onDragEnter: function(node, sourceNode) { return true; },
 			  onDragOver: function(node, sourceNode, hitMode) {
 				// Prevent dropping a parent below it's own child
 				if(node.isDescendantOf(sourceNode)){
@@ -113,17 +113,23 @@ $(function(){
 				sourceNode.move(node, hitMode);
 				// expand the drop target
 		//        sourceNode.expand(true);
+//				alert(node.data.title);
 			  },
 		}
 	});
 
-	$('#new_min').click(function(){
+
+	$('#new').unbind("click");
+
+	$('#new span').click(function(){
+
+		tmpl_id = $(this).attr('id');
 
 		$("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
 
 		var node = $("#tree").dynatree("getTree").getNodeByKey('00');
 
-		$.post('/badm/addNode','{"id":"0"}', function(responce){
+		$.post('/badm/add',{id:0, name:node.data.title, pid:0, tmpl_id:tmpl_id }, function(response){
 
 						tmpl = /^\d+$/;
 
@@ -138,15 +144,87 @@ $(function(){
 	});
 
 
-	$('#del_min').click(function(){
+	$('#del').click(function(){
 
-		$("#tree").dynatree("getActiveNode").remove();
+		id = $("#tree").dynatree("getActiveNode").data.key;
+		if( id ) {
+			alert(id);
+			//$("#tree").dynatree("getActiveNode").remove();
+
+			$.post('/badm/add','{"id":"'+ id +'","stat":"2"}');
+		}
 	});
+
+	// Menu
+	$('#ddmenu li').hover(
+		function () {
+			 clearTimeout($.data(this,'timer'));
+			 $('ul',this).stop(true,true).slideDown(200);
+		},
+		function () {
+			$.data(this,'timer', setTimeout($.proxy(function() {
+			  $('ul',this).stop(true,true).slideUp(200);
+			}, this), 100));
+		});
 
 });
 
-function saveChange() {
+function editNode(node){
 
-	//$.post('',)
+	  var prevTitle = node.data.title,
+		  tree = node.tree,
+		  title = node.data.title;
+
+	  // Disable dynatree mouse- and key handling
+	  tree.$widget.unbind();
+
+	  // Replace node with <input>
+	  $(".dynatree-title", node.span).html("<input id='editNode' value='" + prevTitle + "'>");
+
+	  // Focus <input> and bind keyboard handler
+	  $("input#editNode")
+			.focus()
+			.keydown(function(event){
+			  switch( event.which ) {
+			  case 27: // [esc]
+					// discard changes on [esc]
+					$("input#editNode").val(prevTitle);
+					$(this).blur();
+					break;
+			  case 13: // [enter]
+					// simulate blur to accept new value
+					$(this).blur();
+					break;
+			  }
+		}).blur(function(event){
+			  // Accept new value, when user leaves <input>
+			  title = $("input#editNode").val();
+			  node.setTitle(title);
+			  // Re-enable mouse and keyboard handlling
+			  tree.$widget.bind();
+			  node.focus();
+
+    });
+alert(title);
+	// если изменения произошли - шлем на сервер
+	if(prevTitle != title) {
+		sendChange(node)
+	}
 }
 
+function sendChange(node) {
+
+	  tmpl = /^_/;
+	  pid = node.getParent().data.key;
+
+	  if( tmpl.test(pid) )
+			pid = 0;
+
+	  $.post('/badm/add',{
+						  id: node.data.key,
+						  name: node.data.title,
+						  pid: pid
+						  }
+	  );
+
+}

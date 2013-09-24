@@ -25,15 +25,78 @@ ul.dynatree-container li {
 	text-align: left;
 }
 
-#del_min, #new_min {
-	float: right;
-	height: 16px;
-	width: 16px;
-	margin: 3px;
-	cursor: pointer;
-	background: url(/ui-icons_454545_256x240.png) -64px -128px no-repeat;
-	border: 1px solid #ccc;
- }
-#new_min {
-	background: url(/ui-icons_454545_256x240.png) -32px -128px no-repeat;
+#editNode {
+	border: 1px solid #ddd;
+	height: 15px;
+	width: 80px;
+	margin: 0 -2px;
 }
+
+
+/**********   Menu  ***********/
+#ddmenu {
+	display: block;
+	width: 110px;
+	height: 100%;
+	cursor: pointer;
+	outline: none;
+	margin:0;
+	padding:0;
+	float: right;
+}
+
+#ddmenu li {
+	display: block;
+	position: relative;
+	float: left;
+	text-shadow: 1px 1px 0 #fff;
+}
+
+#ddmenu li span {
+	display: block;
+	float: left;
+	padding: 0 12px;
+	text-decoration: none;
+	color: #888;
+	-webkit-transition: all 0.2s linear;
+	-moz-transition: all 0.2s linear;
+	-o-transition: all 0.2s linear;
+	transition: all 0.2s linear;
+}
+
+#ddmenu ul {
+	position: absolute;
+	top: 30px;
+	width: 100px;
+	background: #eee;
+	display: none;
+	margin: 0;
+	padding: 7px 0;
+	list-style: none;
+	border-radius: 3px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+#ddmenu ul li {
+	display: block;
+	width: 100%;
+	font-size: 1.3em;
+	text-shadow: 1px 1px 0 #fff;
+}
+
+#ddmenu ul li span {
+	display: block;
+	width: 100%;
+	padding: 4px 6px;
+	line-height: 1.3em;
+	cursor: pointer;
+	-webkit-transition: all 0.2s linear;
+	-moz-transition: all 0.2s linear;
+	-o-transition: all 0.2s linear;
+	transition: all 0.2s linear;
+}
+#ddmenu ul li span:hover {
+	color: #FF7B00;
+}
+
