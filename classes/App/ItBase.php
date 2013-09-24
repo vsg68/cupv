@@ -29,6 +29,7 @@ class ItBase extends Page {
 		$tree = $this->pixie->db->query('select','itbase')
 								->table('names')
 								->order_by('pid')
+								->order_by('name')
 								->execute()
 								->as_array();
 
