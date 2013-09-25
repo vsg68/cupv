@@ -29,44 +29,44 @@ class Badm extends \App\ItBase {
         $this->response->body = $this->view->render();
     }
 
-	public function action_new() {
+	//~ public function action_new() {
+//~
+		//~ if( $this->permissions == $this::NONE_LEVEL ) {
+			//~ $this->noperm();
+			//~ return false;
+		//~ }
+//~
+        //~ $view = $this->pixie->view('bserver_new');
+//~
+		//~ $view->log = isset($this->logmsg) ?  $this->logmsg : '';
+//~
+        //~ $this->response->body = $view->render();
+    //~ }
 
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-        $view = $this->pixie->view('bserver_new');
-
-		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
-
-        $this->response->body = $view->render();
-    }
-
-	public function action_del() {
-
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-		if ($this->request->method != 'POST')
-			return false;
-
-        // удаляем зону
-
-		 $params = $this->request->post();
-
-		 $this->pixie->db->query('delete','itbase')
-						 ->table('names')
-						 ->where('id',$params['id'])
-						 ->execute();
-
-		 $this->pixie->db->query('delete','itbase')
-						 ->table('records')
-						 ->where('domain_id',$params['id'])
-						 ->execute();
-    }
+	//~ public function action_del() {
+//~
+		//~ if( $this->permissions == $this::NONE_LEVEL ) {
+			//~ $this->noperm();
+			//~ return false;
+		//~ }
+//~
+		//~ if ($this->request->method != 'POST')
+			//~ return false;
+//~
+        //~ // удаляем зону
+//~
+		 //~ $params = $this->request->post();
+//~
+		 //~ $this->pixie->db->query('delete','itbase')
+						 //~ ->table('names')
+						 //~ ->where('id',$params['id'])
+						 //~ ->execute();
+//~
+		 //~ $this->pixie->db->query('delete','itbase')
+						 //~ ->table('records')
+						 //~ ->where('domain_id',$params['id'])
+						 //~ ->execute();
+    //~ }
 
 	public function action_single() {
 
@@ -128,7 +128,8 @@ class Badm extends \App\ItBase {
 			// Удаляем запись
 				$this->pixie->db->query('delete','itbase')
 								->table('names')
-								->where('pid', $params['id'])
+								->where('id', $params['id'])
+								->where('or',array('pid', $params['id']))
 								->execute();
 
 				//~ $this->pixie->db->query('delete','itbase')

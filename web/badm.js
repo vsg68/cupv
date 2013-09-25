@@ -54,6 +54,7 @@ $(function(){
 		});
 
 
+	var oldPid;
 
 	$('#tree').dynatree({
 		initAjax: {
@@ -71,26 +72,28 @@ $(function(){
 			}
 		},
 		onClick: function(node, event) {
-			  if( event.shiftKey ){
+			if( event.shiftKey ){
 				editNode(node);
 				return false;
-			  }
+			}
 		},
 		onKeydown: function(node, event) {
-			  if( event.which == 113) {
-			  // [F2]
+			// [F2]
+			if( event.which == 113) {
 				editNode(node);
 				return false;
-			  }
+			}
 		},
 
 		dnd: {
 			  onDragStart: function(node) {
+					oldPid = node.getParent().data.key;
 					return true;
 			  },
 			  onDragStop: function(node) {
-//					alert(node.getParent().data.key);
-					//alert(node.data.title);
+					if( oldPid != node.getParent().data.key) {
+						sendChange(node);
+					}
 
 			  },
 			  autoExpandMS: 1000,
@@ -139,19 +142,19 @@ $(function(){
 							node.remove();
 							alert('при сохранении произошла ошибка');
 						}
-
-			})
+		})
 	});
 
 
 	$('#del').click(function(){
 
-		id = $("#tree").dynatree("getActiveNode").data.key;
-		if( id ) {
-			alert(id);
-			//$("#tree").dynatree("getActiveNode").remove();
+		var node = $("#tree").dynatree("getActiveNode");
+		id = node.data.key;
 
-			$.post('/badm/add','{"id":"'+ id +'","stat":"2"}');
+		if( id && confirm('Удалятся так же все дочерние элементы.\n Удаляем?')) {
+			//$("#tree").dynatree("getActiveNode").remove();
+			$.post('/badm/add',{id: id,stat:2,name:'',pid:''});
+			node.remove();
 		}
 	});
 
@@ -172,8 +175,7 @@ $(function(){
 function editNode(node){
 
 	  var prevTitle = node.data.title,
-		  tree = node.tree,
-		  title = node.data.title;
+		  tree = node.tree;
 
 	  // Disable dynatree mouse- and key handling
 	  tree.$widget.unbind();
@@ -198,18 +200,25 @@ function editNode(node){
 			  }
 		}).blur(function(event){
 			  // Accept new value, when user leaves <input>
-			  title = $("input#editNode").val();
+			  var title = $("input#editNode").val();
 			  node.setTitle(title);
 			  // Re-enable mouse and keyboard handlling
 			  tree.$widget.bind();
 			  node.focus();
 
+
+
     });
 
-	// если изменения произошли - шлем на сервер
-	if(prevTitle != title) {
-		sendChange(node)
-	}
+
+	$("input#editNode").change(function(){
+
+		 if(prevTitle != node.data.title) {
+
+				sendChange(node);
+		 }
+	});
+
 }
 
 function sendChange(node) {
