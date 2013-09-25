@@ -1,6 +1,11 @@
 
 $(function(){
 
+
+	var key  = window.location.pathname.split('/')[3];
+	var ctrl = window.location.pathname.split('/')[1];
+
+
 	$('.else').live('click',function(){
 
 		new_tr	= '<tr class="alias">'+
@@ -76,6 +81,9 @@ $(function(){
 				editNode(node);
 				return false;
 			}
+			// показываем данные
+			getData(ctrl, node.data.key);
+
 		},
 		onKeydown: function(node, event) {
 			// [F2]
@@ -84,7 +92,14 @@ $(function(){
 				return false;
 			}
 		},
-
+		onPostInit: function(isReloading, isError) {
+			// All expand;
+			$("#tree").dynatree("getRoot").visit(function(node){
+				node.expand(true);
+			});
+			// select by key
+			$('#tree').dynatree("getTree").activateKey(key);
+		},
 		dnd: {
 			  onDragStart: function(node) {
 					oldPid = node.getParent().data.key;
@@ -121,23 +136,25 @@ $(function(){
 		}
 	});
 
-
 	$('#new').unbind("click");
 
 	$('#new span').click(function(){
 
-		tmpl_id = $(this).attr('id');
+		tmpl_id = $(this).attr('id').replace('x-','');
 
 		$("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
 
 		var node = $("#tree").dynatree("getTree").getNodeByKey('00');
 
+
 		$.post('/badm/add',{id:0, name:node.data.title, pid:0, tmpl_id:tmpl_id }, function(response){
 
 						tmpl = /^\d+$/;
 
-						if( tmpl.test(response) )
+						if( tmpl.test(response) ) {
 							node.data.key = response;
+							getData(ctrl, node.data.key);
+						}
 						else {
 							node.remove();
 							alert('при сохранении произошла ошибка');
@@ -169,6 +186,7 @@ $(function(){
 			  $('ul',this).stop(true,true).slideUp(200);
 			}, this), 100));
 		});
+
 
 });
 
@@ -235,5 +253,11 @@ function sendChange(node) {
 						  pid: pid
 						  }
 	  );
+}
+// показываем данные
+function getData(ctrl,id) {
 
+			$.get('/'+ ctrl + '/single/'+id,{'act':'1'},function(response){
+								$('#ed').empty().append(response);
+			});
 }

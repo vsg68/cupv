@@ -4,8 +4,8 @@
       <ul id="ddmenu">
         <li id='new' title='новая запись'>
           <ul>
-            <li><span id='x1'>Логитипы</span></li>
-            <li><span id='x2'>Шаблоны</span></li>
+            <li><span id='x-1'>Логитипы</span></li>
+            <li><span id='x-2'>Шаблоны</span></li>
             <li><span>Иконки</span></li>
             <li><span>Плагины jQuery</span></li>
             <li><span>маркетинг Internet</a></li>
