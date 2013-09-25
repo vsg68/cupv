@@ -205,7 +205,7 @@ function editNode(node){
 			  node.focus();
 
     });
-alert(title);
+
 	// если изменения произошли - шлем на сервер
 	if(prevTitle != title) {
 		sendChange(node)
