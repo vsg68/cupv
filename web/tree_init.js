@@ -1,10 +1,11 @@
 
+var ctrl = window.location.pathname.split('/')[1];
+
 $(function(){
 
 
-	var id  = window.location.pathname.split('/')[3];
-	var ctrl = window.location.pathname.split('/')[1];
 
+	var id  = window.location.pathname.split('/')[3];
 	var oldPid;
 
 	$('#tree').dynatree({
@@ -56,7 +57,7 @@ $(function(){
 			  },
 			  onDragStop: function(node) {
 					if( oldPid != node.getParent().data.key) {
-						sendChange(ctrl,node);
+						sendChange(node);
 					}
 			  },
 			  autoExpandMS: 1000,
@@ -149,13 +150,13 @@ function editNode(node){
 
 		 if(prevTitle != node.data.title) {
 
-				sendChange(ctrl,node);
+				sendChange(node);
 		 }
 	});
 
 }
 
-function sendChange(ctrl,node) {
+function sendChange(node) {
 
 	  tmpl = /^_/;
 	  pid = node.getParent().data.key;
@@ -166,14 +167,39 @@ function sendChange(ctrl,node) {
 	  $.post('/'+ctrl+'/add',{
 						  id: node.data.key,
 						  name: node.data.title,
+						  page: ctrl,
 						  pid: pid
 						  }
 	  );
 }
 // показываем данные
-function getData(ctrl,id) {
+function getData(id) {
 
 			$.get('/'+ ctrl + '/single/'+id,{'act':'1'},function(response){
 								$('#ed').empty().append(response);
 			});
+}
+
+function createItem(obj) {
+
+		tmpl_id = $(obj).attr('id').replace('x-','');
+
+		$("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
+
+		var node = $("#tree").dynatree("getTree").getNodeByKey('00');
+
+
+		$.post('/'+ ctrl +'/add',{id:0, name:node.data.title, pid:0, page:ctrl, tmpl_id:tmpl_id }, function(response){
+
+						tmpl = /^\d+$/;
+
+						if( tmpl.test(response) ) {
+							node.data.key = response;
+							getData(node.data.key);
+						}
+						else {
+							node.remove();
+							alert('при сохранении произошла ошибка');
+						}
+		})
 }

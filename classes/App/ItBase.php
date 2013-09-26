@@ -3,19 +3,21 @@ namespace App;
 
 class ItBase extends Page {
 
+	protected $type;
+
 	public function before() {
 
 		$this->view = $this->pixie->view('main');
 		$this->auth = $this->pixie->auth;
 
 		$this->view->subview = 'base_main';
-		$this->view->ed_block = '';
 
 		$this->view->script_file  = '<script type="text/javascript" src="/jquery-ui.custom.min.js"></script>';
 		$this->view->script_file .= '<script type="text/javascript" src="/jquery.dynatree.js"></script>';
 		$this->view->script_file .= '<script type="text/javascript" src="/tree_init.js"></script>';
 
 		$this->view->css_file = '<link rel="stylesheet" href="/skin/ui.dynatree.css" type="text/css" />';
+		$this->view->css_file .= '<link rel="stylesheet" href="/badm.css" type="text/css" />';
 
 
 		/* Определяем все контроллеры с одинаковыми ID */
@@ -58,11 +60,11 @@ class ItBase extends Page {
 
 		$tree = $rs = array();
 
-		$type = $this->request->get('type');
+		$typenow = $this->request->get('page');
 
 		$tree = $this->pixie->db->query('select','itbase')
 								->table('names')
-								->where('type', $this->getVar($type))
+								->where('type', $this->getVar($typenow))
 								->order_by('pid')
 								->order_by('name')
 								->execute()
