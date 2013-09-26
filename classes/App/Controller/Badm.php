@@ -7,24 +7,21 @@ class Badm extends \App\ItBase {
 
     public function action_view() {
 
+		$this->type = 'serv';
 
-
-		$this->view->script_file  = '<script type="text/javascript" src="/jquery-ui.custom.min.js"></script>';
-		$this->view->script_file .= '<script type="text/javascript" src="/jquery.dynatree.js"></script>';
 		$this->view->script_file .= '<script type="text/javascript" src="/badm.js"></script>';
 
-		$this->view->css_file = '<link rel="stylesheet" href="/skin/ui.dynatree.css" type="text/css" />';
-		$this->view->css_file .= '<link rel="stylesheet" href="/badm.css" type="text/css" />';
+		$this->view->css_file 	 .= '<link rel="stylesheet" href="/badm.css" type="text/css" />';
 
 		// Проверка легитимности пользователя и его прав
-        //~ if( $this->permissions == $this::NONE_LEVEL ) {
-			//~ $this->noperm();
-			//~ return false;
-		//~ }
+        if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
+//		$this->view->subview = 'base_main';
 
-		$this->view->subview = 'badm_main';
-
-		$this->view->badm_block = '';//$this->action_single();
+		$this->view->menu_block = ''; // Тут стоит меню шаблонов
+		$this->view->ed_block = '';//$this->action_single();
 
         $this->response->body = $this->view->render();
     }

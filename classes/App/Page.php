@@ -15,6 +15,7 @@ class Page extends \PHPixie\Controller {
 
 	//protected $menuitems;
 
+
 	public function before() {
 
 		 $this->view = $this->pixie->view('main');
@@ -75,38 +76,6 @@ class Page extends \PHPixie\Controller {
 		$this->execute=false;
 		return false;
 	}
-    //~ protected function sanitize($value,$key,$method) {
-//~
-		//~ if( is_string($value) ) $value =  trim($value) ;
-//~
-		//~ switch ( $method ) {
-			//~ case 'empty':
-				//~ $value = isset($value) ? $value : '0';
-				//~ break;
-			//~ case 'notempty':
-				//~ if( $value == '' ) {
-					 //~ $this->logmsg .= "<span class='error'>Field $key can not be empty</span>";
-				 //~ }
-				//~ break;
-			//~ case 'net':
-				//~ if( !preg_match ('!((\d+\.)+\d+(/\d+)?,?\s*)+!', $value) ) {
-					//~ $this->logmsg .= "<span class='error'>Wrong entry for net in field $key</span>";
-				//~ }
-				//~ break;
-			//~ case 'is_number':
-				//~ if( is_number($value) ) {
-					//~ $this->logmsg .= "<span class='error'>Wrong entry for field $key</span>";
-				//~ }
-				//~ break;
-			//~ case 'is_mail':
-				//~ if ( ! preg_match('/(\w+)@(\w+\.)+(\w+)/',$value) ) {
-					//~ $this->logmsg .= "<span class='error'>Wrong entry for mail in field $key</span>";
-				//~ }
-				//~ break;
-			//~ default:
-//~
-		//~ }
-	//~ }
 
 	/* Берем или значение или значение по умолчанию */
 	protected function getVar(& $var, $val=null) {
