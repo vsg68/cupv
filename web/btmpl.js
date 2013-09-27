@@ -67,6 +67,22 @@ $(function(){
 
 	$('#new').click( function(){ createItem(this) });
 
+	$('.ed-0').toggle(
+					function(){
+// какой родительский класс вызываем
+							$('.fhead, .entries .delRow').show();
+							},
+					function(){
+							$('.fhead ,.entries .delRow').hide();
+							}
+		);
+//~
+	//~
+	//~ $('textarea').live('keydown',function(){
+//~
+		//~ $(this).css('height', $(this).scrollHeight+'px');
+		//~ alert($(this).attr('rows') +'; real: ' + $(this).height() +', line: ' + $(this).css('line-height'));
+		//~ })
 
 
 

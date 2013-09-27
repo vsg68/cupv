@@ -22,7 +22,7 @@ class Btmpl extends \App\ItBase {
 //		$this->view->subview = 'base_main';
 
 		$this->view->menu_block = ''; // Тут стоит меню шаблонов
-		$this->view->ed_block = '';//$this->action_single();
+		$this->view->ed_block = $this->action_single();
 
         $this->response->body = $this->view->render();
     }
@@ -73,28 +73,28 @@ class Btmpl extends \App\ItBase {
 			return false;
 		}
 
-		$view = $this->pixie->view('bserver_view');
+		$view = $this->pixie->view('base_new');
 
 		// вывод лога
 		$view->log = $this->getVar($this->logmsg,'');
 
 		// если не редактирование,т.е. начальный вход
-		if( ! $this->request->param('id') )
-			return; // "<img class='lb' src='/Dns.png' />";
-
-		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
-
-		$view->records = $this->pixie->db->query('select','itbase')
-										->table('records')
-										->where('names_id',$this->_id)
-										->execute();
+		//~ if( ! $this->request->param('id') )
+			//~ return; // "<img class='lb' src='/Dns.png' />";
+//~
+		//~ $this->_id = $this->getVar($this->_id, $this->request->param('id'));
+//~
+		//~ $view->records = $this->pixie->db->query('select','itbase')
+										//~ ->table('records')
+										//~ ->where('names_id',$this->_id)
+										//~ ->execute();
 
 
 		// Редактирование
-		if( ! $this->request->get('act') )
+		//if( ! $this->request->get('act') )
 			return $view->render();
 
-        $this->response->body = $view->render();
+        //$this->response->body = $view->render();
     }
 
 	public function action_add() {

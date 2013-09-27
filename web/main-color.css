@@ -65,7 +65,7 @@ body {
 	border:1px solid #ccc;
 }
 
-#lb, .formlabel, input, select {
+#lb, .formlabel, input, select, .fname, textarea {
 	color: #888;
 }
 .aliasesplace {
@@ -92,7 +92,7 @@ body {
 .fieldentry, .listbox {
 	background-color: #eee;
 }
-input[type='text'], input[type='password'], select {
+input[type='text'], input[type='password'], select, textarea {
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;

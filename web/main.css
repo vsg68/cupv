@@ -224,11 +224,11 @@ h4{
 #usrs, .fieldentry {
 	position: relative;
 }
-.formlabel {
+.formlabel, .fname {
 	width: 110px;
 	margin: 0 0 0 10px;
 }
-.fieldentry input[type='text'] {
+.fieldentry input[type='text'], .ftext {
 	width: 245px;
 	height: 19px;
 	margin: 1px 0 0 0;
