@@ -60,10 +60,9 @@ $(function(){
 		initAjax: {
 			url: "/badm/getTree"
 		},
-		onActivate: function(node) {
-			//alert(node.data.key);
-			//alert('parent:' + node.getParent().data.key + '\n self: ' + node.data.key);
-		},
+		//~ onActivate: function(node) {
+			//~ node.expand(true);
+		//~ },
 		onRender: function(node, nodeSpan) {
 
 			if( node.hasChildren() === true ) {
@@ -84,40 +83,33 @@ $(function(){
 				return false;
 			}
 		},
-
 		dnd: {
-			  onDragStart: function(node) {
-					oldPid = node.getParent().data.key;
-					return true;
-			  },
-			  onDragStop: function(node) {
-					if( oldPid != node.getParent().data.key) {
-						sendChange(node);
-					}
-
-			  },
-			  autoExpandMS: 1000,
-			  preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-			  onDragEnter: function(node, sourceNode) { return true; },
-			  onDragOver: function(node, sourceNode, hitMode) {
+			onDragStart: function(node) {
+				oldPid = node.getParent().data.key;
+				return true;
+			},
+			onDragStop: function(node) {
+				if( oldPid != node.getParent().data.key) {
+					sendChange(node);
+				}
+			},
+			autoExpandMS: 1000,
+			preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+			onDragEnter: function(node, sourceNode) { return true; },
+			onDragOver: function(node, sourceNode, hitMode) {
 				// Prevent dropping a parent below it's own child
 				if(node.isDescendantOf(sourceNode)){
-				  return false;
+					return false;
 				}
 				// Prohibit creating childs in non-folders (only sorting allowed)
 				if( !node.data.isFolder && hitMode === "over" ){
-				  return "after";
+					return "after";
 				}
-			  },
-			  onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-				/** This function MUST be defined to enable dropping of items on
-				 * the tree.
-				 */
+			},
+			onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+			// This function MUST be defined to enable dropping of items on the tree.
 				sourceNode.move(node, hitMode);
-				// expand the drop target
-		//        sourceNode.expand(true);
-//				alert(node.data.title);
-			  },
+			},
 		}
 	});
 
