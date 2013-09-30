@@ -4,47 +4,29 @@
 -->
 	<h4>-- Контакты --</h4>
 	<?php //foreach( $fields_arr as $field ) ?>
-		<table class='entries'>
-			<tr class='line'><td class='ed-0'>Редактировать</td></tr>
+		<table class='records'>
 
-			<tr class='fhead'><th class='txt'>Название</th><th>Поле</th><th class='else'><div id='alias' title='Добавить'></div></th></tr>
 
-<tr class='line'><td></td></tr>
+			<tr class='alias'><th class='txt'>Название</th><th>Тип поля</th><th class='else'><div id='alias' title='Добавить'></div></th></tr>
+
 			<tr>
-				<td class='fname'>Название</td>
-				<td class='ftext'><input type='text' name='' placeholder='название'  /></td>
+				<td class='fname'>
+					<div class='up'>&#9650;</div>
+					<input type='text' name='fname[]' placeholder='название'/></td>
+				</td>
+				<td class='ftext'>
+							<select name='ftype[]'>
+								<option='text' selected>text</option>
+								<option='textarea'>textarea</option>
+							</select>
+				</td>
 				<td><div class="delRow"></div></td>
-			</tr>
-<tr class='line'><td></td></tr>
-			<tr>
-				<td class='fname'>Адрес</td>
-				<td class='ftext'><input type='text' name='' placeholder='название'  /></td>
-				<td><div class="delRow"></div></td>
-			</tr>
-<tr class='line'><td></td></tr>
-			<tr>
-				<td class='fname'>Реквизиты</td>
-				<td class='ftext'><textarea name='' rows=5 cols='25'></textarea></td>
-				<td><div class="delRow"></div></td>
-			</tr>
-<tr class='line'><td></td></tr>
-			<tr>
-				<td class='fname'>№ Договора</td>
-				<td class='ftext'><input type='text' name='' placeholder='название'  /></td>
-				<td class='ed'><div class="delRow"></div></td>
-			</tr>
-<tr class='line'><td></td></tr>
-			<tr>
-				<td class='fname'>Дата договора</td>
-				<td class='ftext'><input type='text' name='' placeholder='название'  /></td>
-				<td class='ed'><div class="delRow"></div></td>
 			</tr>
 
 	   </table>
 	   <h4>-- Записи --</h4>
 
 		<table class='records'>
-				<tr class='line'><td class='ed-0'>Редактировать</td></tr>
 				<tr><th class='txt'>Контакт</th><th>должность</th><th class='txt'>Телефон</th><th class='txt'>Мыло</th><th class='txt'>Заметка</th><th class='else'><div id='alias' title='Добавить'></div></th></tr>
 				<tr class="alias">
 					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>

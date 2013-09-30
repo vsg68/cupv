@@ -12,7 +12,7 @@ class Btmpl extends \App\ItBase {
 
 		$this->view->script_file .= '<script type="text/javascript" src="/btmpl.js"></script>';
 
-		$this->view->css_file 	 .= '';
+		$this->view->css_file 	 .= '<link rel="stylesheet" href="/btmpl.css" type="text/css" />';
 
 		// Проверка легитимности пользователя и его прав
         if( $this->permissions == $this::NONE_LEVEL ) {
@@ -73,7 +73,7 @@ class Btmpl extends \App\ItBase {
 			return false;
 		}
 
-		$view = $this->pixie->view('base_new');
+		$view = $this->pixie->view('btmpl_new');
 
 		// вывод лога
 		$view->log = $this->getVar($this->logmsg,'');

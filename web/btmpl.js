@@ -70,10 +70,10 @@ $(function(){
 	$('.ed-0').toggle(
 					function(){
 // какой родительский класс вызываем
-							$('.fhead, .entries .delRow').show();
+							$('.fhead, #alias, .delRow').show();
 							},
 					function(){
-							$('.fhead ,.entries .delRow').hide();
+							$('.fhead, #alias, .delRow').hide();
 							}
 		);
 //~
