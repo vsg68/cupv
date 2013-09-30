@@ -1,8 +1,80 @@
 #usrs {
-	width: 241px;
+	width: 200px;
 }
 #ed {
-	width: 582px;
+	width: 623px;
+	overflow: auto;
+}
+textarea {
+	font-family: verdana, tahoma;
+	font-size: 13px;
+	width: 300px;
+	height: 50px;
+	resize: vertical;
+}
+input {
+	width: 300px;
+}
+
+.records{
+	border-collapse:collapse;
+	border:1px solid #ddd;
+	width: 100% !important;
+	margin: 0px !important;
+
+}
+.entries{
+	border: none;
+	border-collapse:collapse;
+	text-align: left;
+	width: 80%;
+}
+.records textarea {
+	font-family: verdana, tahome;
+	font-size: 13px;
+	color: #888;
+	resize: none;
+	border:0px solid #ccc;
+	max-width: 100px;
+	margin:0;
+}
+.records th, .entries th{
+	font-weight:bold;
+	height: 23px;
+}
+.records td{
+	font-weight:bold;
+	border:1px solid #ccc;
+	padding:0px;
+}
+.records th{
+	border:1px solid #ccc;
+	background:#f1f1f1;
+}
+.entries th{
+	border: 1px solid #ddd;
+}
+.entries tr {
+	background-color: #eee;
+}
+td.fname {
+	width: 110px;
+	padding: 0 0 0 10px;
+}
+.line, .editlabel {
+	height: 2px;
+	background-color: #fff !important;
+}
+.editlabel {
+	border-bottom: 1px solid #eee;
+}
+.fhead {
+	display: none;
+	background-color: #FFF !important;
+	text-align: center !important;
+}
+.fhead th {
+	border: none !important;
 }
 .headwin {
 	background-color: #eee;
@@ -24,14 +96,19 @@ ul.dynatree-container li {
 	background-image: none !important;
 	text-align: left;
 }
-
+.ed-0 {
+	cursor: pointer;
+	line-height: 30px;
+}
+.ed-0:hover {
+	color: #888 !important;
+}
 #editNode {
 	border: 1px solid #ddd;
 	height: 15px;
 	width: 80px;
 	margin: 0 -2px;
 }
-
 
 /**********   Menu  ***********/
 #ddmenu {

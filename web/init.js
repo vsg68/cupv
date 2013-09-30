@@ -130,7 +130,7 @@ $(function(){
 	$('#del').click(function(){
 
 					if( sid = $('.selected_key').attr('sid') ) {
-						if( confirm('Уверенны, что надо удалить зону?') )
+						if( confirm('Уверенны, что надо удалять?') )
 							$.post('/'+ ctrl +'/del/',{id: sid},function() {window.location = '/' + ctrl});
 					}
 	});

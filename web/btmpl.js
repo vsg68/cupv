@@ -56,39 +56,33 @@ $(function(){
 		});
 
 
-
 	$('#tree').dynatree("option","initAjax", {
 											url: "/"+ ctrl +"/getTree",
-											data: {"type":""}
+											data: {"page": ctrl}
 											});
 
 	$('#tree').dynatree('getTree').reload();
 
 	$('#new').unbind("click");
 
-	$('#new span').click(function(){
+	$('#new').click( function(){ createItem(this) });
 
-		tmpl_id = $(this).attr('id').replace('x-','');
-
-		$("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
-
-		var node = $("#tree").dynatree("getTree").getNodeByKey('00');
-
-
-		$.post('/badm/add',{id:0, name:node.data.title, pid:0, tmpl_id:tmpl_id }, function(response){
-
-						tmpl = /^\d+$/;
-
-						if( tmpl.test(response) ) {
-							node.data.key = response;
-							getData(ctrl, node.data.key);
-						}
-						else {
-							node.remove();
-							alert('при сохранении произошла ошибка');
-						}
-		})
-	});
+	$('.ed-0').toggle(
+					function(){
+// какой родительский класс вызываем
+							$('.fhead, #alias, .delRow').show();
+							},
+					function(){
+							$('.fhead, #alias, .delRow').hide();
+							}
+		);
+//~
+	//~
+	//~ $('textarea').live('keydown',function(){
+//~
+		//~ $(this).css('height', $(this).scrollHeight+'px');
+		//~ alert($(this).attr('rows') +'; real: ' + $(this).height() +', line: ' + $(this).css('line-height'));
+		//~ })
 
 
 

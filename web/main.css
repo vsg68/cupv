@@ -111,14 +111,14 @@ ul li.helper {
 	height: 0;
 	visibility: hidden;
 }
-div.delRow, .else div {
+div.delRow, .else div, .add {
 	margin: 0 auto;
 	cursor: pointer;
 	background: url(/ui-icons_454545_256x240.png) -16px -192px no-repeat;
 	height: 16px;
 	width: 16px;
 }
-.else div {
+.else div, .add {
 	background: url(/ui-icons_454545_256x240.png) -0px -192px no-repeat;
 }
 .else {
@@ -224,11 +224,11 @@ h4{
 #usrs, .fieldentry {
 	position: relative;
 }
-.formlabel {
+.formlabel, .fname {
 	width: 110px;
 	margin: 0 0 0 10px;
 }
-.fieldentry input[type='text'] {
+.fieldentry input[type='text'], .ftext {
 	width: 245px;
 	height: 19px;
 	margin: 1px 0 0 0;
