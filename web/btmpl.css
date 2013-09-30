@@ -6,6 +6,18 @@
 	float:left;
 	width: 20px;
 }
+table{
+	border-collapse:collapse;
+	border:1px solid #000;
+	margin: 0px !important;
+}
+th{
+	border:1px solid #ccc;
+	background:#f1f1f1;
+}
+td{
+	border:1px solid #ccc;
+}
 
 input[type='text']{
 	width: 235px;
@@ -18,9 +30,11 @@ select {
 	width: 100px;
 }
 
+/*
 table.records {
 	width: 400px !important;
 }
+*/
 td, .tab-init {
 	text-align: left;
 }
