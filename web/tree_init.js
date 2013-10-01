@@ -183,6 +183,7 @@ function getData(id) {
 function createItem(obj) {
 
 		tmpl_id = $(obj).attr('id').replace('x-','');
+		if(! tmpl_id ) (tmpl_id) = 0;
 
 		$("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
 

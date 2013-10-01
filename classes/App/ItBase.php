@@ -64,7 +64,7 @@ class ItBase extends Page {
 
 		$tree = $this->pixie->db->query('select','itbase')
 								->table('names')
-								->where('type', $this->getVar($typenow))
+								->where('page', $this->getVar($typenow))
 								->order_by('pid')
 								->order_by('name')
 								->execute()

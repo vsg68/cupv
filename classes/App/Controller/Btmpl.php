@@ -79,22 +79,30 @@ class Btmpl extends \App\ItBase {
 		$view->log = $this->getVar($this->logmsg,'');
 
 		// если не редактирование,т.е. начальный вход
-		//~ if( ! $this->request->param('id') )
-			//~ return; // "<img class='lb' src='/Dns.png' />";
-//~
-		//~ $this->_id = $this->getVar($this->_id, $this->request->param('id'));
-//~
-		//~ $view->records = $this->pixie->db->query('select','itbase')
-										//~ ->table('records')
-										//~ ->where('names_id',$this->_id)
-										//~ ->execute();
+		if( ! $this->request->param('id') )
+			return; // "<img class='lb' src='/Dns.png' />";
+
+		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
 
 
+		$view->entries = $this->pixie->db->query('select','itbase')
+										->table('names')
+										->where('id',$this->_id)
+										->execute()
+										->current();
+		if( $view->entries->templ ) {
+			$view->entries->templ = unserialize($view->entries->templ);
+		//$view->entries = $entries['templ']['entries']
+		//$view->records = $entries['templ']['reords']
+//~ echo "___";
+		//~ print_r($templ);
+		//~ print_r($view->entries); exit;
+		}
 		// Редактирование
-		//if( ! $this->request->get('act') )
+		if( ! $this->request->get('act') )
 			return $view->render();
 
-        //$this->response->body = $view->render();
+        $this->response->body = $view->render();
     }
 
 	public function action_add() {
@@ -106,12 +114,29 @@ class Btmpl extends \App\ItBase {
 
         if ($this->request->method == 'POST') {
 
+			$entry = $templ = array();
+
 			$params = $this->request->post();
 
-			$entry = array( 'name' 	=> $params['name'],
-							'pid' 	=> $params['pid'],
-							'type' 	=> $params['page']
-					);
+			if( isset($params['fname']) ) {
+				foreach($params['fname'] as $key=>$val) {
+
+					$templ['entry'][$key] = array('fname' => $params['fname'][$key], 'ftype' => $params['ftype'][$key]);
+				}
+			}
+
+			if( isset($params['tdname']) ) {
+				foreach($params['tdname'] as $key=>$val) {
+
+					$templ['records'][] = $params['tdname'][$key];
+				}
+			}
+			// заполняем массив
+			if( isset($params['name']) )	$entry['name'] = $params['name'];
+			if( isset($params['pid']) )		$entry['pid']  = $params['pid'];
+			if( isset($params['page']) )	$entry['page'] = $params['page'];
+			if( count($templ) )				$entry['templ'] = serialize($templ);
+
 //print_r($entry); exit;
 
 			if ( $params['id'] == 0 ) {
@@ -130,11 +155,6 @@ class Btmpl extends \App\ItBase {
 								->where('id', $params['id'])
 								->where('or',array('pid', $params['id']))
 								->execute();
-
-				//~ $this->pixie->db->query('delete','itbase')
-								//~ ->table('records')
-								//~ ->where('pid', params['id'])
-								//~ ->execute();
 			}
 			else {
 			// Редактирование

@@ -6,10 +6,9 @@ $(function(){
 	$('.add').live('click',function(){
 
 
-		if( $(this).prop('id') == 'entry') {
+		if( $(this).attr('id') == 'entry') {
 
-			new_tr = "<tr><td class='fname'>"												+
-						"<div class='up'>&#9650;</div>" 									+
+			new_tr = "<tr class='alias'><td class='fname'>"									+
 						"<input type='text' name='fname[]' placeholder='название'/></td>" 	+
 					 "</td><td class='ftext'>"												+
 						"<select name='ftype[]'>" 											+
@@ -18,38 +17,21 @@ $(function(){
 						"</select>"															+
 					"</td><td><div class='delRow'></div></td>"								+
 					"</tr>";
-			$(this).closest('table').append(tr);
 		}
 		else {
-
+			new_tr = "<tr><td class='fname'>" 												+
+						 "<input type='text' name='tdname[]' placeholder='название'/></td>" +
+					 "</td><td><div class='delRow'></div></td>" 							+
+					 "</tr>";
 		}
 
-
+		$(this).closest('table').append(new_tr);
 
 		return false;
 	});
 
 
 	$('#submit_view').live('click', function(event){
-
-			// для записи SOA создаем контент
-			faddr = $(':text[name="faddr[]"]').val() + ' ' + ($(':text[name="contact"]').val()).replace('@','.');
-			$(':hidden[name="faddr[]"]').val(faddr);
-
-			// пустые поля fname[] для записей NS должны получать значение zname для новой записи
-			if( $(':text[name="zname"]').val() )
-				$(':hidden[name="fname[]"]').val( $(':text[name="zname"]').val() );
-
-
-			// проверка на совпадающие имена
-			var _name = $(':text[name="zname"]').val();
-
-			existName = $('tr')
-							.filter('[sname="' + _name + '"]')
-							.length;
-
-			if( existName )
-				$('input[name="zname"]').val('');
 
 			try_submit();
 			return false;

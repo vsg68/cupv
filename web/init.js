@@ -24,7 +24,8 @@ $(function(){
 	// Удаление строк
 	$('.delRow').live('click', function(){
 
-		var tr 		   = $(this).closest('.alias');
+
+		var tr = $(this).closest('.alias');
 
 		// Если FID = 0 - то поле создано вручную
 		if( $(tr).find(':hidden[name="fid[]"]').val() == 0 )
