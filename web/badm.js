@@ -56,6 +56,7 @@ $(function(){
 		});
 
 
+
 	$('#tree').dynatree("option","initAjax", {
 											url: "/"+ ctrl +"/getTree",
 											data: {"type":""}
