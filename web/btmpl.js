@@ -3,7 +3,7 @@ $(function(){
 
 	var ctrl = window.location.pathname.split('/')[1];
 
-	$('.else').live('click',function(){
+	$('.add').live('click',function(){
 
 		new_tr	= '<tr class="alias">'+
 					'<td><input type="text" name="fname[]" value="" placeholder="host name"></td>'+
