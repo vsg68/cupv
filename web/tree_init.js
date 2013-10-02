@@ -3,6 +3,7 @@ var ctrl = window.location.pathname.split('/')[1];
 
 $(function(){
 
+	$('#new, #del').unbind("click");
 
 
 	var id  = window.location.pathname.split('/')[3];
@@ -10,14 +11,13 @@ $(function(){
 
 	$('#tree').dynatree({
 
-		//~ initAjax: {
-			//~ url: "/"+ ctrl +"/getTree",
-			//~ data: {"type":"serv"}
-		//~ },
-		onActivate: function(node) {
-			//alert(node.data.key);
-			//alert('parent:' + node.getParent().data.key + '\n self: ' + node.data.key);
+		initAjax: {
+			url: "/"+ ctrl +"/getTree",
 		},
+		//~ onActivate: function(node) {
+			//~ //alert(node.data.key);
+			//~ //alert('parent:' + node.getParent().data.key + '\n self: ' + node.data.key);
+		//~ },
 		onRender: function(node, nodeSpan) {
 
 			if( node.hasChildren() === true ) {
@@ -25,15 +25,15 @@ $(function(){
 				$(nodeSpan).addClass('dynatree-ico-cf');
 			}
 		},
-		//~ onClick: function(node, event) {
+		onClick: function(node, event) {
 			//~ if( event.shiftKey ){
 				//~ editNode(node);
 				//~ return false;
 			//~ }
-			//~ // показываем данные
-			//~ getData(ctrl, node.data.key);
-//~
-		//~ },
+			// показываем данные
+			getData(node.data.key);
+
+		},
 		onKeydown: function(node, event) {
 			// [F2]
 			if( event.which == 113) {
@@ -87,7 +87,7 @@ $(function(){
 
 		if( id && confirm('Удалятся так же все дочерние элементы.\n Удаляем?')) {
 			//$("#tree").dynatree("getActiveNode").remove();
-			$.post('/'+ctrl+'/add',{id: id,stat:2,name:'',pid:''});
+			$.post('/'+ctrl+'/add',{id:id,stat:2});
 			node.remove();
 		}
 	});
@@ -140,10 +140,7 @@ function editNode(node){
 			  // Re-enable mouse and keyboard handlling
 			  tree.$widget.bind();
 			  node.focus();
-
-
-
-    });
+		});
 
 
 	$("input#editNode").change(function(){
@@ -167,13 +164,17 @@ function sendChange(node) {
 	  $.post('/'+ctrl+'/add',{
 						  id: node.data.key,
 						  name: node.data.title,
-						  page: ctrl,
 						  pid: pid
 						  }
 	  );
 }
 // показываем данные
 function getData(id) {
+
+			var node = $("#tree").dynatree("getTree").getNodeByKey(id);
+
+			if(node.getChildren() === true)
+				return false;
 
 			$.get('/'+ ctrl + '/single/'+id,{'act':'1'},function(response){
 								$('#ed').empty().append(response);
@@ -190,7 +191,7 @@ function createItem(obj) {
 		var node = $("#tree").dynatree("getTree").getNodeByKey('00');
 
 
-		$.post('/'+ ctrl +'/add',{id:0, name:node.data.title, pid:0, page:ctrl, tmpl_id:tmpl_id }, function(response){
+		$.post('/'+ ctrl +'/add',{id:0, name:node.data.title, pid:0, tmpl_id:tmpl_id }, function(response){
 
 						tmpl = /^\d+$/;
 

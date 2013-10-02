@@ -2,6 +2,7 @@
 $(function(){
 
 	var ctrl = window.location.pathname.split('/')[1];
+	// Скидываем предыдущие связи
 
 	$('.add').live('click',function(){
 
@@ -30,25 +31,19 @@ $(function(){
 		return false;
 	});
 
-
 	$('#submit_view').live('click', function(event){
 
 			try_submit();
 			return false;
+	});
 
-		});
 
-
-	$('#tree').dynatree("option","initAjax", {
-											url: "/"+ ctrl +"/getTree",
-											data: {"page": ctrl}
-											});
 
 	$('#tree').dynatree('getTree').reload();
 
-	$('#new').unbind("click");
-
 	$('#new').click( function(){ createItem(this) });
+
+
 
 	$('.ed-0').toggle(
 					function(){
@@ -59,6 +54,12 @@ $(function(){
 							$('.fhead, #alias, .delRow').hide();
 							}
 		);
+
+	$('.delRow').live('click', function(){
+
+		$(this).closest('tr').remove();
+		//return false;
+	});
 //~
 	//~
 	//~ $('textarea').live('keydown',function(){

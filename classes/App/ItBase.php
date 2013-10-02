@@ -17,7 +17,7 @@ class ItBase extends Page {
 		$this->view->script_file .= '<script type="text/javascript" src="/tree_init.js"></script>';
 
 		$this->view->css_file = '<link rel="stylesheet" href="/skin/ui.dynatree.css" type="text/css" />';
-		$this->view->css_file .= '<link rel="stylesheet" href="/badm.css" type="text/css" />';
+		$this->view->css_file .= '<link rel="stylesheet" href="/tree_init.css" type="text/css" />';
 
 
 		/* Определяем все контроллеры с одинаковыми ID */
@@ -60,7 +60,8 @@ class ItBase extends Page {
 
 		$tree = $rs = array();
 
-		$typenow = $this->request->get('page');
+//		$typenow = $this->request->get('page');
+		$typenow = $this->request->param('controller');
 
 		$tree = $this->pixie->db->query('select','itbase')
 								->table('names')
@@ -78,6 +79,31 @@ class ItBase extends Page {
 		$tree_struct = str_replace('},]', '}]', '['. $this->RecursiveTree($rs,0) .']') ;
 
 		$this->response->body =  $tree_struct;
+
+	}
+
+	protected function getTemplItems() {
+
+		$menu_ul = '';
+
+		$menu_block = $this->pixie->db->query('select','itbase')
+									 ->table('names')
+									 ->where('page','btmpl')
+									 ->execute()
+									 ->as_array();
+
+
+		if( is_array($menu_block) )	{
+
+			$menu_ul .= '<ul>';
+
+			foreach($menu_block as $item)
+				$menu_ul .= '<li><span id="x-'. $item->id .'">'.$item->name.'</span></li>';
+
+			$menu_ul .= '</ul>';
+		}
+
+		return $menu_ul;
 
 	}
 }

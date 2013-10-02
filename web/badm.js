@@ -55,40 +55,31 @@ $(function(){
 
 		});
 
+	$('#new span').click( function(){ createItem(this) });
 
-
-	$('#tree').dynatree("option","initAjax", {
-											url: "/"+ ctrl +"/getTree",
-											data: {"type":""}
-											});
-
-	$('#tree').dynatree('getTree').reload();
-
-	$('#new').unbind("click");
-
-	$('#new span').click(function(){
-
-		tmpl_id = $(this).attr('id').replace('x-','');
-
-		$("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
-
-		var node = $("#tree").dynatree("getTree").getNodeByKey('00');
-
-
-		$.post('/badm/add',{id:0, name:node.data.title, pid:0, tmpl_id:tmpl_id }, function(response){
-
-						tmpl = /^\d+$/;
-
-						if( tmpl.test(response) ) {
-							node.data.key = response;
-							getData(ctrl, node.data.key);
-						}
-						else {
-							node.remove();
-							alert('при сохранении произошла ошибка');
-						}
-		})
-	});
+	//~ $('#new span').click(function(){
+//~
+		//~ tmpl_id = $(this).attr('id').replace('x-','');
+//~
+		//~ $("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
+//~
+		//~ var node = $("#tree").dynatree("getTree").getNodeByKey('00');
+//~
+//~
+		//~ $.post('/badm/add',{id:0, name:node.data.title, pid:0, tmpl_id:tmpl_id }, function(response){
+//~
+						//~ tmpl = /^\d+$/;
+//~
+						//~ if( tmpl.test(response) ) {
+							//~ node.data.key = response;
+							//~ getData(ctrl, node.data.key);
+						//~ }
+						//~ else {
+							//~ node.remove();
+							//~ alert('при сохранении произошла ошибка');
+						//~ }
+		//~ })
+	//~ });
 
 
 

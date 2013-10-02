@@ -21,50 +21,15 @@ class Btmpl extends \App\ItBase {
 		}
 //		$this->view->subview = 'base_main';
 
-		$this->view->menu_block = ''; // Тут стоит меню шаблонов
+		$this->view->menu_block = '';
+
+
 		$this->view->ed_block = $this->action_single();
 
         $this->response->body = $this->view->render();
     }
 
-	//~ public function action_new() {
-//~
-		//~ if( $this->permissions == $this::NONE_LEVEL ) {
-			//~ $this->noperm();
-			//~ return false;
-		//~ }
-//~
-        //~ $view = $this->pixie->view('bserver_new');
-//~
-		//~ $view->log = isset($this->logmsg) ?  $this->logmsg : '';
-//~
-        //~ $this->response->body = $view->render();
-    //~ }
 
-	//~ public function action_del() {
-//~
-		//~ if( $this->permissions == $this::NONE_LEVEL ) {
-			//~ $this->noperm();
-			//~ return false;
-		//~ }
-//~
-		//~ if ($this->request->method != 'POST')
-			//~ return false;
-//~
-        //~ // удаляем зону
-//~
-		 //~ $params = $this->request->post();
-//~
-		 //~ $this->pixie->db->query('delete','itbase')
-						 //~ ->table('names')
-						 //~ ->where('id',$params['id'])
-						 //~ ->execute();
-//~
-		 //~ $this->pixie->db->query('delete','itbase')
-						 //~ ->table('records')
-						 //~ ->where('domain_id',$params['id'])
-						 //~ ->execute();
-    //~ }
 
 	public function action_single() {
 
@@ -90,14 +55,9 @@ class Btmpl extends \App\ItBase {
 										->where('id',$this->_id)
 										->execute()
 										->current();
-		if( $view->entries->templ ) {
-			$view->entries->templ = unserialize($view->entries->templ);
-		//$view->entries = $entries['templ']['entries']
-		//$view->records = $entries['templ']['reords']
-//~ echo "___";
-		//~ print_r($templ);
-		//~ print_r($view->entries); exit;
-		}
+//print_r($this->_id);exit;
+		$view->templ = ($view->entries->templ) ? unserialize($view->entries->templ) : array();
+
 		// Редактирование
 		if( ! $this->request->get('act') )
 			return $view->render();
@@ -131,6 +91,19 @@ class Btmpl extends \App\ItBase {
 					$templ['records'][] = $params['tdname'][$key];
 				}
 			}
+
+			// копирование шаблона
+			if( isset($params['tmpl_id']) ) {
+
+					$template = $this->pixie->db->query('select','itbase')
+												->table('names')
+												->where('id',$params['tmpl_id'])
+												->execute()
+												->current();
+
+					$entry['templ'] = $template->templ;
+			}
+
 			// заполняем массив
 			if( isset($params['name']) )	$entry['name'] = $params['name'];
 			if( isset($params['pid']) )		$entry['pid']  = $params['pid'];
