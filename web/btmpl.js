@@ -45,15 +45,7 @@ $(function(){
 
 
 
-	$('.ed-0').toggle(
-					function(){
-// какой родительский класс вызываем
-							$('.fhead, #alias, .delRow').show();
-							},
-					function(){
-							$('.fhead, #alias, .delRow').hide();
-							}
-		);
+
 
 	$('.delRow').live('click', function(){
 

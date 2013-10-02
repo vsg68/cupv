@@ -3,7 +3,7 @@
 <form id='usersform' action='#' method='post'>
 	<input type='hidden' name='id' value='<?= $entries->id ?>' />
 
-	<h4>-- Список(верт.) --</h4>
+	<h4>Список(верт.)</h4>
 		<table class='records0'>
 			<tr><th width='240px'>Название</th><th width='101px'>Тип поля</th><th><div class='add' id='entry' title='Добавить'></div></th></tr>
 			<?php
@@ -13,6 +13,7 @@
 			<tr class='alias'>
 				<td class='fname'>
 					<input type='text' name='fname[]' value='<?= $entry['fname'] ?>'/>
+					<input type='hidden' name='fval[]' value=''/>
 				</td>
 				<td class='ftext'>
 							<select name='ftype[]'>
@@ -24,7 +25,8 @@
 			</tr>
 			<?php endforeach; } ?>
 	   </table>
-	<h4> -- Табличные записи --</h4>
+	 <br/>
+	<h4>Табличные записи</h4>
 	   <table class='records1'>
 			<tr><th width='240px'>Название колонки</th><th><div class='add' id='records' title='Добавить'></div></th></tr>
 			<?php
@@ -33,7 +35,10 @@
 
 			?>
 			<tr class='alias'>
-				<td class='fname'><input type='text' name='tdname[]' value='<?= $record ?>'/></td>
+				<td class='fname'>
+					<input type='text' name='tdname[]' value='<?= $record ?>'/>
+					<input type='hidden' name='tdval[]' value=''/>
+				</td>
 				<td><div class="delRow"></div></td>
 			</tr>
 			<?php endforeach; } ?>

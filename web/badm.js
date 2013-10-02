@@ -57,8 +57,12 @@ $(function(){
 
 	$('#new span').click( function(){ createItem(this) });
 
-	//~ $('#new span').click(function(){
-//~
+
+	$('.ed-0').live('click', function(){
+// какой родительский класс вызываем
+						$('.fhead, .delRow').toggleClass('hidden');
+	});
+
 		//~ tmpl_id = $(this).attr('id').replace('x-','');
 //~
 		//~ $("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});

@@ -50,7 +50,7 @@ class Badm extends \App\ItBase {
 										->where('id',$this->_id)
 										->execute()
 										->current();
-//print_r($this->_id);exit;
+
 		$view->templ = ($view->entries->templ) ? unserialize($view->entries->templ) : array();
 
 		// Редактирование

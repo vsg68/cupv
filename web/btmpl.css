@@ -17,9 +17,6 @@ td{
 input[type='text']{
 	width: 235px;
 }
-input[type='submit']{
-	width: 80px;
-}
 
 select {
 	width: 100px;
