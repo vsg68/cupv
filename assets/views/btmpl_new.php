@@ -21,7 +21,7 @@
 								<option value='textarea' <?php $entry['ftype'] != 'textarea' || print "selected" ?>>textarea</option>
 							</select>
 				</td>
-				<td><div class="delRow"></div></td>
+				<td class='else'><div class="delRow"></div></td>
 			</tr>
 			<?php endforeach; } ?>
 	   </table>
@@ -31,13 +31,12 @@
 			<tr><th width='240px'>Название колонки</th><th><div class='add' id='records' title='Добавить'></div></th></tr>
 			<?php
 					if( isset($templ['records']) ) {
-						foreach( $templ['records'] as $record ):
 
+						foreach( $templ['records'][0] as $record ):
 			?>
 			<tr class='alias'>
 				<td class='fname'>
-					<input type='text' name='tdname[]' value='<?= $record ?>'/>
-					<input type='hidden' name='tdval[]' value=''/>
+					<input type='text' name='tdname[0][]' value='<?= $record ?>'/>
 				</td>
 				<td><div class="delRow"></div></td>
 			</tr>

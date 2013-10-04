@@ -69,13 +69,11 @@ td.fname {
 	border-bottom: 1px solid #eee;
 }
 .fhead {
-	background-color: #FFF !important;
+	background-color: #F7F7F7 !important;
 	text-align: center !important;
 }
 .fhead th {
-/*
 	border: none !important;
-*/
 }
 input[type='submit']{
 	width: 80px;

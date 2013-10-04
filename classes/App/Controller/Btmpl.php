@@ -55,9 +55,10 @@ class Btmpl extends \App\ItBase {
 										->where('id',$this->_id)
 										->execute()
 										->current();
-//print_r($this->_id);exit;
+
 		$view->templ = ($view->entries->templ) ? unserialize($view->entries->templ) : array();
 
+//print_r($view->templ['records']);exit;
 		// Редактирование
 		if( ! $this->request->get('act') )
 			return $view->render();
@@ -65,96 +66,6 @@ class Btmpl extends \App\ItBase {
         $this->response->body = $view->render();
     }
 
-	public function action_add() {
-
-		if( $this->permissions != $this::WRITE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-        if ($this->request->method == 'POST') {
-
-			$entry = $templ = array();
-
-			$params = $this->request->post();
-
-			if( isset($params['fname']) ) {
-				foreach($params['fname'] as $key=>$val) {
-
-					$templ['entry'][$key] = array('fname' => $params['fname'][$key], 'ftype' => $params['ftype'][$key]);
-				}
-			}
-
-			if( isset($params['tdname']) ) {
-				foreach($params['tdname'] as $key=>$val) {
-
-					$templ['records'][] = $params['tdname'][$key];
-				}
-			}
-
-			// копирование шаблона
-			if( isset($params['tmpl_id']) ) {
-
-					$template = $this->pixie->db->query('select','itbase')
-												->table('names')
-												->where('id',$params['tmpl_id'])
-												->execute()
-												->current();
-
-					$entry['templ'] = $template->templ;
-			}
-
-			// заполняем массив
-			if( isset($params['name']) )	$entry['name'] = $params['name'];
-			if( isset($params['pid']) )		$entry['pid']  = $params['pid'];
-			if( isset($params['page']) )	$entry['page'] = $params['page'];
-			if( count($templ) )				$entry['templ'] = serialize($templ);
-
-//print_r($entry); exit;
-
-			if ( $params['id'] == 0 ) {
-			// Новая запись
-				$this->pixie->db->query('insert','itbase')
-								->table('names')
-								->data($entry)
-								->execute();
-
-				$params['id'] = $this->pixie->db->insert_id('itbase');
-			}
-			elseif ( $this->getVar($params['stat'],0) == 2)	{
-			// Удаляем запись
-				$this->pixie->db->query('delete','itbase')
-								->table('names')
-								->where('id', $params['id'])
-								->where('or',array('pid', $params['id']))
-								->execute();
-			}
-			else {
-			// Редактирование
-//print_r($params); exit;
-				$this->pixie->db->query('update','itbase')
-								->table('names')
-								->data($entry)
-								->where('id', $params['id'])
-								->execute();
-			}
-//exit;
-			//~ // Ошибки имели место
-			//~ if( isset( $this->logmsg ) ) {
-//~
-				//~ if ( $params['domain_id'] ) {
-					//~ // Ошибка во время редактирования
-					//~ $this->_id = $params['domain_id'];
-					//~ $this->action_single();
-				//~ }
-				//~ else
-					//~ $this->action_new();
-			//~ }
-			//~ else
-			$this->response->body = $params['id'];
-		}
-
-	}
 
 
  }

@@ -1,16 +1,14 @@
 
 $(function(){
 
-	var ctrl = window.location.pathname.split('/')[1];
-	// Скидываем предыдущие связи
-
 	$('.add').live('click',function(){
 
 
 		if( $(this).attr('id') == 'entry') {
 
 			new_tr = "<tr class='alias'><td class='fname'>"									+
-						"<input type='text' name='fname[]' placeholder='название'/></td>" 	+
+						"<input type='text' name='fname[]' placeholder='название'/>"		+
+						"<input type='hidden' name='fval[]' value=''/></td>" 				+
 					 "</td><td class='ftext'>"												+
 						"<select name='ftype[]'>" 											+
 							"<option value='text' selected>text</option>" 					+
@@ -21,7 +19,7 @@ $(function(){
 		}
 		else {
 			new_tr = "<tr><td class='fname'>" 												+
-						 "<input type='text' name='tdname[]' placeholder='название'/></td>" +
+						 "<input type='text' name='tdname[0][]' placeholder='название'/>"		+
 					 "</td><td><div class='delRow'></div></td>" 							+
 					 "</tr>";
 		}
@@ -31,15 +29,7 @@ $(function(){
 		return false;
 	});
 
-	$('#submit_view').live('click', function(event){
 
-			try_submit();
-			return false;
-	});
-
-
-
-	$('#tree').dynatree('getTree').reload();
 
 	$('#new').click( function(){ createItem(this) });
 
@@ -47,11 +37,7 @@ $(function(){
 
 
 
-	$('.delRow').live('click', function(){
 
-		$(this).closest('tr').remove();
-		//return false;
-	});
 //~
 	//~
 	//~ $('textarea').live('keydown',function(){

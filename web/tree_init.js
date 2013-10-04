@@ -82,28 +82,39 @@ $(function(){
 
 	$('#del').click(function(){
 
-		var node = $("#tree").dynatree("getActiveNode");
-		id = node.data.key;
+			var node = $("#tree").dynatree("getActiveNode");
+			id = node.data.key;
 
-		if( id && confirm('Удалятся так же все дочерние элементы.\n Удаляем?')) {
-			//$("#tree").dynatree("getActiveNode").remove();
-			$.post('/'+ctrl+'/add',{id:id,stat:2});
-			node.remove();
-		}
+			if( id && confirm('Удалятся так же все дочерние элементы.\n Удаляем?')) {
+				//$("#tree").dynatree("getActiveNode").remove();
+				$.post('/'+ctrl+'/add',{id:id,stat:2});
+				node.remove();
+				$('#ed').empty();
+			}
+	});
+
+	$('.delRow').live('click', function(){
+
+			$(this).closest('tr').remove();
+	});
+
+	$('#submit_view').live('click', function(event){
+
+			try_submit();
+			return false;
 	});
 
 	// Menu
 	$('#ddmenu li').hover(
-		function () {
-			 clearTimeout($.data(this,'timer'));
-			 $('ul',this).stop(true,true).slideDown(200);
-		},
-		function () {
-			$.data(this,'timer', setTimeout($.proxy(function() {
-			  $('ul',this).stop(true,true).slideUp(200);
-			}, this), 100));
-		});
-
+			function () {
+				 clearTimeout($.data(this,'timer'));
+				 $('ul',this).stop(true,true).slideDown(200);
+			},
+			function () {
+				$.data(this,'timer', setTimeout($.proxy(function() {
+				  $('ul',this).stop(true,true).slideUp(200);
+				}, this), 100));
+			});
 
 });
 
@@ -153,6 +164,8 @@ function editNode(node){
 
 }
 
+
+
 function sendChange(node) {
 
 	  tmpl = /^_/;
@@ -183,8 +196,12 @@ function getData(id) {
 
 function createItem(obj) {
 
-		tmpl_id = $(obj).attr('id').replace('x-','');
-		if(! tmpl_id ) (tmpl_id) = 0;
+		var tmpl = /^\d+$/;
+		var tmpl_id;
+
+		tmp = $(obj).attr('id').replace('x-','');
+
+		if( tmpl.test(tmp) )  tmpl_id = tmp;
 
 		$("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
 
@@ -192,8 +209,6 @@ function createItem(obj) {
 
 
 		$.post('/'+ ctrl +'/add',{id:0, name:node.data.title, pid:0, tmpl_id:tmpl_id }, function(response){
-
-						tmpl = /^\d+$/;
 
 						if( tmpl.test(response) ) {
 							node.data.key = response;
