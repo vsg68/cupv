@@ -94,6 +94,8 @@ class ItBase extends Page {
 			$entry = $templ = array();
 			$params = $this->request->post();
 
+//print_r($params); exit;
+
 			if( isset($params['fname']) ) {
 				foreach($params['fname'] as $key=>$val) {
 
@@ -107,8 +109,9 @@ class ItBase extends Page {
 			if( isset($params['tdname']) ) {
 
 				foreach($params['tdname'] as $key=>$tdvalues) {
-
+//print_r($tdvalues); exit;
 					foreach($tdvalues as $tdvalue) {
+
 						if( !isset($templ['records'][$key]) )
 							$templ['records'][$key] = array();
 
@@ -116,7 +119,7 @@ class ItBase extends Page {
 					}
 				}
 			}
-
+//print_r($templ['records']; exit;
 			// копирование шаблона
 			if( isset($params['tmpl_id']) ) {
 

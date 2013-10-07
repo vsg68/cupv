@@ -41,84 +41,21 @@
 					foreach ($record as $field) {
 
 						if ($key == 0)
-							echo "<th class='txt1'>". $field ."</th>";
+							echo "<td class='t-h'>". $field ."<input type='hidden' name='tdname[". $key ."][]' value='".$field."'></td>";
 						else
-							echo "<td class='tdarea'><textarea name='tdname[ ". $key ."][]'>" . $field ."></textarea></td>";
+							echo "<td class='tdarea'><textarea name='tdname[". $key ."][]'>" . $field ."</textarea></td>";
 					}
 
 					if ($key == 0)
-						echo "<th class='else'><div id='record' class='add hidden' title='Добавить'></div></th>";
+						echo "<td class='else t-h noborder'><div id='record' class='add hidden' title='Добавить'></div></td>";
 					else
-						echo "<td class='else'><div class='delRow  hidden'></div></td>"
+						echo "<td class='noborder'><div class='delRow  hidden'></div></td>"
 				?>
 			</tr>
 		<?php endforeach; ?>
 
 		</table>
 	<?php endif; ?>
-<!--
-
-
-
-				<tr><th class='txt'>Контакт</th><th>должность</th><th class='txt'>Телефон</th><th class='txt'>Мыло</th><th class='txt'>Заметка</th><th class='else'><div id='alias' title='Добавить'></div></th></tr>
-				<tr class="alias">
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><div class="delRow"></div></td>
-				</tr>
-				<tr class="alias">
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><div class="delRow"></div></td>
-				</tr>				<tr class="alias">
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><div class="delRow"></div></td>
-				</tr>				<tr class="alias">
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><textarea name="fname[]" rows=3 placeholder="NS1 name"></textarea></td>
-					<td><div class="delRow"></div></td>
-				</tr>
-				<tr class="alias">
-					<td><input type="text" name="fname[]" placeholder="NS1 name"></td>
-					<td><input type="text" name="fname[]" placeholder="NS1 name"></td>
-					<td><input type="text" name="faddr[]" placeholder="IP адрес NS1"></td>
-					<td><input type="text" name="fname[]" placeholder="NS1 name"></td>
-					<td><input type="text" name="faddr[]" placeholder="IP адрес NS1"></td>
-					<td><div class="delRow"></div></td>
-				</tr>
-				<tr class="alias">
-					<td><input type="text" name="fname[]" placeholder="NS1 name"></td>
-					<td><input type="text" name="fname[]" placeholder="NS1 name"></td>
-					<td><input type="text" name="faddr[]" placeholder="IP адрес NS1"></td>
-					<td><input type="text" name="fname[]" placeholder="NS1 name"></td>
-					<td><input type="text" name="faddr[]" placeholder="IP адрес NS1"></td>
-					<td><div class="delRow"></div></td>
-				</tr>
-				<tr class="alias">
-					<td><input type="text" name="fname[]" placeholder="NS1 name"></td>
-					<td><input type="text" name="fname[]" placeholder="NS1 name"></td>
-					<td><input type="text" name="faddr[]" placeholder="IP адрес NS1"></td>
-					<td><input type="text" name="fname[]" placeholder="NS1 name"></td>
-					<td><input type="text" name="faddr[]" placeholder="IP адрес NS1"></td>
-					<td><div class="delRow"></div></td>
-				</tr>
-
-
--->
-
 
 	<div class='submit'><input type='submit' id='submit_view' value='Добавить' onSubmit='function(){return false;}'></div>
 </form>
