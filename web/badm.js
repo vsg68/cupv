@@ -6,11 +6,30 @@ $(function(){
 
 		if( $(this).attr('id') == 'entry') {
 
-			new_tr = "<tr><td class='fname'>" 												+
-						 "<input type='text' name='tdname[]' placeholder='название'/>"		+
-						 "<input type='hidden' name='tdval[]' value=''/></td>" 				+
-					 "</td><td><div class='delRow'></div></td>" 							+
-					 "</tr>";
+			var fname = $(':text[name="fname"]').val();
+			var ftype = $('option:selected').val();
+
+			if( ! fname ) {
+				$('.text[name="fname"]').focus();
+				return false;
+			}
+// можно действовать клонированием, если запретить убирать последнюю строку в таблице
+			tr = "<tr class='line'><td></td></tr>" +
+			     "<tr><td class='fname'>" 		+
+				 "<input type='hidden' name='fname[]' value='" + fname + "'/>" + fname + "</td>"+
+				 "<td class='ftext'>";
+
+			if(ftype == 'text')
+				tr += "<input type='text' name='fval[]' value=''/>";
+			else
+				tr += "<textarea name='fval[]'></textarea>";
+
+			tr += "<input type='hidden' name='ftype[]' value='" + ftype + "'/></td>" +
+				  "<td class='noborder'><div class='delRow'></div></td></tr>";
+
+			$('.text[name="fname"]').val('');	  // нужное составили
+
+			$('table.entries').append(tr);
 		}
 		else {
 
@@ -29,9 +48,11 @@ $(function(){
 			tr.find('.else')
 			  .html('<div class="delRow"></div>')
 			  .removeClass('else');
+
+			$(this).closest('table').append(tr);
 		}
 
-		$(this).closest('table').append(tr);
+
 
 		return false;
 	});
@@ -45,9 +66,7 @@ $(function(){
 
 
 	$('.ed-0').live('click', function(){
-// какой родительский класс вызываем
-						$('.add, .delRow').toggleClass('hidden');
-						//$('.else').toggleClass('hidden');
+				$('.templ, .add, .delRow, .submit').toggleClass('hidden');
 	});
 
 		//~ tmpl_id = $(this).attr('id').replace('x-','');

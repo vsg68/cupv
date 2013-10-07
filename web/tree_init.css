@@ -18,6 +18,9 @@ input {
 	width: 300px;
 }
 
+.templ select {
+	width: 100px;
+}
 .records{
 	border-collapse:collapse;
 /*
@@ -27,7 +30,7 @@ input {
 	margin: 0px !important;
 }
 
-.entries{
+.entries, .templ{
 	border: none;
 	border-collapse:collapse;
 	text-align: left;
@@ -117,6 +120,7 @@ ul.dynatree-container li {
 }
 .noborder {
 	border: none !important;
+	width: 23px;
 }
 
 #editNode {
