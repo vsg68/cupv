@@ -1,6 +1,9 @@
 
 $(function(){
 
+	enableDnd();
+	$("#tree").dynatree("getTree").reload();
+
 	$('.add').live('click',function(){
 
 
@@ -32,6 +35,7 @@ $(function(){
 
 
 	$('#new').click( function(){ createItem(this) });
+
 
 
 

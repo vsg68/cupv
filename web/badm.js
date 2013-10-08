@@ -13,7 +13,7 @@ $(function(){
 				$('.text[name="fname"]').focus();
 				return false;
 			}
-// можно действовать клонированием, если запретить убирать последнюю строку в таблице
+
 			tr = "<tr class='line'><td></td></tr>" +
 			     "<tr><td class='fname'>" 		+
 				 "<input type='hidden' name='fname[]' value='" + fname + "'/>" + fname + "</td>"+
@@ -57,40 +57,36 @@ $(function(){
 		return false;
 	});
 
-	// Устанавливаем ширину поля таблицы
-	W = $('.records td:first').innerWidth()-4;
-	$('.records textarea').css('max-width', W);
-
 
 	$('#new span').click( function(){ createItem(this) });
 
 
 	$('.ed-0').live('click', function(){
-				$('.templ, .add, .delRow, .submit').toggleClass('hidden');
+
+								if( $('.templ').hasClass('hidden') ) {
+
+										$('.templ, .add, .delRow, .submit').removeClass('hidden');
+										enableDnd();
+								}
+								else {
+										$('.templ, .add, .delRow, .submit').addClass('hidden');
+										disableDnd();
+								}
+
+								$("#tree").dynatree("getTree").reload();
 	});
 
-		//~ tmpl_id = $(this).attr('id').replace('x-','');
-//~
-		//~ $("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
-//~
-		//~ var node = $("#tree").dynatree("getTree").getNodeByKey('00');
-//~
-//~
-		//~ $.post('/badm/add',{id:0, name:node.data.title, pid:0, tmpl_id:tmpl_id }, function(response){
-//~
-						//~ tmpl = /^\d+$/;
-//~
-						//~ if( tmpl.test(response) ) {
-							//~ node.data.key = response;
-							//~ getData(ctrl, node.data.key);
-						//~ }
-						//~ else {
-							//~ node.remove();
-							//~ alert('при сохранении произошла ошибка');
-						//~ }
-		//~ })
-	//~ });
-
-
-
 });
+
+function textareaWidth(){
+
+	// Устанавливаем ширину поля таблицы
+	//tab =  $('table.records').width() - $('td.else').width();
+
+	tdcount =  $('.records tr:first').children('td').length - 1;
+	$('.records textarea').width( Math.ceil( 600/tdcount -6) );
+
+}
+
+
+

@@ -52,33 +52,13 @@ $(function(){
 		debugLevel: 0,
 		dnd: {
 			  onDragStart: function(node) {
-					oldPid = node.getParent().data.key;
-					return true;
-			  },
-			  onDragStop: function(node) {
-					if( oldPid != node.getParent().data.key) {
-						sendChange(node);
-					}
+					return false;
 			  },
 			  autoExpandMS: 1000,
 			  preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-			  onDragEnter: function(node, sourceNode) { return true; },
-			  onDragOver: function(node, sourceNode, hitMode) {
-					// Prevent dropping a parent below it's own child
-					if(node.isDescendantOf(sourceNode)){
-					  return false;
-					}
-					// Prohibit creating childs in non-folders (only sorting allowed)
-					if( !node.data.isFolder && hitMode === "over" ){
-					  return "after";
-					}
-			  },
-			  onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-					// This function MUST be defined to enable dropping of items on the tree.
-					sourceNode.move(node, hitMode);
-			  },
 		}
 	});
+
 
 	$('#del').click(function(){
 
@@ -95,7 +75,9 @@ $(function(){
 
 	$('.delRow').live('click', function(){
 
-			$(this).closest('tr').remove();
+			// последнюю не убираем
+			if( $(this).closest('tr').siblings().length > 1)
+				$(this).closest('tr').remove();
 	});
 
 	$('#submit_view').live('click', function(event){
@@ -117,6 +99,44 @@ $(function(){
 			});
 
 });
+
+function enableDnd() {
+
+	$("#tree").dynatree('option','dnd', {
+			  onDragStart: function(node) {
+					oldPid = node.getParent().data.key;
+					return true;
+			  },
+			  onDragStop: function(node) {
+					if( oldPid != node.getParent().data.key) {
+						sendChange(node);
+					}
+			  },
+			  //~ autoExpandMS: 1000,
+			  //~ preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+			  onDragEnter: function(node, sourceNode) { return true; },
+			  onDragOver: function(node, sourceNode, hitMode) {
+					// Prevent dropping a parent below it's own child
+					if(node.isDescendantOf(sourceNode)){
+					  return false;
+					}
+					// Prohibit creating childs in non-folders (only sorting allowed)
+					if( !node.data.isFolder && hitMode === "over" ){
+					  return "after";
+					}
+			  },
+			  onDrop: function(node, sourceNode, hitMode, ui, draggable) {
+					// This function MUST be defined to enable dropping of items on the tree.
+					sourceNode.move(node, hitMode);
+			  },
+		});
+
+}
+
+function disableDnd() {
+
+	$("#tree").dynatree('option','dnd', {});
+}
 
 function editNode(node){
 
@@ -186,7 +206,7 @@ function getData(id) {
 
 			var node = $("#tree").dynatree("getTree").getNodeByKey(id);
 
-			if(node.getChildren() === true)
+			if(node.hasChildren() === true)
 				return false;
 
 			$.get('/'+ ctrl + '/single/'+id,{'act':'1'},function(response){

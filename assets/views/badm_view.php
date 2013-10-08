@@ -2,7 +2,7 @@
 
 	<div class='ed-0' title='Редактировать'></div>
 	<table class='templ hidden'>
-		<tr class='fhead'><th width='240px'>Название</th><th width='101px'>Тип поля</th><th></th></tr>
+		<tr class='fhead'><th width='240px'>Название поля</th><th width='101px'>Тип поля</th><th></th></tr>
 		<tr class='alias'>
 			<td class='fname1'>
 				<input type='text' name='fname' value=''/>
@@ -76,3 +76,4 @@
 	<div class='submit hidden'><input type='submit' id='submit_view' value='Добавить'></div>
 </form>
 
+<script type="text/javascript"> textareaWidth();</script>

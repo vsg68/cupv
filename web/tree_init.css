@@ -8,12 +8,20 @@
 textarea {
 	font-family: verdana, tahoma;
 	font-size: 13px;
-	width: 300px;
-/*
+	color: #888;
 	height: 50px;
-*/
+	margin:0;
+	border:1px solid #ccc;
+}
+.entries textarea  {
+	width: 300px;
 	resize: vertical;
 }
+.records textarea {
+	resize: none;
+	border: none;
+}
+
 input {
 	width: 300px;
 }
@@ -21,11 +29,8 @@ input {
 .templ select {
 	width: 100px;
 }
-.records{
+table.records {
 	border-collapse:collapse;
-/*
-	border:1px solid #ddd;
-*/
 	width: 100% !important;
 	margin: 0px !important;
 }
@@ -35,20 +40,11 @@ input {
 	border-collapse:collapse;
 	text-align: left;
 }
-.records textarea {
-	font-family: verdana, tahome;
-	font-size: 13px;
-	color: #888;
-	resize: none;
-	border:0px solid #ccc;
-	max-width: 100px;
-	margin:0;
-}
 .t-h{
 	height: 23px;
+	font-weight:bold;
 }
 .records td{
-	font-weight:bold;
 	border:1px solid #ccc;
 	padding:0px;
 }
