@@ -117,6 +117,7 @@ ul.dynatree-container li {
 }
 .noborder {
 	border: none !important;
+	width: 23px;
 }
 
 #editNode {

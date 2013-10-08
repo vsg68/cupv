@@ -6,7 +6,7 @@
 		<h4>Контакты</h4>
 		<table class='entries'>
 
-			<tr class='fhead hidden'><th>Название</th><th>Поле</th><th class='else'><div class='add' id='entry' title='Добавить'></div></th></tr>
+			<tr class='fhead hidden'><th>Название</th><th>Поле</th><th class='else'><div class='add hidden' id='entry' title='Добавить'></div></th></tr>
 		<?php foreach ($templ['entry'] as $entry): ?>
 			<tr class='line'><td></td></tr>
 			<tr>
@@ -22,7 +22,7 @@
 				<?php endif; ?>
 					<input type='hidden' name='ftype[]' value='<?= $entry['ftype'] ?>'/>
 				</td>
-				<td class='else'><div class="delRow  hidden"></div></td>
+				<td class='noborder'><div class="delRow  hidden"></div></td>
 			</tr>
 		<?php endforeach; ?>
 	   </table>

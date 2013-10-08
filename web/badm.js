@@ -45,9 +45,8 @@ $(function(){
 
 
 	$('.ed-0').live('click', function(){
-// какой родительский класс вызываем
-						$('.add, .delRow').toggleClass('hidden');
-						//$('.else').toggleClass('hidden');
+				$('.fhead, .add, .delRow').toggleClass('hidden');
+
 	});
 
 		//~ tmpl_id = $(this).attr('id').replace('x-','');
