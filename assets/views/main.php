@@ -5,8 +5,10 @@
         <title>Users</title>
             <script type='text/javascript' language='JavaScript'  src='/jquery-1.8.2.min.js' ></script>
             <script type='text/javascript' language='JavaScript'  src='/jquery.autocomplete.min.js' ></script>
+            <script type="text/javascript" src="/jquery-ui.min.js"></script>
 			<script type="text/javascript" src='/init.js'></script>
 
+			<link rel="stylesheet" href="/jquery-ui.css" type="text/css" />
 			<link rel="stylesheet" href="/main.css" type="text/css" />
 			<link rel="stylesheet" href="/main-color.css" type="text/css" />
 			<?= $css_file; ?>

@@ -21,6 +21,8 @@ $(function(){
 
 			if(ftype == 'text')
 				tr += "<input type='text' name='fval[]' value=''/>";
+			else if(ftype == 'data')
+				tr += "<input type='text' name='fval[]' value='' class='date_field'/>";
 			else
 				tr += "<textarea name='fval[]'></textarea>";
 
@@ -30,6 +32,8 @@ $(function(){
 			$('.text[name="fname"]').val('');	  // нужное составили
 
 			$('table.entries').append(tr);
+
+			$(".date_field").datepicker({ dateFormat: "yy-mm-dd" });
 		}
 		else {
 
@@ -60,7 +64,6 @@ $(function(){
 
 	$('#new span').click( function(){ createItem(this) });
 
-
 	$('.ed-0').live('click', function(){
 
 								if( $('.templ').hasClass('hidden') ) {
@@ -77,11 +80,8 @@ $(function(){
 	});
 
 });
-
+// Устанавливаем ширину поля таблицы - эмпирически
 function textareaWidth(){
-
-	// Устанавливаем ширину поля таблицы
-	//tab =  $('table.records').width() - $('td.else').width();
 
 	tdcount =  $('.records tr:first').children('td').length - 1;
 	$('.records textarea').width( Math.ceil( 600/tdcount -6) );

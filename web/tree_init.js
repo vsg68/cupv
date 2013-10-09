@@ -82,7 +82,17 @@ $(function(){
 
 	$('#submit_view').live('click', function(event){
 
-			try_submit();
+			var params =  $('#usersform').serialize();
+
+			$.post(	'/'+ ctrl +'/add/', params , function(response) {
+
+								tmpl = /^\d+$/;
+
+								if( tmpl.test(response) )
+									window.location = '/'+ ctrl +'/view/' + response;
+								else
+									$('#ed').empty().html(response);
+							});
 			return false;
 	});
 
@@ -97,6 +107,9 @@ $(function(){
 				  $('ul',this).stop(true,true).slideUp(200);
 				}, this), 100));
 			});
+
+
+
 
 });
 
@@ -184,8 +197,6 @@ function editNode(node){
 
 }
 
-
-
 function sendChange(node) {
 
 	  tmpl = /^_/;
@@ -240,3 +251,4 @@ function createItem(obj) {
 						}
 		})
 }
+

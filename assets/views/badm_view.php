@@ -11,6 +11,7 @@
 				<select name='ftype'>
 					<option value='text' selected>text</option>
 					<option value='textarea'>textarea</option>
+					<option value='data'>data</option>
 				</select>
 			</td>
 			<td><div class='add hidden' id='entry' title='Добавить'></div></td>
@@ -21,7 +22,7 @@
 	<input type='hidden' name='id' value='<?= $entries->id ?>' />
 
 	<?php if( isset($templ['entry']) ): ?>
-		<h4>Контакты</h4>
+		<h4><?= $entries->name ?></h4>
 		<table class='entries'>
 		<?php foreach ($templ['entry'] as $entry): ?>
 			<tr class='line'><td></td></tr>
@@ -33,8 +34,10 @@
 				<td class='ftext'>
 				<?php if($entry['ftype'] == 'text'): ?>
 					<input type='text' name='fval[]' value='<?= $entry['fval'] ?>'/>
+				<?php elseif($entry['ftype'] == 'data'): ?>
+					<input type='text' name='fval[]' value='<?= $entry['fval'] ?>' class='date_field'/>
 				<?php else: ?>
-					<textarea name='fval[]'>'<?= $entry['fval'] ?></textarea>
+					<textarea name='fval[]'><?= $entry['fval'] ?></textarea>
 				<?php endif; ?>
 					<input type='hidden' name='ftype[]' value='<?= $entry['ftype'] ?>'/>
 				</td>
@@ -48,7 +51,6 @@
 <br />
 
 	<?php if( isset($templ['records']) ): ?>
-		<h4>Записи</h4>
 		<table class='records'>
 
 			<?php foreach ($templ['records'] as $key=>$record): ?>
@@ -76,4 +78,7 @@
 	<div class='submit hidden'><input type='submit' id='submit_view' value='Добавить'></div>
 </form>
 
-<script type="text/javascript"> textareaWidth();</script>
+<script type="text/javascript">
+$(".date_field").datepicker({ dateFormat: "yy-mm-dd" });
+textareaWidth();
+</script>

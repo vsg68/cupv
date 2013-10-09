@@ -41,12 +41,7 @@ input,select {
 	overflow-x: auto;
 	text-align: left;
 }
-.ui-widget-header, .ui-datapicker,.ui-widget-content, .ui-state-default {
-	color: #c96c4c;
-}
-.ui-widget-header .ui-icon {
-	background-image: url(/ui-icons_454545_256x240.png) !important;
-}
+
 #fltr {
 	width: 130px;
 }

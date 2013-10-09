@@ -3,7 +3,7 @@ namespace App;
 
 class ItBase extends Page {
 
-	protected $type;
+	protected $view_tmpl;
 
 	public function before() {
 
@@ -12,8 +12,8 @@ class ItBase extends Page {
 
 		$this->view->subview = 'base_main';
 
-		$this->view->script_file  = '<script type="text/javascript" src="/jquery-ui.custom.min.js"></script>';
-		$this->view->script_file .= '<script type="text/javascript" src="/jquery.dynatree.js"></script>';
+
+		$this->view->script_file = '<script type="text/javascript" src="/jquery.dynatree.js"></script>';
 		$this->view->script_file .= '<script type="text/javascript" src="/tree_init.js"></script>';
 
 		$this->view->css_file = '<link rel="stylesheet" href="/skin/ui.dynatree.css" type="text/css" />';
@@ -94,8 +94,6 @@ class ItBase extends Page {
 			$entry = $templ = array();
 			$params = $this->request->post();
 
-//print_r($params); exit;
-
 			if( isset($params['fname']) ) {
 				foreach($params['fname'] as $key=>$val) {
 
@@ -109,7 +107,7 @@ class ItBase extends Page {
 			if( isset($params['tdname']) ) {
 
 				foreach($params['tdname'] as $key=>$tdvalues) {
-//print_r($tdvalues); exit;
+
 					foreach($tdvalues as $tdvalue) {
 
 						if( !isset($templ['records'][$key]) )
@@ -138,8 +136,6 @@ class ItBase extends Page {
 			if( count($templ) )				$entry['templ'] = serialize($templ);
 
 			$entry['page'] = $this->request->param('controller');
-
-//print_r($entry); exit;
 
 			if ( $params['id'] == 0 ) {
 			// Новая запись
@@ -173,6 +169,41 @@ class ItBase extends Page {
 		}
 
 	}
+
+	protected function show_single($view) {
+
+		if( $this->permissions == $this::NONE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
+		//$view = $this->pixie->view( $this->request->param('controller').'_view' );
+		//$view = $view_tmpl;
+
+		// вывод лога
+		$view->log = $this->getVar($this->logmsg,'');
+
+		// если не редактирование,т.е. начальный вход
+		if( ! $this->request->param('id') )
+			return; // "<img class='lb' src='/Dns.png' />";
+
+		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
+
+
+		$view->entries = $this->pixie->db->query('select','itbase')
+										->table('names')
+										->where('id',$this->_id)
+										->execute()
+										->current();
+
+		$view->templ = ($view->entries->templ) ? unserialize($view->entries->templ) : array();
+
+		// Редактирование
+		if( ! $this->request->get('act') )
+			return $view->render();
+
+        $this->response->body = $view->render();
+    }
+
 
 	protected function getTemplItems() {
 

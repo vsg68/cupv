@@ -15,10 +15,8 @@ class Logs extends \App\Page {
 
 		$this->view->subview 		= 'logs_main';
 
-		$this->view->script_file	= '<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>'.
-								'<script type="text/javascript" src="/logs.js"></script>';
-		$this->view->css_file 	= '<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />'.
-								'<link rel="stylesheet" href="/logs.css" type="text/css" />';
+		$this->view->script_file = '<script type="text/javascript" src="/logs.js"></script>';
+		$this->view->css_file 	 = '<link rel="stylesheet" href="/logs.css" type="text/css" />';
 
         $this->response->body	= $this->view->render();
     }

@@ -19,6 +19,7 @@
 					<select name='ftype[]'>
 						<option value='text' <?php $entry['ftype'] == 'text' || print "selected"  ?>>text</option>
 						<option value='textarea' <?php $entry['ftype'] != 'textarea' || print "selected" ?>>textarea</option>
+						<option value='data' <?php $entry['ftype'] != 'data' || print "selected"  ?>>data</option>
 					</select>
 				</td>
 				<td><div class="delRow"></div></td>
@@ -37,6 +38,7 @@
 			<tr class='alias'>
 				<td class='fname'>
 					<input type='text' name='tdname[0][]' value='<?= $record ?>'/>
+					<input type='hidden' name='tdname[1][]' value=''/>
 				</td>
 				<td><div class="delRow"></div></td>
 			</tr>

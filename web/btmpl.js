@@ -16,6 +16,7 @@ $(function(){
 						"<select name='ftype[]'>" 											+
 							"<option value='text' selected>text</option>" 					+
 							"<option value='textarea'>textarea</option>"					+
+							"<option value='data'>data</option>"					+
 						"</select>"															+
 					"</td><td><div class='delRow'></div></td>"								+
 					"</tr>";
@@ -33,23 +34,6 @@ $(function(){
 	});
 
 
-
 	$('#new').click( function(){ createItem(this) });
-
-
-
-
-
-
-
-//~
-	//~
-	//~ $('textarea').live('keydown',function(){
-//~
-		//~ $(this).css('height', $(this).scrollHeight+'px');
-		//~ alert($(this).attr('rows') +'; real: ' + $(this).height() +', line: ' + $(this).css('line-height'));
-		//~ })
-
-
 
 });
