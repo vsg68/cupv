@@ -117,7 +117,7 @@ class ItBase extends Page {
 					}
 				}
 			}
-//print_r($templ['records']; exit;
+
 			// копирование шаблона
 			if( isset($params['tmpl_id']) ) {
 
