@@ -34,13 +34,13 @@ $(function(){
 			getData(node.data.key);
 
 		},
-		onKeydown: function(node, event) {
-			// [F2]
-			if( event.which == 113) {
-				editNode(node);
-				return false;
-			}
-		},
+		//~ onKeydown: function(node, event) {
+			//~ // [F2]
+			//~ if( event.which == 113) {
+				//~ editNode(node);
+				//~ return false;
+			//~ }
+		//~ },
 		onPostInit: function(isReloading, isError) {
 			// All expand;
 			$("#tree").dynatree("getRoot").visit(function(node){

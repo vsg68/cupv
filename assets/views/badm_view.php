@@ -21,10 +21,19 @@
 <form id='usersform' action='#' method='post'>
 	<input type='hidden' name='id' value='<?= $entries->id ?>' />
 
-	<?php if( isset($templ['entry']) ): ?>
-		<h4><?= $entries->name ?></h4>
 		<table class='entries'>
-		<?php foreach ($templ['entry'] as $entry): ?>
+			<tr>
+				<td class='fname'>Никнейм</td>
+				<td><input type='text' name='name' value='<?= $entries->name ?>' /></td>
+				<td class='noborder'></td>
+			</tr>
+
+		<?php
+			if( isset($templ['entry']) ) {
+
+				foreach ($templ['entry'] as $entry):
+
+		?>
 			<tr class='line'><td></td></tr>
 			<tr>
 				<td class='fname'>
@@ -43,10 +52,8 @@
 				</td>
 				<td class='noborder'><div class="delRow  hidden"></div></td>
 			</tr>
-		<?php endforeach; ?>
+		<?php endforeach; } ?>
 	   </table>
-
-	<?php endif; ?>
 
 <br />
 
