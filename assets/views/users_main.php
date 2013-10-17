@@ -1,37 +1,40 @@
-<div class="editmenu">
-	<div id='domains_flt'>Домен:
-		<select>
-			<option value='' selected></option>
-			<?php foreach($domains as $domain):?>
-				<option value='<?php echo $domain->domain_name;?>' ><?php echo $domain->domain_name; ?></option>
-			<?php endforeach;?>
-		</select>
-	</div>
-	<div class='lb_filter'> ФИО (filter):
-		<input type='text' id='fltr'>
-	</div>
-		<div id='home' title='главная'></div>
-		<div id='new' title='новая запись'></div>
-</div>
-<div id='usrs'>
-	<div class='aliasesplace'>
-		<div>
-			<div class='th'>mailbox</div>
-			<div class='th'>name</div>
-		</div>
-		<div class='aliases_box'>
-			<table>
-			<?php foreach( $users as $user ): ?>
-			   <tr sid="<?= $user->user_id ?>" sname="<?= $user->mailbox ?>" class='<?= $user->active == 0 ? 'nonactive':''; ?>'>
-				   <td class="key"><?= $user->mailbox ?></td>
-				   <td class="val"><?= $user->username ?></td>
-			   </tr>
-			<?php endforeach; ?>
+
+		<div id="demo">
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="entry">
+				<thead>
+					<tr>
+						<th>ФИО</th>
+						<th>Mailbox</th>
+						<th>Domain</th>
+						<th>Passwd</th>
+						<th>Nets</th>
+						<th>Path</th>
+						<th>Groups</th>
+						<th>Imap</th>
+						<th>Active</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach( $users as $user ): ?>
+						<tr id='id<?= $user->user_id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>'>
+							<td><?= $user->username ?></td>
+							<td><?= $user->mailbox ?></td>
+							<td><?= explode('@',$user->mailbox)[1] ?></td>
+							<td><?= $user->password ?></td>
+							<td><?= $user->allow_nets ?></td>
+							<td><?= $user->path ?></td>
+							<td><?= $user->acl_groups ?></td>
+							<td><?= $user->imap_enable ?></td>
+							<td><?= $user->active ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
 			</table>
 		</div>
-	</div>
-</div>
-<div id='ed'>
-	<?= $users_block ?>
-</div>
+
+		<div class='divider'>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="records"></table>
+		</div>
+
 

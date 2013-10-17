@@ -1,0 +1,64 @@
+html, body {
+	margin:0px; padding:0px;
+	background:#f3f3f3;
+	position:relative;
+}
+
+body {
+
+}
+.container {
+	margin: 10px auto;
+	min-width:1000px;
+	width: 95%;
+	overflow: hidden;
+}
+.content {
+	float:right;
+	margin-right:-125px;
+	width:100%;
+}
+.content-left {
+	float:left;
+	width:125px;
+}
+.content-center {
+	margin-right:125px;
+}
+.divider {
+	padding: 40px 0;
+}
+.page-name {
+	font-weight: bold;
+	font-size: 1.2em;
+/*
+	color: #a03a00;
+*/
+}
+.row_selected {
+	background-color: #8282b8;
+}
+.theme {
+	width: 100px;
+	height: 100px;
+	margin: 10px;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Firefox */
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Safari и Chrome */
+    box-shadow: 0 0 20px rgba(0,0,0,0.3); /* Параметры тени */
+}
+/*  Table Color*/
+tr.gradeU {
+	color: #888;
+}
+tr.odd {
+	background-color: #F0F5FC;
+}
+tr.odd td.sorting_1 {
+	background-color: #D3E8FF;
+}
+tr.even td.sorting_1 {
+	background-color: #F0F7FF;
+}

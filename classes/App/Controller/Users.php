@@ -7,14 +7,14 @@ class Users extends \App\Page {
     public function action_view() {
 
 
-		$this->view->script_file = '<script type="text/javascript" src="/users.js"></script>';
-		$this->view->css_file = '<link rel="stylesheet" href="/users.css" type="text/css" />';
+		$this->view->script_file = '<script type="text/javascript" src="../js/users.js"></script>';
+		$this->view->css_file = '';//'<link rel="stylesheet" href="/users.css" type="text/css" />';
 
 		// Проверка легитимности пользователя и его прав
-        if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
+        //~ if( $this->permissions == $this::NONE_LEVEL ) {
+			//~ $this->noperm();
+			//~ return false;
+		//~ }
 
 		$this->view->subview = 'users_main';
 
@@ -22,14 +22,6 @@ class Users extends \App\Page {
 												->table('users')
 												->order_by('mailbox')
 												->execute();
-
-		$this->view->domains = $this->pixie->db->query('select')
-												->fields('domain_name')
-												->table('domains')
-												->where('delivery_to','virtual')
-												->execute();
-
-		$this->view->users_block = $this->action_single();
 
         $this->response->body = $this->view->render();
     }
@@ -54,45 +46,44 @@ class Users extends \App\Page {
         $this->response->body = $view->render();
     }
 
-	public function action_single() {
+	public function action_records() {
 
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-		$view = $this->pixie->view('users_view');
-
-		// вывод лога
-		$view->log = $this->getVar($this->logmsg,'');
+		//~ if( $this->permissions == $this::NONE_LEVEL ) {
+			//~ $this->noperm();
+			//~ return false;
+		//~ }
 
 		// если не редактирование,т.е. начальный вход
 		if( ! $this->request->param('id') )
 			return; // "<img class='lb' src='/users.png' />";
 
-		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
+		$this->_id = $this->request->param('id');
 
-		$view->user = $this->pixie->db->query('select')
-										->table('users')
-										->where('user_id',$this->_id)
-										->execute()
-										->current();
-
-		$view->aliases = $this->pixie->db->query('select')
+		$aliases = $this->pixie->db->query('select')
 										->fields('alias_id','alias_name', 'delivery_to', 'active')
 										->table('aliases','A')
 										->join(array('users','U1'),array('U1.mailbox','A.alias_name'))
 										->join(array('users','U2'),array('U2.mailbox','A.delivery_to'))
 										->where('U1.user_id',$this->_id)
 										->where('or',array('U2.user_id',$this->_id))
-										->execute()
-										->as_array();
+										->execute();
 
-		// Редактирование
-		if( ! $this->request->get('act') )
-			return $view->render();
 
-        $this->response->body = $view->render();
+		$data = array();
+
+		foreach($aliases as $alias) {
+
+			$data[] = array( $alias->alias_name,
+							 $alias->delivery_to,
+							 $alias->active,
+							 'DT_RowId' => $alias->alias_id,
+							 'DT_RowClass' => ( $alias->active ) ? 'gradeA' : 'gradeU'
+							 );
+		}
+
+
+		$this->response->body = ( $data ) ? json_encode($data) : "[{null,null,null}]" ;
+
     }
 
 	public function action_add() {

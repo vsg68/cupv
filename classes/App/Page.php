@@ -34,8 +34,8 @@ class Page extends \PHPixie\Controller {
 										->execute();
 
 		// Проверка легитимности пользователя и его прав
-        if( $this->request->param('controller') != 'login' )
-			$this->permissions = $this->is_approve();
+       // if( $this->request->param('controller') != 'login' )
+		//	$this->permissions = $this->is_approve();
 
 	}
 
