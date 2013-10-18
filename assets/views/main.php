@@ -10,6 +10,7 @@
 
 		<script type="text/javascript" language="javascript" src="../js/jquery-1.9.1.js"></script>
 		<script type="text/javascript" language="javascript" src="../js/jquery.dataTables.js"></script>
+		<script type="text/javascript" language="javascript" src="../js/jquery.jeditable.js"></script>
 		<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
 
 		<script type="text/javascript" language="javascript" src="../js/init.js"></script>

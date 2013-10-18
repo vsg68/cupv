@@ -8,22 +8,41 @@ $(document).ready(function() {
 		if( eH + d_min > H )
 			eH = H - d_min;
 
-		$('#entry').dataTable({
-							"bJQueryUI": true,
-							"sScrollY":  eH + "px",
-							"bPaginate": false,
-							"aoColumnDefs": [
-											{"bSortable":false, "aTargets": [3] },
-											{"bSortable":false, "aTargets": [4] },
-											{"bSortable":false, "aTargets": [5] },
-											{"bSortable":false, "aTargets": [6] },
-											{"bSortable":false, "sClass": "center", "aTargets": [7] },
-											{"bSortable":false, "sClass": "center", "aTargets": [8] },
-											]
-							});
-		$('#entry')
+		oTable = $('#entry').dataTable({
+								"bJQueryUI": true,
+								"sScrollY":  eH + "px",
+								"bPaginate": false,
+								"aoColumnDefs": [
+												{"bSortable":false, "aTargets": [3] },
+												{"bSortable":false, "aTargets": [4] },
+												{"bSortable":false, "aTargets": [5] },
+												{"bSortable":false, "aTargets": [6] },
+												{"bSortable":false, "sClass": "center", "aTargets": [7] },
+												{"bSortable":false, "sClass": "center", "aTargets": [8] },
+												],
+								"fnDrawCallback": function() {
+																$('#entry tbody td')
+																.not('.uneditable')
+																.editable( '../examples_support/editable_ajax.php', {
+																			"callback": function( sValue, y ) {
+																				/* Redraw the table from the new data on the server */
+																				oTable.fnDraw();
+																			},
+																			"height": "14px",
+																			"event": "dblclick",
+																			"placeholder": ''
+																			}
+																);
+												  },
+								"fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
 
-			$('#records').dataTable({
+														if( ! $(nTd).hasClass('uneditable') )
+		??????													$(nTd).attr('id',$(iRow).attr('id') + '-' + iCol);
+													}
+								});
+		//$('#entry')
+
+		aTable = $('#records').dataTable({
 								"bJQueryUI": true,
 								"sDom": 't',
 								"sScrollY": rH+"px",
@@ -32,10 +51,22 @@ $(document).ready(function() {
 												{"sTitle":"Forward","sClass": "center"},
 												{"sTitle":"on/off","sClass": "center","bSortable":false }
 											],
-								"aaData": [[null,null,null,{"mData": null}]]
+								"aaData": [[null,null,null,{"mData": null}]],
+								"fnDrawCallback": function () {
+																$('#records tbody td')
+																.not('.uneditable')
+																.editable( '../examples_support/editable_ajax.php', {
+																			"callback": function( sValue, y ) {
+																				/* Redraw the table from the new data on the server */
+																				oTable.fnDraw();
+																			},
+																			"height": "14px",
+																			"event": "dblclick",
+																			"placeholder": ''
+																			}
+																);
+												  }
 								});
-
-
-	printTitle();
+		printTitle();
 
 });

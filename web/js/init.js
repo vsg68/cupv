@@ -53,9 +53,18 @@ function fnGetSelected( oTableLocal ) {
 
 function showRecordTable(uid) {
 
-	id = uid.replace('id','');
-	$('#records').dataTable().fnClearTable();
-
-	$.get('/'+ ctrl +'/records/' + id, function(response) { $('#records').dataTable().fnAddData(response);}, "json");
+	id = uid.replace('id-','');
+	$.ajax({
+			type: "GET",
+			url: '/'+ ctrl +'/records/' + id,
+			success: function(response) {
+									$('#records').dataTable().fnClearTable();
+									$('#records').dataTable().fnAddData(response);
+									},
+			error: function() {
+								$('#records').dataTable().fnClearTable();
+								},
+			dataType: "json"
+			});
 
 }
