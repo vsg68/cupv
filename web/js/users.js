@@ -36,7 +36,6 @@ $(document).ready(function() {
 								});
 
 
-		// Хидер с названием
-		$("div.fg-toolbar:first").append('<div class="page-name">Custom tool bar! Text/images etc.</div>');
+	printTitle();
 
 });

@@ -34,7 +34,16 @@ $(document).ready(function() {
 
 
 
+
+
+
 } );
+
+/* Хидер с названием */
+function printTitle() {
+
+	$("div.fg-toolbar:first").append('<div class="page-name">' + $('#'+ctrl).attr('title') + '</div>');
+}
 
 /* Get the rows which are currently selected */
 function fnGetSelected( oTableLocal ) {
