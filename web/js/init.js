@@ -9,14 +9,11 @@ $(document).ready(function() {
 
 		// Выделение строки
 		$("#entry tbody tr").click( function( e ) {
-			if ( $(this).hasClass('row_selected') ) {
+			if ( $(this).hasClass('row_selected') ) return;
 
-				$(this).removeClass('row_selected');
-			}
-			else {
-				$('tr.row_selected').removeClass('row_selected');
-				$(this).addClass('row_selected');
-			}
+			$('tr.row_selected').removeClass('row_selected');
+			$(this).addClass('row_selected');
+
 
 			showRecordTable( $(this).closest('tr').attr('id') );
 			//alert( $(this).closest('tr').attr('id') );
@@ -33,7 +30,13 @@ $(document).ready(function() {
 		});
 
 
+		$("#records").click( function(e) {
 
+				id = $(this).closest('tr').attr('id').replace(/[^-]+-/,'');
+				tab = $(this).closest('table').attr('id');
+				alert('/'+ ctrl +'/onerow/' + id + ', table: '+ tab);
+
+		});
 
 
 

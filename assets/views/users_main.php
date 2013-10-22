@@ -18,15 +18,15 @@
 				<tbody>
 					<?php foreach( $users as $user ): ?>
 						<tr id='id-<?= $user->user_id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>'>
-							<td id='username-<?= $user->user_id ?>'><?= $user->username ?></td>
-							<td id='mailbox-<?= $user->user_id ?>'><?= $user->mailbox ?></td>
-							<td class='uneditable'><?= explode('@',$user->mailbox)[1] ?></td>
-							<td id='password-<?= $user->user_id ?>'><?= $user->password ?></td>
-							<td id='allow_nets-<?= $user->user_id ?>'><?= $user->allow_nets ?></td>
-							<td id='path-<?= $user->user_id ?>'><?= $user->path ?></td>
-							<td id='acl_groups-<?= $user->user_id ?>'><?= $user->acl_groups ?></td>
-							<td id='imap_enable-<?= $user->user_id ?>'><?= $user->imap_enable ?></td>
-							<td id='active-<?= $user->user_id ?>'><?= $user->active ?></td>
+							<td><?= $user->username ?></td>
+							<td><?= $user->mailbox ?></td>
+							<td><?= explode('@',$user->mailbox)[1] ?></td>
+							<td><?= $user->password ?></td>
+							<td><?= $user->allow_nets ?></td>
+							<td><?= $user->path ?></td>
+							<td><?= $user->acl_groups ?></td>
+							<td><input type='checkbox' disabled <?php ($user->imap_enable) && print('checked') ?>></td>
+							<td><input type='checkbox' disabled <?php ($user->active ) && print('checked')?>></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>

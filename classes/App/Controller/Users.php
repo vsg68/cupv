@@ -26,21 +26,29 @@ class Users extends \App\Page {
         $this->response->body = $this->view->render();
     }
 
-	public function action_new() {
+	public function onerow() {
 
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
+		//~ if( $this->permissions == $this::NONE_LEVEL ) {
+			//~ $this->noperm();
+			//~ return false;
+		//~ }
+
+
+		$this->_id = $this->request->param('id');
+
+		if( $this->request->post('tab') == 'records') {
+
+			$view = $this->pixie->view('form_users');
+			$tab  = 'records';
+		}
+		else {
+			$view = $this->pixie->view('form_alias');
+			$tab  = 'entries';
 		}
 
-        $view = $this->pixie->view('users_new');
-
-		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
-
-        $view->domains = $this->pixie->db->query('select')
-										->table('domains')
-										->group_by('domain_name')
-										->where('delivery_to','virtual')
+        $view->data = $this->pixie->db->query('select')
+										->table($tab)
+										->where('id',$this->_id)
 										->execute();
 
         $this->response->body = $view->render();
@@ -76,13 +84,13 @@ class Users extends \App\Page {
 			$data[] = array( $alias->alias_name,
 							 $alias->delivery_to,
 							 $alias->active,
-							 'DT_RowId' => $alias->alias_id,
+							 'DT_RowId' => 'alias-'.$alias->alias_id,
 							 'DT_RowClass' => ( $alias->active ) ? 'gradeA' : 'gradeU'
 							 );
 		}
 
 
-		$this->response->body = ( $data ) ? json_encode($data) : "[{null,null,null}]" ;
+		$this->response->body = ( $data ) ? json_encode($data) : "[[null,null,null]]" ;
 
     }
 

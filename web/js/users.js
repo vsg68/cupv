@@ -20,25 +20,7 @@ $(document).ready(function() {
 												{"bSortable":false, "sClass": "center", "aTargets": [7] },
 												{"bSortable":false, "sClass": "center", "aTargets": [8] },
 												],
-								"fnDrawCallback": function() {
-																$('#entry tbody td')
-																.not('.uneditable')
-																.editable( '../examples_support/editable_ajax.php', {
-																			"callback": function( sValue, y ) {
-																				/* Redraw the table from the new data on the server */
-																				oTable.fnDraw();
-																			},
-																			"height": "14px",
-																			"event": "dblclick",
-																			"placeholder": ''
-																			}
-																);
-												  },
-								"fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
 
-														if( ! $(nTd).hasClass('uneditable') )
-		??????													$(nTd).attr('id',$(iRow).attr('id') + '-' + iCol);
-													}
 								});
 		//$('#entry')
 
@@ -52,20 +34,7 @@ $(document).ready(function() {
 												{"sTitle":"on/off","sClass": "center","bSortable":false }
 											],
 								"aaData": [[null,null,null,{"mData": null}]],
-								"fnDrawCallback": function () {
-																$('#records tbody td')
-																.not('.uneditable')
-																.editable( '../examples_support/editable_ajax.php', {
-																			"callback": function( sValue, y ) {
-																				/* Redraw the table from the new data on the server */
-																				oTable.fnDraw();
-																			},
-																			"height": "14px",
-																			"event": "dblclick",
-																			"placeholder": ''
-																			}
-																);
-												  }
+
 								});
 		printTitle();
 
