@@ -34,7 +34,22 @@
 		</div>
 
 		<div class='divider'>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="records"></table>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="records">
+				<thead>
+					<tr>
+						<th>Alias</th>
+						<th>Forward</th>
+						<th>on/off</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 
 

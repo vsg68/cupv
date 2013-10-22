@@ -20,6 +20,11 @@ $(document).ready(function() {
 												{"bSortable":false, "sClass": "center", "aTargets": [7] },
 												{"bSortable":false, "sClass": "center", "aTargets": [8] },
 												],
+								"fnDrawCallback": function( oSettings ) {
+													$('#entry tbody tr').dblclick( function(){
+														showNumber(this);
+													}
+												)}
 
 								});
 		//$('#entry')
@@ -28,13 +33,16 @@ $(document).ready(function() {
 								"bJQueryUI": true,
 								"sDom": 't',
 								"sScrollY": rH+"px",
-								"aoColumns": [
-												{"sTitle":"Alias","sClass": "center"},
-												{"sTitle":"Forward","sClass": "center"},
-												{"sTitle":"on/off","sClass": "center","bSortable":false }
+								"aoColumnDefs": [
+												{"sClass": "center", "aTargets": [0]},
+												{"sClass": "center", "aTargets": [1]},
+												{"sClass": "center","bSortable":false, "aTargets": [2] }
 											],
-								"aaData": [[null,null,null,{"mData": null}]],
-
+								"fnDrawCallback": function( oSettings ) {
+													$('#records tbody tr').dblclick( function(){
+														showNumber(this);
+													}
+												)}
 								});
 		printTitle();
 

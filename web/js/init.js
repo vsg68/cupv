@@ -30,12 +30,9 @@ $(document).ready(function() {
 		});
 
 
-		$("#records").click( function(e) {
+		$("#entry tbody tr").dblclick(function(e) {
 
-				id = $(this).closest('tr').attr('id').replace(/[^-]+-/,'');
-				tab = $(this).closest('table').attr('id');
-				alert('/'+ ctrl +'/onerow/' + id + ', table: '+ tab);
-
+				showNumber(this);
 		});
 
 
@@ -69,5 +66,18 @@ function showRecordTable(uid) {
 								},
 			dataType: "json"
 			});
+
+}
+
+function showNumber(obj) {
+
+			if( ! $(obj).closest('tr').attr('id').length )
+				return;
+
+			id = $(obj).closest('tr').attr('id').replace(/[^-]+-/,'');
+			tab = $(obj).closest('table').attr('id');
+			$.post('/'+ ctrl +'/onerow/' + id, {t:tab}, function(response){
+				$.modal(response);
+				});
 
 }
