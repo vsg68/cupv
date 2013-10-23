@@ -17,7 +17,7 @@
 				</thead>
 				<tbody>
 					<?php foreach( $users as $user ): ?>
-						<tr id='id-<?= $user->user_id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>'>
+						<tr data='abc' id='id-<?= $user->id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>'>
 							<td><?= $user->username ?></td>
 							<td><?= $user->mailbox ?></td>
 							<td><?= explode('@',$user->mailbox)[1] ?></td>

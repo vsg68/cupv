@@ -6,20 +6,6 @@ ctrl = ( ctrl ) ? ctrl : 'users';
 
 $(document).ready(function() {
 
-
-		// Выделение строки
-		$("#entry tbody tr").click( function( e ) {
-			if ( $(this).hasClass('row_selected') ) return;
-
-			$('tr.row_selected').removeClass('row_selected');
-			$(this).addClass('row_selected');
-
-
-			showRecordTable( $(this).closest('tr').attr('id') );
-			//alert( $(this).closest('tr').attr('id') );
-		});
-
-
 		/* Add a click handler for the delete row */
 		$('#delete').click( function() {
 
@@ -30,20 +16,23 @@ $(document).ready(function() {
 		});
 
 
-		$("#entry tbody tr").dblclick(function(e) {
+		//~ $("#entry tbody tr").dblclick(function(e) {
+//~
+				//~ showNumber(this);
+		//~ });
 
-				showNumber(this);
+		$( "#submit" ).on( "submit", function( event ) {
+		  event.preventDefault();
+		  alert( $( this ).serialize() );
 		});
-
-
 
 } );
 
 /* Хидер с названием */
-function printTitle() {
-
-	$("div.fg-toolbar:first").append('<div class="page-name">' + $('#'+ctrl).attr('title') + '</div>');
-}
+//~ function printTitle() {
+//~
+	//~ $("div.fg-toolbar:first").append('<div class="page-name">' + $('#'+ctrl).attr('title') + '</div>');
+//~ }
 
 /* Get the rows which are currently selected */
 function fnGetSelected( oTableLocal ) {
@@ -76,8 +65,57 @@ function showNumber(obj) {
 
 			id = $(obj).closest('tr').attr('id').replace(/[^-]+-/,'');
 			tab = $(obj).closest('table').attr('id');
-			$.post('/'+ ctrl +'/onerow/' + id, {t:tab}, function(response){
-				$.modal(response);
+			$.post('/'+ ctrl +'/editform/' + id, {t:tab}, function(response){
+																				$(response).modal({
+
+																							});
+																				});
+}
+
+function fnEdit(id) {
+
+			if( ! id.length )
+				return;
+
+			tab = $('#' + id).closest('table').attr('id');
+			id = id.replace(/[^-]+-/,'');
+
+			$.post('/'+ ctrl +'/editform/' + id, {t:tab}, function(response){
+				$(response).modal(modwindow);
 				});
 
 }
+
+function trySubmit() {
+
+			var params =  $('#usersform').serialize();
+
+			$.ajax(	'/'+ ctrl +'/edit/', params , function(response) {
+
+								tmpl = /^\d+$/;
+
+								//if( tmpl.test(response) )
+									$('#error_title').append(response);
+								//~ else
+									//~ $('#ed').empty().html(response);
+							});
+			return false;
+}
+
+var modwindow ={
+				show: function(dialog){
+							$('#submit').click(function (e) {
+								e.preventDefault();
+								$.ajax ({
+										url: '/'+ ctrl +'/edit/',
+										data: $('form').serialize(),
+										success: function(response) {
+													tmpl = /^\d+$/;
+													$('#error_title').append(response);
+												},
+										error: ''
+								});
+							})
+						}
+				};
+

@@ -20,36 +20,43 @@ class Users extends \App\Page {
 
 		$this->view->users 	 = $this->pixie->db->query('select')
 												->table('users')
-												->order_by('mailbox')
 												->execute();
 
+//print_r($this->view->users); exit;
         $this->response->body = $this->view->render();
     }
 
-	public function onerow() {
+	public function action_editform() {
 
-		//~ if( $this->permissions == $this::NONE_LEVEL ) {
-			//~ $this->noperm();
-			//~ return false;
-		//~ }
+		//~ if( $this->permissions == $this::NONE_LEVEL )
+			//~ return $this->noperm();
 
+
+		if( $this->request->method != 'POST' )
+			return;
 
 		$this->_id = $this->request->param('id');
 
-		if( $this->request->post('tab') == 'records') {
-
-			$view = $this->pixie->view('form_users');
-			$tab  = 'records';
+		if( $this->request->post('t') == 'records' ) {
+			$view = $this->pixie->view('form_aliases');
+			$view->tab  = 'aliases';
 		}
 		else {
-			$view = $this->pixie->view('form_alias');
-			$tab  = 'entries';
+			$view = $this->pixie->view('form_users');
+			$view->tab = 'users';
+			$view->domains = $this->pixie->db->query('select')
+										->table('domains')
+										->group_by('domain_name')
+										->where('delivery_to','virtual')
+										->execute();
 		}
 
         $view->data = $this->pixie->db->query('select')
-										->table($tab)
+										->table($view->tab)
 										->where('id',$this->_id)
-										->execute();
+										->execute()
+										->current();
+
 
         $this->response->body = $view->render();
     }
@@ -94,22 +101,20 @@ class Users extends \App\Page {
 
     }
 
-	public function action_add() {
+	public function action_edit() {
 
-		if( $this->permissions != $this::WRITE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
+		//~ if( $this->permissions != $this::WRITE_LEVEL )
+			//~ return $this->noperm();
 
-        if ($this->request->method == 'POST') {
+        if ($this->request->method != 'POST')
+			return;
 
-			$params = $this->request->post();
-			unset($params['chk']);
+		$params = $this->request->post();
 
-			// Инициируем, чтоб не было ошибки при обработке несуществующего массива
-			$params['fname']	= $this->getVar($params['fname'],array());
+		if( $params['tab'] == 'entry') {
 
-			$entry = array('username' 		=> $params['username'],
+			$entry = array( 'username' 		=> $params['username'],
+							'mailbox'	 	=> $params['login'].'@'.$params['domain'],
 							'password' 		=> $params['password'],
 							'md5password' 	=> md5($params['password']),
 							'path'			=> $this->getVar($params['path']),
@@ -117,80 +122,36 @@ class Users extends \App\Page {
 							'allow_nets' 	=> $params['allow_nets'],
 							'active'		=> $this->getVar($params['active'],0)
 					);
-			// для нового пользователя добавляем mailbox
-			if(! isset($params['user_id']))
-				$entry['mailbox'] = $params['mailbox'] = $params['login'].'@'.$params['domain'];
+		}
+		else {
 
-			// Если нет ошибок заполнения - проходим в обработку
-			if( ! isset($this->logmsg) ) {
+		}
 
-				if ( ! isset($params['user_id']) ) {
-					// новый пользователь
-					$this->pixie->db->query('insert')
-									->table('users')
-									->data($entry)
-									->execute();
+print_r($entry); exit;
 
-					$params['user_id'] = $this->pixie->db->insert_id();
-				}
-				else {
-				// Существующий пользователь
-					$this->pixie->db->query('update')
-									->table('users')
-									->data($entry)
-									->where('user_id',$params['user_id'])
-									->execute();
-				}
-				// Обработка алиасов  и форварда
-				foreach ($params['fname'] as $key=>$fname ) {
-
-					/*	 0 - alias; 1 - forward
-					 *	 alias_name => fname
-					 *   delivery_to => mailbox
-					 *   и наоборот для форварда
-					 */
-					$dataArr = array('alias_name' 	=> ( $params['ftype'][$key] ) ? $params['mailbox'] : $fname,
-									 'delivery_to'	=> ( $params['ftype'][$key] ) ? $fname : $params['mailbox'],
-									 'active'		=> $params['stat'][$key]
-							        );
-
-					if( $params['stat'][$key] == 2 ) {
-					// Удаление
-						$this->pixie->db->query('delete')
-										->table('aliases')
-										->where('alias_id',$params['fid'][$key])
-										->execute();
-					}
-					elseif( $params['fid'][$key] == 0 ) {
-					// Новый
-						$this->pixie->db->query('insert')
-										->table('aliases')
-										->data($dataArr)
-										->execute();
-					}
-					else {
-					// Изменение
-						$this->pixie->db->query('update')
-										->table('aliases')
-										->data($dataArr)
-										->where('alias_id', $params['fid'][$key])
-										->execute();
-					}
-				}
+		try {
+			if ( ! isset($params['id']) ) {
+				// новый пользователь
+				$this->pixie->db->query('insert')
+								->table( $params['tab'] )
+								->data($entry)
+								->execute();
+				// return ?
+				$params['id'] = $this->pixie->db->insert_id();
 			}
-			// Ошибки имели место
-			if( isset( $this->logmsg ) ) {
-
-				if ( $params['user_id'] ) {
-					// Ошибка во время редактирования
-					$this->_id = $params['user_id'];
-					$this->action_single();
-				}
-				else
-					$this->action_new();
+			else {
+			// Существующий пользователь
+				$this->pixie->db->query('update')
+								->table( $params['tab'] )
+								->data($entry)
+								->where('id',$params['id'])
+								->execute();
 			}
-			else
-				$this->response->body = $params['user_id'];
+
+			$this->response->body = $params['id'];
+		}
+		catch( \Exception $e) {
+				echo 'Something went wrong'.$e;
 		}
 
 	}

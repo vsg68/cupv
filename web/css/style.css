@@ -62,3 +62,8 @@ tr.odd td.sorting_1 {
 tr.even td.sorting_1 {
 	background-color: #F0F7FF;
 }
+/*****   */
+#error_title {
+	owerflow: auto;
+	background-color: #fff;
+}

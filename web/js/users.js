@@ -8,10 +8,39 @@ $(document).ready(function() {
 		if( eH + d_min > H )
 			eH = H - d_min;
 
+		var selRow;
+
+		var TTOpts = {
+					"sRowSelect": "single",
+					"fnRowSelected": function(node){
+										// Только для таблицы пользователей
+										if( $(node[0]).closest('table').attr('id') == 'entry') {
+											selRow = node[0].id;
+											showRecordTable(node[0].id);
+										}
+									},
+					"aButtons":[{
+								"sExtends":"text",
+								"sButtonText": "Edit",
+								"fnClick": function( nButton, oConfig, oFlash ){
+										fnEdit( selRow );
+									},
+								},
+								{
+								"sExtends":"text",
+								"sButtonText": "Del",
+								},
+								{
+								"sExtends":"text",
+								"sButtonText": "Add",
+								}]
+		};
+
 		oTable = $('#entry').dataTable({
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
+								"sDom": '<"H"Tf>t<"F"ip>',
 								"aoColumnDefs": [
 												{"bSortable":false, "aTargets": [3] },
 												{"bSortable":false, "aTargets": [4] },
@@ -24,7 +53,8 @@ $(document).ready(function() {
 													$('#entry tbody tr').dblclick( function(){
 														showNumber(this);
 													}
-												)}
+												)},
+								"oTableTools": TTOpts
 
 								});
 		//$('#entry')
@@ -42,8 +72,18 @@ $(document).ready(function() {
 													$('#records tbody tr').dblclick( function(){
 														showNumber(this);
 													}
-												)}
+												)},
+								"oTableTools": {
+												"aButtons": [
+													"copy", "csv", "xls", "pdf",
+													{
+														"sExtends":    "collection",
+														"sButtonText": "Save",
+														"aButtons":    [ "csv", "xls", "pdf" ]
+													}
+												]
+											}
 								});
-		printTitle();
+		//printTitle();
 
 });
