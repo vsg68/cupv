@@ -14,9 +14,9 @@ $(document).ready(function() {
 					"sRowSelect": "single",
 					"fnRowSelected": function(node){
 										// Только для таблицы пользователей
-										if( $(node[0]).closest('table').attr('id') == 'entry') {
+										if( $(node[0]).closest('table').attr('id') == 'users') {
 											selRow = node[0].id;
-											showRecordTable(node[0].id);
+											showAliasesTable(node[0].id);
 										}
 									},
 					"aButtons":[{
@@ -36,7 +36,7 @@ $(document).ready(function() {
 								}]
 		};
 
-		oTable = $('#entry').dataTable({
+		oTable = $('#users').dataTable({
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
@@ -49,17 +49,12 @@ $(document).ready(function() {
 												{"bSortable":false, "sClass": "center", "aTargets": [7] },
 												{"bSortable":false, "sClass": "center", "aTargets": [8] },
 												],
-								"fnDrawCallback": function( oSettings ) {
-													$('#entry tbody tr').dblclick( function(){
-														showNumber(this);
-													}
-												)},
 								"oTableTools": TTOpts
 
 								});
 		//$('#entry')
 
-		aTable = $('#records').dataTable({
+		aTable = $('#aliases').dataTable({
 								"bJQueryUI": true,
 								"sDom": 't',
 								"sScrollY": rH+"px",
@@ -68,11 +63,6 @@ $(document).ready(function() {
 												{"sClass": "center", "aTargets": [1]},
 												{"sClass": "center","bSortable":false, "aTargets": [2] }
 											],
-								"fnDrawCallback": function( oSettings ) {
-													$('#records tbody tr').dblclick( function(){
-														showNumber(this);
-													}
-												)},
 								"oTableTools": {
 												"aButtons": [
 													"copy", "csv", "xls", "pdf",

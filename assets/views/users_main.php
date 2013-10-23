@@ -1,6 +1,6 @@
 
 		<div id="demo">
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="entry">
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="users">
 				<thead>
 					<tr>
 						<th>ФИО</th>
@@ -17,7 +17,7 @@
 				</thead>
 				<tbody>
 					<?php foreach( $users as $user ): ?>
-						<tr data='abc' id='id-<?= $user->id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>'>
+						<tr data='abc' id='users-<?= $user->id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>'>
 							<td><?= $user->username ?></td>
 							<td><?= $user->mailbox ?></td>
 							<td><?= explode('@',$user->mailbox)[1] ?></td>
@@ -34,7 +34,7 @@
 		</div>
 
 		<div class='divider'>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="records">
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="aliases">
 				<thead>
 					<tr>
 						<th>Alias</th>

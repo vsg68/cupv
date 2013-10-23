@@ -40,82 +40,62 @@ function fnGetSelected( oTableLocal ) {
 			return oTableLocal.$('tr.row_selected');
 }
 
-function showRecordTable(uid) {
+function showAliasesTable(uid) {
 
-	id = uid.replace('id-','');
-	$.ajax({
-			type: "GET",
-			url: '/'+ ctrl +'/records/' + id,
-			success: function(response) {
-									$('#records').dataTable().fnClearTable();
-									$('#records').dataTable().fnAddData(response);
+		id = uid.replace('id-','');
+		$.ajax({
+				type: "GET",
+				url: '/'+ ctrl +'/records/' + id,
+				success: function(response) {
+										$('#aliases').dataTable().fnClearTable();
+										$('#aliases').dataTable().fnAddData(response);
+										},
+				error: function() {
+									$('#aliases').dataTable().fnClearTable();
 									},
-			error: function() {
-								$('#records').dataTable().fnClearTable();
-								},
-			dataType: "json"
-			});
-
-}
-
-function showNumber(obj) {
-
-			if( ! $(obj).closest('tr').attr('id').length )
-				return;
-
-			id = $(obj).closest('tr').attr('id').replace(/[^-]+-/,'');
-			tab = $(obj).closest('table').attr('id');
-			$.post('/'+ ctrl +'/editform/' + id, {t:tab}, function(response){
-																				$(response).modal({
-
-																							});
-																				});
-}
-
-function fnEdit(id) {
-
-			if( ! id.length )
-				return;
-
-			tab = $('#' + id).closest('table').attr('id');
-			id = id.replace(/[^-]+-/,'');
-
-			$.post('/'+ ctrl +'/editform/' + id, {t:tab}, function(response){
-				$(response).modal(modwindow);
+				dataType: "json"
 				});
 
 }
 
-function trySubmit() {
+function fnEdit(uid) {
 
-			var params =  $('#usersform').serialize();
+		if( ! uid.length )
+			return;
 
-			$.ajax(	'/'+ ctrl +'/edit/', params , function(response) {
+		tab = $('#' + uid).closest('table').attr('id');
+		id = uid.replace(/[^-]+-/,'');
 
-								tmpl = /^\d+$/;
+		$.post('/'+ ctrl +'/editform/' + id, {t:tab}, function(response){
+				$(response).modal({
+									onShow: modw.show
+									});
+		});
 
-								//if( tmpl.test(response) )
-									$('#error_title').append(response);
-								//~ else
-									//~ $('#ed').empty().html(response);
-							});
-			return false;
 }
 
-var modwindow ={
-				show: function(dialog){
-							$('#submit').click(function (e) {
-								e.preventDefault();
-								$.ajax ({
-										url: '/'+ ctrl +'/edit/',
-										data: $('form').serialize(),
-										success: function(response) {
-													tmpl = /^\d+$/;
-													$('#error_title').append(response);
-												},
-										error: ''
-								});
-							})
-						}
-				};
+
+var modw = {
+		 show: function(dialog){
+					$('#submit').click(function (e) {
+						e.preventDefault();
+						$.ajax ({
+								url: '/'+ ctrl +'/edit/',
+								data: $('form').serialize(),
+								type: 'post',
+								dataType: 'json',
+								success: function(response) {
+											// при удачном стечении обстоятельств
+											// если такой строки нет - добавляем, если есть - меняем
+											// fnUpdate | fnAddData
+											// (node or index) TR element you want to update or the aoData index
+											}
+										},
+								error: function(response) {
+											$('#error_title').empty().append(response);
+										},
+						});
+					})
+				}
+		};
 

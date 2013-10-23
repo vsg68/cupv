@@ -75,12 +75,12 @@ class Users extends \App\Page {
 		$this->_id = $this->request->param('id');
 
 		$aliases = $this->pixie->db->query('select')
-										->fields('alias_id','alias_name', 'delivery_to', 'active')
+										->fields('id','alias_name', 'delivery_to', 'active')
 										->table('aliases','A')
 										->join(array('users','U1'),array('U1.mailbox','A.alias_name'))
 										->join(array('users','U2'),array('U2.mailbox','A.delivery_to'))
-										->where('U1.user_id',$this->_id)
-										->where('or',array('U2.user_id',$this->_id))
+										->where('U1.id',$this->_id)
+										->where('or',array('U2.id',$this->_id))
 										->execute();
 
 
@@ -91,7 +91,7 @@ class Users extends \App\Page {
 			$data[] = array( $alias->alias_name,
 							 $alias->delivery_to,
 							 $alias->active,
-							 'DT_RowId' => 'alias-'.$alias->alias_id,
+							 'DT_RowId' => 'aliases-'.$alias->id,
 							 'DT_RowClass' => ( $alias->active ) ? 'gradeA' : 'gradeU'
 							 );
 		}
@@ -106,12 +106,13 @@ class Users extends \App\Page {
 		//~ if( $this->permissions != $this::WRITE_LEVEL )
 			//~ return $this->noperm();
 
-        if ($this->request->method != 'POST')
+        //~ if ($this->request->method != 'POST')
+			//~ return;
+
+		if( ! $params = $this->request->post() )
 			return;
 
-		$params = $this->request->post();
-
-		if( $params['tab'] == 'entry') {
+		if( $params['tab'] == 'users') {
 
 			$entry = array( 'username' 		=> $params['username'],
 							'mailbox'	 	=> $params['login'].'@'.$params['domain'],
@@ -126,8 +127,6 @@ class Users extends \App\Page {
 		else {
 
 		}
-
-print_r($entry); exit;
 
 		try {
 			if ( ! isset($params['id']) ) {
@@ -148,7 +147,7 @@ print_r($entry); exit;
 								->execute();
 			}
 
-			$this->response->body = $params['id'];
+			$this->response->body = $params['tab'].'-'.$params['id'];
 		}
 		catch( \Exception $e) {
 				echo 'Something went wrong'.$e;
