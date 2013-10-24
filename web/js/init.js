@@ -32,18 +32,18 @@ function fnGetSelected( oTableLocal ) {
 
 function showAliasesTable(uid) {
 
-		id = getDigitFromID(uid);
+		id = uid.split('-')[1];
 		$.ajax({
 				type: "GET",
 				url: '/'+ ctrl +'/records/' + id,
+				dataType: "json",
 				success: function(response) {
 										$('#aliases').dataTable().fnClearTable();
 										$('#aliases').dataTable().fnAddData(response);
 										},
 				error: function() {
 									$('#aliases').dataTable().fnClearTable();
-									},
-				dataType: "json"
+									}
 				});
 
 }
@@ -53,8 +53,8 @@ function fnEdit(uid) {
 		if( ! uid.length )
 			return;
 
-		tab = $('#' + uid).closest('table').attr('id');
-		id = getDigitFromID(uid);
+		tab = uid.split('-')[0];
+		id  = uid.split('-')[1];
 
 		$.post('/'+ ctrl +'/editform/' + id, {t:tab}, function(response){
 				$(response).modal({
@@ -62,14 +62,6 @@ function fnEdit(uid) {
 									});
 		});
 
-}
-
-function getDigitFromID(uid) {
-
-	if( ! uid.length)
-		return;
-
-	return uid.replace(/[^-]+-/,'');
 }
 
 function drawCheckBox(nRow) {
@@ -111,7 +103,7 @@ var modw = {
 								dataType: 'json',
 								success: function(str) {
 											// при удачном стечении обстоятельств
-											if( RowID.length ) {
+											if( $(document).index(RowNode) > 0 ) {
 												 $('#'+TabID).dataTable().fnUpdate( str, RowNode );
 												 // Проверка на активность
 												 drawUnActiveRow( RowNode );

@@ -1,7 +1,7 @@
 <div >
 	<div class='ui-state-error'></div>
 <form id='usersform' action='#' method='post'>
-	<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : '') ?>'  />
+	<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : '0') ?>'  />
 	<input type='hidden' name='tab' value='<?= $tab ?>' />
 	<h4></h4>
 	   <div class='fieldentry'>
@@ -31,11 +31,11 @@
 	   </div>
 	   <div class='fieldentry'>
 			 <span class='formlabel'></span>
-			 <input type='checkbox' class='formtext' name='imap' value='1' <?= (isset($data->imap_enable) && $data->imap_enable) ? 'checked' : '' ?> >
+			 <input type='checkbox' class='formtext' name='imap' value='1' <?php isset($data->imap_enable) ? ($data->imap_enable & 1) && print('checked') : print('checked') ?> >
 		</div>
 	   <div class='fieldentry'>
 			 <span class='formlabel'></span>
-			 <input type='checkbox' class='formtext' name='active' value='1' <?= (isset($data->active) && $data->active) ? 'checked' : '' ?> >
+			 <input type='checkbox' class='formtext' name='active' value='1' <?php isset($data->active) ?  ($data->active & 1) && print('checked') : print('checked') ?> >
 		</div>
 
 	<div class='submit'><input type='button' id='submit' value='Send'></div>

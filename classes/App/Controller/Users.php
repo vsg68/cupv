@@ -32,18 +32,18 @@ class Users extends \App\Page {
 			//~ return $this->noperm();
 
 
-		if( $this->request->method != 'POST' )
+		if( ! $tab = $this->request->post('t') )
 			return;
 
-		$this->_id = $this->request->param('id');
+		$this->_id 	= $this->request->param('id');
+		//$tab 		= $this->request->post('t');
 
-		if( $this->request->post('t') == 'records' ) {
-			$view = $this->pixie->view('form_aliases');
-			$view->tab  = 'aliases';
-		}
-		else {
-			$view = $this->pixie->view('form_users');
-			$view->tab = 'users';
+		$view 		= $this->pixie->view('form_'.$tab);
+		$view->tab  = $tab;
+
+
+		if( $tab == 'users' ) {
+
 			$view->domains = $this->pixie->db->query('select')
 										->table('domains')
 										->group_by('domain_name')
@@ -52,7 +52,7 @@ class Users extends \App\Page {
 		}
 
         $view->data = $this->pixie->db->query('select')
-										->table($view->tab)
+										->table($tab)
 										->where('id',$this->_id)
 										->execute()
 										->current();
@@ -131,7 +131,8 @@ class Users extends \App\Page {
 								$entry['path'],
 								$entry['acl_groups'],
 								$entry['imap_enable'],
-								$entry['active']
+								$entry['active'],
+								'DT_RowClass' => ( $entry['active'] ) ? '' : 'gradeU';
 								);
 		}
 		else {
@@ -142,12 +143,14 @@ class Users extends \App\Page {
 
 			$returnData = array($entry['alias_name'],
 								$entry['delivery_to'],
-								$entry['active']
+								$entry['active'],
+								'DT_RowClass' => ( $entry['active'] ) ? 'gradeA' : 'gradeU';
+
 								);
 		}
 
 		try {
-			if ( ! isset($params['id']) ) {
+			if ( $params['id'] == 0 ) {
 				// новый пользователь
 				$this->pixie->db->query('insert')
 								->table( $params['tab'] )
@@ -166,7 +169,6 @@ class Users extends \App\Page {
 			}
 
 			$returnData['DT_RowId']		= $params['tab'].'-'.$params['id'];
-			$returnData['DT_RowClass']	= ( $entry['active'] ) ? 'gradeA' : 'gradeU';
 
 
 			$this->response->body = json_encode($returnData);
