@@ -1,5 +1,5 @@
 <div >
-	<div id='error_title'></div>
+	<div class='ui-state-error'></div>
 <form id='usersform' action='#' method='post'>
 	<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : '') ?>'  />
 	<input type='hidden' name='tab' value='<?= $tab ?>' />

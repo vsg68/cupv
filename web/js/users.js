@@ -36,7 +36,7 @@ $(document).ready(function() {
 								}]
 		};
 
-		oTable = $('#users').dataTable({
+		var oTable = $('#users').dataTable({
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
@@ -49,12 +49,17 @@ $(document).ready(function() {
 												{"bSortable":false, "sClass": "center", "aTargets": [7] },
 												{"bSortable":false, "sClass": "center", "aTargets": [8] },
 												],
+								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+													//drawUnActiveRow(nRow);
+													drawCheckBox(nRow);
+
+												},
 								"oTableTools": TTOpts
 
 								});
 		//$('#entry')
 
-		aTable = $('#aliases').dataTable({
+		var aTable = $('#aliases').dataTable({
 								"bJQueryUI": true,
 								"sDom": 't',
 								"sScrollY": rH+"px",

@@ -17,7 +17,7 @@
 				</thead>
 				<tbody>
 					<?php foreach( $users as $user ): ?>
-						<tr data='abc' id='users-<?= $user->id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>'>
+						<tr id='users-<?= $user->id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>'>
 							<td><?= $user->username ?></td>
 							<td><?= $user->mailbox ?></td>
 							<td><?= explode('@',$user->mailbox)[1] ?></td>
@@ -25,8 +25,8 @@
 							<td><?= $user->allow_nets ?></td>
 							<td><?= $user->path ?></td>
 							<td><?= $user->acl_groups ?></td>
-							<td><input type='checkbox' disabled <?php ($user->imap_enable) && print('checked') ?>></td>
-							<td><input type='checkbox' disabled <?php ($user->active ) && print('checked')?>></td>
+							<td><?= $user->imap_enable ?></td>
+							<td><?= $user->active ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>

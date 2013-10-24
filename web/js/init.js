@@ -16,16 +16,6 @@ $(document).ready(function() {
 		});
 
 
-		//~ $("#entry tbody tr").dblclick(function(e) {
-//~
-				//~ showNumber(this);
-		//~ });
-
-		$( "#submit" ).on( "submit", function( event ) {
-		  event.preventDefault();
-		  alert( $( this ).serialize() );
-		});
-
 } );
 
 /* Хидер с названием */
@@ -42,7 +32,7 @@ function fnGetSelected( oTableLocal ) {
 
 function showAliasesTable(uid) {
 
-		id = uid.replace('id-','');
+		id = getDigitFromID(uid);
 		$.ajax({
 				type: "GET",
 				url: '/'+ ctrl +'/records/' + id,
@@ -64,7 +54,7 @@ function fnEdit(uid) {
 			return;
 
 		tab = $('#' + uid).closest('table').attr('id');
-		id = uid.replace(/[^-]+-/,'');
+		id = getDigitFromID(uid);
 
 		$.post('/'+ ctrl +'/editform/' + id, {t:tab}, function(response){
 				$(response).modal({
@@ -74,25 +64,65 @@ function fnEdit(uid) {
 
 }
 
+function getDigitFromID(uid) {
+
+	if( ! uid.length)
+		return;
+
+	return uid.replace(/[^-]+-/,'');
+}
+
+function drawCheckBox(nRow) {
+
+		// смотрим на активность записи
+		$('td', nRow).filter('.center').each(function(){
+
+			if( $(this).text() == '0' )
+				$(this).text('');
+
+			if( $(this).text() == '1' )
+				$(this).html('<span class="ui-icon ui-icon-check"></span>');
+		});
+}
+
+function drawUnActiveRow(nRow) {
+
+		if( $('td:last', nRow).html() )
+			$(nRow).removeClass('gradeU');
+		else
+			$(nRow).addClass('gradeU');
+
+}
 
 var modw = {
 		 show: function(dialog){
+					// Показе документа инициализирую функции
 					$('#submit').click(function (e) {
 						e.preventDefault();
+						// С какими строками какой таблицы работаем
+						var TabID = $('form :hidden[name="tab"]').val();
+						var RowID = $('form :hidden[name="id"]').val();
+						var RowNode = $('#'+TabID+'-'+RowID).get(0);
+						// Работа с запросом
 						$.ajax ({
 								url: '/'+ ctrl +'/edit/',
 								data: $('form').serialize(),
 								type: 'post',
 								dataType: 'json',
-								success: function(response) {
+								success: function(str) {
 											// при удачном стечении обстоятельств
-											// если такой строки нет - добавляем, если есть - меняем
-											// fnUpdate | fnAddData
-											// (node or index) TR element you want to update or the aoData index
+											if( RowID.length ) {
+												 $('#'+TabID).dataTable().fnUpdate( str, RowNode );
+												 // Проверка на активность
+												 drawUnActiveRow( RowNode );
 											}
+											else {
+													$('#'+TabID).dataTable().fnAddData(str);
+											}
+											$.modal.close();
 										},
 								error: function(response) {
-											$('#error_title').empty().append(response);
+											$('.ui-state-error').empty().append(response);
 										},
 						});
 					})

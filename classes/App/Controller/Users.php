@@ -106,26 +106,44 @@ class Users extends \App\Page {
 		//~ if( $this->permissions != $this::WRITE_LEVEL )
 			//~ return $this->noperm();
 
-        //~ if ($this->request->method != 'POST')
-			//~ return;
 
 		if( ! $params = $this->request->post() )
 			return;
 
 		if( $params['tab'] == 'users') {
-
+			// Массив, который будем возвращать
 			$entry = array( 'username' 		=> $params['username'],
 							'mailbox'	 	=> $params['login'].'@'.$params['domain'],
 							'password' 		=> $params['password'],
 							'md5password' 	=> md5($params['password']),
 							'path'			=> $this->getVar($params['path']),
+							'acl_groups' 	=> $this->getVar($params['acl_groups']),
 							'imap_enable' 	=> $this->getVar($params['imap'],0),
-							'allow_nets' 	=> $params['allow_nets'],
+							'allow_nets' 	=> $this->getVar($params['allow_nets'],'192.168.0.0/24'),
 							'active'		=> $this->getVar($params['active'],0)
-					);
+							);
+			// Массив, который будем возвращать
+			$returnData = array($entry['username'],
+								$entry['mailbox'],
+								$params['domain'],
+								$entry['password'],
+								$entry['allow_nets'],
+								$entry['path'],
+								$entry['acl_groups'],
+								$entry['imap_enable'],
+								$entry['active']
+								);
 		}
 		else {
+			$entry = array('alias_name' => $params['alias_name'],
+						   'delivery_to'=> $params['delivery_to'],
+						   'active'		=> $this->getVar($params['active'],0)
+						  );
 
+			$returnData = array($entry['alias_name'],
+								$entry['delivery_to'],
+								$entry['active']
+								);
 		}
 
 		try {
@@ -147,10 +165,14 @@ class Users extends \App\Page {
 								->execute();
 			}
 
-			$this->response->body = $params['tab'].'-'.$params['id'];
+			$returnData['DT_RowId']		= $params['tab'].'-'.$params['id'];
+			$returnData['DT_RowClass']	= ( $entry['active'] ) ? 'gradeA' : 'gradeU';
+
+
+			$this->response->body = json_encode($returnData);
 		}
 		catch( \Exception $e) {
-				echo 'Something went wrong'.$e;
+				return 'Something went wrong'.$e;
 		}
 
 	}

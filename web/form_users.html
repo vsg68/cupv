@@ -30,11 +30,15 @@
 				   </div>
 				   <div class="fieldentry">
 						 <span class="formlabel">imap:</span>
+						 <input type="checkbox" class="formtext" name="imap" value="1" <?= isset($data->acl_groups) ? $data->acl_groups) : '' ?>">
+					</div>
+				   <div class="fieldentry">
+						 <span class="formlabel">imap:</span>
 						 <input type="checkbox" class="formtext" name="imap" value="1" <?= isset($data->imap) ? ($data->imap && print('checked')) : 'checked' ?>">
 					</div>
 				   <div class="fieldentry">
 						 <span class="formlabel">active</span>
-						 <input type="checkbox" class="formtext" name="imap" value="1" checked="">
+						 <input type="checkbox" class="formtext" name="imap" value="1" <?= isset($data->active) ? ($data->active && print('checked')) : 'checked' >
 					</div>
 
 				<div class="submit"><input type="submit" id="submit_view" value="Send"></div>
