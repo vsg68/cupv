@@ -25,10 +25,10 @@ $(document).ready(function() {
 //~ }
 
 /* Get the rows which are currently selected */
-function fnGetSelected( oTableLocal ) {
-
-			return oTableLocal.$('tr.row_selected');
-}
+//~ function fnGetSelected( oTableLocal ) {
+//~
+			//~ return oTableLocal.$('tr.row_selected');
+//~ }
 
 function showAliasesTable(uid) {
 
@@ -44,8 +44,7 @@ function showAliasesTable(uid) {
 				error: function() {
 									$('#aliases').dataTable().fnClearTable();
 									}
-				});
-
+		});
 }
 
 function fnEdit(uid) {
@@ -56,7 +55,7 @@ function fnEdit(uid) {
 		tab = uid.split('-')[0];
 		id  = uid.split('-')[1];
 
-		$.post('/'+ ctrl +'/editform/' + id, {t:tab}, function(response){
+		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab}, function(response){
 				$(response).modal({
 									onShow: modWin.show
 									});
@@ -75,6 +74,10 @@ function drawCheckBox(nRow) {
 			if( $(this).text() == '1' )
 				$(this).html('<span class="ui-icon ui-icon-check"></span>');
 		});
+
+		drawUnActiveRow(nRow);
+		// добавляем аттриут data для валидации
+		printToRowDataAttr(nRow);
 }
 
 function drawUnActiveRow(nRow) {
@@ -83,74 +86,141 @@ function drawUnActiveRow(nRow) {
 			$(nRow).removeClass('gradeU');
 		else
 			$(nRow).addClass('gradeU');
+}
 
+function fnGetSelectedRowID( objTT ) {
+		// Получаем сущность dataTable(), где была нажата кнопка
+		tab = TableTools.fnGetInstance(objTT.s.dt.sTableId);
+		//TabID = objTT.s.dt.sTableId;
+		// Смотрим, первую выделеную строку, берем ее ID
+		RowID = tab.fnGetSelected()[0];
+		//RowID = $('#'+ TabID).find('tr.DTTT_selected').get(0);
+		return RowID.id;
+}
+
+function printToRowDataAttr(nRow) {
+		mbox = $('td:eq(2)', nRow).text();
+		$(nRow).attr('data', mbox);
 }
 
 var modWin = {
-			show: function(dialog){
-					// Показе документа инициализирую функции
-					$('#submit').click(function (e) {
-						e.preventDefault();
-						// С какими строками какой таблицы работаем
-						var TabID = $('form :hidden[name="tab"]').val();
-						var RowID = $('form :hidden[name="id"]').val();
-						var RowNode = $('#'+TabID+'-'+RowID).get(0);
-						// Работа с запросом
-						$.ajax ({
-								url: '/'+ ctrl +'/edit/',
-								data: $('form').serialize(),
-								type: 'post',
-								dataType: 'json',
-								success: function(str) {
-											// при удачном стечении обстоятельств
-											//if( RowNode != undefined) {
-											if( RowNode ) {
-												 $('#'+TabID).dataTable().fnUpdate( str, RowNode );
-												 // Проверка на активность
-												 drawUnActiveRow( RowNode );
-											}
-											else {
-													$('#'+TabID).dataTable().fnAddData(str);
-											}
-											$.modal.close();
-										},
-								error: function(response) {
-											$('.ui-state-error').empty().append(response);
-										},
-						});
-					})
+
+		show: function(dialog){
+			message: null;
+			TabID: null;
+			RowNode: null;
+			// Показе документа инициализирую функции
+			$('#submit').click(function (e) {
+				e.preventDefault();
+				// С какими строками какой таблицы работаем
+				modWin.TabID = $('form :hidden[name="tab"]').val();
+				RowID 		 = $('form :hidden[name="id"]').val();
+				modWin.RowNode = $('#'+modWin.TabID+'-'+RowID).get(0);
+
+				if (modWin.validate()) {
+					// Работа с запросом
+					$.ajax ({
+							url: '/'+ ctrl +'/edit/',
+							data: $('form').serialize(),
+							type: 'post',
+							dataType: 'json',
+							success: function(str) {
+										// при удачном стечении обстоятельств
+										//if( RowNode != undefined) {
+										if( RowNode ) {
+											 $('#'+modWin.TabID).dataTable().fnUpdate( str, modWin.RowNode );
+											 // Проверка на активность
+											 drawUnActiveRow( RowNode );
+										}
+										else {
+												$('#'+modWin.TabID).dataTable().fnAddData(str);
+										}
+										$.modal.close();
+									},
+							error: function(response) {
+										$('.ui-state-error').empty().append(response);
+									},
+					});
 				}
-		};
+				else
+					modWin.showError();
 
+			})
+		},
 
-var selRowID;
+		showError: function () {
+			$('#mesg p').append(modWin.message).parent().fadeIn('fast');
+		},
+
+		//validate : function(){},
+		//~ validate: function () {
+			//~ modWin.message = '';
+			//~ login = $('form :text[name="login"]').val();
+			//~ mailbox =  login + '@' +  $('form option:selected').val();
+//~
+			//~ if ( ! login ) {
+				//~ modWin.message += 'Login is required. ';
+			//~ }
+			//~ else{
+				//~ existIdMbox = $('tr'+ modWin.RowID, modWin.TabID).filter('[data="' + mailbox + '"]').length;
+				//~ existId     = $('tr'+ modWin.RowID, modWin.TabID).length;
+//~
+				//~ if( ! existIdMbox && existId ) {
+					//~ modWin.message += 'Mailbox exist!'
+				//~ }
+			//~ }
+//~
+			//~ if ( ! $('form :text[name="username"]').val()) {
+				//~ modWin.message += 'Name is required. ';
+			//~ }
+//~
+			//~ if ( ! $('form :text[name="password"]').val()) {
+				//~ modWin.message += 'Message is required.';
+			//~ }
+//~
+			//~ if ( ! $('form :text[name="password"]').val()) {
+				//~ modWin.message += 'Message is required.';
+			//~ }
+//~
+			//~ if (modWin.message.length > 0) {
+				//~ return false;
+			//~ }
+			//~ else {
+				//~ return true;
+			//~ }
+		//~ },
+
+};
+
 
 var TTOpts = {
 			"sRowSelect": "single",
 			"fnRowSelected": function(node){
 								// Только для таблицы пользователей
-								if( $(node[0]).closest('table').attr('id') == 'users') {
-									selRowID = node[0].id;
+								//tab = node[0].id.split('-')[0];
+								if( node[0].offsetParent.id == 'users')
 									showAliasesTable(node[0].id);
+							},
+			"aButtons":[
+						{
+							"sExtends":"text",
+							"sButtonText": "Edit",
+							"fnClick": function( nButton, oConfig, oFlash ){
+									RowID = fnGetSelectedRowID(this);
+									fnEdit( RowID );
+								},
+						},
+						{
+							"sExtends":"text",
+							"sButtonText": "New",
+							"fnClick": function( nButton, oConfig, oFlash ){
+									// Извращение с поиском принадлежащей таблицы
+									fnEdit( this.s.dt.sTableId +'-0' );
 								}
-							},
-			"aButtons":[{
-						"sExtends":"text",
-						"sButtonText": "Edit",
-						"fnClick": function( nButton, oConfig, oFlash ){
-								fnEdit( selRowID );
-							},
 						},
 						{
-						"sExtends":"text",
-						"sButtonText": "Del",
+							"sExtends":"text",
+							"sButtonText": "Del",
 						},
-						{
-						"sExtends":"text",
-						"sButtonText": "Add",
-						"fnClick": function( nButton, oConfig, oFlash ){
-								// Извращение с поиском принадлежащей таблицы
-								fnEdit( this.s.dt.sTableId +'-0' );
-							},
-						}]
-		};
+					   ]
+};

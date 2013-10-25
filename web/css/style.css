@@ -66,6 +66,10 @@ tr.even td.sorting_1 {
 td span.ui-icon {
 	margin: 0 auto;
 }
+.aliases-header {
+	margin: 10px 0;
+	overflow: auto;
+}
 /*****   */
 #error_title {
 	owerflow: auto;

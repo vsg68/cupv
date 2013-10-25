@@ -11,10 +11,9 @@ class Users extends \App\Page {
 		$this->view->css_file = '';//'<link rel="stylesheet" href="/users.css" type="text/css" />';
 
 		// Проверка легитимности пользователя и его прав
-        //~ if( $this->permissions == $this::NONE_LEVEL ) {
-			//~ $this->noperm();
-			//~ return false;
-		//~ }
+        //~ if( $this->permissions == $this::NONE_LEVEL )
+			//~ return  $this->noperm();
+
 
 		$this->view->subview = 'users_main';
 
@@ -22,11 +21,10 @@ class Users extends \App\Page {
 												->table('users')
 												->execute();
 
-//print_r($this->view->users); exit;
         $this->response->body = $this->view->render();
     }
 
-	public function action_editform() {
+	public function action_showEditForm() {
 
 		//~ if( $this->permissions == $this::NONE_LEVEL )
 			//~ return $this->noperm();
@@ -36,14 +34,11 @@ class Users extends \App\Page {
 			return;
 
 		$this->_id 	= $this->request->param('id');
-		//$tab 		= $this->request->post('t');
-
 		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
 
 
 		if( $tab == 'users' ) {
-
 			$view->domains = $this->pixie->db->query('select')
 										->table('domains')
 										->group_by('domain_name')
@@ -63,19 +58,17 @@ class Users extends \App\Page {
 
 	public function action_records() {
 
-		//~ if( $this->permissions == $this::NONE_LEVEL ) {
-			//~ $this->noperm();
-			//~ return false;
-		//~ }
+		//~ if( $this->permissions == $this::NONE_LEVEL )
+			//~ return $this->noperm();
 
 		// если не редактирование,т.е. начальный вход
-		if( ! $this->request->param('id') )
-			return; // "<img class='lb' src='/users.png' />";
+		if( ! $this->_id = $this->request->param('id'))
+			return;
 
-		$this->_id = $this->request->param('id');
+		$data = array();
 
 		$aliases = $this->pixie->db->query('select')
-										->fields('id','alias_name', 'delivery_to', 'active')
+										->fields('id','alias_name', 'delivery_to', 'alias_notes', 'active')
 										->table('aliases','A')
 										->join(array('users','U1'),array('U1.mailbox','A.alias_name'))
 										->join(array('users','U2'),array('U2.mailbox','A.delivery_to'))
@@ -83,21 +76,16 @@ class Users extends \App\Page {
 										->where('or',array('U2.id',$this->_id))
 										->execute();
 
-
-		$data = array();
-
-		foreach($aliases as $alias) {
-
+		foreach($aliases as $alias)
 			$data[] = array( $alias->alias_name,
 							 $alias->delivery_to,
+							 $alias->alias_notes,
 							 $alias->active,
 							 'DT_RowId' => 'aliases-'.$alias->id,
-							 'DT_RowClass' => ( $alias->active ) ? 'gradeA' : 'gradeU'
-							 );
-		}
+							 'DT_RowClass' => 'gradeA'
+							);
 
-
-		$this->response->body = ( $data ) ? json_encode($data) : "[[null,null,null]]" ;
+		$this->response->body = ( $data ) ? json_encode($data) : "[[null,null,null,null]]" ;
 
     }
 
@@ -109,54 +97,36 @@ class Users extends \App\Page {
 
 		if( ! $params = $this->request->post() )
 			return;
+		$returnData  = array();
 
-		if( $params['tab'] == 'users') {
+		if( $params['tab'] == 'users')
 			// Массив, который будем возвращать
 			$entry = array( 'username' 		=> $params['username'],
 							'mailbox'	 	=> $params['login'].'@'.$params['domain'],
 							'password' 		=> $params['password'],
 							'md5password' 	=> md5($params['password']),
+							'allow_nets' 	=> $this->getVar($params['allow_nets'],'192.168.0.0/24'),
 							'path'			=> $this->getVar($params['path']),
 							'acl_groups' 	=> $this->getVar($params['acl_groups']),
 							'imap_enable' 	=> $this->getVar($params['imap'],0),
-							'allow_nets' 	=> $this->getVar($params['allow_nets'],'192.168.0.0/24'),
 							'active'		=> $this->getVar($params['active'],0)
 							);
-			// Массив, который будем возвращать
-			$returnData = array($entry['username'],
-								$entry['mailbox'],
-								$params['domain'],
-								$entry['password'],
-								$entry['allow_nets'],
-								$entry['path'],
-								$entry['acl_groups'],
-								$entry['imap_enable'],
-								$entry['active'],
-								'DT_RowClass' => ( $entry['active'] ) ? '' : 'gradeU'
-								);
-		}
-		else {
-			$entry = array('alias_name' => $params['alias_name'],
-						   'delivery_to'=> $params['delivery_to'],
+		else
+			$entry = array('alias_name' => $this->getVar($params['alias_name']),
+						   'delivery_to'=> $this->getVar($params['delivery_to']),
+						   'alias_notes'=> $this->getVar($params['alias_notes']),
 						   'active'		=> $this->getVar($params['active'],0)
-						  );
+						 );
 
-			$returnData = array($entry['alias_name'],
-								$entry['delivery_to'],
-								$entry['active'],
-								'DT_RowClass' => ( $entry['active'] ) ? 'gradeA' : 'gradeU'
 
-								);
-		}
-
-		try {
+	//	try {
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
-				$this->pixie->db->query('insert')
+				$vars = $this->pixie->db->query('insert')
 								->table( $params['tab'] )
 								->data($entry)
 								->execute();
-				// return ?
+
 				$params['id'] = $this->pixie->db->insert_id();
 			}
 			else {
@@ -167,16 +137,18 @@ class Users extends \App\Page {
 								->where('id',$params['id'])
 								->execute();
 			}
+		//~ }
+		//~ catch( \Exception $e) {
+				//~ return 'Something went wrong'.$this->handle_exception($e);
+		//~ }
+print_r($vars); exit;
+		$entry['md5password'] = $params['domain'];  // для правильного отображение
+		// Массив, который будем возвращать
+		$returnData = array_values($entry);
+		$returnData['DT_RowId']		= $params['tab'].'-'.$params['id'];
 
-			$returnData['DT_RowId']		= $params['tab'].'-'.$params['id'];
 
-
-			$this->response->body = json_encode($returnData);
-		}
-		catch( \Exception $e) {
-				return 'Something went wrong'.$e;
-		}
-
+		$this->response->body = json_encode($returnData);
 	}
 
 

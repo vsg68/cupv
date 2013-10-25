@@ -33,24 +33,57 @@ $(document).ready(function() {
 
 		var aTable = $('#aliases').dataTable({
 								"bJQueryUI": true,
-								"sDom": 't',
+								"sDom": '<"aliases-header"T>t',
 								"sScrollY": rH+"px",
 								"aoColumnDefs": [
 												{"sClass": "center", "aTargets": [0]},
 												{"sClass": "center", "aTargets": [1]},
-												{"sClass": "center","bSortable":false, "aTargets": [2] }
+												{"sClass": "center","bSortable":false, "aTargets": [3] }
 											],
-								"oTableTools": {
-												"aButtons": [
-													"copy", "csv", "xls", "pdf",
-													{
-														"sExtends":    "collection",
-														"sButtonText": "Save",
-														"aButtons":    [ "csv", "xls", "pdf" ]
-													}
-												]
-											}
+								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+													drawCheckBox(nRow);
+												},
+								"oTableTools": TTOpts
 								});
 		//printTitle();
 
 });
+
+modWin.validate = function () {
+
+			modWin.message = '';
+			login = $('form :text[name="login"]').val();
+			mailbox =  login + '@' +  $('form option:selected').val();
+
+			if ( ! login ) {
+				modWin.message += 'Login is required. ';
+			}
+			else{
+				existIdMbox = $(modWin.RowNode).filter('[data="' + mailbox + '"]').length;
+				existId     = $(modWin.RowNode).length;
+
+				if( ! existIdMbox && existId ) {
+					modWin.message += 'Mailbox exist!'
+				}
+			}
+
+			if ( ! $('form :text[name="username"]').val()) {
+				modWin.message += 'Name is required. ';
+			}
+
+			if ( ! $('form :text[name="password"]').val()) {
+				modWin.message += 'Message is required.';
+			}
+
+			if ( ! $('form :text[name="password"]').val()) {
+				modWin.message += 'Message is required.';
+			}
+
+			if (modWin.message.length > 0) {
+				return false;
+			}
+			else {
+				return true;
+			}
+}
+

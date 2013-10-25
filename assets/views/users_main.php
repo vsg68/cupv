@@ -17,7 +17,7 @@
 				</thead>
 				<tbody>
 					<?php foreach( $users as $user ): ?>
-						<tr id='users-<?= $user->id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>'>
+						<tr id='users-<?= $user->id ?>' class='<?= ($user->active == 0) ? 'gradeU': '' ?>' data='<?= $user->mailbox ?>'>
 							<td><?= $user->username ?></td>
 							<td><?= $user->mailbox ?></td>
 							<td><?= explode('@',$user->mailbox)[1] ?></td>
@@ -39,11 +39,13 @@
 					<tr>
 						<th>Alias</th>
 						<th>Forward</th>
-						<th>on/off</th>
+						<th>Заметка</th>
+						<th>Active</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
+						<td></td>
 						<td></td>
 						<td></td>
 						<td></td>

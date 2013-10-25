@@ -1,5 +1,8 @@
 <div >
-	<div class='ui-state-error'></div>
+	<div id='mesg' class="ui-state-error ui-corner-all" style="padding: 0 .7em; display: none;">
+		<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+		<strong>Alert:</strong></p>
+	</div>
 <form id='usersform' action='#' method='post'>
 	<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : '0') ?>'  />
 	<input type='hidden' name='tab' value='<?= $tab ?>' />
