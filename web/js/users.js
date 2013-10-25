@@ -35,11 +35,7 @@ $(document).ready(function() {
 								"bJQueryUI": true,
 								"sDom": '<"aliases-header"T>t',
 								"sScrollY": rH+"px",
-								"aoColumnDefs": [
-												{"sClass": "center", "aTargets": [0]},
-												{"sClass": "center", "aTargets": [1]},
-												{"sClass": "center","bSortable":false, "aTargets": [3] }
-											],
+								"aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [3] }],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
 												},
@@ -48,6 +44,25 @@ $(document).ready(function() {
 		//printTitle();
 
 });
+
+function fnDelete(uid) {
+
+		if( ! uid.length )
+			return false;
+
+		if( ! confirm('Уверены, что надо стирать?') )
+			return false;
+
+		tab = uid.split('-')[0];
+		mbox = 	$('#'+uid).attr('data');
+
+		$.post('/'+ ctrl +'/delEntry/', {mbox: mbox}, function(){
+											$('#'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
+											if(tab == 'users')
+												$('#aliases').dataTable().fnClearTable();
+										});
+
+}
 
 modWin.validate = function () {
 

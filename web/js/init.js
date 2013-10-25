@@ -50,18 +50,19 @@ function showAliasesTable(uid) {
 function fnEdit(uid) {
 
 		if( ! uid.length )
-			return;
+			return false;
 
 		tab = uid.split('-')[0];
 		id  = uid.split('-')[1];
 
 		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab}, function(response){
-				$(response).modal({
-									onShow: modWin.show
-									});
+					$(response).modal({
+										onShow: modWin.show
+										});
 		});
 
 }
+
 
 function drawCheckBox(nRow) {
 
@@ -99,7 +100,7 @@ function fnGetSelectedRowID( objTT ) {
 }
 
 function printToRowDataAttr(nRow) {
-		mbox = $('td:eq(2)', nRow).text();
+		mbox = $('td:eq(1)', nRow).text();
 		$(nRow).attr('data', mbox);
 }
 
@@ -152,44 +153,6 @@ var modWin = {
 			$('#mesg p').append(modWin.message).parent().fadeIn('fast');
 		},
 
-		//validate : function(){},
-		//~ validate: function () {
-			//~ modWin.message = '';
-			//~ login = $('form :text[name="login"]').val();
-			//~ mailbox =  login + '@' +  $('form option:selected').val();
-//~
-			//~ if ( ! login ) {
-				//~ modWin.message += 'Login is required. ';
-			//~ }
-			//~ else{
-				//~ existIdMbox = $('tr'+ modWin.RowID, modWin.TabID).filter('[data="' + mailbox + '"]').length;
-				//~ existId     = $('tr'+ modWin.RowID, modWin.TabID).length;
-//~
-				//~ if( ! existIdMbox && existId ) {
-					//~ modWin.message += 'Mailbox exist!'
-				//~ }
-			//~ }
-//~
-			//~ if ( ! $('form :text[name="username"]').val()) {
-				//~ modWin.message += 'Name is required. ';
-			//~ }
-//~
-			//~ if ( ! $('form :text[name="password"]').val()) {
-				//~ modWin.message += 'Message is required.';
-			//~ }
-//~
-			//~ if ( ! $('form :text[name="password"]').val()) {
-				//~ modWin.message += 'Message is required.';
-			//~ }
-//~
-			//~ if (modWin.message.length > 0) {
-				//~ return false;
-			//~ }
-			//~ else {
-				//~ return true;
-			//~ }
-		//~ },
-
 };
 
 
@@ -221,6 +184,10 @@ var TTOpts = {
 						{
 							"sExtends":"text",
 							"sButtonText": "Del",
+							"fnClick": function( nButton, oConfig, oFlash ){
+									RowID = fnGetSelectedRowID(this);
+									fnDelete( RowID );
+								}
 						},
 					   ]
 };

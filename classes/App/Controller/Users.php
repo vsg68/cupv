@@ -56,6 +56,27 @@ class Users extends \App\Page {
         $this->response->body = $view->render();
     }
 
+	public function action_delEntry() {
+
+		//~ if( $this->permissions == $this::NONE_LEVEL )
+			//~ return $this->noperm();
+
+
+		if( ! $mbox = $this->request->post('mbox') )
+			return;
+
+		$this->pixie->db->query('delete')
+						->table('users')
+						->where('mailbox',$mbox)
+						->execute();
+
+        $this->pixie->db->query('delete')
+						->table('aliases')
+						->where('alias_name',$mbox)
+						->where('or', array('delivery_to',$mbox))
+						->execute();
+    }
+
 	public function action_records() {
 
 		//~ if( $this->permissions == $this::NONE_LEVEL )
@@ -84,7 +105,6 @@ class Users extends \App\Page {
 							 'DT_RowId' => 'aliases-'.$alias->id,
 							 'DT_RowClass' => 'gradeA'
 							);
-
 		$this->response->body = ( $data ) ? json_encode($data) : "[[null,null,null,null]]" ;
 
     }
@@ -119,7 +139,7 @@ class Users extends \App\Page {
 						 );
 
 
-	//	try {
+		try {
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
 				$vars = $this->pixie->db->query('insert')
@@ -137,15 +157,15 @@ class Users extends \App\Page {
 								->where('id',$params['id'])
 								->execute();
 			}
-		//~ }
-		//~ catch( \Exception $e) {
-				//~ return 'Something went wrong'.$this->handle_exception($e);
-		//~ }
-print_r($vars); exit;
+		}
+		catch( \Exception $e) {
+				return 'Something went wrong'.$this->handle_exception($e);
+		}
+
 		$entry['md5password'] = $params['domain'];  // для правильного отображение
 		// Массив, который будем возвращать
 		$returnData = array_values($entry);
-		$returnData['DT_RowId']		= $params['tab'].'-'.$params['id'];
+		$returnData['DT_RowId']	= $params['tab'].'-'.$params['id'];
 
 
 		$this->response->body = json_encode($returnData);
