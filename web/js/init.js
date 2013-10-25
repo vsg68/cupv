@@ -58,7 +58,7 @@ function fnEdit(uid) {
 
 		$.post('/'+ ctrl +'/editform/' + id, {t:tab}, function(response){
 				$(response).modal({
-									onShow: modw.show
+									onShow: modWin.show
 									});
 		});
 
@@ -86,8 +86,8 @@ function drawUnActiveRow(nRow) {
 
 }
 
-var modw = {
-		 show: function(dialog){
+var modWin = {
+			show: function(dialog){
 					// Показе документа инициализирую функции
 					$('#submit').click(function (e) {
 						e.preventDefault();
@@ -103,7 +103,8 @@ var modw = {
 								dataType: 'json',
 								success: function(str) {
 											// при удачном стечении обстоятельств
-											if( $(document).index(RowNode) > 0 ) {
+											//if( RowNode != undefined) {
+											if( RowNode ) {
 												 $('#'+TabID).dataTable().fnUpdate( str, RowNode );
 												 // Проверка на активность
 												 drawUnActiveRow( RowNode );
@@ -121,3 +122,35 @@ var modw = {
 				}
 		};
 
+
+var selRowID;
+
+var TTOpts = {
+			"sRowSelect": "single",
+			"fnRowSelected": function(node){
+								// Только для таблицы пользователей
+								if( $(node[0]).closest('table').attr('id') == 'users') {
+									selRowID = node[0].id;
+									showAliasesTable(node[0].id);
+								}
+							},
+			"aButtons":[{
+						"sExtends":"text",
+						"sButtonText": "Edit",
+						"fnClick": function( nButton, oConfig, oFlash ){
+								fnEdit( selRowID );
+							},
+						},
+						{
+						"sExtends":"text",
+						"sButtonText": "Del",
+						},
+						{
+						"sExtends":"text",
+						"sButtonText": "Add",
+						"fnClick": function( nButton, oConfig, oFlash ){
+								// Извращение с поиском принадлежащей таблицы
+								fnEdit( this.s.dt.sTableId +'-0' );
+							},
+						}]
+		};

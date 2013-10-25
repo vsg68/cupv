@@ -132,7 +132,7 @@ class Users extends \App\Page {
 								$entry['acl_groups'],
 								$entry['imap_enable'],
 								$entry['active'],
-								'DT_RowClass' => ( $entry['active'] ) ? '' : 'gradeU';
+								'DT_RowClass' => ( $entry['active'] ) ? '' : 'gradeU'
 								);
 		}
 		else {
@@ -144,7 +144,7 @@ class Users extends \App\Page {
 			$returnData = array($entry['alias_name'],
 								$entry['delivery_to'],
 								$entry['active'],
-								'DT_RowClass' => ( $entry['active'] ) ? 'gradeA' : 'gradeU';
+								'DT_RowClass' => ( $entry['active'] ) ? 'gradeA' : 'gradeU'
 
 								);
 		}

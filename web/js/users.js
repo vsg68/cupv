@@ -8,37 +8,7 @@ $(document).ready(function() {
 		if( eH + d_min > H )
 			eH = H - d_min;
 
-		var selRowID;
 
-		var TTOpts = {
-					"sRowSelect": "single",
-					"fnRowSelected": function(node){
-										// Только для таблицы пользователей
-										if( $(node[0]).closest('table').attr('id') == 'users') {
-											selRowID = node[0].id;
-											showAliasesTable(node[0].id);
-										}
-									},
-					"aButtons":[{
-								"sExtends":"text",
-								"sButtonText": "Edit",
-								"fnClick": function( nButton, oConfig, oFlash ){
-										fnEdit( selRowID );
-									},
-								},
-								{
-								"sExtends":"text",
-								"sButtonText": "Del",
-								},
-								{
-								"sExtends":"text",
-								"sButtonText": "Add",
-								"fnClick": function( nButton, oConfig, oFlash ){
-										// Извращение с поиском принадлежащей таблицы
-										fnEdit( this.s.dt.sTableId +'-0' );
-									},
-								}]
-		};
 
 		var oTable = $('#users').dataTable({
 								"bJQueryUI": true,
