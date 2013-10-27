@@ -38,10 +38,13 @@ body {
 .row_selected {
 	background-color: #8282b8;
 }
-.theme {
+.theme{
 	width: 100px;
 	height: 100px;
 	margin: 10px;
+}
+
+.border-radius-10 {
 	border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -70,8 +73,84 @@ td span.ui-icon {
 	margin: 10px 0;
 	overflow: auto;
 }
-/*****   */
-#error_title {
-	owerflow: auto;
+
+/* Overlay */
+#simplemodal-overlay {
+	background-color:#555;
+}
+
+/*****  postform  */
+.user-form, .alias-form{
 	background-color: #fff;
+	width: 550px;
+	height: 330px;
+	padding: 10px 15px;
+	margin: 10px;
+	font-size: 13px;
+	color: #777;
+}
+.alias-form{
+	height: 200px;
+}
+a.modalCloseImg {
+	background:url(../images/x.png) no-repeat;
+	width:25px;
+	height:29px;
+	display:inline;
+	z-index:3200;
+	position:absolute;
+	top:0;
+	right:0;
+}
+
+#usersform table {
+	border-collapse:collapse;
+	width: 100%;
+	margin: 0px;
+}
+
+#usersform tr {
+/*
+	border:1px solid #000;
+*/
+}
+
+#usersform td {
+	padding: 5px 0;
+}
+
+#usersform td.formlabel {
+	width: 160px;
+}
+form#usersform {
+	padding: 20px;
+}
+
+#usersform input[type='text'],
+#usersform select {
+	background: none;
+}
+
+#usersform select {
+	height: 25px;
+}
+
+#usersform input[type='text']{
+	width: 100%;
+	padding-left:3px;
+	height: 21px;
+}
+
+.submit {
+	text-align: center;
+	padding: 20px;
+}
+
+.login {
+	width: 170px !important;
+}
+
+.mkpwd {
+	margin: -14px 0 0 130px ! important;
+	cursor: pointer;
 }

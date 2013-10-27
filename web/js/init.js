@@ -110,6 +110,7 @@ var modWin = {
 			message: null;
 			TabID: null;
 			RowNode: null;
+			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
 			// Показе документа инициализирую функции
 			$('#submit').click(function (e) {
 				e.preventDefault();

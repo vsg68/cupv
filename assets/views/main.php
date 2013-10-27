@@ -3,14 +3,19 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Users</title>
+<!--
 		<link rel="stylesheet" href="../css/humanity/jquery-ui-1.10.3.custom.min.css" type="text/css" />
+-->
+		<link rel="stylesheet" href="../css/smoothness/jquery-ui.min.css" type="text/css" />
 		<link rel="stylesheet" href="../css/demo_table_jui.css" type="text/css" />
 <!--
 		<link rel="stylesheet" href="../css/TableTools.css" type="text/css" />
 -->
 		<link rel="stylesheet" href="../css/TableTools_JUI.css" type="text/css" />
 		<link rel="stylesheet" href="../css/style.css" type="text/css" />
+<!--
 		<link rel="stylesheet" href="../css/basic.css" type="text/css" />
+-->
 
 
 		<script type="text/javascript" language="javascript" src="../js/jquery-1.9.1.js"></script>
@@ -31,9 +36,9 @@
 				</div>
 			</div>
 			<div class="content-left">
-				<div id='mail-page' class='theme homepage' title='На главную'></div>
+				<div id='mail-page' class='theme homepage border-radius-10' title='На главную'></div>
 				<?php foreach( $menuitems as $item ): ?>
-					<a href="/<?= $item->class ?>/"><div id='<?= $item->class ?>' class='theme' title='<?= $item->name ?>'></div></a>
+					<a href="/<?= $item->class ?>/"><div id='<?= $item->class ?>' class='theme border-radius-10' title='<?= $item->name ?>'></div></a>
 				<?php endforeach; ?>
 
 			</div>

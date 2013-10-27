@@ -72,8 +72,7 @@ class Users extends \App\Page {
 
         $this->pixie->db->query('delete')
 						->table('aliases')
-						->where('alias_name',$mbox)
-						->where('or', array('delivery_to',$mbox))
+						->where('delivery_to',$mbox)
 						->execute();
     }
 

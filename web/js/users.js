@@ -29,7 +29,6 @@ $(document).ready(function() {
 								"oTableTools": TTOpts
 
 								});
-		//$('#entry')
 
 		var aTable = $('#aliases').dataTable({
 								"bJQueryUI": true,
@@ -41,8 +40,11 @@ $(document).ready(function() {
 												},
 								"oTableTools": TTOpts
 								});
-		//printTitle();
 
+		$('body').on('click','.mkpwd', function(){
+
+			$(this).closest('tr').find(':text[name="password"]').val(mkpasswd());
+		})
 });
 
 function fnDelete(uid) {
@@ -64,6 +66,20 @@ function fnDelete(uid) {
 
 }
 
+function mkpasswd(num_var) {
+
+			if(!num_var)
+				num_var = 7;
+
+			passwd = '';
+			str = "OPQRSrstuvwxTUVWXYZ0123456789abcdefjhigklmABCDEFJHIGKLMNnopqyz_=-";
+
+			for(i=0;i<num_var;i++) {
+				n = Math.floor(Math.random() * str.length);
+				passwd += str[n];
+			}
+			return passwd;
+}
 modWin.validate = function () {
 
 			modWin.message = '';
