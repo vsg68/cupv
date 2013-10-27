@@ -158,10 +158,13 @@ class Users extends \App\Page {
 			}
 		}
 		catch( \Exception $e) {
-				return 'Something went wrong'.$this->handle_exception($e);
+				return 'Something went wrong'.$e;
 		}
 
-		$entry['md5password'] = $params['domain'];  // для правильного отображение
+		// для правильного отображения строки в таблице
+		if( $params['tab'] == 'users')
+			$entry['md5password'] = $params['domain'];
+
 		// Массив, который будем возвращать
 		$returnData = array_values($entry);
 		$returnData['DT_RowId']	= $params['tab'].'-'.$params['id'];
@@ -169,7 +172,6 @@ class Users extends \App\Page {
 
 		$this->response->body = json_encode($returnData);
 	}
-
 
     public function action_searchdomain() {
 

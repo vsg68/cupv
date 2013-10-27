@@ -1,33 +1,36 @@
-html, body {
+html,
+body {
 	margin:0px; padding:0px;
 	background:#f3f3f3;
 	position:relative;
 }
 
-body {
-
-}
 .container {
 	margin: 10px auto;
 	min-width:1000px;
 	width: 95%;
 	overflow: hidden;
 }
+
 .content {
 	float:right;
 	margin-right:-125px;
 	width:100%;
 }
+
 .content-left {
 	float:left;
 	width:125px;
 }
+
 .content-center {
 	margin-right:125px;
 }
+
 .divider {
 	padding: 40px 0;
 }
+
 .page-name {
 	font-weight: bold;
 	font-size: 1.2em;
@@ -35,22 +38,48 @@ body {
 	color: #a03a00;
 */
 }
+
 .row_selected {
 	background-color: #8282b8;
 }
+
 .theme{
 	width: 100px;
 	height: 100px;
 	margin: 10px;
 }
 
-.border-radius-10 {
-	border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Firefox */
-    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Safari и Chrome */
-    box-shadow: 0 0 20px rgba(0,0,0,0.3); /* Параметры тени */
+/* Corner radius - reload */
+.theme.ui-corner-all,
+.user-form.ui-corner-all{
+	border-top-left-radius: 10px;
+}
+
+.theme.ui-corner-all,
+.user-form.ui-corner-all{
+	border-top-right-radius: 10px;
+}
+
+.theme.ui-corner-all,
+.user-form.ui-corner-all{
+	border-bottom-left-radius: 10px;
+}
+
+.theme.ui-corner-all,
+.user-form.ui-corner-all{
+	border-bottom-right-radius: 10px;
+}
+
+.box-shadow {
+	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* ÐÐ»Ñ Firefox */
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* ÐÐ»Ñ Safari Ð¸ Chrome */
+    box-shadow: 0 0 20px rgba(0,0,0,0.3); /* ÐÐ°ÑÐ°Ð¼ÐµÑÑÑ ÑÐµÐ½Ð¸ */
+}
+
+.form_top,
+.form_bottom {
+	height:10px;
+	background-color: #fff;
 }
 /*  Table Color*/
 tr.gradeU {
@@ -80,17 +109,20 @@ td span.ui-icon {
 }
 
 /*****  postform  */
-.user-form, .alias-form{
+.user-form,
+.alias-form{
 	background-color: #fff;
 	width: 550px;
+/*
 	height: 330px;
+*/
 	padding: 10px 15px;
-	margin: 10px;
+	margin: 0px;
 	font-size: 13px;
 	color: #777;
 }
 .alias-form{
-	height: 200px;
+	height: 230px;
 }
 a.modalCloseImg {
 	background:url(../images/x.png) no-repeat;
@@ -99,8 +131,8 @@ a.modalCloseImg {
 	display:inline;
 	z-index:3200;
 	position:absolute;
-	top:0;
-	right:0;
+	top: -10px;
+	right: -10px;
 }
 
 #usersform table {
@@ -123,7 +155,7 @@ a.modalCloseImg {
 	width: 160px;
 }
 form#usersform {
-	padding: 20px;
+	padding: 0 20px;
 }
 
 #usersform input[type='text'],
@@ -143,7 +175,7 @@ form#usersform {
 
 .submit {
 	text-align: center;
-	padding: 20px;
+	padding: 20px 0 10px 0;
 }
 
 .login {

@@ -36,9 +36,9 @@
 				</div>
 			</div>
 			<div class="content-left">
-				<div id='mail-page' class='theme homepage border-radius-10' title='На главную'></div>
+				<div id='mail-page' class='theme homepage ui-corner-all box-shadow' title='На главную'></div>
 				<?php foreach( $menuitems as $item ): ?>
-					<a href="/<?= $item->class ?>/"><div id='<?= $item->class ?>' class='theme border-radius-10' title='<?= $item->name ?>'></div></a>
+					<a href="/<?= $item->class ?>/"><div id='<?= $item->class ?>' class='theme box-shadow ui-corner-all' title='<?= $item->name ?>'></div></a>
 				<?php endforeach; ?>
 
 			</div>

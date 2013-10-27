@@ -104,6 +104,36 @@ function printToRowDataAttr(nRow) {
 		$(nRow).attr('data', mbox);
 }
 
+function testByType(str, type) {
+
+	one_net	  =	"(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?";
+	net_tmpl  = "^\\s*" + one_net + "(\\s*,\\s*" + one_net + ")*\\s*$";
+	mail_tmpl = "^[-_\\w\\.]+@(\\w+\\.){1,}\\w+$";
+	word_tmpl = "^[\\w\\.]+$";
+	transp_tmpl	= "^\\w+:\\[(\\d{1,3}\\.){3}\\d{1,3}\\]$";
+	domain_tmpl	= "^(\\w+\\.)+\\w+$";
+
+	switch (type ) {
+		case 'mail':
+			reg = new RegExp(mail_tmpl,'i')
+			break
+		case 'nets':
+			reg = new RegExp(net_tmpl,'i')
+			break
+		default:
+			if( ! str )
+				return true
+			else
+				return false
+	}
+
+	if( reg.test(str) )
+		return false;
+
+	return true;
+
+}
+
 var modWin = {
 
 		show: function(dialog){
@@ -114,12 +144,16 @@ var modWin = {
 			// Показе документа инициализирую функции
 			$('#submit').click(function (e) {
 				e.preventDefault();
+
 				// С какими строками какой таблицы работаем
 				modWin.TabID = $('form :hidden[name="tab"]').val();
 				RowID 		 = $('form :hidden[name="id"]').val();
 				modWin.RowNode = $('#'+modWin.TabID+'-'+RowID).get(0);
 
-				if (modWin.validate()) {
+				// каждый модуль содержит свою функцию валидации
+				validateFunctionName = 'modWin.validate_' + modWin.TabID + '()';
+
+				if (eval(validateFunctionName)) {
 					// Работа с запросом
 					$.ajax ({
 							url: '/'+ ctrl +'/edit/',
@@ -129,10 +163,10 @@ var modWin = {
 							success: function(str) {
 										// при удачном стечении обстоятельств
 										//if( RowNode != undefined) {
-										if( RowNode ) {
+										if( modWin.RowNode ) {
 											 $('#'+modWin.TabID).dataTable().fnUpdate( str, modWin.RowNode );
 											 // Проверка на активность
-											 drawUnActiveRow( RowNode );
+											 drawUnActiveRow( modWin.RowNode );
 										}
 										else {
 												$('#'+modWin.TabID).dataTable().fnAddData(str);
@@ -151,7 +185,7 @@ var modWin = {
 		},
 
 		showError: function () {
-			$('#mesg p').append(modWin.message).parent().fadeIn('fast');
+			$('#mesg').empty().append(modWin.message).closest('.ui-state-error').fadeIn('fast');
 		},
 
 };

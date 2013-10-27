@@ -1,8 +1,12 @@
-<div class='user-form ui-widget border-radius-10'>
+<div class='box-shadow'>
 
-	<div id='mesg' class="ui-state-error ui-corner-all" style="padding: 0 .7em; display: none;">
-		<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
-		<strong>Alert:</strong></p>
+	<div class='user-form ui-widget ui-corner-all box-shadow'>
+	<div class="ui-state-error ui-corner-all" style="padding: 0 .7em; display: none;">
+		<p>
+			<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+			<strong>Alert:</strong>
+			<span  id='mesg'></span>
+		</p>
 	</div>
 	<form id='usersform' action='#' method='post'>
 		<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : '0') ?>'  />
@@ -45,10 +49,12 @@
 				</tr>
 			</table>
 			<div class='submit'>
-				<button aria-disabled="false" role="button" class="ui-button ui-widget ui-corner-all ui-state-default ui-button-text-only" id="button">
+				<button aria-disabled="false" role="button" class="ui-button ui-widget ui-corner-all ui-state-default ui-button-text-only" id="submit">
 					<span class="ui-button-text">Send</span>
 				</button>
 			</div>
 	</form>
+	</div>
+
 <div>
 

@@ -26,6 +26,14 @@ $(document).ready(function() {
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
 												},
+								"fnRowSelected": function(nodes) {
+													// тут при ставим блокировку на "NEW" для алиасов
+													// при выборе - можно заносить mailbox в саму модальную функцию
+												},
+								"fnRowDeselected": function(nodes){
+													// тут при снимаем блокировку на "NEW" для алиасов
+													//
+												},
 								"oTableTools": TTOpts
 
 								});
@@ -80,11 +88,12 @@ function mkpasswd(num_var) {
 			}
 			return passwd;
 }
-modWin.validate = function () {
+modWin.validate_users = function () {
 
 			modWin.message = '';
 			login = $('form :text[name="login"]').val();
 			mailbox =  login + '@' +  $('form option:selected').val();
+			allow_nets = $('form :text[name="allow_nets"]').val();
 
 			if ( ! login ) {
 				modWin.message += 'Login is required. ';
@@ -110,6 +119,9 @@ modWin.validate = function () {
 				modWin.message += 'Message is required.';
 			}
 
+			if ( ! testByType(allow_nets,'nets')) {
+				modWin.message += 'Поле "разрешенные сети" должно содержать маску сети.\n';
+			}
 			if (modWin.message.length > 0) {
 				return false;
 			}
@@ -118,3 +130,27 @@ modWin.validate = function () {
 			}
 }
 
+modWin.validate_aliases = function () {
+
+			modWin.message = '';
+			alias_name	= $('form :text[name="alias_name"]').val();
+			delivery_to	= $('form :text[name="delivery_to"]').val();
+
+			if ( ! (alias_name || delivery_to) ) {
+				modWin.message += 'Хотя бы одно поле должно быть заполнено. ';
+			}
+
+			if ( !(testByType( alias_name, 'mail') && alias_name) ) {
+				modWin.message += 'поле должно содержать почтовый адрес';
+			}
+
+			if ( !(testByType( delivery_to, 'mail') && delivery_to) ) {
+				modWin.message += 'поле должно содержать почтовый адрес';
+			}
+			if (modWin.message.length > 0) {
+				return false;
+			}
+			else {
+				return true;
+			}
+}

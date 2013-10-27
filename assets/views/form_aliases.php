@@ -18,6 +18,11 @@
 					<td><input class='ui-widget-content ui-corner-all' type='text' name='delivery_to' value='<?= isset($data->delivery_to) ? $data->delivery_to : '' ?>' /></td>
 				</tr>
 				<tr>
+					<td class='formlabel'>Заметка:</td>
+					<td><input class='ui-widget-content ui-corner-all' type='text' name='alias_notes' value='<?= isset($data->alias_notes) ? $data->alias_notes : '' ?>' /></td>
+				</tr>
+
+				<tr>
 					<td class='formlabel'>В работе:</td>
 					<td><input type='checkbox' class='formtext' name='active' value='1' <?php isset($data->active) ?  ($data->active & 1) && print('checked') : print('checked') ?> ></td>
 				</tr>
