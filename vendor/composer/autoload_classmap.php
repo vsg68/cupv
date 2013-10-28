@@ -17,6 +17,7 @@ return array(
     'PHPixie\\Auth\\Service' => $vendorDir . '/phpixie/auth/classes/PHPixie/Auth/Service.php',
     'PHPixie\\Config' => $vendorDir . '/phpixie/core/classes/PHPixie/Config.php',
     'PHPixie\\Controller' => $vendorDir . '/phpixie/core/classes/PHPixie/Controller.php',
+    'PHPixie\\Cookie' => $vendorDir . '/phpixie/core/classes/PHPixie/Cookie.php',
     'PHPixie\\DB' => $vendorDir . '/phpixie/db/classes/PHPixie/DB.php',
     'PHPixie\\DB\\Connection' => $vendorDir . '/phpixie/db/classes/PHPixie/DB/Connection.php',
     'PHPixie\\DB\\Expression' => $vendorDir . '/phpixie/db/classes/PHPixie/DB/Expression.php',
@@ -42,6 +43,10 @@ return array(
     'PHPixie\\Router' => $vendorDir . '/phpixie/core/classes/PHPixie/Router.php',
     'PHPixie\\Session' => $vendorDir . '/phpixie/core/classes/PHPixie/Session.php',
     'PHPixie\\Validate' => $vendorDir . '/phpixie/validate/classes/PHPixie/Validate.php',
+    'PHPixie\\Validate\\Field' => $vendorDir . '/phpixie/validate/classes/PHPixie/Validate/Field.php',
+    'PHPixie\\Validate\\Rule' => $vendorDir . '/phpixie/validate/classes/PHPixie/Validate/Rule.php',
+    'PHPixie\\Validate\\Ruleset' => $vendorDir . '/phpixie/validate/classes/PHPixie/Validate/Ruleset.php',
     'PHPixie\\Validate\\Validator' => $vendorDir . '/phpixie/validate/classes/PHPixie/Validate/Validator.php',
     'PHPixie\\View' => $vendorDir . '/phpixie/core/classes/PHPixie/View.php',
+    'PHPixie\\View\\Helper' => $vendorDir . '/phpixie/core/classes/PHPixie/View/Helper.php',
 );

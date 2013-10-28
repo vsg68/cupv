@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-Auth.git",
-                "reference": "c05a0b128bd1529b6cacf61e0bbbc3010417921c"
+                "reference": "613248252458e076e0e824cbaedd4640acfcfcb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-Auth/zipball/c05a0b128bd1529b6cacf61e0bbbc3010417921c",
-                "reference": "c05a0b128bd1529b6cacf61e0bbbc3010417921c",
+                "url": "https://api.github.com/repos/dracony/PHPixie-Auth/zipball/613248252458e076e0e824cbaedd4640acfcfcb8",
+                "reference": "613248252458e076e0e824cbaedd4640acfcfcb8",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
                 "authorization",
                 "facebook"
             ],
-            "time": "2013-07-14 18:13:15"
+            "time": "2013-09-30 09:44:36"
         },
         {
             "name": "phpixie/core",
@@ -59,12 +59,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-Core.git",
-                "reference": "11092a22456ecb30f488fc246def5a16ffa47abf"
+                "reference": "0133c031b634d1ea5074e213f8bc5fab2e53a9f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-Core/zipball/11092a22456ecb30f488fc246def5a16ffa47abf",
-                "reference": "11092a22456ecb30f488fc246def5a16ffa47abf",
+                "url": "https://api.github.com/repos/dracony/PHPixie-Core/zipball/0133c031b634d1ea5074e213f8bc5fab2e53a9f2",
+                "reference": "0133c031b634d1ea5074e213f8bc5fab2e53a9f2",
                 "shasum": ""
             },
             "require": {
@@ -97,7 +97,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-07-17 12:57:49"
+            "time": "2013-08-27 16:03:04"
         },
         {
             "name": "phpixie/db",
@@ -105,12 +105,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-DB.git",
-                "reference": "56f77deeb0c606193853cdc391827a98550aba48"
+                "reference": "73d39e124ec08849fc6931c23b4936a3d69c1204"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-DB/zipball/56f77deeb0c606193853cdc391827a98550aba48",
-                "reference": "56f77deeb0c606193853cdc391827a98550aba48",
+                "url": "https://api.github.com/repos/dracony/PHPixie-DB/zipball/73d39e124ec08849fc6931c23b4936a3d69c1204",
+                "reference": "73d39e124ec08849fc6931c23b4936a3d69c1204",
                 "shasum": ""
             },
             "require": {
@@ -146,7 +146,7 @@
                 "postgresql",
                 "sqlite"
             ],
-            "time": "2013-07-31 22:41:32"
+            "time": "2013-09-13 07:05:46"
         },
         {
             "name": "phpixie/orm",
@@ -201,12 +201,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-validate.git",
-                "reference": "72a5b0d68b1b471b3087361eb1243df201323a0d"
+                "reference": "9058fa98fca678a97efeb1cef313d002cd010153"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-validate/zipball/72a5b0d68b1b471b3087361eb1243df201323a0d",
-                "reference": "72a5b0d68b1b471b3087361eb1243df201323a0d",
+                "url": "https://api.github.com/repos/dracony/PHPixie-validate/zipball/9058fa98fca678a97efeb1cef313d002cd010153",
+                "reference": "9058fa98fca678a97efeb1cef313d002cd010153",
                 "shasum": ""
             },
             "require": {
@@ -239,7 +239,7 @@
             "keywords": [
                 "validate"
             ],
-            "time": "2013-07-31 19:47:56"
+            "time": "2013-10-01 15:35:47"
         }
     ],
     "packages-dev": [

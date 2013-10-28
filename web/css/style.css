@@ -1,7 +1,9 @@
 html,
 body {
 	margin:0px; padding:0px;
+/*
 	background:#f3f3f3;
+*/
 	position:relative;
 }
 
@@ -185,4 +187,7 @@ form#usersform {
 .mkpwd {
 	margin: -14px 0 0 130px ! important;
 	cursor: pointer;
+}
+.buttonDisabled {
+	color: #f00 !important;
 }

@@ -26,17 +26,12 @@ $(document).ready(function() {
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
 												},
-								"fnRowSelected": function(nodes) {
-													// тут при ставим блокировку на "NEW" для алиасов
-													// при выборе - можно заносить mailbox в саму модальную функцию
-												},
-								"fnRowDeselected": function(nodes){
-													// тут при снимаем блокировку на "NEW" для алиасов
-													//
-												},
 								"oTableTools": TTOpts
 
 								});
+
+
+		TTOpts.aButtons[1].sButtonClass = 'DTTT_disabled';
 
 		var aTable = $('#aliases').dataTable({
 								"bJQueryUI": true,
@@ -46,48 +41,64 @@ $(document).ready(function() {
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
 												},
-								"oTableTools": TTOpts
+								"oTableTools": TTOpts,
 								});
 
 		$('body').on('click','.mkpwd', function(){
 
 			$(this).closest('tr').find(':text[name="password"]').val(mkpasswd());
-		})
+		});
+
+
 });
 
-function fnDelete(uid) {
 
-		if( ! uid.length )
-			return false;
+function clearAliasTable (tab) {
 
-		if( ! confirm('Уверены, что надо стирать?') )
-			return false;
-
-		tab = uid.split('-')[0];
-		mbox = 	$('#'+uid).attr('data');
-
-		$.post('/'+ ctrl +'/delEntry/', {mbox: mbox}, function(){
-											$('#'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
-											if(tab == 'users')
-												$('#aliases').dataTable().fnClearTable();
-										});
-
+		if(tab == 'users')
+			$('#aliases').dataTable().fnClearTable();
 }
 
-function mkpasswd(num_var) {
+function showAliasesTable(node) {
 
-			if(!num_var)
-				num_var = 7;
+		if(node[0].offsetParent.id != 'users')
+			return false;
 
-			passwd = '';
-			str = "OPQRSrstuvwxTUVWXYZ0123456789abcdefjhigklmABCDEFJHIGKLMNnopqyz_=-";
-
-			for(i=0;i<num_var;i++) {
-				n = Math.floor(Math.random() * str.length);
-				passwd += str[n];
-			}
-			return passwd;
+		id = node[0].id.split('-')[1];
+		$.ajax({
+				type: "GET",
+				url: '/'+ ctrl +'/records/' + id,
+				dataType: "json",
+				success: function(response) {
+										$('#aliases').dataTable().fnClearTable();
+										$('#aliases').dataTable().fnAddData(response);
+										},
+				error: function() {
+									$('#aliases').dataTable().fnClearTable();
+									}
+		});
 }
+
+function blockNewButton(nodes) {
+
+		if( nodes.length && nodes[0].offsetParent.id == 'users')
+			$('#ToolTables_aliases_1').addClass('DTTT_disabled');
+}
+
+function unblockNewButton(node) {
+
+		if( node[0].offsetParent.id == 'users') {
+			$('#ToolTables_aliases_1').removeClass('DTTT_disabled');
+			mbox = fnGetFieldData('users', 1);
+			$('#ToolTables_aliases_1').attr('mbox',mbox);
+		}
+}
+
+function putInitValue() {
+		x = $('#ToolTables_aliases_1').attr('mbox');
+		$(':text[name="alias_name"], :text[name="delivery_to"]', '.alias_form').val(x);
+}
+
 modWin.validate_users = function () {
 
 			modWin.message = '';
@@ -119,7 +130,7 @@ modWin.validate_users = function () {
 				modWin.message += 'Message is required.';
 			}
 
-			if ( ! testByType(allow_nets,'nets')) {
+			if ( ! fnTestByType(allow_nets,'nets')) {
 				modWin.message += 'Поле "разрешенные сети" должно содержать маску сети.\n';
 			}
 			if (modWin.message.length > 0) {
@@ -140,11 +151,11 @@ modWin.validate_aliases = function () {
 				modWin.message += 'Хотя бы одно поле должно быть заполнено. ';
 			}
 
-			if ( !(testByType( alias_name, 'mail') && alias_name) ) {
+			if ( !(fnTestByType( alias_name, 'mail') && alias_name) ) {
 				modWin.message += 'поле должно содержать почтовый адрес';
 			}
 
-			if ( !(testByType( delivery_to, 'mail') && delivery_to) ) {
+			if ( !(fnTestByType( delivery_to, 'mail') && delivery_to) ) {
 				modWin.message += 'поле должно содержать почтовый адрес';
 			}
 			if (modWin.message.length > 0) {
