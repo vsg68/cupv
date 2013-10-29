@@ -49,6 +49,15 @@ body {
 	width: 100px;
 	height: 100px;
 	margin: 10px;
+	position:relative;
+}
+
+.pagetab {
+	width: 64px;
+	height: 64px;
+	position:absolute;
+	top: 18px;
+	left:18px;
 }
 
 /* Corner radius - reload */
@@ -115,9 +124,6 @@ td span.ui-icon {
 .alias-form{
 	background-color: #fff;
 	width: 550px;
-/*
-	height: 330px;
-*/
 	padding: 10px 15px;
 	margin: 0px;
 	font-size: 13px;
@@ -141,12 +147,6 @@ a.modalCloseImg {
 	border-collapse:collapse;
 	width: 100%;
 	margin: 0px;
-}
-
-#usersform tr {
-/*
-	border:1px solid #000;
-*/
 }
 
 #usersform td {
@@ -188,6 +188,30 @@ form#usersform {
 	margin: -14px 0 0 130px ! important;
 	cursor: pointer;
 }
+/*
 .buttonDisabled {
 	color: #f00 !important;
+
+}*/
+/**** картинки ***/
+
+#users,
+#home-page,
+#aliases,
+#domains,
+#logs	{
+	background-repeat: no-repeat;
+	background-image: url('/css/smoothness/images/mail.png');
 }
+
+a.DTTT_button_edit span,
+a.DTTT_button_new span,
+a.DTTT_button_del span {
+	height:21px;
+	width: 21px;
+	background-repeat: no-repeat;
+	background-image: url('/css/smoothness/images/edit.png');
+
+}
+
+

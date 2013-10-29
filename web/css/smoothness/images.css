@@ -1,0 +1,73 @@
+/**** Иконки **/
+a.DTTT_button{
+	margin: 0;
+	background: none !important;
+	border: none !important;
+}
+
+a.DTTT_button_edit span {
+	background-position: 0px 0px;
+}
+
+a.DTTT_button_edit:hover span {
+	background-position: 0px -21px;
+}
+
+a.DTTT_button_new span {
+	background-position: -21px 0px;
+}
+
+a.DTTT_button_new:hover span {
+	background-position: -21px 0px;
+}
+
+a.DTTT_button_del span {
+	background-position: -42px -0px;
+}
+
+a.DTTT_button_del:hover span {
+	background-position: -42px -21px;
+}
+
+
+
+#users {
+	background-position: -192px 0px;
+}
+#users.pagetab-selected,
+#users:hover {
+	background-position: -192px -64px !important;
+}
+
+#home-page {
+	background-position: 0px 0px;
+}
+#home-page.pagetab-selected,
+#home-page:hover {
+	background-position: 0px -64px !important;
+}
+
+#aliases {
+	background-position: -64px 0px;
+}
+
+#aliases.pagetab-selected,
+#aliases:hover {
+	background-position: -64px -64px !important;
+}
+
+#domains {
+	background-position: -128px 0px;
+}
+#domains.pagetab-selected,
+#domains:hover {
+	background-position: -128px -64px;
+}
+
+#logs {
+	background-position: -256px 0px;
+}
+#logs.pagetab-selected,
+#logs:hover {
+	background-position: -256px -64px;
+}

@@ -34,13 +34,9 @@ class Users extends \App\Page {
 			return;
 
 		$this->_id 	= $this->request->param('id');
+		$init		= $this->request->post('init');
 		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
-// Придумать, как передать начальные значения
-		$view->init
-		// Если начальные значения существуют
-		if( isset($this->request->post('init') && $this->request->post('init') )
-				$view->init = unserialize($this->request->post('init'));
 
 		if( $tab == 'users' ) {
 			$view->domains = $this->pixie->db->query('select')
@@ -56,6 +52,16 @@ class Users extends \App\Page {
 										->execute()
 										->current();
 
+		// Для дефолтных значений таблицы алиасов
+		if( $init ) {
+			$view->data = $this->pixie->db->query('select')
+										->fields($this->pixie->db->expr('mailbox AS alias_name, mailbox AS delivery_to, null AS alias_notes'))
+										->table('users')
+										->where('id',$init)
+										->execute()
+										->current();
+
+		}
 
         $this->response->body = $view->render();
     }
@@ -160,19 +166,20 @@ class Users extends \App\Page {
 								->where('id',$params['id'])
 								->execute();
 			}
+
+
+
+			// для правильного отображения строки в таблице
+			if( $params['tab'] == 'users')
+				$entry['md5password'] = $params['domain'];
+
+			// Массив, который будем возвращать
+			$returnData = array_values($entry);
+			$returnData['DT_RowId']	= $params['tab'].'-'.$params['id'];
 		}
 		catch( \Exception $e) {
 				return 'Something went wrong'.$e;
 		}
-
-		// для правильного отображения строки в таблице
-		if( $params['tab'] == 'users')
-			$entry['md5password'] = $params['domain'];
-
-		// Массив, который будем возвращать
-		$returnData = array_values($entry);
-		$returnData['DT_RowId']	= $params['tab'].'-'.$params['id'];
-
 
 		$this->response->body = json_encode($returnData);
 	}

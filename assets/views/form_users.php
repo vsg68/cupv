@@ -44,7 +44,7 @@
 					<td><input type='checkbox' class='formtext' name='imap' value='1' <?php isset($data->imap_enable) ? ($data->imap_enable & 1) && print('checked') : print('checked') ?> ></td>
 				</tr>
 				<tr>
-					<td class='formlabel'>В работе:</td>
+					<td class='formlabel'>Активно:</td>
 					<td><input type='checkbox' class='formtext' name='active' value='1' <?php isset($data->active) ?  ($data->active & 1) && print('checked') : print('checked') ?> ></td>
 				</tr>
 			</table>
