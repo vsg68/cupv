@@ -326,5 +326,9 @@ var TTOpts = {
 
 								}
 						},
+						{
+							"sExtends":"print",
+							"sButtonText": ".",
+						}
 					   ]
 };

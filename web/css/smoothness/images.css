@@ -41,6 +41,14 @@ a.DTTT_button_del.DTTT_disabled span {
 	background-position: -42px -42px;
 }
 
+a.DTTT_button_print span {
+	background-position: -63px -0px;
+}
+
+a.DTTT_button_print:hover span {
+	background-position: -63px -21px;
+}
+
 
 
 #users {

@@ -204,6 +204,7 @@ form#usersform {
 	background-image: url('/css/smoothness/images/mail.png');
 }
 
+a.DTTT_button_print span,
 a.DTTT_button_edit span,
 a.DTTT_button_new span,
 a.DTTT_button_del span {

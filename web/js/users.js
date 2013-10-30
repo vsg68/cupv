@@ -32,6 +32,7 @@ $(document).ready(function() {
 
 
 		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
+		delete TTOpts.aButtons[3];
 
 		var aTable = $('#tab-aliases').dataTable({
 								"bJQueryUI": true,
