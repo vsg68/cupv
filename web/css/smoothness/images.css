@@ -13,12 +13,20 @@ a.DTTT_button_edit:hover span {
 	background-position: 0px -21px;
 }
 
+a.DTTT_button_edit.DTTT_disabled span {
+	background-position: -0px -42px;
+}
+
 a.DTTT_button_new span {
 	background-position: -21px 0px;
 }
 
 a.DTTT_button_new:hover span {
-	background-position: -21px 0px;
+	background-position: -21px -21px;
+}
+
+a.DTTT_button_new.DTTT_disabled span {
+	background-position: -21px -42px;
 }
 
 a.DTTT_button_del span {
@@ -27,6 +35,10 @@ a.DTTT_button_del span {
 
 a.DTTT_button_del:hover span {
 	background-position: -42px -21px;
+}
+
+a.DTTT_button_del.DTTT_disabled span {
+	background-position: -42px -42px;
 }
 
 

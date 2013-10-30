@@ -93,8 +93,8 @@ body {
 	background-color: #fff;
 }
 /*  Table Color*/
-tr.gradeU {
-	color: #888;
+tr.gradeUU {
+	color: #aaa;
 }
 tr.odd {
 	background-color: #F0F5FC;
@@ -207,11 +207,14 @@ form#usersform {
 a.DTTT_button_edit span,
 a.DTTT_button_new span,
 a.DTTT_button_del span {
-	height:21px;
+	height: 21px;
 	width: 21px;
 	background-repeat: no-repeat;
 	background-image: url('/css/smoothness/images/edit.png');
-
+	display: inline-block;
+	color: transparent;
 }
 
-
+.DTTT_disabled {
+	cursor: default;
+}

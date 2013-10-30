@@ -115,9 +115,9 @@ function drawCheckBox(nRow) {
 function drawUnActiveRow(nRow) {
 
 		if( $('td:last', nRow).html() )
-			$(nRow).removeClass('gradeU');
+			$(nRow).removeClass('gradeUU');
 		else
-			$(nRow).addClass('gradeU');
+			$(nRow).addClass('gradeUU');
 }
 
 /*
@@ -296,8 +296,8 @@ var TTOpts = {
 			"aButtons":[
 						{
 							"sExtends":"text",
-							"sButtonText": "",
-							"sButtonClass": "DTTT_button_edit",
+							"sButtonText": ".",
+							"sButtonClass": "DTTT_button_edit DTTT_disabled",
 							"fnClick": function( nButton, oConfig, oFlash ){
 									RowID = fnGetSelectedRowID(this);
 									fnEdit( RowID , 0);
@@ -305,7 +305,7 @@ var TTOpts = {
 						},
 						{
 							"sExtends":"text",
-							"sButtonText": "",
+							"sButtonText": ".",
 							"sButtonClass": "DTTT_button_new",
 							"fnClick": function( nButton, oConfig, oFlash ){
 									//предотвращаем новое, если в основной таблице ничего не выбрано
@@ -317,8 +317,8 @@ var TTOpts = {
 						},
 						{
 							"sExtends":"text",
-							"sButtonText": "",
-							"sButtonClass": "DTTT_button_del",
+							"sButtonText": ".",
+							"sButtonClass": "DTTT_button_del DTTT_disabled",
 							"fnClick": function( nButton, oConfig, oFlash ){
 
 									RowID = fnGetSelectedRowID(this);

@@ -31,7 +31,7 @@ $(document).ready(function() {
 								});
 
 
-		TTOpts.aButtons[1].sButtonClass = 'DTTT_disabled';
+		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
 
 		var aTable = $('#tab-aliases').dataTable({
 								"bJQueryUI": true,
@@ -87,8 +87,14 @@ function showAliasesTable(node) {
 
 /*
  *  Если НЕ выделена строка в таблице users - создавать для нее алиасы запрещаем
+ *  Запещаем редактировать и удалять, если не выделено
  */
 function blockNewButton(nodes) {
+
+		if( nodes.length && (tab = nodes[0].offsetParent.id) ) {
+			$('#ToolTables_'+tab+'_0').addClass('DTTT_disabled');
+			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
+		}
 
 		if( nodes.length && nodes[0].offsetParent.id == 'tab-users')
 			$('#ToolTables_tab-aliases_1').addClass('DTTT_disabled');
@@ -96,8 +102,13 @@ function blockNewButton(nodes) {
 
 /*
  *  Если выделена строка в таблице users - разрешаем создавать для нее алиасы
+ *  Разрешаем редактировать и удалять, если выделено
  */
 function unblockNewButton(node) {
+
+		tab = node[0].offsetParent.id;
+		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
+		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
 
 		if( node[0].offsetParent.id == 'tab-users') {
 			$('#ToolTables_tab-aliases_1').removeClass('DTTT_disabled');
