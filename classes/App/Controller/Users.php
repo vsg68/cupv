@@ -15,7 +15,7 @@ class Users extends \App\Page {
 			//~ return  $this->noperm();
 
 
-		$this->view->subview = 'users_main';
+		$this->view->subview = 'users';
 
 		$this->view->users 	 = $this->pixie->db->query('select')
 												->table('users')

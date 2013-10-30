@@ -188,11 +188,10 @@ form#usersform {
 	margin: -14px 0 0 130px ! important;
 	cursor: pointer;
 }
-/*
-.buttonDisabled {
-	color: #f00 !important;
 
-}*/
+.hidden {
+	display: none;
+}
 /**** картинки ***/
 
 #users,

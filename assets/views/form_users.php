@@ -19,7 +19,7 @@
 				</tr>
 				<tr>
 					<td class='formlabel'>Пчтовый адрес:</td>
-					<td><input class='login ui-widget-content ui-corner-all' type='text' name='login' value='<?= isset($data->mailbox) ? explode('@',$data->mailbox)[0] : '' ?>' />&nbsp;<strong>@</strong>
+					<td><input class='login' type='text' name='login' value='<?= isset($data->mailbox) ? explode('@',$data->mailbox)[0] : '' ?>' />&nbsp;<strong>@</strong>
 						<select class='ui-widget-content ui-corner-all' name='domain'>
 							<?php foreach( $domains as $domain): ?>
 							<option value='<?= $domain->domain_name ?>' <?= ( $domain->domain_name == 'gmpro.ru' ? 'selected': '') ?> ><?= $domain->domain_name ?></option>
@@ -29,15 +29,15 @@
 				</tr>
 				<tr>
 					<td class='formlabel'>Пароль:<span class='ui-icon ui-icon-gear mkpwd' title='Pass Generator'></span></td>
-					<td><input class='ui-widget-content ui-corner-all' type='text' name='password' value='<?= isset($data->password) ? $data->password : '' ?>'></td>
+					<td><input type='text' name='password' value='<?= isset($data->password) ? $data->password : '' ?>'></td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Сети доступа:</td>
-					<td><input class='ui-widget-content ui-corner-all' type='text' name='allow_nets' value='<?= isset($data->allow_nets) ? $data->allow_nets : '192.168.0.0/24' ?>'  /></td>
+					<td><input type='text' name='allow_nets' value='<?= isset($data->allow_nets) ? $data->allow_nets : '192.168.0.0/24' ?>'  /></td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Путь к п/я</td>
-					<td><input class='ui-widget-content ui-corner-all' type='text' name='path' value='<?= isset($data->path) ? $data->path : '' ?>'  /></td>
+					<td><input type='text' name='path' value='<?= isset($data->path) ? $data->path : '' ?>'  /></td>
 				</tr>
 				 <tr>
 					<td class='formlabel'>Протокол IMAP:</td>
@@ -48,10 +48,12 @@
 					<td><input type='checkbox' class='formtext' name='active' value='1' <?php isset($data->active) ?  ($data->active & 1) && print('checked') : print('checked') ?> ></td>
 				</tr>
 			</table>
-			<div class='submit'>
+			<div class='submit'><div id='sb'></div></div>
+<!--
 				<button aria-disabled="false" role="button" class="ui-button ui-widget ui-corner-all ui-state-default ui-button-text-only" id="submit">
 					<span class="ui-button-text">Send</span>
 				</button>
+-->
 			</div>
 	</form>
 	</div>

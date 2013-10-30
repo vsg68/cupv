@@ -71,7 +71,7 @@ function showAliasesTable(node) {
 		if(node[0].offsetParent.id != 'tab-users')
 			return false;
 
-		id = node[0].id.split('-')[1];
+		id = node[0].id.split('-')[2];
 		$.ajax({
 				type: "GET",
 				url: '/'+ ctrl +'/records/' + id,

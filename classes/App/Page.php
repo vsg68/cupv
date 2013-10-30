@@ -18,9 +18,12 @@ class Page extends \PHPixie\Controller {
 
 	public function before() {
 
-		 $this->view = $this->pixie->view('main');
-
 		 $this->auth = $this->pixie->auth;
+
+		 if( $this->request->param('controller') == 'login' )
+			return false;
+
+		 $this->view = $this->pixie->view('main');
 
 		 /* Определяем все контроллеры с одинаковыми ID */
 		 $this->view->menuitems = $this->pixie->db

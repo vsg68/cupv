@@ -8,8 +8,10 @@ class Login extends \App\Page {
 
      public function action_view() {
 
- 		$this->view->script_file	= '<script type="text/javascript" src="/login.js"></script>';
-		$this->view->css_file 		= '<link rel="stylesheet" href="/login.css" type="text/css" />';
+		$this->view = $this->pixie->view('login');
+
+		$this->view->script_file	= '<script type="text/javascript" src="/js/login.js"></script>';
+		$this->view->css_file 		= '<link rel="stylesheet" href="/css/login.css" type="text/css" />';
 
 		if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
 
@@ -33,13 +35,14 @@ class Login extends \App\Page {
 											->group_by('S.name')
 											->execute();
 
-			$this->view->subview = 'login_view';
 		}
-		else
-			$this->view->subview = 'login_main';
 
-        $this->response->body = $this->view->render();
-    }
+
+		$this->view->is_hidden = ( isset($name) ? 0: 1 );
+
+		$this->response->body = $this->view->render();
+
+	}
 
 	public function action_login() {
 
@@ -49,6 +52,7 @@ class Login extends \App\Page {
             $password 	= $this->request->post('passwd');
 
             $this->auth->provider('password')->login($login, $password);
+            print_r($this->auth->user()); exit;
         }
         return $this->redirect('/');
     }

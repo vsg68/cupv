@@ -6,16 +6,8 @@ ctrl = ( ctrl ) ? ctrl : 'users';
 
 $(document).ready(function() {
 
-		/* Add a click handler for the delete row */
-		$('#delete').click( function() {
-
-			var anSelected = fnGetSelected( oTable );
-
-			if ( anSelected.length !== 0 )
-				oTable.fnDeleteRow( anSelected[0] );
-		});
-
 		$('#'+ctrl+'.pagetab').addClass('pagetab-selected');
+
 } );
 
 /* Хидер с названием */
@@ -57,8 +49,8 @@ function fnEdit(uid, initValues) {
 		if( ! uid.length )
 			return false;
 
-		tab = uid.split('-')[0];
-		id  = uid.split('-')[1];
+		tab = uid.split('-')[1];
+		id  = uid.split('-')[2];
 
 		if( initValues )
 		    initValues = initValues.split('-')[1];
@@ -81,7 +73,7 @@ function fnDelete(uid) {
 		if( ! confirm('Уверены, что надо стирать?') )
 			return false;
 
-		tab = uid.split('-')[0];
+		tab = uid.split('-')[1];
 		mbox = 	$('#'+uid).attr('data');
 
 		$.post('/'+ ctrl +'/delEntry/', {mbox: mbox}, function(){
@@ -224,6 +216,11 @@ var modWin = {
 			TabID: null;
 			RowNode: null;
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
+
+			$(':text, select').addClass('ui-widget-content ui-corner-all');
+
+			$('#sb').button({label: 'Send'});
+
 			// Показе документа инициализирую функции
 			$('#submit').click(function (e) {
 				e.preventDefault();
