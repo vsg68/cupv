@@ -15,7 +15,7 @@ class Users extends \App\Page {
 			//~ return  $this->noperm();
 
 
-		$this->view->subview = 'users_main';
+		$this->view->subview = 'users';
 
 		$this->view->users 	 = $this->pixie->db->query('select')
 												->table('users')
@@ -34,12 +34,9 @@ class Users extends \App\Page {
 			return;
 
 		$this->_id 	= $this->request->param('id');
+		$init		= $this->request->post('init');
 		$view 		= $this->pixie->view('form_'.$tab);
-		$view->tab  = $tab;
-// Придумать, как передать начальные значения
-		//$view->init
-		// Если начальные значения существуют
-		$view->init = ( $init = $this->request->post('init') ) ? unserialize($init) : array();
+		$view->tab  = 'tab-'.$tab;
 
 		if( $tab == 'users' ) {
 			$view->domains = $this->pixie->db->query('select')
@@ -55,7 +52,18 @@ class Users extends \App\Page {
 										->execute()
 										->current();
 
-        $this->response->body = $view->render();
+		// Для дефолтных значений таблицы алиасов
+		if( $init ) {
+			$view->data = $this->pixie->db->query('select')
+										->fields($this->pixie->db->expr('mailbox AS alias_name, mailbox AS delivery_to, null AS alias_notes'))
+										->table('users')
+										->where('id',$init)
+										->execute()
+										->current();
+
+		}
+
+       $this->response->body = $view->render();
     }
 
 	public function action_delEntry() {
@@ -148,7 +156,8 @@ class Users extends \App\Page {
 								->data($entry)
 								->execute();
 
-				$params['id'] = $this->pixie->db->insert_id();
+				$params['id'] = 'tab-'.$this->pixie->db->insert_id();
+
 			}
 			else {
 			// Существующий пользователь
@@ -158,19 +167,20 @@ class Users extends \App\Page {
 								->where('id',$params['id'])
 								->execute();
 			}
+
+
+
+			// для правильного отображения строки в таблице
+			if( $params['tab'] == 'users')
+				$entry['md5password'] = $params['domain'];
+
+			// Массив, который будем возвращать
+			$returnData = array_values($entry);
+			$returnData['DT_RowId']	= $params['tab'].'-'.$params['id'];
 		}
 		catch( \Exception $e) {
-				return 'Something went wrong'.$e;
+				$this->response->body = 'Something went wrong'.$e;
 		}
-
-		// для правильного отображения строки в таблице
-		if( $params['tab'] == 'users')
-			$entry['md5password'] = $params['domain'];
-
-		// Массив, который будем возвращать
-		$returnData = array_values($entry);
-		$returnData['DT_RowId']	= $params['tab'].'-'.$params['id'];
-
 
 		$this->response->body = json_encode($returnData);
 	}

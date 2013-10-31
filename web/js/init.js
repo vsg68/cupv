@@ -6,15 +6,7 @@ ctrl = ( ctrl ) ? ctrl : 'users';
 
 $(document).ready(function() {
 
-		/* Add a click handler for the delete row */
-		$('#delete').click( function() {
-
-			var anSelected = fnGetSelected( oTable );
-
-			if ( anSelected.length !== 0 )
-				oTable.fnDeleteRow( anSelected[0] );
-		});
-
+		$('#'+ctrl+'.pagetab').addClass('pagetab-selected');
 
 } );
 
@@ -30,7 +22,9 @@ $(document).ready(function() {
 			//~ return oTableLocal.$('tr.row_selected');
 //~ }
 
-
+/*
+ * Аналог php-функции function_exists
+ */
 function function_exists( function_name ) {	// Return TRUE if the given function has been defined
 	//
 	// +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
@@ -45,22 +39,32 @@ function function_exists( function_name ) {	// Return TRUE if the given function
 	}
 }
 
-function fnEdit(uid, initval) {
+/*
+ * Редактирование строки по ее  ID и создание новой.
+ * Начальные значения для новой строки таблицы aliases беруться из ID
+ * выделенной строки таблицы users
+ */
+function fnEdit(uid, initValues) {
 
 		if( ! uid.length )
 			return false;
 
-		tab = uid.split('-')[0];
-		id  = uid.split('-')[1];
+		tab = uid.split('-')[1];
+		id  = uid.split('-')[2];
 
-		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab, init:initval}, function(response){
+		if( initValues )
+		    initValues = initValues.split('-')[1];
+
+		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab,init:initValues}, function(response){
 					$(response).modal({
 										onShow: modWin.show
 										});
 		});
 
 }
-
+/*
+ * Удаление строки по ее ID
+ */
 function fnDelete(uid) {
 
 		if( ! uid.length )
@@ -69,7 +73,7 @@ function fnDelete(uid) {
 		if( ! confirm('Уверены, что надо стирать?') )
 			return false;
 
-		tab = uid.split('-')[0];
+		tab = uid.split('-')[1];
 		mbox = 	$('#'+uid).attr('data');
 
 		$.post('/'+ ctrl +'/delEntry/', {mbox: mbox}, function(){
@@ -78,7 +82,9 @@ function fnDelete(uid) {
 										});
 }
 
-
+/*
+ *  Замена значений чекбоксов на картинку
+ */
 function drawCheckBox(nRow) {
 
 		// смотрим на активность записи
@@ -95,15 +101,20 @@ function drawCheckBox(nRow) {
 		// добавляем аттриут data для валидации
 		printRowDataAttr(nRow,1);
 }
-
+/*
+ *  Присваивание класса в зависимости от значения поля active
+ */
 function drawUnActiveRow(nRow) {
 
 		if( $('td:last', nRow).html() )
-			$(nRow).removeClass('gradeU');
+			$(nRow).removeClass('gradeUU');
 		else
-			$(nRow).addClass('gradeU');
+			$(nRow).addClass('gradeUU');
 }
 
+/*
+ *  Находим значение ID выделенной строки в "родной" таблице
+ */
 function fnGetSelectedRowID( objTT ) {
 		// Получаем сущность dataTable(), где была нажата кнопка
 		tab = TableTools.fnGetInstance(objTT.s.dt.sTableId);
@@ -115,11 +126,18 @@ function fnGetSelectedRowID( objTT ) {
 		return (RowID) ? RowID.id : false;
 }
 
+/*
+ *  При создании строки в аттрибут data заносим значение поля mailbox
+ *  для последующей проверки на совпадение значений mailbox
+ */
 function printRowDataAttr(nRow,ind) {
 		mbox = $('td:eq('+ind+')', nRow).text();
 		$(nRow).attr('data', mbox);
 }
 
+/*
+ *  Тест значений по шаблонам
+ */
 function fnTestByType(str, type) {
 
 	one_net	  =	"(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?";
@@ -137,19 +155,22 @@ function fnTestByType(str, type) {
 			reg = new RegExp(net_tmpl,'i')
 			break
 		default:
-			if( ! str )
+			if( str )
 				return true
 			else
 				return false
 	}
 
 	if( reg.test(str) )
-		return false;
+		return true;
 
-	return true;
+	return false;
 
 }
 
+/*
+ *  Выбираем данные из поля FieldNum выделенной в таблице TabID строки
+ */
 function fnGetFieldData(TabID, FieldNum) {
 
 	oTT = TableTools.fnGetInstance( TabID );
@@ -157,6 +178,19 @@ function fnGetFieldData(TabID, FieldNum) {
     return aData[0][FieldNum];
 }
 
+/*
+ *  Получаем ID выделенной строки в таблице с инд. TabID
+ */
+function fnGetRowID(TabID) {
+
+	oTT = TableTools.fnGetInstance( TabID );
+    Row = oTT.fnGetSelected()[0];
+    return Row.id;
+}
+
+/*
+ *  Сотворение пароля из num_var символов
+ */
 function mkpasswd(num_var) {
 
 			if(!num_var)
@@ -172,6 +206,9 @@ function mkpasswd(num_var) {
 			return passwd;
 }
 
+/*
+ *  Опции модального окна
+ */
 var modWin = {
 
 		show: function(dialog){
@@ -179,8 +216,13 @@ var modWin = {
 			TabID: null;
 			RowNode: null;
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
+
+			$(':text, select').addClass('ui-widget-content ui-corner-all');
+
+			$('#sb').button({label: 'Send'});
+
 			// Показе документа инициализирую функции
-			$('#submit').click(function (e) {
+			$('#sb').click(function (e) {
 				e.preventDefault();
 
 				// С какими строками какой таблицы работаем
@@ -189,7 +231,7 @@ var modWin = {
 				modWin.RowNode = $('#'+modWin.TabID+'-'+RowID).get(0);
 
 				// каждый модуль содержит свою функцию валидации
-				validateFunctionName = 'modWin.validate_' + modWin.TabID + '()';
+				validateFunctionName = 'modWin.validate_' + (modWin.TabID.split('-')[1]) + '()';
 
 				if (eval(validateFunctionName)) {
 					// Работа с запросом
@@ -228,7 +270,10 @@ var modWin = {
 
 };
 
-var initValue;
+
+/*
+ *  Опции TableTools
+ */
 
 var TTOpts = {
 			"sRowSelect": "single",
@@ -252,32 +297,39 @@ var TTOpts = {
 			"aButtons":[
 						{
 							"sExtends":"text",
-							"sButtonText": "Edit",
+							"sButtonText": ".",
+							"sButtonClass": "DTTT_button_edit DTTT_disabled",
 							"fnClick": function( nButton, oConfig, oFlash ){
 									RowID = fnGetSelectedRowID(this);
-									fnEdit( RowID , false);
+									fnEdit( RowID , 0);
 								},
 						},
 						{
 							"sExtends":"text",
-							"sButtonText": "New",
+							"sButtonText": ".",
+							"sButtonClass": "DTTT_button_new",
 							"fnClick": function( nButton, oConfig, oFlash ){
 									//предотвращаем новое, если в основной таблице ничего не выбрано
 									if( ! $(nButton).hasClass('DTTT_disabled') ) {
-										fnEdit( this.s.dt.sTableId +'-0', initValue );
+										fnEdit( this.s.dt.sTableId +'-0', usersRowID(this) );
 									}
 
 								},
 						},
 						{
 							"sExtends":"text",
-							"sButtonText": "Del",
+							"sButtonText": ".",
+							"sButtonClass": "DTTT_button_del DTTT_disabled",
 							"fnClick": function( nButton, oConfig, oFlash ){
 
 									RowID = fnGetSelectedRowID(this);
-									fnDelete( RowID, false );
+									fnDelete( RowID, 0 );
 
 								}
 						},
+						{
+							"sExtends":"print",
+							"sButtonText": ".",
+						}
 					   ]
 };

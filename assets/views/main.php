@@ -13,6 +13,7 @@
 -->
 		<link rel="stylesheet" href="../css/TableTools_JUI.css" type="text/css" />
 		<link rel="stylesheet" href="../css/style.css" type="text/css" />
+		<link rel="stylesheet" href="../css/smoothness/images.css" type="text/css" />
 <!--
 		<link rel="stylesheet" href="../css/basic.css" type="text/css" />
 -->
@@ -36,9 +37,13 @@
 				</div>
 			</div>
 			<div class="content-left">
-				<div id='mail-page' class='theme homepage ui-corner-all box-shadow' title='На главную'></div>
+					<div class='theme homepage ui-corner-all box-shadow'>
+						<a href="/"  title='На главную'><div id='home-page' class='pagetab'></div></a>
+					</div>
 				<?php foreach( $menuitems as $item ): ?>
-					<a href="/<?= $item->class ?>/"><div id='<?= $item->class ?>' class='theme box-shadow ui-corner-all' title='<?= $item->name ?>'></div></a>
+					<div class='theme box-shadow ui-corner-all' title='<?= $item->name ?>'>
+						<a href="/<?= $item->class ?>/"><div  id='<?= $item->class ?>'  class='pagetab'></div></a>
+					</div>
 				<?php endforeach; ?>
 
 			</div>

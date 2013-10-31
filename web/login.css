@@ -1,34 +1,54 @@
+
+#usersform table {
+	border-collapse:collapse;
+	width: 100%;
+	margin: 0px;
+}
+
+#usersform td {
+	padding: 5px 0;
+}
+
+#usersform td.formlabel {
+	width: 160px;
+}
+form#usersform {
+	padding: 0 15px;
+}
+
+#usersform input[type='text']{
+	width: 100%;
+	height: 21px;
+}
+
+/************ old  ****/
+
 .mainmenu {
 	background-color: #f3f3f3;
 	height: 0px;
 }
-.login, .theme {
+.login {
 	background-color: #fff !important;
 	width: 470px;
 	height: 270px;
 	margin: 150px auto;
-	border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Firefox */
-    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.3); /* Для Safari и Chrome */
-    box-shadow: 0 0 20px rgba(0,0,0,0.3); /* Параметры тени */
 }
 .container{
 	background-color: inherit !important;
 	height: 770px;
 }
+/*
 .border {
 	border: none;
-/*
 	text-align: justify;
-*/
 	overflow: hidden;
 	margin: 100px auto;
 }
+*/
 input[type='text'], input[type='password'] {
 	width: 245px;
 }
+/*
 .submit_button {
 	border-radius: 6px;
 	-webkit-border-radius: 6px;
@@ -39,6 +59,7 @@ input[type='text'], input[type='password'] {
 	cursor:pointer;
 	margin:10px;
 }
+*/
 .logomin {
 	margin: 30px 50px 10px 50px;
 

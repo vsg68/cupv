@@ -10,7 +10,7 @@ $(document).ready(function() {
 
 
 
-		var oTable = $('#users').dataTable({
+		var oTable = $('#tab-users').dataTable({
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
@@ -31,9 +31,10 @@ $(document).ready(function() {
 								});
 
 
-		TTOpts.aButtons[1].sButtonClass = 'DTTT_disabled';
+		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
+		delete TTOpts.aButtons[3];
 
-		var aTable = $('#aliases').dataTable({
+		var aTable = $('#tab-aliases').dataTable({
 								"bJQueryUI": true,
 								"sDom": '<"aliases-header"T>t',
 								"sScrollY": rH+"px",
@@ -66,50 +67,78 @@ function makeInitValue( node ) {
 		return $.param(init);
 };
 
+/*
+ *  Стираем таблицу алиасов при удалении строки из таб. users
+ */
 function clearAliasTable (tab) {
 
-		if(tab == 'users')
-			$('#aliases').dataTable().fnClearTable();
+		if(tab == 'tab-users')
+			$('#tab-aliases').dataTable().fnClearTable();
 }
 
+/*
+ *  Если выделена строка в таблице users - показываем связанные с ней алиасы
+ */
 function showAliasesTable(node) {
 
-		if(node[0].offsetParent.id != 'users')
+		if(node[0].offsetParent.id != 'tab-users')
 			return false;
 
-		id = node[0].id.split('-')[1];
+		id = node[0].id.split('-')[2];
 		$.ajax({
 				type: "GET",
 				url: '/'+ ctrl +'/records/' + id,
 				dataType: "json",
 				success: function(response) {
-										$('#aliases').dataTable().fnClearTable();
-										$('#aliases').dataTable().fnAddData(response);
+										$('#tab-aliases').dataTable().fnClearTable();
+										$('#tab-aliases').dataTable().fnAddData(response);
 										},
 				error: function() {
-									$('#aliases').dataTable().fnClearTable();
+									$('#tab-aliases').dataTable().fnClearTable();
 									}
 		});
 }
 
+/*
+ *  Если НЕ выделена строка в таблице users - создавать для нее алиасы запрещаем
+ *  Запещаем редактировать и удалять, если не выделено
+ */
 function blockNewButton(nodes) {
 
-		if( nodes.length && nodes[0].offsetParent.id == 'users')
-			$('#ToolTables_aliases_1').addClass('DTTT_disabled');
+		if( nodes.length && (tab = nodes[0].offsetParent.id) ) {
+			$('#ToolTables_'+tab+'_0').addClass('DTTT_disabled');
+			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
+		}
+
+		if( nodes.length && nodes[0].offsetParent.id == 'tab-users')
+			$('#ToolTables_tab-aliases_1').addClass('DTTT_disabled');
 }
 
+/*
+ *  Если выделена строка в таблице users - разрешаем создавать для нее алиасы
+ *  Разрешаем редактировать и удалять, если выделено
+ */
 function unblockNewButton(node) {
 
-		if( node[0].offsetParent.id == 'users') {
-			$('#ToolTables_aliases_1').removeClass('DTTT_disabled');
-			mbox = fnGetFieldData('users', 1);
-			$('#ToolTables_aliases_1').attr('mbox',mbox);
+		tab = node[0].offsetParent.id;
+		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
+		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
+
+		if( node[0].offsetParent.id == 'tab-users') {
+			$('#ToolTables_tab-aliases_1').removeClass('DTTT_disabled');
 		}
 }
 
-function putInitValue() {
-		x = $('#ToolTables_aliases_1').attr('mbox');
-		$(':text[name="alias_name"], :text[name="delivery_to"]', '.alias_form').val(x);
+/*
+ *  Получаю выделенную строку в таблице users
+ */
+function usersRowID(objTT) {
+
+		if( objTT.s.dt.sTableId == 'tab-users' )
+			return false;
+
+		return fnGetRowID("tab-users");
+
 }
 
 modWin.validate_users = function () {

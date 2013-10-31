@@ -13,42 +13,42 @@ class Service {
 	 * @var \PHPixie\Pixie
 	 */
 	public $pixie;
-	
+
 	/**
-	 * Name of the ORM model that represents a user 
+	 * Name of the ORM model that represents a user
 	 * @var string
 	 */
 	protected $model;
-	
+
 	/**
 	 * Logged in user
 	 * @var \PHPixie\ORM\Model
 	 */
 	protected $user;
-	
+
 	/**
 	 * Name of the login provider that
 	 * the user logged in with.
 	 * @var string
 	 */
 	protected $logged_with;
-	
+
 	/**
 	 * Login providers array
 	 * @var array
 	 */
 	protected $login_providers = array();
-	
+
 	/**
 	 * User role driver
 	 * @var \PHPixie\Auth\Role\Driver
 	 */
 	protected $role_driver;
-	
-	
+
+
 	/**
 	 * Constructs an Auth instance for the specified configuration
-	 * 
+	 *
 	 * @param \PHPixie\Pixie $pixie Pixie dependency container
 	 * @param string $config Name of the configuration.
 	 * @throw \Exception If no login providers were configured
@@ -56,24 +56,24 @@ class Service {
 	public function __construct($pixie, $config = 'default') {
 		$this->pixie = $pixie;
 		$this->model = $pixie->config->get("auth.{$config}.model");
-		
+
 		$login_providers = $pixie->config->get("auth.{$config}.login", false);
 		if (!$login_providers)
 			throw new \Exception("No login providers have been configured.");
-			
-		foreach(array_keys($login_providers) as $provider) 
+
+		foreach(array_keys($login_providers) as $provider)
 			$this->login_providers[$provider] = $pixie->auth->build_login($provider, $this, $config);
-		
+
 		$role_driver = $pixie->config->get("auth.{$config}.roles.driver", false);
 		if ($role_driver)
 			$this->role_driver = $pixie->auth->build_role($role_driver, $config);
-		
+
 		$this->check_login();
 	}
-	
+
 	/**
 	 * Sets the logged in user
-	 * 
+	 *
 	 * @param \PHPixie\ORM\Model $user logged in user
 	 * @param strong $logged_with Name of the provider that
 	 *                            performed the login.
@@ -84,7 +84,7 @@ class Service {
 		$this->logged_with = $logged_with;
 	}
 
-	
+
 	/**
 	 * Returns the logged in user
 	 *
@@ -102,7 +102,7 @@ class Service {
 	public function logged_with() {
 		return $this->logged_with;
 	}
-	
+
 	/**
 	 * Logs the user out
 	 *
@@ -113,7 +113,7 @@ class Service {
 		$this->logged_with = null;
 		$this->user = null;
 	}
-	
+
 	/**
 	 * Checks if the logged in user has the specified role
 	 *
@@ -124,14 +124,14 @@ class Service {
 	public function has_role($role) {
 		if ($this->role_driver == null)
 			throw new \Exception("No role configuration is present.");
-		
+
 		if ($this->user == null)
 			return false;
-			
+
 		return $this->role_driver->has_role($this->user, $role);
-		
+
 	}
-	
+
 	/**
 	 * Returns the login provider by name
 	 *
@@ -141,9 +141,9 @@ class Service {
 	public function provider($provider) {
 		return $this->login_providers[$provider];
 	}
-	
+
 	/**
-	 * Checks if the user is logged in via any of the 
+	 * Checks if the user is logged in via any of the
 	 * login providers
 	 *
 	 * @return bool if the user is logged in
@@ -152,7 +152,7 @@ class Service {
 		foreach($this->login_providers as $provider)
 			if ($provider->check_login())
 				return true;
-				
+
 		return false;
 	}
 

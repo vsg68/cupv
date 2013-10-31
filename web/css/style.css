@@ -49,6 +49,15 @@ body {
 	width: 100px;
 	height: 100px;
 	margin: 10px;
+	position:relative;
+}
+
+.pagetab {
+	width: 64px;
+	height: 64px;
+	position:absolute;
+	top: 18px;
+	left:18px;
 }
 
 /* Corner radius - reload */
@@ -84,8 +93,8 @@ body {
 	background-color: #fff;
 }
 /*  Table Color*/
-tr.gradeU {
-	color: #888;
+tr.gradeUU {
+	color: #aaa;
 }
 tr.odd {
 	background-color: #F0F5FC;
@@ -115,9 +124,6 @@ td span.ui-icon {
 .alias-form{
 	background-color: #fff;
 	width: 550px;
-/*
-	height: 330px;
-*/
 	padding: 10px 15px;
 	margin: 0px;
 	font-size: 13px;
@@ -143,12 +149,6 @@ a.modalCloseImg {
 	margin: 0px;
 }
 
-#usersform tr {
-/*
-	border:1px solid #000;
-*/
-}
-
 #usersform td {
 	padding: 5px 0;
 }
@@ -169,9 +169,12 @@ form#usersform {
 	height: 25px;
 }
 
-#usersform input[type='text']{
+#usersform input[type='text'],
+#usersform input[type='password']{
 	width: 100%;
+/*
 	padding-left:3px;
+*/
 	height: 21px;
 }
 
@@ -181,13 +184,40 @@ form#usersform {
 }
 
 .login {
-	width: 170px !important;
+        width: 170px !important;
 }
 
 .mkpwd {
 	margin: -14px 0 0 130px ! important;
 	cursor: pointer;
 }
-.buttonDisabled {
-	color: #f00 !important;
+
+.hidden {
+	display: none;
+}
+/**** картинки ***/
+
+#users,
+#home-page,
+#aliases,
+#domains,
+#logs	{
+	background-repeat: no-repeat;
+	background-image: url('/css/smoothness/images/mail.png');
+}
+
+a.DTTT_button_print span,
+a.DTTT_button_edit span,
+a.DTTT_button_new span,
+a.DTTT_button_del span {
+	height: 21px;
+	width: 21px;
+	background-repeat: no-repeat;
+	background-image: url('/css/smoothness/images/edit.png');
+	display: inline-block;
+	color: transparent;
+}
+
+.DTTT_disabled {
+	cursor: default;
 }
