@@ -32,20 +32,19 @@
     <body>
 	<div class="main-page">
 		<div class='sections <?= ($is_hidden) ? 'hidden' : '' ?>'>
-			<div id='logout' title='выход из системы'><strong>&times;</strong></div>
-
+			<span id='logout' title='выход из системы'><img src="/images/xg.png" /></span>
 
 			<?php
 				if(isset($pages) ) {
 					foreach($pages as $page):
 			?>
-				<div class='theme'>
-					<div class='logomin' title='<?= $page->note ?>'
+				<div class='theme ui-widget ui-corner-all box-shadow '>
+					<div class='logomin <?= $page->link ?>' title='<?= $page->note ?>'
 					<?php
-						$filename = $_SERVER['DOCUMENT_ROOT'].'/'.strtolower($page->name).'.png';
+						$filename = $_SERVER['DOCUMENT_ROOT'].'/images/'.strtolower($page->name).'.png';
 						//echo $filename;
 						if( file_exists($filename))
-						 echo " style='background: url(/".basename($filename).")  0 0 no-repeat; margin-left: 50px;'";
+						 echo " style='background: url(/images/".basename($filename).")  50% 50% no-repeat;'";
 					?>
 					></div>
 					<div class='name'><a href='<?= $page->link ?>'><?= $page->name ?></a></div>

@@ -46,31 +46,19 @@ class Login extends \App\Page {
 
 	public function action_login() {
 
-        if($this->request->method == 'POST'){
+        if( $this->request->method != 'POST' )
+			return false;
 
-            $login 		= $this->request->post('username');
-            $password 	= $this->request->post('passwd');
-			try{
-				$this->auth->provider('password')->login($login, $password);
+		$login 		= $this->request->post('username');
+		$password 	= $this->request->post('password');
 
-				$name = $this->auth->user()->login;
-				print_r('xx'.$name); exit;
-				$this->auth->logout();
-				return 'name is: '.$name;
-
-			}
-			catch( \Exception $e ){
-				return "something going wrong";
-			}
-
-			return '';
-        }
+		$this->response->body = $this->auth->provider('password')->login($login, $password);
 
     }
 
     public function action_logout() {
         $this->auth->logout();
-        $this->redirect('/');
+        //$this->redirect('/');
     }
 
 

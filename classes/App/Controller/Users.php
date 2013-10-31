@@ -179,7 +179,7 @@ class Users extends \App\Page {
 			$returnData['DT_RowId']	= $params['tab'].'-'.$params['id'];
 		}
 		catch( \Exception $e) {
-				return 'Something went wrong'.$e;
+				$this->response->body = 'Something went wrong'.$e;
 		}
 
 		$this->response->body = json_encode($returnData);

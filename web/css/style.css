@@ -7,10 +7,6 @@ body {
 	position:relative;
 }
 
-.main-page {
-	text-align: center;
-}
-
 .container {
 	margin: 10px auto;
 	min-width:1000px;
@@ -189,16 +185,6 @@ form#usersform {
 
 .login {
         width: 170px !important;
-}
-
-.loginform {
-	width: 460px;
-	margin: 15% auto;
-	padding: 30px 10px 10px
-}
-
-.logo {
-	margin: 0px auto  20px;
 }
 
 .mkpwd {
