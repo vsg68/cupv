@@ -45,7 +45,7 @@ function function_exists( function_name ) {	// Return TRUE if the given function
 	}
 }
 
-function fnEdit(uid, initValues) {
+function fnEdit(uid, initval) {
 
 		if( ! uid.length )
 			return false;
@@ -53,7 +53,7 @@ function fnEdit(uid, initValues) {
 		tab = uid.split('-')[0];
 		id  = uid.split('-')[1];
 
-		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab; init:initValues}, function(response){
+		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab, init:initval}, function(response){
 					$(response).modal({
 										onShow: modWin.show
 										});
@@ -115,7 +115,7 @@ function fnGetSelectedRowID( objTT ) {
 		return (RowID) ? RowID.id : false;
 }
 
-function printToRowDataAttr(nRow,ind) {
+function printRowDataAttr(nRow,ind) {
 		mbox = $('td:eq('+ind+')', nRow).text();
 		$(nRow).attr('data', mbox);
 }
@@ -154,8 +154,7 @@ function fnGetFieldData(TabID, FieldNum) {
 
 	oTT = TableTools.fnGetInstance( TabID );
     aData = oTT.fnGetSelectedData();
-    x = aData[0][FieldNum];
-    return x;
+    return aData[0][FieldNum];
 }
 
 function mkpasswd(num_var) {
@@ -229,6 +228,7 @@ var modWin = {
 
 };
 
+var initValue;
 
 var TTOpts = {
 			"sRowSelect": "single",
@@ -240,6 +240,8 @@ var TTOpts = {
 
 								if( function_exists('unblockNewButton') )
 									unblockNewButton( node );  // Разблокировка кнопки
+
+								initValue = makeInitValue( node );
 							},
 
 			"fnRowDeselected": function(nodes){
@@ -262,7 +264,7 @@ var TTOpts = {
 							"fnClick": function( nButton, oConfig, oFlash ){
 									//предотвращаем новое, если в основной таблице ничего не выбрано
 									if( ! $(nButton).hasClass('DTTT_disabled') ) {
-										fnEdit( this.s.dt.sTableId +'-0', initValues );
+										fnEdit( this.s.dt.sTableId +'-0', initValue );
 									}
 
 								},

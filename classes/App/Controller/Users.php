@@ -37,10 +37,9 @@ class Users extends \App\Page {
 		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
 // Придумать, как передать начальные значения
-		$view->init
+		//$view->init
 		// Если начальные значения существуют
-		if( isset($this->request->post('init') && $this->request->post('init') )
-				$view->init = unserialize($this->request->post('init'));
+		$view->init = ( $init = $this->request->post('init') ) ? unserialize($init) : array();
 
 		if( $tab == 'users' ) {
 			$view->domains = $this->pixie->db->query('select')
@@ -55,7 +54,6 @@ class Users extends \App\Page {
 										->where('id',$this->_id)
 										->execute()
 										->current();
-
 
         $this->response->body = $view->render();
     }

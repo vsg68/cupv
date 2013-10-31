@@ -52,6 +52,19 @@ $(document).ready(function() {
 
 });
 
+//
+function makeInitValue( node ) {
+
+		if(node[0].offsetParent.id != 'users')
+			return false;
+
+		mbox =  $('td:eq(1)', node[0]).text();
+		var init = {
+					"val":{"alias_name":mbox, "nelivery_to":mbox, "alias_notes":null}
+					};
+
+		return $.param(init);
+};
 
 function clearAliasTable (tab) {
 
