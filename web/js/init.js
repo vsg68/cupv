@@ -222,7 +222,7 @@ var modWin = {
 			$('#sb').button({label: 'Send'});
 
 			// Показе документа инициализирую функции
-			$('#submit').click(function (e) {
+			$('#sb').click(function (e) {
 				e.preventDefault();
 
 				// С какими строками какой таблицы работаем
@@ -231,7 +231,7 @@ var modWin = {
 				modWin.RowNode = $('#'+modWin.TabID+'-'+RowID).get(0);
 
 				// каждый модуль содержит свою функцию валидации
-				validateFunctionName = 'modWin.validate_' + modWin.TabID + '()';
+				validateFunctionName = 'modWin.validate_' + (modWin.TabID.split('-')[1]) + '()';
 
 				if (eval(validateFunctionName)) {
 					// Работа с запросом

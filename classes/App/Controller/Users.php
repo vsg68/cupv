@@ -36,7 +36,7 @@ class Users extends \App\Page {
 		$this->_id 	= $this->request->param('id');
 		$init		= $this->request->post('init');
 		$view 		= $this->pixie->view('form_'.$tab);
-		$view->tab  = $tab;
+		$view->tab  = 'tab-'.$tab;
 
 		if( $tab == 'users' ) {
 			$view->domains = $this->pixie->db->query('select')
@@ -156,7 +156,8 @@ class Users extends \App\Page {
 								->data($entry)
 								->execute();
 
-				$params['id'] = $this->pixie->db->insert_id();
+				$params['id'] = 'tab-'.$this->pixie->db->insert_id();
+
 			}
 			else {
 			// Существующий пользователь

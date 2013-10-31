@@ -1,3 +1,28 @@
+
+#usersform table {
+	border-collapse:collapse;
+	width: 100%;
+	margin: 0px;
+}
+
+#usersform td {
+	padding: 5px 0;
+}
+
+#usersform td.formlabel {
+	width: 160px;
+}
+form#usersform {
+	padding: 0 15px;
+}
+
+#usersform input[type='text']{
+	width: 100%;
+	height: 21px;
+}
+
+/************ old  ****/
+
 .mainmenu {
 	background-color: #f3f3f3;
 	height: 0px;

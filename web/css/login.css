@@ -1,0 +1,17 @@
+
+#usersform table {
+	border-collapse:collapse;
+	width: 432px;
+	margin: 0px;
+}
+
+#usersform td.formlabel {
+	width: 130px;
+	padding-right: 10px;
+	text-align: right;
+}
+
+form#usersform {
+	padding: 0 13px;
+}
+

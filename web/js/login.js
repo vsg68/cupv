@@ -10,14 +10,14 @@ $(function(){
 
 	$('.theme').click(function(){ window.location = $(this).find('a').attr('href') });
 
-	$(':text, select').addClass('ui-widget-content ui-corner-all');
+	$(':text, :password, select').addClass('ui-widget-content ui-corner-all');
 
 	$('#sb').button({ label: 'Вход'});
 
 	$('#sb').click(function (e) {
 		e.preventDefault();
 
-		if (eval(validateFunctionName)) {
+		if (validate) {
 			// Работа с запросом
 			$.ajax ({
 					url: '/login/login/',
@@ -25,16 +25,28 @@ $(function(){
 					type: 'post',
 					success: function(str) {
 								// при удачном стечении обстоятельств
-								//if( RowNode != undefined) {
-								$('.login').addClass('hidden');
-								$('.sections').removeClass('hidden');
-							},
-					error: function(response) {
-								$('.ui-state-error').empty().append(response);
-							},
+								if( str ) {
+									$('.login').addClass('hidden');
+									$('.sections').removeClass('hidden');
+								}
+								else
+									$('.ui-state-error').empty().append('Такое сочетание логина и пароля в системе отсутствует.');
+							}
 			});
 		}
-		else
-			modWin.showError();
 	});
-})
+
+});
+
+function validate () {
+
+			username	= $('form :text[name="username"]').val();
+			password	= $('form :text[name="password"]').val();
+
+			if ( ! (username && password) ) {
+				 $('.ui-state-error').empty().append('Хотя бы одно поле должно быть заполнено. ');
+				 return false;
+			}
+
+			return true;
+}

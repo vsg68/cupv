@@ -50,11 +50,22 @@ class Login extends \App\Page {
 
             $login 		= $this->request->post('username');
             $password 	= $this->request->post('passwd');
+			try{
+				$this->auth->provider('password')->login($login, $password);
 
-            $this->auth->provider('password')->login($login, $password);
-            print_r($this->auth->user()); exit;
+				$name = $this->auth->user()->login;
+				print_r('xx'.$name); exit;
+				$this->auth->logout();
+				return 'name is: '.$name;
+
+			}
+			catch( \Exception $e ){
+				return "something going wrong";
+			}
+
+			return '';
         }
-        return $this->redirect('/');
+
     }
 
     public function action_logout() {
