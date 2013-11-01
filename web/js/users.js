@@ -3,7 +3,7 @@ $(document).ready(function() {
 		H 	= $(window).outerHeight();
 		rH	= 100;	// Скролл таблицы записей
 		d_min = rH + 110;  // Расстояние от главной таблицы до дна
-		eH	= 600;	// Скролл главной таблицы
+		eH	= 550;	// Скролл главной таблицы
 		// Настройка скроллинга большой таблицы
 		if( eH + d_min > H )
 			eH = H - d_min;
@@ -53,15 +53,6 @@ $(document).ready(function() {
 
 });
 
-
-/*
- *  Стираем таблицу алиасов при удалении строки из таб. users
- */
-function clearAliasTable (tab) {
-
-		if(tab == 'tab-users')
-			$('#tab-aliases').dataTable().fnClearTable();
-}
 
 /*
  *  Если выделена строка в таблице users - показываем связанные с ней алиасы
@@ -160,7 +151,7 @@ modWin.validate_users = function () {
 			}
 
 			if ( ! fnTestByType(allow_nets,'nets')) {
-				modWin.message += 'Поле "разрешенные сети" должно содержать маску сети.\n';
+				modWin.message += 'Поле "разрешенные сети" должно содержать правильную маску сети.\n';
 			}
 			if (modWin.message.length > 0) {
 				return false;

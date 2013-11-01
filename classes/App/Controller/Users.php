@@ -91,7 +91,7 @@ class Users extends \App\Page {
 							 $alias->delivery_to,
 							 $alias->alias_notes,
 							 $alias->active,
-							 'DT_RowId' => 'aliases-'.$alias->id,
+							 'DT_RowId' => 'tab-aliases-'.$alias->id,
 							 'DT_RowClass' => 'gradeA'
 							);
 		$this->response->body = ( $data ) ? json_encode($data) : "[[null,null,null,null]]" ;
@@ -129,39 +129,40 @@ class Users extends \App\Page {
 						 );
 		}
 
-		try {
-			if ( $params['id'] == 0 ) {
-				// новый пользователь
-				$vars = $this->pixie->db->query('insert')
-								->table( $params['tab'] )
-								->data($entry)
-								->execute();
+		if ( $params['id'] == 0 ) {
+			// новый пользователь
+			$vars = $this->pixie->db->query('insert')
+							->table( $params['tab'] )
+							->data($entry)
+							->execute();
 
-				$params['id'] = $this->pixie->db->insert_id();
+			$params['id'] = $this->pixie->db->insert_id();
 
-			}
-			else {
-			// Существующий пользователь
-				$this->pixie->db->query('update')
-								->table( $params['tab'] )
-								->data($entry)
-								->where('id',$params['id'])
-								->execute();
-			}
-
-
-
-			// для правильного отображения строки в таблице
-			if( $params['tab'] == 'users')
-				$entry['md5password'] = $params['domain'];
-
-			// Массив, который будем возвращать
-			$returnData = array_values($entry);
-			$returnData['DT_RowId']	= 'tab-'.$params['tab'].'-'.$params['id'];
 		}
-		catch( \Exception $e) {
-				$this->response->body = 'Something went wrong'.$e;
+		else {
+		// Существующий пользователь
+			$this->pixie->db->query('update')
+							->table( $params['tab'] )
+							->data($entry)
+							->where('id',$params['id'])
+							->execute();
 		}
+
+
+
+		// для правильного отображения строки в таблице
+		if( $params['tab'] == 'users')
+			$entry['md5password'] = $params['domain'];
+
+		// Массив, который будем возвращать
+		$returnData = array_values($entry);
+
+		// Рисуем класс
+		if( $params['tab'] == 'aliases')
+			$returnData['DT_RowClass']	= 'gradeA';
+
+		$returnData['DT_RowId']	= 'tab-'.$params['tab'].'-'.$params['id'];
+
 
 		$this->response->body = json_encode($returnData);
 	}
@@ -172,19 +173,37 @@ class Users extends \App\Page {
 			//~ return $this->noperm();
 
 
-		if( ! ( $mbox = $this->request->post('mbox') or $tab = $this->request->post('tab') ) )
+		if( ! $params = $this->request->post() )
 			return;
 
-		if( $tab == 'users' ) {
 		$this->pixie->db->query('delete')
-						->table('users')
-						->where('mailbox',$mbox)
+						->table($params['tab'])
+						->where('id',$params['id'])
 						->execute();
 
-        $this->pixie->db->query('delete')
-						->table('aliases')
-						->where('delivery_to',$mbox)
-						->execute();
+		// Если удаляем из пользователей - удаляем все связнанные значения
+		// Но могут оставаться алиасы - тогда об этом предупреждаем
+		if( $params['tab'] == 'users' ) {
+			$this->pixie->db->query('delete')
+							->table('aliases')
+							->where('delivery_to',$params['mbox'])
+							->execute();
+
+			$aliases = $this->pixie->db->query('select')
+							->table('aliases')
+							->where('alias_name',$params['mbox'])
+							->execute()
+							->as_array();
+
+			// такие алиасы есть - предупреждаем
+			if( $aliases ) {
+
+				$view = $this->pixie->view('form_alert');
+				$view->aliases = $aliases;
+
+				$this->response->body = $view->render();
+			}
+		}
     }
 
 

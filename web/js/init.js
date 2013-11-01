@@ -56,9 +56,7 @@ function fnEdit(uid, pid) {
 		    pid = pid.split('-')[2];
 
 		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab,init:pid}, function(response){
-					$(response).modal({
-										onShow: modWin.show
-										});
+					$(response).modal( modWin );
 		});
 
 }
@@ -74,11 +72,19 @@ function fnDelete(uid) {
 			return false;
 
 		tab = uid.split('-')[1];
+		id  = uid.split('-')[2];
+
 		mbox = 	$('#'+uid).attr('data');
 
-		$.post('/'+ ctrl +'/delEntry/', {mbox:mbox,t:tab}, function(){
+		$.post('/'+ ctrl +'/delEntry/', {mbox:mbox,id:id,tab:tab}, function(info_data){
+
 											$('#tab-'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
-											clearAliasTable (tab);
+											if(tab == 'users') {
+												$('#tab-aliases').dataTable().fnClearTable();
+											}
+											if(info_data) {
+												$(info_data).modal(modInfo);
+											}
 										});
 }
 
@@ -211,7 +217,7 @@ function mkpasswd(num_var) {
  */
 var modWin = {
 
-		show: function(dialog){
+		onShow: function(dialog){
 			message: null;
 			TabID: null;
 			RowNode: null;
@@ -330,4 +336,19 @@ var TTOpts = {
 							"sButtonText": ".",
 						}
 					   ]
+};
+
+/*
+ * Опции для алертов
+ */
+var modInfo = {
+		escClose: false,
+		closeHTML: '',
+		opacity: 0,
+		onShow: function(dialog){
+				$('#ok').button({label: 'OK'});
+				$('#ok').click(function(){
+									$.modal.close();
+									});
+		},
 };

@@ -71,7 +71,12 @@ form#usersform {
 
 div.theme:hover {
 	background-color: #ecf6ff;
-/*
-	border: 2px solid #1e8af8;
-*/
+}
+
+.alert-msg {
+	margin: 20px auto 5px;
+}
+
+.form-alert {
+	margin: 5px auto;
 }
