@@ -39,7 +39,7 @@
 					foreach($pages as $page):
 			?>
 				<div class='theme ui-widget ui-corner-all box-shadow '>
-					<div class='logomin <?= $page->link ?>' title='<?= $page->note ?>'
+					<div class='logomin' title='<?= $page->note ?>'
 					<?php
 						$filename = $_SERVER['DOCUMENT_ROOT'].'/images/'.strtolower($page->name).'.png';
 						//echo $filename;

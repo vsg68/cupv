@@ -36,7 +36,7 @@ class Users extends \App\Page {
 		$this->_id 	= $this->request->param('id');
 		$init		= $this->request->post('init');
 		$view 		= $this->pixie->view('form_'.$tab);
-		$view->tab  = 'tab-'.$tab;
+		$view->tab  = $tab;
 
 		if( $tab == 'users' ) {
 			$view->domains = $this->pixie->db->query('select')
@@ -64,26 +64,6 @@ class Users extends \App\Page {
 		}
 
         $this->response->body = $view->render();
-    }
-
-	public function action_delEntry() {
-
-		//~ if( $this->permissions == $this::NONE_LEVEL )
-			//~ return $this->noperm();
-
-
-		if( ! $mbox = $this->request->post('mbox') )
-			return;
-
-		$this->pixie->db->query('delete')
-						->table('users')
-						->where('mailbox',$mbox)
-						->execute();
-
-        $this->pixie->db->query('delete')
-						->table('aliases')
-						->where('delivery_to',$mbox)
-						->execute();
     }
 
 	public function action_records() {
@@ -128,7 +108,7 @@ class Users extends \App\Page {
 			return;
 		$returnData  = array();
 
-		if( $params['tab'] == 'users')
+		if( $params['tab'] == 'users') {
 			// Массив, который будем возвращать
 			$entry = array( 'username' 		=> $params['username'],
 							'mailbox'	 	=> $params['login'].'@'.$params['domain'],
@@ -140,13 +120,14 @@ class Users extends \App\Page {
 							'imap_enable' 	=> $this->getVar($params['imap'],0),
 							'active'		=> $this->getVar($params['active'],0)
 							);
-		else
+		}
+		else {
 			$entry = array('alias_name' => $this->getVar($params['alias_name']),
 						   'delivery_to'=> $this->getVar($params['delivery_to']),
 						   'alias_notes'=> $this->getVar($params['alias_notes']),
 						   'active'		=> $this->getVar($params['active'],0)
 						 );
-
+		}
 
 		try {
 			if ( $params['id'] == 0 ) {
@@ -156,7 +137,7 @@ class Users extends \App\Page {
 								->data($entry)
 								->execute();
 
-				$params['id'] = 'tab-'.$this->pixie->db->insert_id();
+				$params['id'] = $this->pixie->db->insert_id();
 
 			}
 			else {
@@ -176,7 +157,7 @@ class Users extends \App\Page {
 
 			// Массив, который будем возвращать
 			$returnData = array_values($entry);
-			$returnData['DT_RowId']	= $params['tab'].'-'.$params['id'];
+			$returnData['DT_RowId']	= 'tab-'.$params['tab'].'-'.$params['id'];
 		}
 		catch( \Exception $e) {
 				$this->response->body = 'Something went wrong'.$e;
@@ -184,6 +165,28 @@ class Users extends \App\Page {
 
 		$this->response->body = json_encode($returnData);
 	}
+
+	public function action_delEntry() {
+
+		//~ if( $this->permissions == $this::NONE_LEVEL )
+			//~ return $this->noperm();
+
+
+		if( ! ( $mbox = $this->request->post('mbox') or $tab = $this->request->post('tab') ) )
+			return;
+
+		if( $tab == 'users' ) {
+		$this->pixie->db->query('delete')
+						->table('users')
+						->where('mailbox',$mbox)
+						->execute();
+
+        $this->pixie->db->query('delete')
+						->table('aliases')
+						->where('delivery_to',$mbox)
+						->execute();
+    }
+
 
     public function action_searchdomain() {
 

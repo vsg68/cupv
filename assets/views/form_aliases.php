@@ -31,11 +31,7 @@
 						<td><input type='checkbox' class='formtext' name='active' value='1' <?php isset($data->active) ?  ($data->active & 1) && print('checked') : print('checked') ?> ></td>
 					</tr>
 				</table>
-				<div class='submit'>
-					<button aria-disabled="false" role="button" class="ui-button ui-widget ui-corner-all ui-state-default ui-button-text-only" id="submit">
-						<span class="ui-button-text">Send</span>
-					</button>
-				</div>
+				<div class='submit'><div id='sb'></div></div>
 		</form>
 	<div>
 </div>
