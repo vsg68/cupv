@@ -56,7 +56,11 @@ form#usersform {
 	color: #333;
 	text-decoration:none;
 }
-
+.inner-theme {
+	width:128px;
+	height: 128px;
+	margin: 0 auto;
+}
 .logomin {
 	height: 150px;
 }
@@ -65,7 +69,14 @@ form#usersform {
 	font-size: 35px;
 }
 
-.admin {
-	background-url:
-	background-position:
+div.theme:hover {
+	background-color: #ecf6ff;
+}
+
+.alert-msg {
+	margin: 20px auto 5px;
+}
+
+.form-alert {
+	margin: 5px auto;
 }

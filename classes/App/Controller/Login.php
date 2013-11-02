@@ -58,7 +58,7 @@ class Login extends \App\Page {
 
     public function action_logout() {
         $this->auth->logout();
-        //$this->redirect('/');
+        $this->redirect('/');
     }
 
 

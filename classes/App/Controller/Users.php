@@ -36,7 +36,7 @@ class Users extends \App\Page {
 		$this->_id 	= $this->request->param('id');
 		$init		= $this->request->post('init');
 		$view 		= $this->pixie->view('form_'.$tab);
-		$view->tab  = 'tab-'.$tab;
+		$view->tab  = $tab;
 
 		if( $tab == 'users' ) {
 			$view->domains = $this->pixie->db->query('select')
@@ -66,26 +66,6 @@ class Users extends \App\Page {
        $this->response->body = $view->render();
     }
 
-	public function action_delEntry() {
-
-		//~ if( $this->permissions == $this::NONE_LEVEL )
-			//~ return $this->noperm();
-
-
-		if( ! $mbox = $this->request->post('mbox') )
-			return;
-
-		$this->pixie->db->query('delete')
-						->table('users')
-						->where('mailbox',$mbox)
-						->execute();
-
-        $this->pixie->db->query('delete')
-						->table('aliases')
-						->where('delivery_to',$mbox)
-						->execute();
-    }
-
 	public function action_records() {
 
 		//~ if( $this->permissions == $this::NONE_LEVEL )
@@ -111,7 +91,7 @@ class Users extends \App\Page {
 							 $alias->delivery_to,
 							 $alias->alias_notes,
 							 $alias->active,
-							 'DT_RowId' => 'aliases-'.$alias->id,
+							 'DT_RowId' => 'tab-aliases-'.$alias->id,
 							 'DT_RowClass' => 'gradeA'
 							);
 		$this->response->body = ( $data ) ? json_encode($data) : "[[null,null,null,null]]" ;
@@ -128,7 +108,7 @@ class Users extends \App\Page {
 			return;
 		$returnData  = array();
 
-		if( $params['tab'] == 'users')
+		if( $params['tab'] == 'users') {
 			// Массив, который будем возвращать
 			$entry = array( 'username' 		=> $params['username'],
 							'mailbox'	 	=> $params['login'].'@'.$params['domain'],
@@ -140,50 +120,92 @@ class Users extends \App\Page {
 							'imap_enable' 	=> $this->getVar($params['imap'],0),
 							'active'		=> $this->getVar($params['active'],0)
 							);
-		else
+		}
+		else {
 			$entry = array('alias_name' => $this->getVar($params['alias_name']),
 						   'delivery_to'=> $this->getVar($params['delivery_to']),
 						   'alias_notes'=> $this->getVar($params['alias_notes']),
 						   'active'		=> $this->getVar($params['active'],0)
 						 );
-
-
-		try {
-			if ( $params['id'] == 0 ) {
-				// новый пользователь
-				$vars = $this->pixie->db->query('insert')
-								->table( $params['tab'] )
-								->data($entry)
-								->execute();
-
-				$params['id'] = 'tab-'.$this->pixie->db->insert_id();
-
-			}
-			else {
-			// Существующий пользователь
-				$this->pixie->db->query('update')
-								->table( $params['tab'] )
-								->data($entry)
-								->where('id',$params['id'])
-								->execute();
-			}
-
-
-
-			// для правильного отображения строки в таблице
-			if( $params['tab'] == 'users')
-				$entry['md5password'] = $params['domain'];
-
-			// Массив, который будем возвращать
-			$returnData = array_values($entry);
-			$returnData['DT_RowId']	= $params['tab'].'-'.$params['id'];
 		}
-		catch( \Exception $e) {
-				$this->response->body = 'Something went wrong'.$e;
+
+		if ( $params['id'] == 0 ) {
+			// новый пользователь
+			$vars = $this->pixie->db->query('insert')
+							->table( $params['tab'] )
+							->data($entry)
+							->execute();
+
+			$params['id'] = $this->pixie->db->insert_id();
+
 		}
+		else {
+		// Существующий пользователь
+			$this->pixie->db->query('update')
+							->table( $params['tab'] )
+							->data($entry)
+							->where('id',$params['id'])
+							->execute();
+		}
+
+
+
+		// для правильного отображения строки в таблице
+		if( $params['tab'] == 'users')
+			$entry['md5password'] = $params['domain'];
+
+		// Массив, который будем возвращать
+		$returnData = array_values($entry);
+
+		// Рисуем класс
+		if( $params['tab'] == 'aliases')
+			$returnData['DT_RowClass']	= 'gradeA';
+
+		$returnData['DT_RowId']	= 'tab-'.$params['tab'].'-'.$params['id'];
+
 
 		$this->response->body = json_encode($returnData);
 	}
+
+	public function action_delEntry() {
+
+		//~ if( $this->permissions == $this::NONE_LEVEL )
+			//~ return $this->noperm();
+
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		$this->pixie->db->query('delete')
+						->table($params['tab'])
+						->where('id',$params['id'])
+						->execute();
+
+		// Если удаляем из пользователей - удаляем все связнанные значения
+		// Но могут оставаться алиасы - тогда об этом предупреждаем
+		if( $params['tab'] == 'users' ) {
+			$this->pixie->db->query('delete')
+							->table('aliases')
+							->where('delivery_to',$params['mbox'])
+							->execute();
+
+			$aliases = $this->pixie->db->query('select')
+							->table('aliases')
+							->where('alias_name',$params['mbox'])
+							->execute()
+							->as_array();
+
+			// такие алиасы есть - предупреждаем
+			if( $aliases ) {
+
+				$view = $this->pixie->view('form_alert');
+				$view->aliases = $aliases;
+
+				$this->response->body = $view->render();
+			}
+		}
+    }
+
 
     public function action_searchdomain() {
 

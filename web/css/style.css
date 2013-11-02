@@ -1,9 +1,8 @@
 html,
 body {
 	margin:0px; padding:0px;
-/*
-	background:#f3f3f3;
-*/
+	font-family: Tahoma, Verdana, Sans;
+	font-size: 0.9 em;
 	position:relative;
 }
 
@@ -30,7 +29,7 @@ body {
 }
 
 .divider {
-	padding: 40px 0;
+	padding: 20px 0 10px;
 }
 
 .page-name {

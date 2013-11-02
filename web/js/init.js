@@ -44,7 +44,7 @@ function function_exists( function_name ) {	// Return TRUE if the given function
  * Начальные значения для новой строки таблицы aliases беруться из ID
  * выделенной строки таблицы users
  */
-function fnEdit(uid, initValues) {
+function fnEdit(uid, pid) {
 
 		if( ! uid.length )
 			return false;
@@ -52,13 +52,11 @@ function fnEdit(uid, initValues) {
 		tab = uid.split('-')[1];
 		id  = uid.split('-')[2];
 
-		if( initValues )
-		    initValues = initValues.split('-')[1];
+		if( pid )
+		    pid = pid.split('-')[2];
 
-		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab,init:initValues}, function(response){
-					$(response).modal({
-										onShow: modWin.show
-										});
+		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab,init:pid}, function(response){
+					$(response).modal( modWin );
 		});
 
 }
@@ -74,11 +72,19 @@ function fnDelete(uid) {
 			return false;
 
 		tab = uid.split('-')[1];
+		id  = uid.split('-')[2];
+
 		mbox = 	$('#'+uid).attr('data');
 
-		$.post('/'+ ctrl +'/delEntry/', {mbox: mbox}, function(){
-											$('#'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
-											clearAliasTable (tab);
+		$.post('/'+ ctrl +'/delEntry/', {mbox:mbox,id:id,tab:tab}, function(info_data){
+
+											$('#tab-'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
+											if(tab == 'users') {
+												$('#tab-aliases').dataTable().fnClearTable();
+											}
+											if(info_data) {
+												$(info_data).modal(modInfo);
+											}
 										});
 }
 
@@ -211,7 +217,7 @@ function mkpasswd(num_var) {
  */
 var modWin = {
 
-		show: function(dialog){
+		onShow: function(dialog){
 			message: null;
 			TabID: null;
 			RowNode: null;
@@ -228,10 +234,12 @@ var modWin = {
 				// С какими строками какой таблицы работаем
 				modWin.TabID = $('form :hidden[name="tab"]').val();
 				RowID 		 = $('form :hidden[name="id"]').val();
-				modWin.RowNode = $('#'+modWin.TabID+'-'+RowID).get(0);
+
+				// ВНИМАНИЕ! - как создается ID
+				modWin.RowNode = $('#tab-'+modWin.TabID+'-'+RowID).get(0);
 
 				// каждый модуль содержит свою функцию валидации
-				validateFunctionName = 'modWin.validate_' + (modWin.TabID.split('-')[1]) + '()';
+				validateFunctionName = 'modWin.validate_' + modWin.TabID + '()';
 
 				if (eval(validateFunctionName)) {
 					// Работа с запросом
@@ -244,12 +252,12 @@ var modWin = {
 										// при удачном стечении обстоятельств
 										//if( RowNode != undefined) {
 										if( modWin.RowNode ) {
-											 $('#'+modWin.TabID).dataTable().fnUpdate( str, modWin.RowNode );
+											 $('#tab-'+modWin.TabID).dataTable().fnUpdate( str, modWin.RowNode );
 											 // Проверка на активность
 											 drawUnActiveRow( modWin.RowNode );
 										}
 										else {
-												$('#'+modWin.TabID).dataTable().fnAddData(str);
+												$('#tab-'+modWin.TabID).dataTable().fnAddData(str);
 										}
 										$.modal.close();
 									},
@@ -332,4 +340,19 @@ var TTOpts = {
 							"sButtonText": ".",
 						}
 					   ]
+};
+
+/*
+ * Опции для алертов
+ */
+var modInfo = {
+		escClose: false,
+		closeHTML: '',
+		opacity: 0,
+		onShow: function(dialog){
+				$('#ok').button({label: 'OK'});
+				$('#ok').click(function(){
+									$.modal.close();
+									});
+		},
 };
