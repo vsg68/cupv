@@ -56,21 +56,17 @@ form#usersform {
 	color: #333;
 	text-decoration:none;
 }
-.inner-theme {
+
+.img-pad {
 	width:128px;
-	height: 128px;
-	margin: 0 auto;
-}
-.logomin {
-	height: 150px;
+	height:128px;
+	margin: 5% auto;
+	background-position: 0 0;
+	background-repeat: no-repeat;
 }
 
 .name {
 	font-size: 35px;
-}
-
-div.theme:hover {
-	background-color: #ecf6ff;
 }
 
 .alert-msg {

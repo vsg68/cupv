@@ -2,28 +2,13 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Users</title>
+        <title>Login</title>
 
-<!--
-		<link rel="stylesheet" href="../css/demo_table_jui.css" type="text/css" />
--->
 		<link rel="stylesheet" href="../css/smoothness/jquery-ui.min.css" type="text/css" />
-<!--
-		<link rel="stylesheet" href="../css/TableTools_JUI.css" type="text/css" />
--->
 		<link rel="stylesheet" href="../css/style.css" type="text/css" />
 		<link rel="stylesheet" href="../css/smoothness/images.css" type="text/css" />
-
-
 		<script type="text/javascript" language="javascript" src="../js/jquery-1.9.1.js"></script>
-<!--
-		<script type="text/javascript" language="javascript" src="../js/jquery.dataTables.js"></script>
--->
 		<script type="text/javascript" language="javascript" src="../js/jquery-ui.min.js"></script>
-<!--
-		<script type="text/javascript" language="javascript" src="../js/TableTools.min.js"></script>
-		<script type="text/javascript" language="javascript" src="../js/jquery.simplemodal.js"></script>
--->
 		<script type="text/javascript" language="javascript" src="../js/init.js"></script>
 
 			<?= $css_file; ?>
@@ -39,12 +24,12 @@
 					foreach($pages as $page):
 			?>
 				<div class='theme ui-widget ui-corner-all box-shadow '>
-					<div class='logomin' title='<?= $page->note ?>'
+					<div id='<?= strtolower($page->name) ?>' class='img-pad' title='<?= $page->note ?>'
 					<?php
 						$filename = $_SERVER['DOCUMENT_ROOT'].'/images/'.strtolower($page->name).'.png';
 						//echo $filename;
 						if( file_exists($filename))
-						 echo " style='background: url(/images/".basename($filename).")  50% 50% no-repeat;'";
+						 echo " style='background: url(/images/".basename($filename).")'";
 					?>
 					></div>
 					<div class='name'><a href='<?= $page->link ?>'><?= $page->name ?></a></div>

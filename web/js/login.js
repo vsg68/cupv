@@ -16,8 +16,9 @@ $(function(){
 			// Работа с запросом
 			$.post ( '/login/login/', $('form').serialize(), function(response) {
 								// при удачном стечении обстоятельств - переадресация
-								if( response )
+								if( response ) {
 									window.location='/';
+								}
 								else {
 									$('#mesg').empty().append('Такое сочетание логина и пароля в системе отсутствует.');
 									$('.ui-state-error').show();
@@ -27,6 +28,19 @@ $(function(){
 			);
 		}
 	});
+
+	$('.img-pad').each(function(){
+			$(this).css('background-url', '/image/' + this.id + '.png');
+	});
+
+	$('.img-pad').hover(function(){
+						$(this).css('background-position', '0 -128px');
+					//	$(this).parent().find('a').css('color','#3f75ff');
+					},
+					function(){
+						$(this).css('background-position', '0 0');
+					//	$(this).parent().find('a').css('color','#333');
+					})
 
 });
 

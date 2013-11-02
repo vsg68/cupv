@@ -2,7 +2,7 @@ html,
 body {
 	margin:0px; padding:0px;
 	font-family: Tahoma, Verdana, Sans;
-	font-size: 0.9 em;
+	font-size: 12px;
 	position:relative;
 }
 
@@ -194,6 +194,7 @@ form#usersform {
 .hidden {
 	display: none;
 }
+
 /**** картинки ***/
 
 #users,
