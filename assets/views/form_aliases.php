@@ -15,15 +15,15 @@
 			   <table>
 					<tr>
 						<td class='formlabel'>Алиас:</td>
-						<td><input class='ui-widget-content ui-corner-all' type='text' name='alias_name' value='<?= isset($data->alias_name) ? $data->alias_name : $init[0] ?>'  /></td>
+						<td><input class='ui-widget-content ui-corner-all' type='text' name='alias_name' value='<?= isset($data->alias_name) ? $data->alias_name : '' ?>'  /></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Переадресация:</td>
-						<td><input class='ui-widget-content ui-corner-all' type='text' name='delivery_to' value='<?= isset($data->delivery_to) ? $data->delivery_to : $init[1] ?>' /></td>
+						<td><input class='ui-widget-content ui-corner-all' type='text' name='delivery_to' value='<?= isset($data->delivery_to) ? $data->delivery_to : '' ?>' /></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Заметка:</td>
-						<td><input class='ui-widget-content ui-corner-all' type='text' name='alias_notes' value='<?= isset($data->alias_notes) ? $data->alias_notes : $init[2] ?>' /></td>
+						<td><input class='ui-widget-content ui-corner-all' type='text' name='alias_notes' value='<?= isset($data->alias_notes) ? $data->alias_notes : '' ?>' /></td>
 					</tr>
 
 					<tr>
