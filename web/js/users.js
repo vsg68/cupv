@@ -38,12 +38,20 @@ $(document).ready(function() {
 								"bJQueryUI": true,
 								"sDom": '<"aliases-header"T>t',
 								"sScrollY": rH+"px",
-								"aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [3] }],
+								"aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [2] }],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
 												},
 								"oTableTools": TTOpts,
 								});
+
+		var aTable = $('#tab-lists').dataTable({
+								"bJQueryUI": true,
+								"sDom": '<"aliases-header"T>t',
+								"sScrollY": rH+"px",
+								"oTableTools": TTOpts,
+								});
+
 
 		$('body').on('click','.mkpwd', function(){
 
@@ -52,20 +60,6 @@ $(document).ready(function() {
 
 
 });
-
-//
-function makeInitValue( node ) {
-
-		if(node[0].offsetParent.id != 'users')
-			return false;
-
-		mbox =  $('td:eq(1)', node[0]).text();
-		var init = {
-					"val":{"alias_name":mbox, "nelivery_to":mbox, "alias_notes":null}
-					};
-
-		return $.param(init);
-};
 
 /*
  *  Если выделена строка в таблице users - показываем связанные с ней алиасы

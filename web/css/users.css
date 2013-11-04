@@ -1,0 +1,14 @@
+.divider-70,
+.divider-30 {
+	margin: 0;
+	display: inline-block;
+}
+
+.divider-70 {
+	width: 69%;
+	float:left;
+}
+.divider-30 {
+	width: 30%;
+	float: right;
+}

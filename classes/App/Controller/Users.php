@@ -8,7 +8,7 @@ class Users extends \App\Page {
 
 
 		$this->view->script_file = '<script type="text/javascript" src="../js/users.js"></script>';
-		$this->view->css_file = '';//'<link rel="stylesheet" href="/users.css" type="text/css" />';
+		$this->view->css_file = '<link rel="stylesheet" href="/css/users.css" type="text/css" />';
 
 		// Проверка легитимности пользователя и его прав
         //~ if( $this->permissions == $this::NONE_LEVEL )
@@ -55,7 +55,7 @@ class Users extends \App\Page {
 		// Для дефолтных значений таблицы алиасов
 		if( $init ) {
 			$view->data = $this->pixie->db->query('select')
-										->fields($this->pixie->db->expr('mailbox AS alias_name, mailbox AS delivery_to, null AS alias_notes'))
+										->fields($this->pixie->db->expr('mailbox AS alias_name, mailbox AS delivery_to'))
 										->table('users')
 										->where('id',$init)
 										->execute()
@@ -78,7 +78,7 @@ class Users extends \App\Page {
 		$data = array();
 
 		$aliases = $this->pixie->db->query('select')
-										->fields('id','alias_name', 'delivery_to', 'alias_notes', 'active')
+										->fields('id','alias_name', 'delivery_to', 'active')
 										->table('aliases','A')
 										->join(array('users','U1'),array('U1.mailbox','A.alias_name'))
 										->join(array('users','U2'),array('U2.mailbox','A.delivery_to'))
@@ -89,12 +89,11 @@ class Users extends \App\Page {
 		foreach($aliases as $alias)
 			$data[] = array( $alias->alias_name,
 							 $alias->delivery_to,
-							 $alias->alias_notes,
 							 $alias->active,
 							 'DT_RowId' => 'tab-aliases-'.$alias->id,
 							 'DT_RowClass' => 'gradeA'
 							);
-		$this->response->body = ( $data ) ? json_encode($data) : "[[null,null,null,null]]" ;
+		$this->response->body = ( $data ) ? json_encode($data) : "[[null,null,null]]" ;
 
     }
 
@@ -124,7 +123,6 @@ class Users extends \App\Page {
 		else {
 			$entry = array('alias_name' => $this->getVar($params['alias_name']),
 						   'delivery_to'=> $this->getVar($params['delivery_to']),
-						   'alias_notes'=> $this->getVar($params['alias_notes']),
 						   'active'		=> $this->getVar($params['active'],0)
 						 );
 		}

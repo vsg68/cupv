@@ -34,24 +34,34 @@
 		</div>
 
 		<div class='divider'>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-aliases">
-				<thead>
-					<tr>
-						<th>Alias</th>
-						<th>Forward</th>
-						<th>Заметка</th>
-						<th>Active</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</tbody>
-			</table>
+			<div class='divider-70'>
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-aliases">
+					<thead>
+						<tr>
+							<th>Alias</th>
+							<th>Forward</th>
+							<th>Active</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class='divider-30'>
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-lists">
+					<thead>
+						<tr><th>список рассылки</th></tr>
+					</thead>
+					<tbody>
+						<tr><td></td></tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 
 
