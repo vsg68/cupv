@@ -14,21 +14,20 @@
 }
 
 
-#rest-grp .ui-selecting {
+.nest-grp.ui-selecting {
 	background: #d3d3d3;
 }
 
-#rest-grp .ui-selected {
+.nest-grp .ui-selected {
 	background: dadada;
 	border: 1px solid #888;
 	color: #1e8af8;
 }
-#rest-grp {
+.nest-grp {
 	list-style-image: url('/css/smoothness/images/groups.png');
 	list-style-type: none;
-
 }
-#rest-grp li {
+.nest-grp li {
 	margin: 2px;
 	padding-left: 3px;
 	font-size: 14px;
@@ -48,25 +47,24 @@ li span {
 	border: none !important;
 }
 
-.ui-image-left {
+#arrow-right {
 	background: url('/css/smoothness/images/arrows.png') no-repeat -26px 0px;
 }
-.ui-image-right {
+#arrow-left {
 	background: url('/css/smoothness/images/arrows.png') no-repeat 0 0;
 }
-.ui-image-right,
-.ui-image-left
-{
+
+.image-arrow {
 	width: 26px;
 	height:26px;
 	margin: 5px 2px;
 	cursor: pointer;
 }
 
-.ui-image-left.disable-arrow {
+#arrow-right.disable-arrow {
 	background-position: -26px -26px;
 }
-.ui-image-right.disable-arrow {
+#arrow-left.disable-arrow {
 	background-position: 0px -26px;
 }
 .disable-arrow {

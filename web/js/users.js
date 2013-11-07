@@ -73,14 +73,33 @@ $(document).ready(function() {
 
 
 
- $("#rest-grp, #have-grp").selectable({
-			unselected: function( event, ui ) {
-							alert(ui['unselected'].id);
-						},
-			selected: function( event, ui ) {
-							alert(ui['selected'].id);
-						},
-		  });
+		 $(".nest-grp").selectable({
+					start: function( event, ui ) {
+									tid = event.target.id;
+									if( $('#'+tid).children('.ui-selected').length == 0 ) {
+										$('.ui-selected').removeClass('ui-selected');
+									}
+								},
+					selected: function( event, ui ) {
+									direction = event.target.id.split('-')[1];
+									$('.image-arrow').addClass('disable-arrow');
+									$('#arrow-' + direction).removeClass('disable-arrow');
+
+								},
+		});
+
+		$('.image-arrow').click(function(){
+
+				if($(this).hasClass('disable-arrow'))
+					return false;
+				var this_area_id = '#grp-'+this.id.split('-')[1];
+				var target_area_id = $('.nest-grp').not(this_area_id);
+				$('li.ui-selected').each(function(){
+						x = $(this).clone();
+						$(target_area_id).append(x);
+						this.remove();
+				})
+		});
 });
 
 /*

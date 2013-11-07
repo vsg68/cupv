@@ -29,6 +29,7 @@
   <script type="text/javascript">
     $(function(){
 
+		$()
 
   });
   </script>
@@ -40,7 +41,7 @@
 <table>
 	<tr>
 		<td class='ui-window ui-widget-content ui-corner-all'>
-			<ul id='rest-grp'>
+			<ul id='grp-left' class='nest-grp'>
 				<li id="a1"><span>Sub-item 3.1</span></li>
                 <li id="a2"><span>Sub-item 3.1</span></li>
 				<li id="a3"><span>Sub-item 3.1</span></li>
@@ -53,11 +54,11 @@
             </ul>
          </td>
          <td>
-			 <div class='ui-image-left'></div>
-			 <div class='ui-image-right disable-arrow'></div>
+			 <div id='arrow-left' class='image-arrow disable-arrow'></div>
+			 <div id='arrow-right' class='image-arrow disable-arrow'></div>
 		</td>
 		<td class='ui-window ui-widget-content ui-corner-all'>
-			<ul id='have-grp'>
+			<ul id='grp-right' class='nest-grp'>
 				<li id="x1"><span>Sub-item 3.1</span></li>
                 <li id="x2"><span>Sub-item 3.1.1</span></li>
 				<li id="x3"><span>Sub-item 3.1.2</span></li>
