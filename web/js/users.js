@@ -45,7 +45,20 @@ $(document).ready(function() {
 								"oTableTools": TTOpts,
 								});
 
-		var aTable = $('#tab-lists').dataTable({
+		TTOpts.aButtons = [{
+							"sExtends":    "text",
+							"sButtonText": ".",
+							"sButtonClass": 'DTTT_button_group  DTTT_disabled',
+							"fnClick": function( nButton, oConfig, oFlash ){
+								//предотвращаем новое, если в основной таблице ничего не выбрано
+								if( ! $(nButton).hasClass('DTTT_disabled') ) {
+									fnGroupEdit( usersRowID(this) );
+								}
+
+							},
+						}];
+
+		var lTable = $('#tab-lists').dataTable({
 								"bJQueryUI": true,
 								"sDom": '<"aliases-header"T>t',
 								"sScrollY": rH+"px",
@@ -59,12 +72,21 @@ $(document).ready(function() {
 		});
 
 
+
+ $("#rest-grp, #have-grp").selectable({
+			unselected: function( event, ui ) {
+							alert(ui['unselected'].id);
+						},
+			selected: function( event, ui ) {
+							alert(ui['selected'].id);
+						},
+		  });
 });
 
 /*
  *  Если выделена строка в таблице users - показываем связанные с ней алиасы
  */
-function showAliasesTable(node) {
+function showMapsTable(node) {
 
 		if(node[0].offsetParent.id != 'tab-users')
 			return false;
@@ -76,10 +98,14 @@ function showAliasesTable(node) {
 				dataType: "json",
 				success: function(response) {
 										$('#tab-aliases').dataTable().fnClearTable();
-										$('#tab-aliases').dataTable().fnAddData(response);
+										$('#tab-aliases').dataTable().fnAddData(response['aliases']);
+										$('#tab-lists').dataTable().fnClearTable();
+										$('#tab-lists').dataTable().fnAddData(response['lists']);
+
 										},
 				error: function() {
 									$('#tab-aliases').dataTable().fnClearTable();
+									$('#tab-lists').dataTable().fnClearTable();
 									}
 		});
 }
@@ -95,8 +121,10 @@ function blockNewButton(nodes) {
 			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
 		}
 
-		if( nodes.length && nodes[0].offsetParent.id == 'tab-users')
+		if( nodes.length && nodes[0].offsetParent.id == 'tab-users') {
 			$('#ToolTables_tab-aliases_1').addClass('DTTT_disabled');
+			$('#ToolTables_tab-lists_0').addClass('DTTT_disabled');
+		}
 }
 
 /*
@@ -111,6 +139,7 @@ function unblockNewButton(node) {
 
 		if( node[0].offsetParent.id == 'tab-users') {
 			$('#ToolTables_tab-aliases_1').removeClass('DTTT_disabled');
+			$('#ToolTables_tab-lists_0').removeClass('DTTT_disabled');
 		}
 }
 
@@ -119,12 +148,100 @@ function unblockNewButton(node) {
  */
 function usersRowID(objTT) {
 
-		if( objTT.s.dt.sTableId == 'tab-users' )
+		if( objTT.s.dt.sTableId != 'tab-users' )
+			return fnGetRowID("tab-users");
+}
+
+/*
+ * Стираем значения "подчиненных" таблиц
+*/
+function clearChildTable() {
+
+	if(tab != 'users')
+		return false;
+
+	$('#tab-aliases').dataTable().fnClearTable();
+	$('#tab-lists').dataTable().fnClearTable();
+}
+
+/*
+ * Редактирование групп
+ */
+function fnGroupEdit(uid) {
+
+		if( ! uid.length )
 			return false;
 
-		return fnGetRowID("tab-users");
+		tab = uid.split('-')[1];
+		pid = uid.split('-')[2];
 
+		$.post('/'+ ctrl +'/edGroup/', {pid:pid}, function(response){
+												$(response).modal(modGroup);
+										});
 }
+
+var modGroup = {
+
+		onShow: function(dialog){
+			message: null;
+			TabID: null;
+			RowNode: null;
+			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
+
+			$(':text, select').addClass('ui-widget-content ui-corner-all');
+
+			$('#sb').button({label: 'Send'});
+
+			// Показе документа инициализирую функции
+			$('#sb').click(function (e) {
+				e.preventDefault();
+
+				// С какими строками какой таблицы работаем
+				modWin.TabID = $('form :hidden[name="tab"]').val();
+				RowID 		 = $('form :hidden[name="id"]').val();
+
+				// ВНИМАНИЕ! - как создается ID
+				modWin.RowNode = $('#tab-'+modWin.TabID+'-'+RowID).get(0);
+
+				// каждый модуль содержит свою функцию валидации
+				validateFunctionName = 'modWin.validate_' + modWin.TabID + '()';
+
+				if (eval(validateFunctionName)) {
+					// Работа с запросом
+					$.ajax ({
+							url: '/'+ ctrl +'/edit/',
+							data: $('form').serialize(),
+							type: 'post',
+							dataType: 'json',
+							success: function(str) {
+										// при удачном стечении обстоятельств
+										//if( RowNode != undefined) {
+										if( modWin.RowNode ) {
+											 $('#tab-'+modWin.TabID).dataTable().fnUpdate( str, modWin.RowNode );
+											 // Проверка на активность
+											 drawUnActiveRow( modWin.RowNode );
+										}
+										else {
+												$('#tab-'+modWin.TabID).dataTable().fnAddData(str);
+										}
+										$.modal.close();
+									},
+							error: function(response) {
+										$('.ui-state-error').empty().append(response);
+									},
+					});
+				}
+				else
+					modWin.showError();
+
+			})
+		},
+
+		showError: function () {
+			$('#mesg').empty().append(modWin.message).closest('.ui-state-error').fadeIn('fast');
+		},
+
+};
 
 modWin.validate_users = function () {
 

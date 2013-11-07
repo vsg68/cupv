@@ -12,3 +12,63 @@
 	width: 30%;
 	float: right;
 }
+
+
+#rest-grp .ui-selecting {
+	background: #d3d3d3;
+}
+
+#rest-grp .ui-selected {
+	background: dadada;
+	border: 1px solid #888;
+	color: #1e8af8;
+}
+#rest-grp {
+	list-style-image: url('/css/smoothness/images/groups.png');
+	list-style-type: none;
+
+}
+#rest-grp li {
+	margin: 2px;
+	padding-left: 3px;
+	font-size: 14px;
+	border: 1px solid white;
+}
+
+.ui-window {
+	padding: 5px;
+	width: 200px;
+	min-height: 200px;
+	overflow-x: hidden;
+	vertical-align: top;
+}
+
+li span {
+	vertical-align: 3px;
+	border: none !important;
+}
+
+.ui-image-left {
+	background: url('/css/smoothness/images/arrows.png') no-repeat -26px 0px;
+}
+.ui-image-right {
+	background: url('/css/smoothness/images/arrows.png') no-repeat 0 0;
+}
+.ui-image-right,
+.ui-image-left
+{
+	width: 26px;
+	height:26px;
+	margin: 5px 2px;
+	cursor: pointer;
+}
+
+.ui-image-left.disable-arrow {
+	background-position: -26px -26px;
+}
+.ui-image-right.disable-arrow {
+	background-position: 0px -26px;
+}
+.disable-arrow {
+	cursor: default;
+}

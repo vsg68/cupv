@@ -55,10 +55,16 @@
 			<div class='divider-30'>
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-lists">
 					<thead>
-						<tr><th>список рассылки</th></tr>
+						<tr>
+							<th>список рассылки</th>
+							<th>описание</th>
+						</tr>
 					</thead>
 					<tbody>
-						<tr><td></td></tr>
+						<tr>
+							<td></td>
+							<td></td>
+						</tr>
 					</tbody>
 				</table>
 			</div>

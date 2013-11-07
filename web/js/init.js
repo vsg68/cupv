@@ -79,9 +79,11 @@ function fnDelete(uid) {
 		$.post('/'+ ctrl +'/delEntry/', {mbox:mbox,id:id,tab:tab}, function(info_data){
 
 											$('#tab-'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
-											if(tab == 'users') {
-												$('#tab-aliases').dataTable().fnClearTable();
+
+											if( function_exists('clearChildTable') ) {
+												clearChildTable();
 											}
+
 											if(info_data) {
 												$(info_data).modal(modInfo);
 											}
@@ -110,7 +112,7 @@ function drawCheckBox(nRow) {
 /*
  *  Присваивание класса в зависимости от значения поля active
  */
-function drawUnActiveRow(nRow) {
+function drawUnActiveRow( nRow ) {
 
 		if( $('td:last', nRow).html() )
 			$(nRow).removeClass('gradeUU');
@@ -136,7 +138,7 @@ function fnGetSelectedRowID( objTT ) {
  *  При создании строки в аттрибут data заносим значение поля mailbox
  *  для последующей проверки на совпадение значений mailbox
  */
-function printRowDataAttr(nRow,ind) {
+function printRowDataAttr( nRow, ind ) {
 		mbox = $('td:eq('+ind+')', nRow).text();
 		$(nRow).attr('data', mbox);
 }
@@ -144,7 +146,7 @@ function printRowDataAttr(nRow,ind) {
 /*
  *  Тест значений по шаблонам
  */
-function fnTestByType(str, type) {
+function fnTestByType(str, type){
 
 	one_net	  =	"(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?";
 	net_tmpl  = "^\\s*" + one_net + "(\\s*,\\s*" + one_net + ")*\\s*$";
@@ -171,13 +173,12 @@ function fnTestByType(str, type) {
 		return true;
 
 	return false;
-
 }
 
 /*
  *  Выбираем данные из поля FieldNum выделенной в таблице TabID строки
  */
-function fnGetFieldData(TabID, FieldNum) {
+function fnGetFieldData(TabID, FieldNum){
 
 	oTT = TableTools.fnGetInstance( TabID );
     aData = oTT.fnGetSelectedData();
@@ -288,13 +289,11 @@ var TTOpts = {
 			"fnRowSelected": function(node){
 								// Только для таблицы пользователей
 								//tab = node[0].id.split('-')[0];
-								if( function_exists('showAliasesTable') )
-									showAliasesTable( node );
+								if( function_exists('showMapsTable') )
+									showMapsTable( node );
 
 								if( function_exists('unblockNewButton') )
 									unblockNewButton( node );  // Разблокировка кнопки
-
-								initValue = makeInitValue( node );
 							},
 
 			"fnRowDeselected": function(nodes){

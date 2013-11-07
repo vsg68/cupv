@@ -75,8 +75,8 @@ class Users extends \App\Page {
 		if( ! $this->_id = $this->request->param('id'))
 			return;
 
-		$data = array();
-
+		$fulldata = array();
+		$data 	 = array();
 		$aliases = $this->pixie->db->query('select')
 										->fields('id','alias_name', 'delivery_to', 'active')
 										->table('aliases','A')
@@ -93,7 +93,30 @@ class Users extends \App\Page {
 							 'DT_RowId' => 'tab-aliases-'.$alias->id,
 							 'DT_RowClass' => 'gradeA'
 							);
-		$this->response->body = ( $data ) ? json_encode($data) : "[[null,null,null]]" ;
+
+		$fulldata['aliases'] =  $data ? $data : array('','','');
+
+
+		$data  = array();
+		$lists = $this->pixie->db->query('select')
+								->fields('U.id','L.id', 'L.name', 'L.note')
+								->table('users_lists','A')
+								->join(array('users','U'),array('U.id','A.users_id'))
+								->join(array('lists','L'),array('L.id','A.lists_id'))
+								->where('U.id',$this->_id)
+								->execute();
+
+		foreach($lists as $list)
+			$data[] = array( $list->name,
+							 $list->note,
+							 'DT_RowId' => 'tab-aliases-'.$list->id,
+							 'DT_RowClass' => 'gradeX'
+							);
+
+		$fulldata['lists'] 	 =  $data ? $data : array('','');
+
+
+		$this->response->body = json_encode($fulldata);
 
     }
 
