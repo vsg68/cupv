@@ -19,13 +19,15 @@
 }
 
 .nest-grp .ui-selected {
-	background: dadada;
+	background: #dadada;
 	border: 1px solid #888;
 	color: #1e8af8;
 }
 .nest-grp {
 	list-style-image: url('/css/smoothness/images/groups.png');
 	list-style-type: none;
+	padding: 5px;
+	margin: 5px 5px 0 30px;
 }
 .nest-grp li {
 	margin: 2px;
@@ -35,11 +37,20 @@
 }
 
 .ui-window {
-	padding: 5px;
-	width: 200px;
-	min-height: 200px;
-	overflow-x: hidden;
+	width: 250px;
+	height: 220px;
+	overflow: auto;
 	vertical-align: top;
+}
+
+.table-grp {
+	margin: 0 auto;
+}
+
+.table-grp th {
+	font-size: 14px;
+	padding: 5px;
+	text-align: center;
 }
 
 li span {

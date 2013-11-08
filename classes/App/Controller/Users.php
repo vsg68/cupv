@@ -227,35 +227,69 @@ class Users extends \App\Page {
 		}
     }
 
+    public function action_edGroup() {
 
-    public function action_searchdomain() {
+	//~ if( $this->permissions == $this::NONE_LEVEL )
+			//~ return $this->noperm();
 
-		$test = $this->request->post('query');
+		if( ! $this->_id = $this->request->param('id'))
+			return;
 
-		// Готовлю ответ в нужном формате
-		$arr['suggestions'] = array();
+		$entry = $data = array();
+		// Если массив не пустой - значит редактирование
+		if( $grp_ids = $this->request->post('grp_id') ) {
 
-
-		if(  preg_match('/^[^@]+@/', $test, $match_arr)) {
-
-			$test = preg_replace('/^[^@]+@/','',$test);
-
-			$domains = $this->pixie->db
-								->query('select')
-								->fields('domain_name')
-								->table('domains')
-								->where('domain_name', 'like', $test.'%')
-								->where('and', array('delivery_to','virtual'))
+			// Первым делом - удаляем
+				$this->pixie->db->query('delete')
+								->table('users_lists')
+								->where('users_id',$this->_id)
 								->execute();
 
-			foreach($domains as $domain) {
-			// заполняю массив данных доменами
-				array_push( $arr['suggestions'], $match_arr[0].$domain->domain_name );
+			foreach ($grp_ids as $grp_id ) {
+			// вторым делом - вставляем
+				$this->pixie->db->query('insert')
+								->table('users_lists')
+								->data(array('users_id' => $this->_id,'lists_id' => $grp_id))
+								->execute();
 			}
+
 		}
 
-        $this->response->body = json_encode($arr);
-    }
+		// Последним делом - вынимаем
+		$groups = $this->pixie->db->query('select')
+									->fields('L.name', 'L.note','L.id', 'UL.users_id')
+									->table('lists','L')
+									->join( array('users_lists','UL'),
+											array(
+													array('UL.users_id',$this->pixie->db->expr($this->_id)),
+													array('UL.lists_id','L.id')
+												),
+											'left outer')
+									->execute()
+									->as_array();
+
+		// 	Если у нас редактирование
+		if( $grp_ids ) 	{
+
+			foreach($groups as $group) {
+
+				if( ! $group->users_id )
+					continue;
+				$data[] = array( $group->name,
+								 $group->note,
+								 'DT_RowClass' => 'gradeX'
+								);
+			}
+			$this->response->body = json_encode($data);
+		}
+		else {
+			$view = $this->pixie->view('form_lists');
+			$view->groups = $groups;
+			$view->pid 	  = $this->_id;
+			$this->response->body = $view->render();
+		}
+	}
+
 }
 
 ?>

@@ -282,8 +282,7 @@ var modWin = {
 
 /*
  *  Опции TableTools
- */
-
+*/
 var TTOpts = {
 			"sRowSelect": "single",
 			"fnRowSelected": function(node){

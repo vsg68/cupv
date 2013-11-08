@@ -85,4 +85,33 @@ class Page extends \PHPixie\Controller {
 
 		return isset($var) ? $var : $val ;
 	}
+
+	protected function action_searchdomain() {
+
+		$test = $this->request->post('query');
+
+		// Готовлю ответ в нужном формате
+		$arr['suggestions'] = array();
+
+
+		if(  preg_match('/^[^@]+@/', $test, $match_arr)) {
+
+			$test = preg_replace('/^[^@]+@/','',$test);
+
+			$domains = $this->pixie->db
+								->query('select')
+								->fields('domain_name')
+								->table('domains')
+								->where('domain_name', 'like', $test.'%')
+								->where('and', array('delivery_to','virtual'))
+								->execute();
+
+			foreach($domains as $domain) {
+			// заполняю массив данных доменами
+				array_push( $arr['suggestions'], $match_arr[0].$domain->domain_name );
+			}
+		}
+
+        $this->response->body = json_encode($arr);
+    }
 }

@@ -72,34 +72,6 @@ $(document).ready(function() {
 		});
 
 
-
-		 $(".nest-grp").selectable({
-					start: function( event, ui ) {
-									tid = event.target.id;
-									if( $('#'+tid).children('.ui-selected').length == 0 ) {
-										$('.ui-selected').removeClass('ui-selected');
-									}
-								},
-					selected: function( event, ui ) {
-									direction = event.target.id.split('-')[1];
-									$('.image-arrow').addClass('disable-arrow');
-									$('#arrow-' + direction).removeClass('disable-arrow');
-
-								},
-		});
-
-		$('.image-arrow').click(function(){
-
-				if($(this).hasClass('disable-arrow'))
-					return false;
-				var this_area_id = '#grp-'+this.id.split('-')[1];
-				var target_area_id = $('.nest-grp').not(this_area_id);
-				$('li.ui-selected').each(function(){
-						x = $(this).clone();
-						$(target_area_id).append(x);
-						this.remove();
-				})
-		});
 });
 
 /*
@@ -194,71 +166,78 @@ function fnGroupEdit(uid) {
 		tab = uid.split('-')[1];
 		pid = uid.split('-')[2];
 
-		$.post('/'+ ctrl +'/edGroup/', {pid:pid}, function(response){
+		$.post('/'+ ctrl +'/edGroup/'+pid, {}, function(response){
 												$(response).modal(modGroup);
 										});
 }
-
+/*
+ * Опции модального окна для групп
+ */
 var modGroup = {
 
 		onShow: function(dialog){
-			message: null;
-			TabID: null;
-			RowNode: null;
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
-
-			$(':text, select').addClass('ui-widget-content ui-corner-all');
-
 			$('#sb').button({label: 'Send'});
 
 			// Показе документа инициализирую функции
 			$('#sb').click(function (e) {
-				e.preventDefault();
+					e.preventDefault();
+					// выделяю uid
+					uid = $('.table-grp')[0].id.split('-')[1];
 
-				// С какими строками какой таблицы работаем
-				modWin.TabID = $('form :hidden[name="tab"]').val();
-				RowID 		 = $('form :hidden[name="id"]').val();
+					if( $('#grp-right li').length ) {
+					// Если у пользователя есть группы
+						$('#grp-right li').each(function(){
+							grp_id = this.id.split('-')[1];
+							$('#usersform').append('<input type="hidden" name="grp_id[]" value="'+grp_id+'">');
+						});
+					}
+					else
+						$('#usersform').append('<input type="hidden" name="grp_id[]" value="">');
 
-				// ВНИМАНИЕ! - как создается ID
-				modWin.RowNode = $('#tab-'+modWin.TabID+'-'+RowID).get(0);
+					$.post('/'+ ctrl +'/edGroup/'+uid, $('#usersform').serialize(), function(response){
+																			// Записывам в таблицу групп
+																			$('#tab-lists').dataTable().fnClearTable();
+																			$('#tab-lists').dataTable().fnAddData(response);
+																			$.modal.close();
+																			}, 'json');
+			});
 
-				// каждый модуль содержит свою функцию валидации
-				validateFunctionName = 'modWin.validate_' + modWin.TabID + '()';
-
-				if (eval(validateFunctionName)) {
-					// Работа с запросом
-					$.ajax ({
-							url: '/'+ ctrl +'/edit/',
-							data: $('form').serialize(),
-							type: 'post',
-							dataType: 'json',
-							success: function(str) {
-										// при удачном стечении обстоятельств
-										//if( RowNode != undefined) {
-										if( modWin.RowNode ) {
-											 $('#tab-'+modWin.TabID).dataTable().fnUpdate( str, modWin.RowNode );
-											 // Проверка на активность
-											 drawUnActiveRow( modWin.RowNode );
+			$(".nest-grp").selectable({
+						start: function( event, ui ) {
+										tid = event.target.id;
+										if( $('#'+tid).children('.ui-selected').length == 0 ) {
+											$('.ui-selected').removeClass('ui-selected');
 										}
-										else {
-												$('#tab-'+modWin.TabID).dataTable().fnAddData(str);
-										}
-										$.modal.close();
 									},
-							error: function(response) {
-										$('.ui-state-error').empty().append(response);
-									},
-					});
-				}
-				else
-					modWin.showError();
+						selected: function( event, ui ) {
+										direction = event.target.id.split('-')[1];
+										$('.image-arrow').addClass('disable-arrow');
+										$('#arrow-' + direction).removeClass('disable-arrow');
 
-			})
+									},
+			});
+
+			$('.image-arrow').click(function(){
+
+										if($(this).hasClass('disable-arrow'))
+											return false;
+
+										var this_area_id = '#grp-'+this.id.split('-')[1];
+										var target_area_id = $('.nest-grp').not(this_area_id);
+
+										$('li.ui-selected').each(function(){
+																		obj = $(this).clone().removeClass('ui-selected');
+																		$(target_area_id).append(obj);
+																		this.remove();
+																});
+
+										$(this).addClass('disable-arrow');
+							});
+
 		},
 
-		showError: function () {
-			$('#mesg').empty().append(modWin.message).closest('.ui-state-error').fadeIn('fast');
-		},
+
 
 };
 
