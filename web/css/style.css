@@ -194,7 +194,13 @@ form#usersform {
 .hidden {
 	display: none;
 }
-
+.DTTT_label {
+	margin-left: 100px !important;
+	font-size: 18px;
+/*
+	color: #1e8af8 !important;
+*/
+}
 /**** картинки ***/
 
 #users,

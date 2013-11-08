@@ -8,13 +8,36 @@ $(document).ready(function() {
 		if( eH + d_min > H )
 			eH = H - d_min;
 
+		var lTable = $('#tab-lists').dataTable({
+								"bJQueryUI": true,
+								"sDom": '<"aliases-header"T<"label-header">>t',
+								"sScrollY": rH+"px",
+								"oTableTools": {
+									"aButtons":	[{
+													"sExtends":    "text",
+													"sButtonText": ".",
+													"sButtonClass": 'DTTT_button_group  DTTT_disabled',
+													"fnClick": function( nButton, oConfig, oFlash ){
+														//предотвращаем новое, если в основной таблице ничего не выбрано
+														if( ! $(nButton).hasClass('DTTT_disabled') ) {
+															fnGroupEdit( usersRowID(this) );
+														}
+													},
+												},
+												{
+													"sExtends":    "text",
+													"sButtonText": "РАССЫЛКА",
+													"sButtonClass": 'DTTT_label  DTTT_disabled',
+												}]
+									},
+								});
 
 
 		var oTable = $('#tab-users').dataTable({
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
-								"sDom": '<"H"Tf>t<"F"ip>',
+								"sDom": '<"H"Tf <"label-header">>t<"F"ip>',
 								"aoColumnDefs": [
 												{"bSortable":false, "aTargets": [3] },
 												{"bSortable":false, "aTargets": [4] },
@@ -32,36 +55,18 @@ $(document).ready(function() {
 
 
 		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-		delete TTOpts.aButtons[3];
+		TTOpts.aButtons[3] = TTOpts.aButtons[4];
+		TTOpts.aButtons[3].sButtonText = 'АЛИАСЫ';
+		delete TTOpts.aButtons[4];
 
 		var aTable = $('#tab-aliases').dataTable({
 								"bJQueryUI": true,
-								"sDom": '<"aliases-header"T>t',
+								"sDom": '<"aliases-header"T<"label-header">>t',
 								"sScrollY": rH+"px",
 								"aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [2] }],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
 												},
-								"oTableTools": TTOpts,
-								});
-
-		TTOpts.aButtons = [{
-							"sExtends":    "text",
-							"sButtonText": ".",
-							"sButtonClass": 'DTTT_button_group  DTTT_disabled',
-							"fnClick": function( nButton, oConfig, oFlash ){
-								//предотвращаем новое, если в основной таблице ничего не выбрано
-								if( ! $(nButton).hasClass('DTTT_disabled') ) {
-									fnGroupEdit( usersRowID(this) );
-								}
-
-							},
-						}];
-
-		var lTable = $('#tab-lists').dataTable({
-								"bJQueryUI": true,
-								"sDom": '<"aliases-header"T>t',
-								"sScrollY": rH+"px",
 								"oTableTools": TTOpts,
 								});
 
@@ -170,6 +175,10 @@ function fnGroupEdit(uid) {
 												$(response).modal(modGroup);
 										});
 }
+
+var TTOptsGrp = {
+
+};
 /*
  * Опции модального окна для групп
  */

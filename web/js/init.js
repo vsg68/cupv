@@ -336,6 +336,11 @@ var TTOpts = {
 						{
 							"sExtends":"print",
 							"sButtonText": ".",
+						},
+						{
+							"sExtends":    "text",
+							"sButtonText": "ПОЛЬЗОВАТЕЛИ",
+							"sButtonClass": 'DTTT_label  DTTT_disabled',
 						}
 					   ]
 };
