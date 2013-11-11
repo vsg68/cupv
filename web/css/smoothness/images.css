@@ -49,6 +49,10 @@ a.DTTT_button_print:hover span {
 	background-position: -63px -21px;
 }
 
+a.DTTT_button_print.DTTT_disabled span {
+	background-position: -63px -42px;
+}
+
 a.DTTT_button_group span {
 	background-position: -84px -0px;
 }
@@ -61,6 +65,17 @@ a.DTTT_button_group.DTTT_disabled span {
 	background-position: -84px -42px;
 }
 
+a.DTTT_button_vis.DTTT_unvis span {
+	background-position: -105px -0px;
+}
+
+a.DTTT_button_vis:hover span {
+	background-position: -105px -21px;
+}
+
+a.DTTT_button_vis span {
+	background-position: -105px -42px;
+}
 
 #users {
 	background-position: -192px 0px;

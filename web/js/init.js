@@ -297,45 +297,57 @@ var TTOpts = {
 
 			"fnRowDeselected": function(nodes){
 								// ставим блокировку на "New" для алиасов
-								if( function_exists('blockNewButton'))
-									blockNewButton( nodes );
-							},
+									if( function_exists('blockNewButton'))
+										blockNewButton( nodes );
+								},
 			"aButtons":[
 						{
 							"sExtends":"text",
 							"sButtonText": ".",
 							"sButtonClass": "DTTT_button_edit DTTT_disabled",
 							"fnClick": function( nButton, oConfig, oFlash ){
-									RowID = fnGetSelectedRowID(this);
-									fnEdit( RowID , 0);
-								},
+											RowID = fnGetSelectedRowID(this);
+											fnEdit( RowID , 0);
+										},
 						},
 						{
 							"sExtends":"text",
 							"sButtonText": ".",
 							"sButtonClass": "DTTT_button_new",
 							"fnClick": function( nButton, oConfig, oFlash ){
-									//предотвращаем новое, если в основной таблице ничего не выбрано
-									if( ! $(nButton).hasClass('DTTT_disabled') ) {
-										fnEdit( this.s.dt.sTableId +'-0', usersRowID(this) );
-									}
+										//предотвращаем новое, если в основной таблице ничего не выбрано
+											if( ! $(nButton).hasClass('DTTT_disabled') ) {
+												fnEdit( this.s.dt.sTableId +'-0', usersRowID(this) );
+											}
 
-								},
+										},
 						},
 						{
 							"sExtends":"text",
 							"sButtonText": ".",
 							"sButtonClass": "DTTT_button_del DTTT_disabled",
 							"fnClick": function( nButton, oConfig, oFlash ){
-
-									RowID = fnGetSelectedRowID(this);
-									fnDelete( RowID, 0 );
-
-								}
+											RowID = fnGetSelectedRowID(this);
+											fnDelete( RowID, 0 );
+										}
+						},
+						{
+							"sExtends":"text",
+							"sButtonText": ".",
+							"sButtonClass": "DTTT_button_vis DTTT_unvis",
+							"fnClick": function( nButton, oConfig, oFlash ){
+										// Прячем пароли
+											if( function_exists('fnShowHide')) {
+												fnShowHide(nButton);
+											}
+										}
 						},
 						{
 							"sExtends":"print",
 							"sButtonText": ".",
+							"fnClick": function( nButton, oConfig ) {
+											$(nButton).hasClass('DTTT_disabled') ? this.fnPrint( false, oConfig ) : this.fnPrint( true, oConfig );
+										}
 						}
 					   ]
 };

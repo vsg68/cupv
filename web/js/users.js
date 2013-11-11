@@ -16,7 +16,7 @@ $(document).ready(function() {
 								"bPaginate": false,
 								"sDom": '<"H"Tf>t<"F"ip>',
 								"aoColumnDefs": [
-												{"bSortable":false, "aTargets": [3] },
+												{"bSortable":false, "bVisible":false,"aTargets": [3] },
 												{"bSortable":false, "aTargets": [4] },
 												{"bSortable":false, "aTargets": [5] },
 												{"bSortable":false, "aTargets": [6] },
@@ -33,6 +33,7 @@ $(document).ready(function() {
 
 		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
 		delete TTOpts.aButtons[3];
+		delete TTOpts.aButtons[4];
 
 		var aTable = $('#tab-aliases').dataTable({
 								"bJQueryUI": true,
@@ -170,6 +171,26 @@ function fnGroupEdit(uid) {
 												$(response).modal(modGroup);
 										});
 }
+
+/*
+ * Скрываем колонку паролей
+ */
+function fnShowHide(nButton) {
+
+	iCol = 3;
+	tab = 'tab-users';
+
+	var oTable = $('#'+tab).dataTable();
+	var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+
+	oTable.fnSetColumnVis( iCol, bVis ? false : true );
+
+	// В зависимости от показа - включаем или выключаем возможность печати
+	$(nButton).toggleClass('DTTT_unvis');
+	$('.DTTT_button_print').toggleClass('DTTT_disabled');
+}
+
+
 /*
  * Опции модального окна для групп
  */
