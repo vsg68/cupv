@@ -49,11 +49,7 @@
 				</tr>
 			</table>
 			<div class='submit'><div id='sb'></div></div>
-<!--
-				<button aria-disabled="false" role="button" class="ui-button ui-widget ui-corner-all ui-state-default ui-button-text-only" id="submit">
-					<span class="ui-button-text">Send</span>
-				</button>
--->
+
 			</div>
 	</form>
 	</div>

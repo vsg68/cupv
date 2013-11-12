@@ -224,3 +224,6 @@ a.DTTT_button_del span {
 .DTTT_disabled {
 	cursor: default;
 }
+.some_test {
+	cursor:default;
+}

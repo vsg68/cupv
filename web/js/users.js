@@ -12,23 +12,29 @@ $(document).ready(function() {
 								"bJQueryUI": true,
 								"sDom": '<T>t',
 								"sScrollY": rH+"px",
+								"aoColumnDefs": [
+													{"bSortable":false, "aTargets": [0] },
+													{"bSortable":false, "aTargets": [1] },
+												],
 								"oTableTools": {
-									"aButtons":	[{
-													"sExtends":    "text",
-													"sButtonText": ".",
-													"sButtonClass": 'DTTT_button_group  DTTT_disabled',
-													"fnClick": function( nButton, oConfig, oFlash ){
-														//предотвращаем новое, если в основной таблице ничего не выбрано
-														if( ! $(nButton).hasClass('DTTT_disabled') ) {
-															fnGroupEdit( usersRowID(this) );
-														}
+									"aButtons":	[
+													{
+														"sExtends":    "text",
+														"sButtonText": ".",
+														"sButtonClass": 'DTTT_button_group  DTTT_disabled',
+														"fnClick": function( nButton, oConfig, oFlash ){
+															//предотвращаем новое, если в основной таблице ничего не выбрано
+															if( ! $(nButton).hasClass('DTTT_disabled') ) {
+																fnGroupEdit( usersRowID(this) );
+															}
+														},
 													},
-												},
-												{
-													"sExtends":    "text",
-													"sButtonText": "РАССЫЛКА",
-													"sButtonClass": 'DTTT_label  DTTT_disabled',
-												}]
+													{
+														"sExtends":    "text",
+														"sButtonText": "РАССЫЛКА",
+														"sButtonClass": 'DTTT_label  DTTT_disabled',
+													}
+												]
 									},
 								});
 
@@ -39,12 +45,12 @@ $(document).ready(function() {
 								"bPaginate": false,
 								"sDom": '<"H"Tf>t<"F"ip>',
 								"aoColumnDefs": [
-												{"bSortable":false, "bVisible":false,"aTargets": [3] },
-												{"bSortable":false, "aTargets": [4] },
-												{"bSortable":false, "aTargets": [5] },
-												{"bSortable":false, "aTargets": [6] },
-												{"bSortable":false, "sClass": "center", "aTargets": [7] },
-												{"bSortable":false, "sClass": "center", "aTargets": [8] },
+													{"bSortable":false, "bVisible":false,"aTargets": [3] },
+													{"bSortable":false, "aTargets": [4] },
+													{"bSortable":false, "aTargets": [5] },
+													{"bSortable":false, "aTargets": [6] },
+													{"bSortable":false, "sClass": "center", "aTargets": [7] },
+													{"bSortable":false, "sClass": "center", "aTargets": [8] },
 												],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);

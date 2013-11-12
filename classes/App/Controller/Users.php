@@ -11,8 +11,8 @@ class Users extends \App\Page {
 		$this->view->css_file = '<link rel="stylesheet" href="/css/users.css" type="text/css" />';
 
 		// Проверка легитимности пользователя и его прав
-        //~ if( $this->permissions == $this::NONE_LEVEL )
-			//~ return  $this->noperm();
+        if( $this->permissions == $this::NONE_LEVEL )
+			return  $this->noperm();
 
 
 		$this->view->subview = 'users';
@@ -26,8 +26,8 @@ class Users extends \App\Page {
 
 	public function action_showEditForm() {
 
-		//~ if( $this->permissions == $this::NONE_LEVEL )
-			//~ return $this->noperm();
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
 
 		if( ! $tab = $this->request->post('t') )
@@ -68,8 +68,8 @@ class Users extends \App\Page {
 
 	public function action_records() {
 
-		//~ if( $this->permissions == $this::NONE_LEVEL )
-			//~ return $this->noperm();
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
 		// если не редактирование,т.е. начальный вход
 		if( ! $this->_id = $this->request->param('id'))
@@ -122,8 +122,8 @@ class Users extends \App\Page {
 
 	public function action_edit() {
 
-		//~ if( $this->permissions != $this::WRITE_LEVEL )
-			//~ return $this->noperm();
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
 
 
 		if( ! $params = $this->request->post() )
@@ -190,8 +190,8 @@ class Users extends \App\Page {
 
 	public function action_delEntry() {
 
-		//~ if( $this->permissions == $this::NONE_LEVEL )
-			//~ return $this->noperm();
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
 
 		if( ! $params = $this->request->post() )
@@ -229,8 +229,8 @@ class Users extends \App\Page {
 
     public function action_edGroup() {
 
-	//~ if( $this->permissions == $this::NONE_LEVEL )
-			//~ return $this->noperm();
+		if( $this->permissions == $this::NONE_LEVEL )
+				return $this->noperm();
 
 		if( ! $this->_id = $this->request->param('id'))
 			return;
