@@ -303,9 +303,9 @@ var TTOpts = {
 							"sButtonText": ".",
 							"sButtonClass": "DTTT_button_new",
 							"fnClick": function( nButton, oConfig, oFlash ){
-										//предотвращаем новое, если в основной таблице ничего не выбрано
 											if( ! $(nButton).hasClass('DTTT_disabled') ) {
-												fnEdit( this.s.dt.sTableId +'-0', usersRowID(this) );
+												pid = function_exists('usersRowID') ? usersRowID(this) : 0;
+												fnEdit( this.s.dt.sTableId +'-0', pid);
 											}
 
 										},

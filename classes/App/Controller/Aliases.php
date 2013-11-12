@@ -1,113 +1,73 @@
 <?php
-/*
-
- */
 namespace App\Controller;
 
 class Aliases extends \App\Page {
 
-	private $alias_id;
-	private $alias_name;
-	private $alias_block;
-
-    private function sanitize($value,$key,$method) {
-
-		if( is_string($value) ) $value =  trim($value) ;
-
-		switch ( $method ) {
-			case 'empty':
-				$value = isset($value) ? $value : '0';
-				break;
-			case 'notempty':
-				if( $value == '' ) {
-					 $this->logmsg .= "<span class='error'>Field $key can not be empty</span>";
-				 }
-				break;
-			case 'net':
-				if( !preg_match ('!((\d+\.)+\d+(/\d+)?,?\s*)+!', $value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for net in field $key</span>";
-				}
-				break;
-			case 'is_number':
-				if( is_number($value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for field $key</span>";
-				}
-				break;
-			case 'is_mail':
-				if ( ! preg_match('/(\w+)@(\w+\.)+(\w+)/',$value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for mail in field $key</span>";
-				}
-				break;
-			default:
-
-		}
-	}
 
     public function action_view() {
 
-		$this->view->subview 		= 'aliases_main';
-		$this->view->script_file	= '<script type="text/javascript" src="/aliases.js"></script>';
-		$this->view->css_file 	= '<link rel="stylesheet" href="/aliases.css" type="text/css" />';
-
 		// Проверка легитимности пользователя и его прав
-        if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
-		$aliases_arr = array();
+		$this->view->subview 		= 'aliases';
+		$this->view->script_file	= '<script type="text/javascript" src="/js/aliases.js"></script>';
+		$this->view->css_file 		= '<link rel="stylesheet" href="/css/aliases.css" type="text/css" />';
 
-        $this->view->aliases = $this->pixie->db->query('select')
-												->table('aliases')
-												->order_by('alias_name')
+		$this->view->entries = $this->pixie->db->query('select')
+												->fields($this->pixie->db->expr('A.id,
+																				ifnull(U1.username,"N/A") as from_username,
+																				"->" as direction,
+																				ifnull(U.username,"N/A") as to_username,
+																				A.alias_name,
+																				A.delivery_to,
+																				A.alias_notes,
+																				A.active'))
+												->table('aliases','A')
+												->join(array('users','U'),array('U.mailbox','A.delivery_to'))
+												->join(array('users','U1'),array('U1.mailbox','A.alias_name'))
+												->order_by('A.delivery_to')
 												->execute();
-
-		$this->view->domains = $this->pixie->db->query('select')
-												->fields('domain_name')
-												->table('domains')
-												->where('delivery_to','virtual')
-												->execute();
-
-		$this->view->aliases_block 	= $this->action_single();
 
         $this->response->body	= $this->view->render();
     }
 
 
-	public function action_single() {
+	public function action_showEditForm() {
 
-		$view 		= $this->pixie->view('aliases_view');
-		$view->log 	= $this->getVar($this->logmsg,'');
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
-		// Проверка на доступ
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
+
+		if( ! $tab = $this->request->post('t') )
+			return;
+
+		$this->_id 	= $this->request->param('id');
+		$init		= $this->request->post('init');
+		$view 		= $this->pixie->view('form_'.$tab);
+		$view->tab  = $tab;
+
+
+        $view->data = $this->pixie->db->query('select')
+										->table($tab)
+										->where('id',$this->_id)
+										->execute()
+										->current();
+
+		// Для дефолтных значений таблицы алиасов
+		if( $init ) {
+			$view->data = $this->pixie->db->query('select')
+										->fields($this->pixie->db->expr('mailbox AS alias_name, mailbox AS delivery_to'))
+										->table('users')
+										->where('id',$init)
+										->execute()
+										->current();
+
 		}
 
-		if( ! $this->request->param('id'))
-			return; // "<img class='lb' src=/mail.png />";
+       $this->response->body = $view->render();
+    }
 
-		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
-
-		$view->aliases = $this->pixie->db->query('select')
-								->fields($this->pixie->db->expr('A.alias_id AS uid, B.*'))
-								->table('aliases','A')
-								->join(array('aliases','B'),array('A.alias_name','B.alias_name'),'LEFT')
-								->where('alias_id',$this->_id)
-								->execute()
-								->as_array();
-
-		// Если адрес полностью удалили
-		if( count($view->aliases) == 0 )
-			return "Такогй записи нет.";
-
-		// Редактирование
-		if( ! $this->request->get('act') )
-			return $view->render();
-
-		$this->response->body = $view->render();
-	}
 
 	public function action_new() {
 

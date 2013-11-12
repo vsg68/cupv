@@ -61,10 +61,8 @@ $(document).ready(function() {
 
 
 		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-		TTOpts.aButtons[3] = TTOpts.aButtons[5];
-		TTOpts.aButtons[3].sButtonText = 'АЛИАСЫ';
-		delete TTOpts.aButtons[4];
-		delete TTOpts.aButtons[5];
+		TTOpts.aButtons[5].sButtonText = 'АЛИАСЫ';
+		TTOpts.aButtons.splice(3,2);
 
 		var aTable = $('#tab-aliases').dataTable({
 								"bJQueryUI": true,
@@ -153,6 +151,7 @@ function usersRowID(objTT) {
 
 		if( objTT.s.dt.sTableId != 'tab-users' )
 			return fnGetRowID("tab-users");
+		return 0;
 }
 
 /*
