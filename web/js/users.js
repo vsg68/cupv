@@ -10,7 +10,7 @@ $(document).ready(function() {
 
 		var lTable = $('#tab-lists').dataTable({
 								"bJQueryUI": true,
-								"sDom": '<"aliases-header"T<"label-header">>t',
+								"sDom": '<T>t',
 								"sScrollY": rH+"px",
 								"oTableTools": {
 									"aButtons":	[{
@@ -37,7 +37,7 @@ $(document).ready(function() {
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
-								"sDom": '<"H"Tf <"label-header">>t<"F"ip>',
+								"sDom": '<"H"Tf>t<"F"ip>',
 								"aoColumnDefs": [
 												{"bSortable":false, "aTargets": [3] },
 												{"bSortable":false, "aTargets": [4] },
@@ -61,7 +61,7 @@ $(document).ready(function() {
 
 		var aTable = $('#tab-aliases').dataTable({
 								"bJQueryUI": true,
-								"sDom": '<"aliases-header"T<"label-header">>t',
+								"sDom": '<T>t',
 								"sScrollY": rH+"px",
 								"aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [2] }],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {

@@ -29,7 +29,7 @@ body {
 }
 
 .divider {
-	padding: 20px 0 10px;
+	padding: 40px 0 10px;
 }
 
 .page-name {
@@ -107,10 +107,6 @@ tr.even td.sorting_1 {
 
 td span.ui-icon {
 	margin: 0 auto;
-}
-.aliases-header {
-	margin: 10px 0;
-	overflow: auto;
 }
 
 /* Overlay */
