@@ -15,7 +15,7 @@
 				</thead>
 				<tbody>
 					<?php foreach( $entries as $entry ): ?>
-						<tr id='tab-aliases-<?= $entry->id ?>' class='<?= ($entry->active == 0) ? 'gradeUU': '' ?>'>
+						<tr id='tab-aliases-<?= $entry->id ?>' class='<?= ($entry->active == 0) ? 'gradeUU': '' ?>' aname='<?= $entry->alias_name ?>' fname='<?= $entry->delivery_to ?>'>
 							<td><?= $entry->from_username ?></td>
 							<td><?= $entry->direction ?></td>
 							<td><?= $entry->to_username ?></td>

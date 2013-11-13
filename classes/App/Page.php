@@ -114,4 +114,26 @@ class Page extends \PHPixie\Controller {
 
         $this->response->body = json_encode($arr);
     }
+
+    protected function action_searchMailbox() {
+
+		if(! $test = $this->request->get('term') )
+			return false;
+
+		// Готовлю ответ в нужном формате
+		$arr = array();
+
+		$entries = $this->pixie->db->query('select')
+									->fields('mailbox')
+									->table('users')
+									->where('mailbox', 'like', $test.'%')
+									->execute();
+
+		foreach($entries as $entry) {
+		// заполняю массив данных доменами
+			array_push( $arr, $entry->mailbox );
+		}
+
+        $this->response->body = json_encode($arr);
+    }
 }

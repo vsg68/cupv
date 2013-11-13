@@ -13,8 +13,8 @@ $(function(){
 								"sDom": '<"H"Tf>t<"F"ip>',
 								"aaSorting": [[3,"asc"]],
 								"aoColumnDefs": [
-													//~ { "sClass": "center", "aTargets": [0] },
-													//~ { "sClass": "center", "aTargets": [2] },
+													{ "sClass": "center", "aTargets": [0] },
+													{ "sClass": "center", "aTargets": [2] },
 													{ "sWidth": "20px","bSortable":false, "sClass": "center", "aTargets": [1] },
 													{"bSortable":false, "aTargets": [5] },
 													{"bSortable":false, "sClass": "center", "aTargets": [6] },
@@ -67,8 +67,8 @@ function drawNA(nRow) {
 				$(this).html('<span class="ui-icon ui-icon-arrowthick-1-e"></span>');
 
 			if( $(this).text() == 'N/A' )
-				//~ $(this).html('<span class="ui-icon ui-icon-help"></span>');
-				$(this).addClass('unknown');
+				$(this).html('<span class="ui-icon ui-icon-person"></span>');
+				//~$(this).addClass('noname');
 		});
 
 }
@@ -79,18 +79,37 @@ modWin.validate_aliases = function () {
 			modWin.message = '';
 			alias_name	= $('form :text[name="alias_name"]').val();
 			delivery_to	= $('form :text[name="delivery_to"]').val();
+			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();  // запись работает только для UI
 
-			if ( ! (alias_name || delivery_to) ) {
-				modWin.message += 'Хотя бы одно поле должно быть заполнено. ';
+
+			if ( ! (alias_name && delivery_to) ) {
+				modWin.message += 'Поля адресов должны быть заполнены. ';
 			}
 
-			if ( !(fnTestByType( alias_name, 'mail') && alias_name) ) {
+			if ( ! fnTestByType( alias_name, 'mail') ) {
 				modWin.message += 'поле должно содержать почтовый адрес';
 			}
 
-			if ( !(fnTestByType( delivery_to, 'mail') && delivery_to) ) {
+			if ( ! fnTestByType( delivery_to, 'mail') ) {
 				modWin.message += 'поле должно содержать почтовый адрес';
 			}
+
+			existNameID = 	$('tr')
+									.filter('[aname="'+ alias_name + '"]')
+									.filter('[fname="'+ delivery_to + '"]')
+									.filter( id )
+									.length;
+			existName = 	$('tr')
+									.filter('[aname="'+ alias_name + '"]')
+									.filter('[fname="'+ delivery_to + '"]')
+									.length;
+
+			if( ! existNameID && existName ) {
+					modWin.message += "Такие сочетания алиасов уже присутствуют";
+					$('form :text[name="delivery_to"]').val('');
+
+			}
+
 			if (modWin.message.length > 0) {
 				return false;
 			}

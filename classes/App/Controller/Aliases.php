@@ -12,7 +12,7 @@ class Aliases extends \App\Page {
 
 		$this->view->subview 		= 'aliases';
 		$this->view->script_file	= '<script type="text/javascript" src="/js/aliases.js"></script>';
-		$this->view->css_file 		= '<link rel="stylesheet" href="/css/aliases.css" type="text/css" />';
+		$this->view->css_file 		= '';
 
 		$this->view->entries = $this->pixie->db->query('select')
 												->fields($this->pixie->db->expr('A.id,
@@ -43,10 +43,10 @@ class Aliases extends \App\Page {
 			return;
 
 		$this->_id 	= $this->request->param('id');
-		$init		= $this->request->post('init');
 		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
 
+		$view->is_alias_page = 1;
 
         $view->data = $this->pixie->db->query('select')
 										->table($tab)
@@ -54,107 +54,86 @@ class Aliases extends \App\Page {
 										->execute()
 										->current();
 
-		// Для дефолтных значений таблицы алиасов
-		if( $init ) {
-			$view->data = $this->pixie->db->query('select')
-										->fields($this->pixie->db->expr('mailbox AS alias_name, mailbox AS delivery_to'))
-										->table('users')
-										->where('id',$init)
-										->execute()
-										->current();
-
-		}
-
        $this->response->body = $view->render();
     }
 
 
-	public function action_new() {
+	public function action_edit() {
 
-		$view 		= $this->pixie->view('aliases_new');
-		$view->log 	= $this->getVar($this->logmsg,'');
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
 
-		// Проверка на доступ
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		$returnData  = array();
+
+		$entry = array('alias_name' => $params['alias_name'],
+					   'delivery_to'=> $params['delivery_to'],
+					   'alias_notes'=> $this->getVar($params['alias_notes']),
+					   'active'		=> $this->getVar($params['active'],0)
+					 );
+
+
+		if ( $params['id'] == 0 ) {
+			// новый пользователь
+			$vars = $this->pixie->db->query('insert')
+							->table( $params['tab'] )
+							->data($entry)
+							->execute();
+
+			$params['id'] = $this->pixie->db->insert_id();
+
+		}
+		else {
+		// Существующий пользователь
+			$this->pixie->db->query('update')
+							->table( $params['tab'] )
+							->data($entry)
+							->where('id',$params['id'])
+							->execute();
 		}
 
-		$this->response->body = $view->render();
-	}
+		// смотрим есть ли у нас пользователи по этим адресам
+		// Извращение нужно для правильного занесения в таблицу;
+		$tmp = array();
+		foreach( array($params['alias_name'], $params['delivery_to']) as $mbox ) {
 
-	public function action_add() {
+			$data = $this->pixie->db->query('select')
+									->table( 'users' )
+									->where('mailbox', $mbox)
+									->execute()
+									->current();
 
-        if ($this->request->method == 'POST') {
-
-			// Проверка на доступ
-			if( $this->permissions != $this::WRITE_LEVEL ) {
-				$this->noperm();
-				return false;
-			}
-
-			$params = $this->request->post();
-
-			unset($params['chk']);
-
-			// Инициируем, чтоб не было ошибки при обработке несуществующего массива
-			$params['fname'] = $this->getVar($params['fname'], array());
-
-			// Если ошибок все еще нет
-			if( ! isset( $this->logmsg ) ) {
-				// Обработка алиасов
-				foreach ($params['fname'] as $key=>$fname ) {
-
-					$entry = array(
-									'alias_name' => $params['alias_name'],
-									'delivery_to'=> $fname,
-									'active'	 => $params['stat'][$key]
-									);
-
-					if( $params['stat'][$key] == 2 ) {
-					// Удаление
-						$this->pixie->db->query('delete')
-										->table('aliases')
-										->where('alias_id',$params['fid'][$key])
-										->execute();
-					}
-					elseif( $params['fid'][$key] == 0 ) {
-					// Новый
-						$this->pixie->db->query('insert')
-										->table('aliases')
-										->data($entry)
-										->execute();
-
-						// нам не важно какой будет id, главное, что он ведет к нужному адресу
-						$params['alias_uid'] = $this->pixie->db->insert_id();
-					}
-					else {
-					// Изменение
-						$this->pixie->db->query('update')->table('aliases')
-										->data($entry)
-										->where('alias_id', $params['fid'][$key])
-										->execute();
-					}
-				}
-			}
-
-			// Ошибки имели место - возвращаем форму
-			if( isset( $this->logmsg ) ) {
-
-				if ( isset($params['alias_uid']) ) {
-
-					$this->_id = $params['alias_uid'];
-					$this->action_single();
-				}
-				else
-					$this->action_new();
-			}
-			else
-				$this->response->body = $params['alias_uid'];
+			array_push($tmp, $this->getVar($data->username,'N/A'));
 
 		}
 
+		array_unshift($entry, $tmp[0], '->', $tmp[1]);
+
+		// Массив, который будем возвращать
+		$returnData 				= array_values($entry);
+		$returnData['DT_RowId']		= 'tab-aliases-'.$params['id'];
+
+
+		$this->response->body = json_encode($returnData);
 	}
+
+	public function action_delEntry() {
+
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
+
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		$this->pixie->db->query('delete')
+						->table($params['tab'])
+						->where('id',$params['id'])
+						->execute();
+    }
 
 
 }

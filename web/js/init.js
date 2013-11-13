@@ -214,6 +214,8 @@ var modWin = {
 
 			$(':text, select').addClass('ui-widget-content ui-corner-all');
 
+			$('.autocomp').autocomplete({source: '/' + ctrl +'/searchMailbox/'});
+
 			$('#sb').button({label: 'Send'});
 
 			// Показе документа инициализирую функции

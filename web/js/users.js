@@ -331,6 +331,23 @@ modWin.validate_aliases = function () {
 			if ( !(fnTestByType( delivery_to, 'mail') && delivery_to) ) {
 				modWin.message += 'поле должно содержать почтовый адрес';
 			}
+
+			existNameID = 	$('tr')
+									.filter('[aname="'+ alias_name + '"]')
+									.filter('[fname="'+ delivery_to + '"]')
+									.filter('#'+ id )
+									.length;
+			existName = 	$('tr')
+									.filter('[aname="'+ alias_name + '"]')
+									.filter('[fname="'+ delivery_to + '"]')
+									.length;
+
+			if( ! existNameID && existName ) {
+					modWin.message += "Такие сочетания алиасов уже присутствуют";
+					$('form :text[name="delivery_to"]').val('');
+
+			}
+
 			if (modWin.message.length > 0) {
 				return false;
 			}
