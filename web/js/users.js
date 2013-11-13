@@ -43,14 +43,15 @@ $(document).ready(function() {
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
-								"sDom": '<"H"Tf>t<"F"ip>',
+								"sDom": "<'H'Tf>t<'F'ip>",
+								"bServerSide": true,
+								"sAjaxSource": "/users/showTable/",
+								"sServerMethod": "POST",
 								"aoColumnDefs": [
-													{"bSortable":false, "bVisible":false,"aTargets": [3] },
-													{"bSortable":false, "aTargets": [4] },
-													{"bSortable":false, "aTargets": [5] },
-													{"bSortable":false, "aTargets": [6] },
-													{"bSortable":false, "sClass": "center", "aTargets": [7] },
-													{"bSortable":false, "sClass": "center", "aTargets": [8] },
+													{"bVisible":false,"aTargets": [3] },
+													{"bSortable":false, "aTargets": [3,4,5,6,7,8] },
+													{"sClass": "center", "aTargets": [7,8] },
+													{"sClass": "nowrap", "aTargets": [0] },
 												],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);

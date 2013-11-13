@@ -18,7 +18,7 @@ class Users extends \App\Page {
 		$this->view->subview = 'users';
 
 		$this->view->users 	 = $this->pixie->db->query('select')
-												->table('users')
+												->table('users_new')
 												->execute();
 
         $this->response->body = $this->view->render();
@@ -56,7 +56,7 @@ class Users extends \App\Page {
 		if( $init ) {
 			$view->data = $this->pixie->db->query('select')
 										->fields($this->pixie->db->expr('mailbox AS alias_name, mailbox AS delivery_to'))
-										->table('users')
+										->table('users_new')
 										->where('id',$init)
 										->execute()
 										->current();
@@ -79,7 +79,7 @@ class Users extends \App\Page {
 		$data 	 = array();
 		$aliases = $this->pixie->db->query('select')
 										->fields('id','alias_name', 'delivery_to', 'active')
-										->table('aliases','A')
+										->table('aliases_new','A')
 										->join(array('users','U1'),array('U1.mailbox','A.alias_name'))
 										->join(array('users','U2'),array('U2.mailbox','A.delivery_to'))
 										->where('U1.id',$this->_id)
@@ -154,7 +154,7 @@ class Users extends \App\Page {
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
 				$vars = $this->pixie->db->query('insert')
-								->table( $params['tab'] )
+								->table( $params['tab'].'_new' )
 								->data($entry)
 								->execute();
 
@@ -164,7 +164,7 @@ class Users extends \App\Page {
 			else {
 			// Существующий пользователь
 				$this->pixie->db->query('update')
-								->table( $params['tab'] )
+								->table( $params['tab'] .'_new' )
 								->data($entry)
 								->where('id',$params['id'])
 								->execute();
@@ -193,6 +193,47 @@ class Users extends \App\Page {
 		$this->response->body = json_encode($returnData);
 	}
 
+	public function action_showTable() {
+
+		$entries = array();
+		$users = $this->pixie->db->query('select')
+								->fields($this->pixie->db->expr('
+									id,
+									username,
+									mailbox,
+									SUBSTRING_INDEX(mailbox, "@", -1) as domain,
+									password,
+									path,
+									imap_enable,
+									allow_nets,
+									acl_groups,
+									active'))
+								->table('users_new')
+								->execute();
+		$count = 0;
+		foreach($users as $user) {
+			$entries[] = array($user->username,
+								 $user->mailbox,
+								 $user->domain,
+								 $user->password,
+								 $user->allow_nets,
+								 $user->path,
+								 $user->acl_groups,
+								 $user->imap_enable,
+								 $user->active,
+								 'DT_RowId'=>'tab-users-'.$user->id
+								 );
+			$count++;
+		}
+		$returnData = array("sEcho" => 1,
+							"iTotalRecords" => $count,
+							"iTotalDisplayRecords" => $count,
+							"aaData" => $entries
+							);
+
+        $this->response->body = json_encode($returnData);
+	}
+
 	public function action_delEntry() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
@@ -203,7 +244,7 @@ class Users extends \App\Page {
 			return;
 
 		$this->pixie->db->query('delete')
-						->table($params['tab'])
+						->table($params['tab'].'_new' )
 						->where('id',$params['id'])
 						->execute();
 
@@ -211,12 +252,12 @@ class Users extends \App\Page {
 		// Но могут оставаться алиасы - тогда об этом предупреждаем
 		if( $params['tab'] == 'users' ) {
 			$this->pixie->db->query('delete')
-							->table('aliases')
+							->table('aliases_new')
 							->where('delivery_to',$params['mbox'])
 							->execute();
 
 			$aliases = $this->pixie->db->query('select')
-							->table('aliases')
+							->table('aliases_new')
 							->where('alias_name',$params['mbox'])
 							->execute()
 							->as_array();

@@ -231,3 +231,6 @@ a.DTTT_button_del span {
 	z-index: 10000;
 }
 
+.nowrap {
+	white-space:nowrap
+}
