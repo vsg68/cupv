@@ -150,25 +150,30 @@ class Users extends \App\Page {
 						 );
 		}
 
-		if ( $params['id'] == 0 ) {
-			// новый пользователь
-			$vars = $this->pixie->db->query('insert')
-							->table( $params['tab'] )
-							->data($entry)
-							->execute();
+		try {
+			if ( $params['id'] == 0 ) {
+				// новый пользователь
+				$vars = $this->pixie->db->query('insert')
+								->table( $params['tab'] )
+								->data($entry)
+								->execute();
 
-			$params['id'] = $this->pixie->db->insert_id();
+				$params['id'] = $this->pixie->db->insert_id();
 
+			}
+			else {
+			// Существующий пользователь
+				$this->pixie->db->query('update')
+								->table( $params['tab'] )
+								->data($entry)
+								->where('id',$params['id'])
+								->execute();
+			}
 		}
-		else {
-		// Существующий пользователь
-			$this->pixie->db->query('update')
-							->table( $params['tab'] )
-							->data($entry)
-							->where('id',$params['id'])
-							->execute();
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
 		}
-
 
 
 		// для правильного отображения строки в таблице

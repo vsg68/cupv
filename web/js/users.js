@@ -54,6 +54,7 @@ $(document).ready(function() {
 												],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
+													addRowAttr(nRow,'mbox',1);
 												},
 								"oTableTools": TTOpts
 
@@ -71,6 +72,9 @@ $(document).ready(function() {
 								"aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [2] }],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
+													// добавляем аттриут data для валидации
+													addRowAttr(nRow,'aname',0); // alias_name
+													addRowAttr(nRow,'fname',1); // delivery_to
 												},
 								"oTableTools": TTOpts,
 								});
@@ -274,20 +278,21 @@ var modGroup = {
 
 modWin.validate_users = function () {
 
-			modWin.message = '';
-			login = $('form :text[name="login"]').val();
-			mailbox =  login + '@' +  $('form option:selected').val();
-			allow_nets = $('form :text[name="allow_nets"]').val();
+			modWin.message 	= '';
+			login 			= $('form :text[name="login"]').val();
+			mailbox 		=  login + '@' +  $('form option:selected').val();
+			allow_nets 		= $('form :text[name="allow_nets"]').val();
+			id				= '#tab-users-' + $(':hidden[name="id"]').val();
 
 			if ( ! login ) {
 				modWin.message += 'Login is required. ';
 			}
 			else{
-				existIdMbox = $(modWin.RowNode).filter('[data="' + mailbox + '"]').length;
-				existId     = $(modWin.RowNode).length;
+				existMboxID = $('tr').filter('[mbox="' + mailbox + '"]').filter(id).length;
+				existMbox   = $('tr').filter('[mbox="' + mailbox + '"]').length;
 
-				if( ! existIdMbox && existId ) {
-					modWin.message += 'Mailbox exist!'
+				if( ! existMboxID && existMbox ) {
+					modWin.message += 'П/я '+ mailbox +' уже существует!'
 				}
 			}
 
@@ -319,6 +324,8 @@ modWin.validate_aliases = function () {
 			modWin.message = '';
 			alias_name	= $('form :text[name="alias_name"]').val();
 			delivery_to	= $('form :text[name="delivery_to"]').val();
+			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
+
 
 			if ( ! (alias_name || delivery_to) ) {
 				modWin.message += 'Хотя бы одно поле должно быть заполнено. ';
@@ -335,7 +342,7 @@ modWin.validate_aliases = function () {
 			existNameID = 	$('tr')
 									.filter('[aname="'+ alias_name + '"]')
 									.filter('[fname="'+ delivery_to + '"]')
-									.filter('#'+ id )
+									.filter( id )
 									.length;
 			existName = 	$('tr')
 									.filter('[aname="'+ alias_name + '"]')

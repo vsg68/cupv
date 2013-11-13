@@ -79,8 +79,7 @@ modWin.validate_aliases = function () {
 			modWin.message = '';
 			alias_name	= $('form :text[name="alias_name"]').val();
 			delivery_to	= $('form :text[name="delivery_to"]').val();
-			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();  // запись работает только для UI
-
+			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
 
 			if ( ! (alias_name && delivery_to) ) {
 				modWin.message += 'Поля адресов должны быть заполнены. ';

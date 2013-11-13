@@ -62,7 +62,7 @@ function fnDelete(uid) {
 		tab = uid.split('-')[1];
 		id  = uid.split('-')[2];
 
-		mbox = 	$('#'+uid).attr('data');
+		mbox = 	$('#'+uid).attr('mbox');
 
 		$.post('/'+ ctrl +'/delEntry/', {mbox:mbox,id:id,tab:tab}, function(info_data){
 
@@ -94,8 +94,7 @@ function drawCheckBox(nRow) {
 		});
 
 		drawUnActiveRow(nRow);
-		// добавляем аттриут data для валидации
-		printRowDataAttr(nRow,1);
+
 }
 /*
  *  Присваивание класса в зависимости от значения поля active
@@ -126,9 +125,9 @@ function fnGetSelectedRowID( objTT ) {
  *  При создании строки в аттрибут data заносим значение поля mailbox
  *  для последующей проверки на совпадение значений mailbox
  */
-function printRowDataAttr( nRow, ind ) {
-		mbox = $('td:eq('+ind+')', nRow).text();
-		$(nRow).attr('data', mbox);
+function addRowAttr( nRow, attrName, ind ) {
+		data = $('td:eq('+ind+')', nRow).text();
+		$(nRow).attr( attrName, data);
 }
 
 /*
@@ -253,7 +252,7 @@ var modWin = {
 										$.modal.close();
 									},
 							error: function(response) {
-										$('.ui-state-error').empty().append(response);
+										$('.ui-state-error').empty().append(response.responseText).fadeIn('fast');
 									},
 					});
 				}

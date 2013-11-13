@@ -75,24 +75,29 @@ class Aliases extends \App\Page {
 					   'active'		=> $this->getVar($params['active'],0)
 					 );
 
+		try {
+			if ( $params['id'] == 0 ) {
+				// новый пользователь
+				$vars = $this->pixie->db->query('insert')
+								->table( $params['tab'] )
+								->data($entry)
+								->execute();
 
-		if ( $params['id'] == 0 ) {
-			// новый пользователь
-			$vars = $this->pixie->db->query('insert')
-							->table( $params['tab'] )
-							->data($entry)
-							->execute();
+				$params['id'] = $this->pixie->db->insert_id();
 
-			$params['id'] = $this->pixie->db->insert_id();
-
+			}
+			else {
+			// Существующий пользователь
+				$this->pixie->db->query('update')
+								->table( $params['tab'] )
+								->data($entry)
+								->where('id',$params['id'])
+								->execute();
+			}
 		}
-		else {
-		// Существующий пользователь
-			$this->pixie->db->query('update')
-							->table( $params['tab'] )
-							->data($entry)
-							->where('id',$params['id'])
-							->execute();
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
 		}
 
 		// смотрим есть ли у нас пользователи по этим адресам
