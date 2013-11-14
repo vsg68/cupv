@@ -4,45 +4,19 @@ namespace App\Controller;
 
 class Domains extends \App\Page {
 
-   private $domain_id;
-
-   protected function sanitize(&$value, $method) {
-
-		$value =  trim($value) ;
-
-		switch ( $method ) {
-			case 'transport':
-				if( !preg_match ('/\w+:\[(\d+\.)+\d+\]/', $value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for net in field $value</span>";
-					return true;
-				}
-				break;
-			case 'is_domain':
-				if ( ! preg_match('/(\w+\.)+(\w+)/',$value) ) {
-					$this->logmsg .= "<span class='error'>Wrong entry for mail in field $value</span>";
-					return true;
-				}
-				break;
-			default:
-				return false;
-		}
-	}
-
     public function action_view() {
 
 
-		$this->view->subview 		= 'domains_main';
+		$this->view->subview 		= 'domains';
 
-		$this->view->script_file	= '<script type="text/javascript" src="/domains.js"></script>';
-		$this->view->css_file 		= '<link rel="stylesheet" href="/domains.css" type="text/css" />';
+		$this->view->script_file	= '<script type="text/javascript" src="/js/domains.js"></script>';
+		$this->view->css_file 		= '<link rel="stylesheet" href="/css/domains.css" type="text/css" />';
 
-
-		$this->view->domains = $this->pixie->db->query('select')
-												->table('domains')
-												->execute()
-												->as_array();
-
-		$this->view->domains_block 	= $this->action_single();
+		$entries = $this->pixie->db->query('select')
+										->table('domains')
+										->execute()
+										->as_array();
+		$this->view->entries = $entries;
 
         $this->response->body = $this->view->render();
     }

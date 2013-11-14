@@ -1,92 +1,90 @@
 $(document).ready(function() {
 
-		H 	= $(window).outerHeight();
-		rH	= 100;	// Скролл таблицы записей
-		d_min = rH + 110;  // Расстояние от главной таблицы до дна
-		eH	= 550;	// Скролл главной таблицы
-		// Настройка скроллинга большой таблицы
-		if( eH + d_min > H )
-			eH = H - d_min;
+		//~ H 	= $(window).outerHeight() - 100; // эмпирически
+		//~ d_min = H/2 -110;  // Минимальный размер таблицы
 
-		var lTable = $('#tab-lists').dataTable({
+		//~ TTOpts.aButtons.splice(3,2);
+		//~ TTOpts.aButtons[3].sButtonText = 'ПОЧТОВЫЕ ДОМЕНЫ';
+
+		$('.dataTable').dataTable({
 								"bJQueryUI": true,
-								"sDom": '<T>t',
-								"sScrollY": rH+"px",
-								"aoColumnDefs": [
-													{"bSortable":false, "aTargets": [0] },
-													{"bSortable":false, "aTargets": [1] },
-												],
-								"oTableTools": {
-									"aButtons":	[
-													{
-														"sExtends":    "text",
-														"sButtonText": ".",
-														"sButtonClass": 'DTTT_button_group  DTTT_disabled',
-														"fnClick": function( nButton, oConfig, oFlash ){
-															//предотвращаем новое, если в основной таблице ничего не выбрано
-															if( ! $(nButton).hasClass('DTTT_disabled') ) {
-																fnGroupEdit( usersRowID(this) );
-															}
-														},
-													},
-													{
-														"sExtends":    "text",
-														"sButtonText": "РАССЫЛКА",
-														"sButtonClass": 'DTTT_label  DTTT_disabled',
-													}
-												]
-									},
-								});
-
-
-		var oTable = $('#tab-users').dataTable({
-								"bJQueryUI": true,
-								"sScrollY":  eH + "px",
+								//"sScrollY":  d_min + "px",
 								"bPaginate": false,
-								"sDom": "<'H'Tf>t<'F'ip>",
-								"sAjaxSource": "/users/showTable/",
-								"sServerMethod": "POST",
-								"fnInitComplete": function () {
-														this.fnAdjustColumnSizing();
-														this.fnDraw();
-												},
+								"sDom": "<'H'T>t<'F'>",
 								"aoColumnDefs": [
-													{"bVisible":false,"aTargets": [3] },
-													{"bSortable":false, "aTargets": [3,4,5,6,7,8] },
-													{"sClass": "center", "aTargets": [7,8] },
-													{"sClass": "nowrap", "aTargets": [0] },
+													{"bSortable":true, "aTargets": [0,1] },
+													//{"sClass": "center", "aTargets": [4] },
 												],
-								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-													drawCheckBox(nRow);
-													addRowAttr(nRow,'mbox',1);
-												},
-								"oTableTools": TTOpts
+								//~ "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+													//~ drawCheckBox(nRow);
+													//~ addRowAttr(nRow,'mbox',1);
+												//~ },
+								"oTableTools": {
+												"aButtons":[
+																{
+																	"sExtends":"text",
+																	"sButtonText": ".",
+																	"sButtonClass": "DTTT_button_edit DTTT_disabled",
+																	"fnClick": function( nButton, oConfig, oFlash ){
+																					RowID = fnGetSelectedRowID(this);
+																					fnEdit( RowID , 0);
+																				},
+																},
+																{
+																	"sExtends":"text",
+																	"sButtonText": ".",
+																	"sButtonClass": "DTTT_button_new",
+																	"fnClick": function( nButton, oConfig, oFlash ){
+																					if( ! $(nButton).hasClass('DTTT_disabled') ) {
+																						pid = function_exists('usersRowID') ? usersRowID(this) : 0;
+																						fnEdit( this.s.dt.sTableId +'-0', pid);
+																					}
+
+																				},
+																},
+																{
+																	"sExtends":"text",
+																	"sButtonText": ".",
+																	"sButtonClass": "DTTT_button_del DTTT_disabled",
+																	"fnClick": function( nButton, oConfig, oFlash ){
+																					RowID = fnGetSelectedRowID(this);
+																					fnDelete( RowID, 0 );
+																				}
+																},
+															]
+												}
 							});
+//~
+		//~ TTOpts.aButtons[3].sButtonText = 'ТРАНСПОРТ';
+		//~ var lTable = $('#tab-transport').dataTable({
+								//~ "bJQueryUI": true,
+								//~ "sDom": "<'H'T>t<'F'>",
+								//~ "bPaginate": false,
+								//~ "aoColumnDefs": [
+													//~ {"bSortable":false, "aTargets": [1,2,3] },
+													//~ {"sClass": "center", "aTargets": [3] },
+												//~ ],
+								//~ "oTableTools": TTOpts
+								//~ });
+//~
+//~
+		//~ TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
+		//~ TTOpts.aButtons[3].sButtonText = 'АЛИАСЫ ДОМЕНОВ';
+//~
+		//~ var aTable = $('#tab-aliases').dataTable({
+								//~ "bJQueryUI": true,
+								//~ "sDom": "<'H'T>t<'F'>",
+								//~ "bPaginate": false,
+								//~ "aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [2] }],
+								//~ "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+													//~ drawCheckBox(nRow);
+													//~ // добавляем аттриут data для валидации
+													//~ addRowAttr(nRow,'aname',0); // alias_name
+													//~ addRowAttr(nRow,'fname',1); // delivery_to
+												//~ },
+								//~ "oTableTools": TTOpts,
+								//~ });
 
-
-		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-		TTOpts.aButtons[5].sButtonText = 'АЛИАСЫ';
-		TTOpts.aButtons.splice(3,2);
-
-		var aTable = $('#tab-aliases').dataTable({
-								"bJQueryUI": true,
-								"sDom": '<T>t',
-								"sScrollY": rH+"px",
-								"aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [2] }],
-								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-													drawCheckBox(nRow);
-													// добавляем аттриут data для валидации
-													addRowAttr(nRow,'aname',0); // alias_name
-													addRowAttr(nRow,'fname',1); // delivery_to
-												},
-								"oTableTools": TTOpts,
-								});
-
-
-		$('body').on('click','.mkpwd', function(){
-
-			$(this).closest('tr').find(':text[name="password"]').val(mkpasswd());
-		});
 
 
 });
