@@ -154,7 +154,7 @@ class Users extends \App\Page {
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
 				$vars = $this->pixie->db->query('insert')
-								->table( $params['tab'] )
+								->table( $params['tab'].'_new' )
 								->data($entry)
 								->execute();
 
@@ -164,7 +164,7 @@ class Users extends \App\Page {
 			else {
 			// Существующий пользователь
 				$this->pixie->db->query('update')
-								->table( $params['tab'] )
+								->table( $params['tab'] .'_new' )
 								->data($entry)
 								->where('id',$params['id'])
 								->execute();
@@ -193,6 +193,47 @@ class Users extends \App\Page {
 		$this->response->body = json_encode($returnData);
 	}
 
+	public function action_showTable() {
+
+		$entries = array();
+		$users = $this->pixie->db->query('select')
+								->fields($this->pixie->db->expr('
+									id,
+									username,
+									mailbox,
+									SUBSTRING_INDEX(mailbox, "@", -1) as domain,
+									password,
+									path,
+									imap_enable,
+									allow_nets,
+									acl_groups,
+									active'))
+								->table('users')
+								->execute();
+		$count = 0;
+		foreach($users as $user) {
+			$entries[] = array($user->username,
+								 $user->mailbox,
+								 $user->domain,
+								 $user->password,
+								 $user->allow_nets,
+								 $user->path,
+								 $user->acl_groups,
+								 $user->imap_enable,
+								 $user->active,
+								 'DT_RowId'=>'tab-users-'.$user->id
+								 );
+			$count++;
+		}
+		$returnData = array("sEcho" => 1,
+							"iTotalRecords" => $count,
+							"iTotalDisplayRecords" => $count,
+							"aaData" => $entries
+							);
+
+        $this->response->body = json_encode($returnData);
+	}
+
 	public function action_delEntry() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
@@ -203,7 +244,7 @@ class Users extends \App\Page {
 			return;
 
 		$this->pixie->db->query('delete')
-						->table($params['tab'])
+						->table($params['tab'].'_new' )
 						->where('id',$params['id'])
 						->execute();
 

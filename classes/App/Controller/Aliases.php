@@ -49,7 +49,7 @@ class Aliases extends \App\Page {
 		$view->is_alias_page = 1;
 
         $view->data = $this->pixie->db->query('select')
-										->table($tab)
+										->table($tab.'_new' )
 										->where('id',$this->_id)
 										->execute()
 										->current();
@@ -79,7 +79,7 @@ class Aliases extends \App\Page {
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
 				$vars = $this->pixie->db->query('insert')
-								->table( $params['tab'] )
+								->table( $params['tab'] .'_new' )
 								->data($entry)
 								->execute();
 
@@ -89,7 +89,7 @@ class Aliases extends \App\Page {
 			else {
 			// Существующий пользователь
 				$this->pixie->db->query('update')
-								->table( $params['tab'] )
+								->table( $params['tab'].'_new'  )
 								->data($entry)
 								->where('id',$params['id'])
 								->execute();
@@ -106,7 +106,7 @@ class Aliases extends \App\Page {
 		foreach( array($params['alias_name'], $params['delivery_to']) as $mbox ) {
 
 			$data = $this->pixie->db->query('select')
-									->table( 'users' )
+									->table( 'users_new' )
 									->where('mailbox', $mbox)
 									->execute()
 									->current();
@@ -135,7 +135,7 @@ class Aliases extends \App\Page {
 			return;
 
 		$this->pixie->db->query('delete')
-						->table($params['tab'])
+						->table($params['tab'].'_new' )
 						->where('id',$params['id'])
 						->execute();
     }

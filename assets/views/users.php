@@ -12,23 +12,18 @@
 						<th>Groups</th>
 						<th>Imap</th>
 						<th>Active</th>
-
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach( $users as $user ): ?>
-						<tr id='tab-users-<?= $user->id ?>' class='<?= ($user->active == 0) ? 'gradeUU': '' ?>'>
-							<td><?= $user->username ?></td>
-							<td><?= $user->mailbox ?></td>
-							<td><?= explode('@',$user->mailbox)[1] ?></td>
-							<td><?= $user->password ?></td>
-							<td><?= $user->allow_nets ?></td>
-							<td><?= $user->path ?></td>
-							<td><?= $user->acl_groups ?></td>
-							<td><?= $user->imap_enable ?></td>
-							<td><?= $user->active ?></td>
-						</tr>
-					<?php endforeach; ?>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
 				</tbody>
 			</table>
 		</div>
