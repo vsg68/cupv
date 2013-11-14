@@ -12,6 +12,7 @@ $(function(){
 								"bPaginate": false,
 								"sDom": '<"H"Tf>t<"F"ip>',
 								"aaSorting": [[3,"asc"]],
+								//"fnInitComplete": function(oSettings, json) { $('#demo').show(); },
 								"aoColumnDefs": [
 													{ "sClass": "center", "aTargets": [0] },
 													{ "sClass": "center", "aTargets": [2] },

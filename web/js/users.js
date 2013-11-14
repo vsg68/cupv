@@ -44,6 +44,7 @@ $(document).ready(function() {
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
 								"sDom": '<"H"Tf>t<"F"ip>',
+								//"fnInitComplete": function(oSettings, json) { $('#demo').removeClass('ui-helper-hidden');},
 								"aoColumnDefs": [
 													{"bSortable":false, "bVisible":false,"aTargets": [3] },
 													{"bSortable":false, "aTargets": [4] },
