@@ -14,14 +14,9 @@ class Users extends \App\Page {
         if( $this->permissions == $this::NONE_LEVEL )
 			return  $this->noperm();
 
-
 		$this->view->subview = 'users';
 
-		$this->view->users 	 = $this->pixie->db->query('select')
-												->table('users')
-												->execute();
-
-        $this->response->body = $this->view->render();
+		$this->response->body = $this->view->render();
     }
 
 	public function action_showEditForm() {
@@ -128,6 +123,7 @@ class Users extends \App\Page {
 
 		if( ! $params = $this->request->post() )
 			return;
+
 		$returnData  = array();
 
 		if( $params['tab'] == 'users') {
@@ -153,8 +149,8 @@ class Users extends \App\Page {
 		try {
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
-				$vars = $this->pixie->db->query('insert')
-								->table( $params['tab'].'_new' )
+				$this->pixie->db->query('insert')
+								->table( $params['tab'] )
 								->data($entry)
 								->execute();
 
@@ -164,7 +160,7 @@ class Users extends \App\Page {
 			else {
 			// Существующий пользователь
 				$this->pixie->db->query('update')
-								->table( $params['tab'] .'_new' )
+								->table( $params['tab'] )
 								->data($entry)
 								->where('id',$params['id'])
 								->execute();
@@ -195,41 +191,36 @@ class Users extends \App\Page {
 
 	public function action_showTable() {
 
-		$entries = array();
+		$returnData["aaData"] = array();
 		$users = $this->pixie->db->query('select')
 								->fields($this->pixie->db->expr('
-									id,
-									username,
-									mailbox,
-									SUBSTRING_INDEX(mailbox, "@", -1) as domain,
-									password,
-									path,
-									imap_enable,
-									allow_nets,
-									acl_groups,
-									active'))
+												id,
+												username,
+												mailbox,
+												SUBSTRING_INDEX(mailbox, "@", -1) AS domain,
+												password,
+												allow_nets AS nets,
+												IFNULL(path,"") AS path,
+												IFNULL(acl_groups,"") AS groups,
+												IFNULL(imap_enable,0) AS imap,
+												active'))
 								->table('users')
-								->execute();
-		$count = 0;
+								->execute()
+								->as_array();
+
 		foreach($users as $user) {
-			$entries[] = array($user->username,
-								 $user->mailbox,
-								 $user->domain,
-								 $user->password,
-								 $user->allow_nets,
-								 $user->path,
-								 $user->acl_groups,
-								 $user->imap_enable,
-								 $user->active,
-								 'DT_RowId'=>'tab-users-'.$user->id
-								 );
-			$count++;
+			$returnData["aaData"][] = array($user->username,
+											 $user->mailbox,
+											 $user->domain,
+											 $user->password,
+											 $user->nets,
+											 $user->path,
+											 $user->groups,
+											 $user->imap,
+											 $user->active,
+											 'DT_RowId'=>'tab-users-'.$user->id
+											);
 		}
-		$returnData = array("sEcho" => 1,
-							"iTotalRecords" => $count,
-							"iTotalDisplayRecords" => $count,
-							"aaData" => $entries
-							);
 
         $this->response->body = json_encode($returnData);
 	}
@@ -244,7 +235,7 @@ class Users extends \App\Page {
 			return;
 
 		$this->pixie->db->query('delete')
-						->table($params['tab'].'_new' )
+						->table($params['tab'])
 						->where('id',$params['id'])
 						->execute();
 

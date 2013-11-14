@@ -43,15 +43,16 @@ $(document).ready(function() {
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
-								//"fnInitComplete": function(oSettings, json) { $('#demo').removeClass('ui-helper-hidden');},
 								"sDom": "<'H'Tf>t<'F'ip>",
-								"bServerSide": true,
 								"sAjaxSource": "/users/showTable/",
 								"sServerMethod": "POST",
+								"fnInitComplete": function () {
+														this.fnAdjustColumnSizing();
+														this.fnDraw();
+												},
 								"aoColumnDefs": [
 													{"bVisible":false,"aTargets": [3] },
-													 { "aDataSort": [ 0, 1 ],"aTargets": [ 0 ] },
-													{"bSortable":false, "aTargets": [3,4,5,6,7,8] },
+													{"aTargets": [3,4,5,6,7,8] },
 													{"sClass": "center", "aTargets": [7,8] },
 													{"sClass": "nowrap", "aTargets": [0] },
 												],
@@ -60,8 +61,7 @@ $(document).ready(function() {
 													addRowAttr(nRow,'mbox',1);
 												},
 								"oTableTools": TTOpts
-
-								});
+							});
 
 
 		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';

@@ -12,13 +12,16 @@ $(function(){
 								"bPaginate": false,
 								"sDom": '<"H"Tf>t<"F"ip>',
 								"aaSorting": [[3,"asc"]],
-								//"fnInitComplete": function(oSettings, json) { $('#demo').show(); },
+								"sAjaxSource": "/" + ctrl + "/showTable/",
+								"sServerMethod": "POST",
+								"fnInitComplete": function () {
+														this.fnAdjustColumnSizing();
+														this.fnDraw();
+												},
 								"aoColumnDefs": [
-													{ "sClass": "center", "aTargets": [0] },
-													{ "sClass": "center", "aTargets": [2] },
-													{ "sWidth": "20px","bSortable":false, "sClass": "center", "aTargets": [1] },
-													{"bSortable":false, "aTargets": [5] },
-													{"bSortable":false, "sClass": "center", "aTargets": [6] },
+													{"sClass": "center", "aTargets": [0,1,2,6] },
+													{"sWidth": "20px", "aTargets": [1] },
+													{"bSortable":false, "aTargets": [1,5,6] },
 												],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);

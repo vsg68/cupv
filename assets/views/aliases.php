@@ -10,22 +10,8 @@
 						<th>Delivery_to</th>
 						<th>Note</th>
 						<th>Active</th>
-
 					</tr>
 				</thead>
-				<tbody>
-					<?php foreach( $entries as $entry ): ?>
-						<tr id='tab-aliases-<?= $entry->id ?>' class='<?= ($entry->active == 0) ? 'gradeUU': '' ?>' aname='<?= $entry->alias_name ?>' fname='<?= $entry->delivery_to ?>'>
-							<td><?= $entry->from_username ?></td>
-							<td><?= $entry->direction ?></td>
-							<td><?= $entry->to_username ?></td>
-							<td><?= $entry->alias_name ?></td>
-							<td><?= $entry->delivery_to ?></td>
-							<td><?= $entry->alias_notes ?></td>
-							<td><?= $entry->active ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
 			</table>
 		</div>
 

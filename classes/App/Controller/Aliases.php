@@ -14,21 +14,6 @@ class Aliases extends \App\Page {
 		$this->view->script_file	= '<script type="text/javascript" src="/js/aliases.js"></script>';
 		$this->view->css_file 		= '';
 
-		$this->view->entries = $this->pixie->db->query('select')
-												->fields($this->pixie->db->expr('A.id,
-																				ifnull(U1.username,"N/A") as from_username,
-																				"->" as direction,
-																				ifnull(U.username,"N/A") as to_username,
-																				A.alias_name,
-																				A.delivery_to,
-																				A.alias_notes,
-																				A.active'))
-												->table('aliases','A')
-												->join(array('users','U'),array('U.mailbox','A.delivery_to'))
-												->join(array('users','U1'),array('U1.mailbox','A.alias_name'))
-												->order_by('A.delivery_to')
-												->execute();
-
         $this->response->body	= $this->view->render();
     }
 
@@ -49,7 +34,7 @@ class Aliases extends \App\Page {
 		$view->is_alias_page = 1;
 
         $view->data = $this->pixie->db->query('select')
-										->table($tab.'_new' )
+										->table($tab)
 										->where('id',$this->_id)
 										->execute()
 										->current();
@@ -78,8 +63,8 @@ class Aliases extends \App\Page {
 		try {
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
-				$vars = $this->pixie->db->query('insert')
-								->table( $params['tab'] .'_new' )
+				$this->pixie->db->query('insert')
+								->table( $params['tab'] )
 								->data($entry)
 								->execute();
 
@@ -89,7 +74,7 @@ class Aliases extends \App\Page {
 			else {
 			// Существующий пользователь
 				$this->pixie->db->query('update')
-								->table( $params['tab'].'_new'  )
+								->table( $params['tab'] )
 								->data($entry)
 								->where('id',$params['id'])
 								->execute();
@@ -106,7 +91,7 @@ class Aliases extends \App\Page {
 		foreach( array($params['alias_name'], $params['delivery_to']) as $mbox ) {
 
 			$data = $this->pixie->db->query('select')
-									->table( 'users_new' )
+									->table( 'users' )
 									->where('mailbox', $mbox)
 									->execute()
 									->current();
@@ -125,6 +110,40 @@ class Aliases extends \App\Page {
 		$this->response->body = json_encode($returnData);
 	}
 
+	public function action_showTable() {
+
+		$returnData["aaData"] = array();
+		$aliases = $this->pixie->db->query('select')
+								->fields($this->pixie->db->expr('A.id,
+																ifnull(U1.username,"N/A") as from_username,
+																"->" as direction,
+																ifnull(U.username,"N/A") as to_username,
+																A.alias_name,
+																A.delivery_to,
+																A.alias_notes,
+																A.active'))
+								->table('aliases','A')
+								->join(array('users','U'),array('U.mailbox','A.delivery_to'))
+								->join(array('users','U1'),array('U1.mailbox','A.alias_name'))
+								->order_by('A.delivery_to')
+								->execute()
+								->as_array();
+
+		foreach($aliases as $alias) {
+			$returnData["aaData"][] = array($alias->from_username,
+											 $alias->direction,
+											 $alias->to_username,
+											 $alias->alias_name,
+											 $alias->delivery_to,
+											 $alias->alias_notes,
+											 $alias->active,
+											 'DT_RowId'=>'tab-users-'.$alias->id
+											);
+		}
+
+        $this->response->body = json_encode($returnData);
+	}
+
 	public function action_delEntry() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
@@ -135,7 +154,7 @@ class Aliases extends \App\Page {
 			return;
 
 		$this->pixie->db->query('delete')
-						->table($params['tab'].'_new' )
+						->table($params['tab'] )
 						->where('id',$params['id'])
 						->execute();
     }
