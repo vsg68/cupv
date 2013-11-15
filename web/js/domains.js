@@ -1,120 +1,88 @@
 $(document).ready(function() {
 
-		//~ H 	= $(window).outerHeight() - 100; // эмпирически
-		//~ d_min = H/2 -110;  // Минимальный размер таблицы
+/*
+ * Общая для всех настройка
+ */
+var TOptions = {
+		"bJQueryUI": true,
+		//"sScrollY":  d_min + "px",
+		"bPaginate": false,
+		"sDom": "<'H'T>t<'F'>",
+		"aoColumnDefs": [
+							{"bSortable":true, "aTargets": [0,1] },
+							{"sClass": "center", "aTargets": [3,4] },
+						],
+		"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+							drawCheckBox(nRow);
+							addRowAttr(nRow,'domain',0); // Запоминаю имя домена для удаления алиасов
+						},
+		"oTableTools" : {
+				"sRowSelect": "single",
+				"fnRowSelected": function(node){
+									// Только для таблицы пользователей
+									//tab = node[0].id.split('-')[0];
+									if( function_exists('showMapsTable') )
+										showMapsTable( node );
 
-		//~ TTOpts.aButtons.splice(3,2);
-		//~ TTOpts.aButtons[3].sButtonText = 'ПОЧТОВЫЕ ДОМЕНЫ';
-
-		$('.dataTable').dataTable({
-								"bJQueryUI": true,
-								//"sScrollY":  d_min + "px",
-								"bPaginate": false,
-								"sDom": "<'H'T>t<'F'>",
-								"aoColumnDefs": [
-													{"bSortable":true, "aTargets": [0,1] },
-													//{"sClass": "center", "aTargets": [4] },
-												],
-								//~ "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-													//~ drawCheckBox(nRow);
-													//~ addRowAttr(nRow,'mbox',1);
-												//~ },
-								"oTableTools": {
-												"aButtons":[
-																{
-																	"sExtends":"text",
-																	"sButtonText": ".",
-																	"sButtonClass": "DTTT_button_edit DTTT_disabled",
-																	"fnClick": function( nButton, oConfig, oFlash ){
-																					RowID = fnGetSelectedRowID(this);
-																					fnEdit( RowID , 0);
-																				},
-																},
-																{
-																	"sExtends":"text",
-																	"sButtonText": ".",
-																	"sButtonClass": "DTTT_button_new",
-																	"fnClick": function( nButton, oConfig, oFlash ){
-																					if( ! $(nButton).hasClass('DTTT_disabled') ) {
-																						pid = function_exists('usersRowID') ? usersRowID(this) : 0;
-																						fnEdit( this.s.dt.sTableId +'-0', pid);
-																					}
-
-																				},
-																},
-																{
-																	"sExtends":"text",
-																	"sButtonText": ".",
-																	"sButtonClass": "DTTT_button_del DTTT_disabled",
-																	"fnClick": function( nButton, oConfig, oFlash ){
-																					RowID = fnGetSelectedRowID(this);
-																					fnDelete( RowID, 0 );
-																				}
-																},
-															]
+									if( function_exists('unblockNewButton') )
+										unblockNewButton( node );  // Разблокировка кнопки
+								},
+				"fnRowDeselected": function(nodes){
+									// ставим блокировку на "New" для алиасов
+										if( function_exists('blockNewButton'))
+											blockNewButton( nodes );
+									},
+				"aButtons":[
+								{
+									"sExtends":"text",
+									"sButtonText": ".",
+									"sButtonClass": "DTTT_button_edit DTTT_disabled",
+									"fnClick": function( nButton, oConfig, oFlash ){
+													RowID = fnGetSelectedRowID(this);
+													fnEdit( RowID , 0);
+												},
+								},
+								{
+									"sExtends":"text",
+									"sButtonText": ".",
+									"sButtonClass": "DTTT_button_new",
+									"fnClick": function( nButton, oConfig, oFlash ){
+													if( ! $(nButton).hasClass('DTTT_disabled') ) {
+														pid = function_exists('usersRowID') ? usersRowID(this) : 0;
+														fnEdit( this.s.dt.sTableId +'-0', pid);
+													}
+												},
+								},
+								{
+									"sExtends":"text",
+									"sButtonText": ".",
+									"sButtonClass": "DTTT_button_del DTTT_disabled",
+									"fnClick": function( nButton, oConfig, oFlash ){
+													RowID = fnGetSelectedRowID(this);
+													fnDelete( RowID, 0 );
 												}
-							});
-//~
-		//~ TTOpts.aButtons[3].sButtonText = 'ТРАНСПОРТ';
-		//~ var lTable = $('#tab-transport').dataTable({
-								//~ "bJQueryUI": true,
-								//~ "sDom": "<'H'T>t<'F'>",
-								//~ "bPaginate": false,
-								//~ "aoColumnDefs": [
-													//~ {"bSortable":false, "aTargets": [1,2,3] },
-													//~ {"sClass": "center", "aTargets": [3] },
-												//~ ],
-								//~ "oTableTools": TTOpts
-								//~ });
-//~
-//~
-		//~ TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-		//~ TTOpts.aButtons[3].sButtonText = 'АЛИАСЫ ДОМЕНОВ';
-//~
-		//~ var aTable = $('#tab-aliases').dataTable({
-								//~ "bJQueryUI": true,
-								//~ "sDom": "<'H'T>t<'F'>",
-								//~ "bPaginate": false,
-								//~ "aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [2] }],
-								//~ "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-													//~ drawCheckBox(nRow);
-													//~ // добавляем аттриут data для валидации
-													//~ addRowAttr(nRow,'aname',0); // alias_name
-													//~ addRowAttr(nRow,'fname',1); // delivery_to
-												//~ },
-								//~ "oTableTools": TTOpts,
-								//~ });
+								},
+								{
+									"sExtends":    "text",
+									"sButtonText": "ПОЧТОВЫЕ ДОМЕНЫ",
+									"sButtonClass": 'DTTT_label  DTTT_disabled',
+								}
+							],
+				}
+};
 
+		$('#tab-domains').dataTable(TOptions);
+
+		TOptions.aoColumnDefs[1] = {"sClass": "center", "aTargets": [3] }; //
+		TOptions.oTableTools.aButtons[3].sButtonText = 'АЛИАСЫ ДОМЕНОВ';
+		$('#tab-aliases').dataTable(TOptions)
+
+		TOptions.oTableTools.aButtons[3].sButtonText = 'ТРАНСПОРТ';
+		$('#tab-transport').dataTable(TOptions);
 
 
 });
 
-/*
- *  Если выделена строка в таблице users - показываем связанные с ней алиасы
- */
-function showMapsTable(node) {
-
-		if(node[0].offsetParent.id != 'tab-users')
-			return false;
-
-		id = node[0].id.split('-')[2];
-		$.ajax({
-				type: "GET",
-				url: '/'+ ctrl +'/records/' + id,
-				dataType: "json",
-				success: function(response) {
-										$('#tab-aliases').dataTable().fnClearTable();
-										$('#tab-aliases').dataTable().fnAddData(response['aliases']);
-										$('#tab-lists').dataTable().fnClearTable();
-										$('#tab-lists').dataTable().fnAddData(response['lists']);
-
-										},
-				error: function() {
-									$('#tab-aliases').dataTable().fnClearTable();
-									$('#tab-lists').dataTable().fnClearTable();
-									}
-		});
-}
 
 /*
  *  Если НЕ выделена строка в таблице users - создавать для нее алиасы запрещаем
@@ -150,25 +118,30 @@ function unblockNewButton(node) {
 }
 
 /*
- *  Получаю выделенную строку в таблице users
+ * Если хотим добавить в запрос на удаление какие-нить параметры -
+ * то это делается тут
  */
-function usersRowID(objTT) {
+function deleteWithParams(uid, tab, init) {
+	if(tab == 'domains') {
+		val = $('#'+uid).attr('domain');
+		init['aname'] = val;
+	}
 
-		if( objTT.s.dt.sTableId != 'tab-users' )
-			return fnGetRowID("tab-users");
-		return 0;
+	return init;
 }
 
 /*
- * Стираем значения "подчиненных" таблиц
+ * Стираем значения в "подчиненных" таблицах
 */
-function clearChildTable() {
+function clearChildTable(uids) {
 
-	if(tab != 'users')
+	if(tab != 'domains')
 		return false;
 
-	$('#tab-aliases').dataTable().fnClearTable();
-	$('#tab-lists').dataTable().fnClearTable();
+	for(i=0; i < uids.length; i++) {
+		x = '#tab-aliases-'+uids[i]['id'];
+		$('#tab-'+tab).dataTable().fnDeleteRow( $(x).get(0) );
+	}
 }
 
 /*
@@ -277,8 +250,9 @@ var modGroup = {
 
 };
 
-modWin.validate_users = function () {
+modWin.validate_domains = function () {
 
+			return true;
 			modWin.message 	= '';
 			login 			= $('form :text[name="login"]').val();
 			mailbox 		=  login + '@' +  $('form option:selected').val();

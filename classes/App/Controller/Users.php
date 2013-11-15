@@ -244,12 +244,12 @@ class Users extends \App\Page {
 		if( $params['tab'] == 'users' ) {
 			$this->pixie->db->query('delete')
 							->table('aliases')
-							->where('delivery_to',$params['mbox'])
+							->where('delivery_to',$params['aname'])
 							->execute();
 
 			$aliases = $this->pixie->db->query('select')
 							->table('aliases')
-							->where('alias_name',$params['mbox'])
+							->where('alias_name',$params['aname'])
 							->execute()
 							->as_array();
 

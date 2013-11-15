@@ -164,13 +164,18 @@ function usersRowID(objTT) {
 /*
  * Стираем значения "подчиненных" таблиц
 */
-function clearChildTable() {
+function clearChildTable(info_data) {
 
 	if(tab != 'users')
 		return false;
 
 	$('#tab-aliases').dataTable().fnClearTable();
 	$('#tab-lists').dataTable().fnClearTable();
+
+	if(info_data) {
+		$(info_data).modal(modInfo);
+	}
+
 }
 
 /*
@@ -207,6 +212,18 @@ function fnShowHide(nButton) {
 	$('.DTTT_button_print').toggleClass('DTTT_disabled');
 }
 
+/*
+ * Если хотим добавить в запрос на удаление какие-нить параметры -
+ * то это делается тут
+ */
+function deleteWithParams(uid, tab, init) {
+	if(tab == 'users') {
+		val = $('#'+uid).attr('mbox');
+		init = init.push(aname: val)
+	}
+
+	return params;
+}
 
 /*
  * Опции модального окна для групп

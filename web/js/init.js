@@ -62,18 +62,19 @@ function fnDelete(uid) {
 		tab = uid.split('-')[1];
 		id  = uid.split('-')[2];
 
-		mbox = 	$('#'+uid).attr('mbox');
+		params = {id:id,tab:tab};
 
-		$.post('/'+ ctrl +'/delEntry/', {mbox:mbox,id:id,tab:tab}, function(info_data){
+		// хочу передать параметры для удаления
+		if( function_exists('deleteWithParams') ){
+			params = deleteWithParams(uid, tab, params);
+		}
+
+		$.post('/'+ ctrl +'/delEntry/', params, function(response){
 
 											$('#tab-'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
 
 											if( function_exists('clearChildTable') ) {
-												clearChildTable();
-											}
-
-											if(info_data) {
-												$(info_data).modal(modInfo);
+												clearChildTable(response);
 											}
 										});
 }
@@ -317,7 +318,7 @@ var TTOpts = {
 							"sButtonClass": "DTTT_button_del DTTT_disabled",
 							"fnClick": function( nButton, oConfig, oFlash ){
 											RowID = fnGetSelectedRowID(this);
-											fnDelete( RowID, 0 );
+											fnDelete( RowID );
 										}
 						},
 						{

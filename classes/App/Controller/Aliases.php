@@ -137,7 +137,7 @@ class Aliases extends \App\Page {
 											 $alias->delivery_to,
 											 $alias->alias_notes,
 											 $alias->active,
-											 'DT_RowId'=>'tab-users-'.$alias->id
+											 'DT_RowId'=>'tab-aliases-'.$alias->id
 											);
 		}
 

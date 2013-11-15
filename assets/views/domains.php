@@ -15,7 +15,7 @@
 								foreach($entries as $entry) {
 									if($entry->domain_type == 0):
 							?>
-							<tr id="tab-transport-<?= $entry->id ?>">
+							<tr id="tab-domains-<?= $entry->id ?>">
 								<td><?= $entry->domain_name ?></td>
 								<td><?= $entry->domain_notes ?></td>
 								<td><?= $entry->all_email ?></td>
@@ -41,7 +41,7 @@
 							foreach($entries as $entry) {
 								if($entry->domain_type == 1):
 						?>
-						<tr id="tab-transport-<?= $entry->id ?>">
+						<tr id="tab-aliases-<?= $entry->id ?>">
 							<td><?= $entry->domain_name ?></td>
 							<td><?= $entry->delivery_to ?></td>
 							<td><?= $entry->domain_notes ?></td>
