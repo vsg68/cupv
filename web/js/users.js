@@ -219,10 +219,10 @@ function fnShowHide(nButton) {
 function deleteWithParams(uid, tab, init) {
 	if(tab == 'users') {
 		val = $('#'+uid).attr('mbox');
-		init = init.push(aname: val)
+		init["aname"] = val;
 	}
 
-	return params;
+	return init;
 }
 
 /*

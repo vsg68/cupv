@@ -57,30 +57,36 @@ class Domains extends \App\Page {
 		if( ! $params = $this->request->post() )
 			return;
 
+		// Массив, который будем возвращать. Позиция важна
+
 		if($params['tab'] == 'domains' ) {
-			$type = 0;
-			$delivery_to = 'virtual';
+			$entry = array( 'domain_name' 	=> $params['domain_name'],
+							'delivery_to'	=> 'virtual',
+							'domain_type'	=> 0,
+							'domain_notes' 	=> $this->getVar($params['domain_notes']),
+							'all_enable'	=> $this->getVar($params['all_enable'],0),
+							'all_email'		=> $params['all_email'].'@'.$params['domain'],
+							'active'		=> $this->getVar($params['active'],0),
+							);
 		}
 		elseif($params['tab'] == 'aliases' ) {
-			$type = 1;
-			$delivery_to = $params['domain_name'];
+			$entry = array( 'domain_name' 	=> $params['domain_name'],
+							'delivery_to'	=> $params['delivery_to'],
+							'domain_type'	=> 1,
+							'domain_notes' 	=> $this->getVar($params['domain_notes']),
+							'active'		=> $this->getVar($params['active'],0),
+							);
 		}
 		elseif($params['tab'] == 'trnsport' ) {
-			$type = 2;
-			$delivery_to = $params['delivery_to'];
+			$entry = array( 'domain_name' 	=> $params['domain_name'],
+							'delivery_to'	=> $params['delivery_to'],
+							'domain_type'	=> 2,
+							'domain_notes' 	=> $this->getVar($params['domain_notes']),
+							'active'		=> $this->getVar($params['active'],0),
+							);
 		}
 
 		$returnData  = array();
-
-		// Массив, который будем возвращать
-		$entry = array( 'domain_name' 	=> $params['domain_name'],
-						'domain_notes' 	=> $this->getVar($params['domain_notes']),
-						'delivery_to'	=> $delivery_to,
-						'domain_type' 	=> $type,
-						'all_email'	 	=> $params['all_email'].'@'.$params['domain'],
-						'all_enable' 	=> $this->getVar($params['all_enable'],0),
-						'active'		=> $this->getVar($params['active'],0)
-						);
 
 		try {
 			if ( $params['id'] == 0 ) {
@@ -111,14 +117,6 @@ class Domains extends \App\Page {
 
 		unset($entry['domain_type']);
 
-		if($params['tab'] == 'domains' ) {
-			unset($entry['delivery_to']);
-		}
-		else {
-			unset($entry['all_email']);
-			unset($entry['all_enable']);
-		}
-
 		$returnData 			= array_values($entry);
 		$returnData['DT_RowId']	= 'tab-'.$params['tab'].'-'.$params['id'];
 
@@ -128,29 +126,42 @@ class Domains extends \App\Page {
 
 	public function action_delEntry() {
 
-		if( $this->permissions == $this::NONE_LEVEL )
-			return $this->noperm();
 
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
 
 		if( ! $params = $this->request->post() )
 			return;
 
-		$returnData = array();
+		try {
+			$delivery_to = $this->getVar($params['aname'],0);
 
-		$aliases = $this->pixie->db->query('select')
-							->fields('id')
-							->table('domains')
-							->where('delivery_to',$params['aname'])
-							->execute()
-							->as_array();
+			$this->pixie->db->query('delete')
+									->table('domains')
+									->where('id',$params['id'])
+									->where('or',array('delivery_to',$delivery_to))   // и алиасы
+									->execute();
 
-		$this->pixie->db->query('delete')
-						->table('domains')
-						->where('id',$params['id'])
-						->where('or',array('delivery_to',$params['aname']))   // и алиасы
-						->execute();
 
-		return $returnData	= json_encode($aliases);
+			if( $params['tab'] == 'domains' ) {
+
+				$aliases = $this->pixie->db->query('select')
+											->fields('id')
+											->table('domains')
+											->where('delivery_to',$delivery_to)
+											->execute()
+											->as_array();
+
+				$val = array_values($aliases);
+				$this->response->body = json_encode( $val );
+			}
+		}
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
+			$this->response->body = $view->render();
+			return;
+		}
 
     }
 

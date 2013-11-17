@@ -69,14 +69,26 @@ function fnDelete(uid) {
 			params = deleteWithParams(uid, tab, params);
 		}
 
-		$.post('/'+ ctrl +'/delEntry/', params, function(response){
+		$.ajax ({
+				url: '/'+ ctrl +'/delEntry/',
+				data: params,
+				type: 'post',
+				//dataType: 'json',
+				success: function(response) {
+							$('#tab-'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
 
-											$('#tab-'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
+							if( function_exists('clearChildTable') ) {
+								clearChildTable(response);
+							}
+						},
+				error: function( jqXHR, textStatus, response ) {
+							alert(textStatus);
+							if(typeof response == 'object')
+								response = '<div>'+response.responseText + '</div>';
 
-											if( function_exists('clearChildTable') ) {
-												clearChildTable(response);
-											}
-										});
+							$(response).modal(modInfo);
+						},
+					});
 }
 
 /*

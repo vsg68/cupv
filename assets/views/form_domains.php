@@ -34,13 +34,19 @@
 				</tr>
 				<tr>
 					<td class='formlabel'>Включение рассылки:</td>
-					<td><input type='checkbox' class='formtext' name='all_enable' value='1' <?php isset($data->all_enable) ? ($data->all_enable & 1) && print('checked') : print('checked') ?> ></td>
+					<td><input type='checkbox' class='formtext' name='all_enable' <?php isset($data->all_enable) ? ($data->all_enable & 1) && print('checked') : print('checked') ?> ></td>
 				</tr>
 			<?php endif; ?>
 			<?php if($tab == 'aliases'): ?>
 				<tr>
 					<td class='formlabel'>Реальный домен:</td>
-					<td><input type='text' name='delivery_to' value='<?= isset($data->delivery_to) ? $data->delivery_to : '' ?>'  /></td>
+					<td>
+						<select class='ui-widget-content ui-corner-all' name='delivery_to'>
+							<?php foreach( $domains as $domain): ?>
+							<option value='<?= $domain->domain_name ?>' <?= (( isset($data->domain_name) ? $data->domain_name : 'gmpro.ru') == $domain->domain_name) ? 'selected': '' ?> ><?= $domain->domain_name ?></option>
+							<?php endforeach; ?>
+						</select>
+					</td>
 				</tr>
 			<?php endif; ?>
 			<?php if($tab == 'transport'): ?>

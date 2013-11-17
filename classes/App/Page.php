@@ -72,12 +72,9 @@ class Page extends \PHPixie\Controller {
 
 	protected function noperm() {
 
-		$this->view->subview = '';
-		$this->view->script_file = '';
-		$this->view->css_file = '';
-		$this->response->body = "У вас нет прав для выполнения  данной операции";
-		$this->execute=false;
-		return false;
+		$view = $this->pixie->view('form_alert');
+		$view->errorMsg = "У вас нет прав для выполнения  данной операции";
+		$this->response->body = $view->render();
 	}
 
 	/* Берем или значение или значение по умолчанию */
