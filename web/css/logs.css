@@ -2,7 +2,9 @@
 /*
 	background-color: yellow;
 */
-	display: inline-block;
+/*
+	display: block;
+*/
 	height: 30px;
 	vertical-align: top;
 	float: right;
@@ -12,11 +14,15 @@
 	padding: 4px;
 }
 .editmenu input[type='text'] {
+	padding-left: 4px;
 	height: 19px;
 }
 
 .editmenu select {
-	height: 22px;
+	height: 23px;
 }
 
-
+.time {
+	width: 30px;
+	height: 15px;
+}

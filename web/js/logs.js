@@ -16,7 +16,8 @@ $(function(){
 													var filter = $('.editmenu').clone();
 													$('.editmenu').remove();
 													$('.myfilter').append( filter );
-													$('.date_field').datepicker();
+													$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
+
 													this.fnAdjustColumnSizing();
 													this.fnDraw();
 											},
