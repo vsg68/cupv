@@ -8,28 +8,24 @@ class Logs extends \App\Page {
 
     public function action_view() {
 
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
+			if( $this->permissions == $this::NONE_LEVEL )
+				return $this->noperm();
 
-		$this->view->subview 		= 'logs_main';
 
-		$this->view->script_file = '<script type="text/javascript" src="/logs.js"></script>';
-		$this->view->css_file 	 = '<link rel="stylesheet" href="/logs.css" type="text/css" />';
+			$this->view->subview 		= 'logs';
 
-        $this->response->body	= $this->view->render();
+			$this->view->script_file = '<script type="text/javascript" src="/js/logs.js"></script>';
+			$this->view->css_file 	 = '<link rel="stylesheet" href="/css/logs.css" type="text/css" />';
+
+			$this->response->body	= $this->view->render();
     }
 
 
 	public function action_show() {
 
-        if ($this->request->method == 'POST') {
+			if( $this->permissions == $this::NONE_LEVEL )
+							return $this->noperm();
 
-			if( $this->permissions == $this::NONE_LEVEL ) {
-				$this->noperm();
-				return false;
-			}
 
 			$view 	= $this->pixie->view('logs_view');
 			$query	= array();
@@ -83,8 +79,6 @@ class Logs extends \App\Page {
 											->execute();
 
 			$this->response->body = $view->render() ;
-
-		}
 
 	}
 

@@ -1,0 +1,22 @@
+.myfilter {
+/*
+	background-color: yellow;
+*/
+	display: inline-block;
+	height: 30px;
+	vertical-align: top;
+	float: right;
+	margin-right: 100px;
+}
+.editmenu {
+	padding: 4px;
+}
+.editmenu input[type='text'] {
+	height: 19px;
+}
+
+.editmenu select {
+	height: 22px;
+}
+
+
