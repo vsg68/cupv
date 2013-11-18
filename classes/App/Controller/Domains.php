@@ -64,8 +64,8 @@ class Domains extends \App\Page {
 							'delivery_to'	=> 'virtual',
 							'domain_type'	=> 0,
 							'domain_notes' 	=> $this->getVar($params['domain_notes']),
+							'all_email'		=> $this->getVar($params['all_email']) ? ($params['all_email'].'@'.$params['domain_name']): '',
 							'all_enable'	=> $this->getVar($params['all_enable'],0),
-							'all_email'		=> $params['all_email'].'@'.$params['domain'],
 							'active'		=> $this->getVar($params['active'],0),
 							);
 		}
@@ -77,11 +77,11 @@ class Domains extends \App\Page {
 							'active'		=> $this->getVar($params['active'],0),
 							);
 		}
-		elseif($params['tab'] == 'trnsport' ) {
+		elseif($params['tab'] == 'transport' ) {
 			$entry = array( 'domain_name' 	=> $params['domain_name'],
+							'domain_notes' 	=> $this->getVar($params['domain_notes']),
 							'delivery_to'	=> $params['delivery_to'],
 							'domain_type'	=> 2,
-							'domain_notes' 	=> $this->getVar($params['domain_notes']),
 							'active'		=> $this->getVar($params['active'],0),
 							);
 		}
@@ -114,7 +114,9 @@ class Domains extends \App\Page {
 		}
 
 		// Составляем правильный ответ
-
+		if( !$entry['domain_type'] ) {
+			unset($entry['delivery_to']);
+		}
 		unset($entry['domain_type']);
 
 		$returnData 			= array_values($entry);
@@ -141,7 +143,6 @@ class Domains extends \App\Page {
 									->where('id',$params['id'])
 									->where('or',array('delivery_to',$delivery_to))   // и алиасы
 									->execute();
-
 
 			if( $params['tab'] == 'domains' ) {
 

@@ -25,16 +25,21 @@
 				<tr>
 					<td class='formlabel'>Адрес рассылки:</td>
 					<td><input class='login' type='text' name='all_email' value='<?= isset($data->all_email) ? explode('@',$data->all_email)[0] : '' ?>' />&nbsp;<strong>@</strong>
-						<select class='ui-widget-content ui-corner-all' name='domain'>
-							<?php foreach( $domains as $domain): ?>
-							<option value='<?= $domain->domain_name ?>' <?= (( isset($data->domain_name) ? $data->domain_name : 'gmpro.ru') == $domain->domain_name) ? 'selected': '' ?> ><?= $domain->domain_name ?></option>
-							<?php endforeach; ?>
-						</select>
+						<?php if( isset($data->all_email) ): ?>
+							<select class='ui-widget-content ui-corner-all' name='domain'>
+								<?php foreach( $domains as $domain): ?>
+								<option value='<?= $domain->domain_name ?>' <?= (( isset($data->domain_name) ? $data->domain_name : 'gmpro.ru') == $domain->domain_name) ? 'selected': '' ?> ><?= $domain->domain_name ?></option>
+								<?php endforeach; ?>
+							</select>
+						<?php else: ?>
+							<strong>domain.name</strong>
+						<?php endif; ?>
+
 					</td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Включение рассылки:</td>
-					<td><input type='checkbox' class='formtext' name='all_enable' <?php isset($data->all_enable) ? ($data->all_enable & 1) && print('checked') : print('checked') ?> ></td>
+					<td><input type='checkbox' class='formtext' name='all_enable' value='1' <?php isset($data->all_enable) ? ($data->all_enable & 1) && print('checked') : '' ?> ></td>
 				</tr>
 			<?php endif; ?>
 			<?php if($tab == 'aliases'): ?>

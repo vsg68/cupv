@@ -5,7 +5,7 @@ $(document).ready(function() {
  */
 var TOptions = {
 		"bJQueryUI": true,
-		//"sScrollY":  d_min + "px",
+		//"sScrollY":  H/2 -110 + "px",
 		"bPaginate": false,
 		"sDom": "<'H'T>t<'F'>",
 		"aoColumnDefs": [
@@ -138,42 +138,51 @@ function clearChildTable(uids) {
 	}
 }
 
-
+/*
+ * Функции проверок при редактировании записей в таблицах.
+ * Проверка на совпадения доменов, алиасов - не производится !!
+ */
 modWin.validate_domains = function () {
 
 			modWin.message 	= '';
-			email_enable	= $('form :checkbox[name="all_enable"]').val();
 			name 			= $('form :text[name="all_email"]').val();
+			domain_name 	= $('form :text[name="domain_name"]').val();
 
 			if ( email_enable) {
 				if (! name ) {
-					modWin.message += 'Address is required. ';
+					modWin.message += 'Если разрешена рассылка,то необходимо указать адрес. ';
 				}
 				// Нет проверки на существующие почтовые ящики
 			}
-
-			if ( ! $('form :text[name="domain_name"]').val()) {
-				modWin.message += 'Name is required. ';
+			if ( ! domain_name ) {
+				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
+				if ( ! fnTestByType(domain_name,'domain')) {
+					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
+				}
 			}
-
 			if (modWin.message.length > 0) {
 				return false;
 			}
 			else {
 				return true;
 			}
-2}
+}
 
 modWin.validate_transport = function () {
 			modWin.message 	= '';
-			addrress		= $('form :text[name="dalivery_to"]').val();
-			name 			= $('form :text[name="all_email"]').val();
+			address			= $('form :text[name="dalivery_to"]').val();
+			domain_name 	= $('form :text[name="domain_name"]').val();
 
 			if ( ! $('form :text[name="domain_name"]').val()) {
 				modWin.message += 'Name is required. ';
 			}
-
-			if ( ! fnTestByType(address,'proto_address')) {
+			if ( ! domain_name ) {
+				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
+				if ( ! fnTestByType(domain_name,'domain')) {
+					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
+				}
+			}
+			if ( ! fnTestByType(address,'transport')) {
 				modWin.message += 'Поле "протокол:[адрес]" должно иметь правильный формат.';
 			}
 			if (modWin.message.length > 0) {
@@ -188,12 +197,13 @@ modWin.validate_aliases = function () {
 
 			modWin.message = '';
 			domain_name	= $('form :text[name="domain_name"]').val();
-			delivery_to	= $('form option:selected').val();;
-			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
 
 
-			if ( ! (domain_name && delivery_to) ) {
+			if ( ! domain_name ) {
 				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
+				if ( ! fnTestByType(domain_name,'domain')) {
+					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
+				}
 			}
 
 			if (modWin.message.length > 0) {

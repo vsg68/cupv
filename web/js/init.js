@@ -44,8 +44,13 @@ function fnEdit(uid, pid) {
 		    pid = pid.split('-')[2];
 
 		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab,init:pid}, function(response){
-					$(response).modal( modWin );
+					// Какую форму вернул запрос
+					if( $(response).find('.form-alert').length )
+						$(response).modal( modInfo );
+					else
+						$(response).modal( modWin );
 		});
+
 
 }
 /*
@@ -69,26 +74,26 @@ function fnDelete(uid) {
 			params = deleteWithParams(uid, tab, params);
 		}
 
-		$.ajax ({
-				url: '/'+ ctrl +'/delEntry/',
-				data: params,
-				type: 'post',
-				//dataType: 'json',
-				success: function(response) {
-							$('#tab-'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
+		$.post('/'+ ctrl +'/delEntry/' + id, params, function(response){
+							// Какую форму вернул запрос ?
+							jsonArr = /(\{"\w+":\d+\},?)+/;
 
-							if( function_exists('clearChildTable') ) {
-								clearChildTable(response);
+							if( jsonArr.test(response) || !response ) {
+								// Получаем объект из строки, если ответ содержит правильные данные
+								objJSON = response ? $.parseJSON(response) : '';
+
+								$('#tab-'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
+
+								if( function_exists('clearChildTable') ) {
+									clearChildTable(objJSON);
+								}
 							}
-						},
-				error: function( jqXHR, textStatus, response ) {
-							alert(textStatus);
-							if(typeof response == 'object')
-								response = '<div>'+response.responseText + '</div>';
-
-							$(response).modal(modInfo);
-						},
-					});
+							else {
+								if( $(response).find('.form-alert').length ) {
+									$(response).modal( modInfo );
+								}
+							}
+				});
 }
 
 /*
@@ -161,6 +166,12 @@ function fnTestByType(str, type){
 			break
 		case 'nets':
 			reg = new RegExp(net_tmpl,'i')
+			break
+		case 'domain':
+			reg = new RegExp(domain_tmpl,'i')
+			break
+		case 'transport':
+			reg = new RegExp(transp_tmpl,'i')
 			break
 		default:
 			if( str )
