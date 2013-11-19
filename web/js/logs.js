@@ -12,7 +12,6 @@ $(function(){
 							"bPaginate": false,
 							"bSort": false,
 							"sDom": '<"H"T>t<"F"ip>',
-							//"sAjaxSource": "/" + ctrl + "/showTable/",
 							"fnInitComplete": function () {
 													$(':text, select', '.editmenu').addClass('ui-widget-content ui-corner-all');
 													var filter = $('.editmenu').clone();
@@ -22,7 +21,6 @@ $(function(){
 											},
 							"fnCreatedRow": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 
-												//prevMsgId = $(nRow).prev('tr').find('td:eq2').text();
 												nowMsgId = aData[2];
 
 												if(nowMsgId != prevMsgId) {
@@ -62,13 +60,6 @@ $(function(){
 
 
 })
-
-
-function drawMsgClass(nRow) {
-
-	//before = nRow.prev
-	alert(nRow);
-}
 
 /*
  *  Замена значений чекбоксов на картинку
