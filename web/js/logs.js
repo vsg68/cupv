@@ -1,44 +1,45 @@
 $(function(){
 
-		H 	= $(window).outerHeight();
-		eH	= H - 150;	// Скролл главной таблицы
+	H 	= $(window).outerHeight();
+	eH	= H - 150;	// Скролл главной таблицы
 
 
-		 $('#tab').dataTable({
+	var oTable = $('#tab').dataTable({
 							"bJQueryUI": true,
 							"sScrollY":  eH + "px",
 							"bPaginate": false,
 							"bSort": false,
-							"sDom": '<"H"T<"myfilter">>t<"F"ip>',
+							"sDom": '<"H"T>t<"F"ip>',
 							//"sAjaxSource": "/" + ctrl + "/showTable/",
 							"fnInitComplete": function () {
 													$(':text, select', '.editmenu').addClass('ui-widget-content ui-corner-all');
 													var filter = $('.editmenu').clone();
 													$('.editmenu').remove();
-													$('.myfilter').append( filter );
+													$('#ToolTables_tab_0').after( filter );
 													$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
-
-													this.fnAdjustColumnSizing();
-													this.fnDraw();
 											},
 							"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-												drawCheckBox(nRow);
-												drawNA(nRow);
+												//~ drawCheckBox(nRow);
+												//~ drawNA(nRow);
 											},
 							"oTableTools": {
+										"sRowSelect": "single",
 										"aButtons":[
-													//~ {
-														//~ "sExtends":"search",
-														//~ "sButtonText": ".",
-														//~ "fnClick": function( nButton, oConfig ) {
-																		//~ $(nButton).hasClass('DTTT_disabled') ? this.fnPrint( false, oConfig ) : this.fnPrint( true, oConfig );
-																	//~ }
-													//~ },
 													{
-														"sExtends":    "text",
-														"sButtonText": "ЛОГИ",
+														"sExtends": "text",
+														"sButtonText": "ПОИСК В ПОЧТОВЫХ ЛОГАХ",
 														"sButtonClass": 'DTTT_label  DTTT_disabled',
-													}
+													},
+													{
+														"sExtends":"text",
+														"sButtonText": ".",
+														"sButtonClass": 'DTTT_button_search',
+														"fnClick": function( nButton, oConfig ) {
+																		if( ! $(nButton).hasClass('DTTT_disabled') ) {
+																			fnSearch();
+																		}
+																	}
+													},
 												   ],
 										}
 
@@ -48,88 +49,41 @@ $(function(){
 
 })
 
-/*
- *  Если НЕ выделена строка в таблице users - создавать для нее алиасы запрещаем
- *  Запещаем редактировать и удалять, если не выделено
- */
-function blockNewButton(nodes) {
-
-		if( nodes.length && (tab = nodes[0].offsetParent.id) ) {
-			$('#ToolTables_'+tab+'_0').addClass('DTTT_disabled');
-			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
-		}
-}
-
-/*
- *  Если выделена строка в таблице users - разрешаем создавать для нее алиасы
- *  Разрешаем редактировать и удалять, если выделено
- */
-function unblockNewButton(node) {
-
-		tab = node[0].offsetParent.id;
-		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
-		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
-}
-
 
 /*
  *  Замена значений чекбоксов на картинку
  */
-function drawNA(nRow) {
+function fnSearch() {
 
-		// смотрим на активность записи
-		$('td', nRow).each(function(){
+		$('.DTTT_button_search').addClass('DTTT_disabled');
+		var oTable = $('#tab').dataTable();
+		oTable.fnClearTable();
 
-			if( $(this).text() == '->' )
-				$(this).html('<span class="ui-icon ui-icon-arrowthick-1-e"></span>');
+		$.get('/logs/show/', $('form').serialize(),function(response){
+							//oTable.fnAddData(response);
+							//~ // Какую форму вернул запрос ?
+							jsonArr = /(\[(".+",){3}".+"\],?)+/;
 
-			if( $(this).text() == 'N/A' )
-				$(this).html('<span class="ui-icon ui-icon-person"></span>');
-				//~$(this).addClass('noname');
-		});
+							if( jsonArr.test(response) ) {
+								// Получаем объект из строки, если ответ содержит правильные данные
+								objJSON = $.parseJSON(response) ;
+
+								oTable.fnAddData(objJSON);
+							}
+							else {
+								if( $(response).find('.form-alert').length ) {
+									$(response).modal( modInfo );
+								}
+							}
+
+							oTable.fnAdjustColumnSizing();
+							oTable.fnDraw();
+							$('.DTTT_button_search').removeClass('DTTT_disabled');
+
+
+
+
+			});
 
 }
 
-
-modWin.validate_aliases = function () {
-
-			modWin.message = '';
-			alias_name	= $('form :text[name="alias_name"]').val();
-			delivery_to	= $('form :text[name="delivery_to"]').val();
-			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
-
-			if ( ! (alias_name && delivery_to) ) {
-				modWin.message += 'Поля адресов должны быть заполнены. ';
-			}
-
-			if ( ! fnTestByType( alias_name, 'mail') ) {
-				modWin.message += 'поле должно содержать почтовый адрес';
-			}
-
-			if ( ! fnTestByType( delivery_to, 'mail') ) {
-				modWin.message += 'поле должно содержать почтовый адрес';
-			}
-
-			existNameID = 	$('tr')
-									.filter('[aname="'+ alias_name + '"]')
-									.filter('[fname="'+ delivery_to + '"]')
-									.filter( id )
-									.length;
-			existName = 	$('tr')
-									.filter('[aname="'+ alias_name + '"]')
-									.filter('[fname="'+ delivery_to + '"]')
-									.length;
-
-			if( ! existNameID && existName ) {
-					modWin.message += "Такие сочетания алиасов уже присутствуют";
-					$('form :text[name="delivery_to"]').val('');
-
-			}
-
-			if (modWin.message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
-}

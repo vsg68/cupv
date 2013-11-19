@@ -76,6 +76,17 @@ a.DTTT_button_vis:hover span {
 a.DTTT_button_vis span {
 	background-position: -105px -42px;
 }
+a.DTTT_button_search span {
+	background-position: -126px -0px;
+}
+
+a.DTTT_button_search:hover span {
+	background-position: -126px -21px;
+}
+
+a.DTTT_button_search.DTTT_disabled span {
+	background-position: -126px -42px;
+}
 
 #users {
 	background-position: -192px 0px;

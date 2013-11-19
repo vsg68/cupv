@@ -44,7 +44,7 @@
 
 		</div>
 <!--
-		<div id='submit_filter'><img src='/loader.gif'  border=0></div>
+		<div class='Search_active'></div>
 -->
 		</form>
 	</div>
@@ -52,7 +52,7 @@
 		<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab">
 			<thead>
 				<tr>
-					<th>Data</th>
+					<th>Date</th>
 					<th>Process</th>
 					<th>msg ID</th>
 					<th>msg</th>

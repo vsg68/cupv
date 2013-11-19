@@ -1,17 +1,12 @@
-.myfilter {
-/*
-	background-color: yellow;
-*/
-/*
-	display: block;
-*/
-	height: 30px;
-	vertical-align: top;
+div.DTTT_container {
 	float: right;
-	margin-right: 100px;
 }
 .editmenu {
-	padding: 4px;
+	padding-top: 4px;
+	display: inline-block;
+	float: left;
+	position: relative;
+	margin : 0 10px 0 100px;
 }
 .editmenu input[type='text'] {
 	padding-left: 4px;
@@ -22,7 +17,3 @@
 	height: 23px;
 }
 
-.time {
-	width: 30px;
-	height: 15px;
-}

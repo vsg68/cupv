@@ -207,6 +207,9 @@ form#usersform {
 	background-repeat: no-repeat;
 	background-image: url('/css/smoothness/images/mail.png');
 }
+
+.Search_active,
+a.DTTT_button_search span,
 a.DTTT_button_vis span,
 a.DTTT_button_group span,
 a.DTTT_button_print span,
