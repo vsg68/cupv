@@ -3,6 +3,8 @@ $(function(){
 	H 	= $(window).outerHeight();
 	eH	= H - 150;	// Скролл главной таблицы
 
+	var changeClass = 0;
+	var prevMsgId = 0;
 
 	var oTable = $('#tab').dataTable({
 							"bJQueryUI": true,
@@ -18,9 +20,21 @@ $(function(){
 													$('#ToolTables_tab_0').after( filter );
 													$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
 											},
-							"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-												//~ drawCheckBox(nRow);
-												//~ drawNA(nRow);
+							"fnCreatedRow": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+
+												//prevMsgId = $(nRow).prev('tr').find('td:eq2').text();
+												nowMsgId = aData[2];
+
+												if(nowMsgId != prevMsgId) {
+													changeClass = ! changeClass;
+													prevMsgId = aData[2];
+												}
+
+												if (changeClass)
+													$(nRow).addClass('msgEven');
+												else
+													$(nRow).addClass('msgOdd');
+
 											},
 							"oTableTools": {
 										"sRowSelect": "single",
@@ -49,6 +63,12 @@ $(function(){
 
 })
 
+
+function drawMsgClass(nRow) {
+
+	//before = nRow.prev
+	alert(nRow);
+}
 
 /*
  *  Замена значений чекбоксов на картинку

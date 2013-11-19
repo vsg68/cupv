@@ -17,3 +17,9 @@ div.DTTT_container {
 	height: 23px;
 }
 
+.msgEven {
+	background-color: #fff !important;
+}
+.msgOdd {
+	background-color: #F0F5FC !important;
+}
