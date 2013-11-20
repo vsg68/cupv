@@ -66,12 +66,18 @@ $(function(){
  */
 function fnSearch() {
 
-		$('.DTTT_button_search').addClass('DTTT_disabled');
 		var oTable = $('#tab').dataTable();
 		oTable.fnClearTable();
 
-		$.get('/logs/show/', $('form').serialize(),function(response){
-							//oTable.fnAddData(response);
+		$('.DTTT_button_search').addClass('DTTT_disabled');
+		$('.loader').modal( modloader );
+
+		$.ajax({
+				type: "GET",
+				url: '/logs/show/',
+				data: $('form').serialize(),
+				success: function(response) {
+							$.modal.close();
 							//~ // Какую форму вернул запрос ?
 							jsonArr = /(\[(".+",){3}".+"\],?)+/;
 
@@ -90,11 +96,22 @@ function fnSearch() {
 							oTable.fnAdjustColumnSizing();
 							oTable.fnDraw();
 							$('.DTTT_button_search').removeClass('DTTT_disabled');
-
-
-
-
+						},
+				error: function(response) {
+							$.modal.close();
+							$('.form-alert').text(response.statusText);
+							$('#errmsg').modal(modloader);
+							$('.DTTT_button_search').removeClass('DTTT_disabled');
+						},
 			});
 
 }
 
+var modloader = {
+			opacity: 0,
+			close: false,
+			onShow: function(){
+				$('#ok').button({label: 'Send'});
+				$('#ok').click(function(){ $.modal.close() });
+			}
+	};

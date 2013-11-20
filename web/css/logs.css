@@ -23,3 +23,8 @@ div.DTTT_container {
 .msgOdd {
 	background-color: #F0F5FC !important;
 }
+.loader {
+	background: url('/images/loader.gif') 0 0 no-repeat;
+	width: 48px;
+	height:  48px;
+}
