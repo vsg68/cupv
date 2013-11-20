@@ -5,7 +5,7 @@ $(function(){
 
 	var changeClass = 0;
 	var prevMsgId = 0;
-
+	var xhr;
 	var oTable = $('#tab').dataTable({
 							"bJQueryUI": true,
 							"sScrollY":  eH + "px",
@@ -72,46 +72,58 @@ function fnSearch() {
 		$('.DTTT_button_search').addClass('DTTT_disabled');
 		$('.loader').modal( modloader );
 
-		$.ajax({
-				type: "GET",
-				url: '/logs/show/',
-				data: $('form').serialize(),
-				success: function(response) {
-							$.modal.close();
-							//~ // Какую форму вернул запрос ?
-							jsonArr = /(\[(".+",){3}".+"\],?)+/;
+		xhr = $.ajax({
+						type: "GET",
+						url: '/logs/show/',
+						data: $('form').serialize(),
+						success: function(response) {
+									$.modal.close();
+									//~ // Какую форму вернул запрос ?
+									jsonArr = /(\[(".+",){3}".+"\],?)+/;
 
-							if( jsonArr.test(response) ) {
-								// Получаем объект из строки, если ответ содержит правильные данные
-								objJSON = $.parseJSON(response) ;
+									if( jsonArr.test(response) ) {
+										// Получаем объект из строки, если ответ содержит правильные данные
+										objJSON = $.parseJSON(response) ;
 
-								oTable.fnAddData(objJSON);
-							}
-							else {
-								if( $(response).find('.form-alert').length ) {
-									$(response).modal( modInfo );
-								}
-							}
+										oTable.fnAddData(objJSON);
+									}
+									else {
+										if( $(response).find('.form-alert').length ) {
+											$(response).modal( modInfo );
+										}
+									}
 
-							oTable.fnAdjustColumnSizing();
-							oTable.fnDraw();
-							$('.DTTT_button_search').removeClass('DTTT_disabled');
-						},
-				error: function(response) {
-							$.modal.close();
-							$('.form-alert').text(response.statusText);
-							$('#errmsg').modal(modloader);
-							$('.DTTT_button_search').removeClass('DTTT_disabled');
-						},
-			});
+									oTable.fnAdjustColumnSizing();
+									oTable.fnDraw();
+									$('.DTTT_button_search').removeClass('DTTT_disabled');
+								},
+						error: function(response) {
+									$.modal.close();
+									mesg = response.statusText;
+									if( mesg == 'abort' ) {
+										$('.abort').fadeIn(1000, function(){
+																	$('.abort').fadeOut(1000);
+																	});
+									}
+									else {
+										$('.form-alert').text(mesg);
+										$('#errmsg').modal();
+									}
+									$('.DTTT_button_search').removeClass('DTTT_disabled');
+								},
+					});
 
 }
 
 var modloader = {
 			opacity: 0,
-			close: false,
+			closeHTML: '',
 			onShow: function(){
-				$('#ok').button({label: 'Send'});
-				$('#ok').click(function(){ $.modal.close() });
-			}
+					$('#ok').button({label: 'Send'});
+					$('#ok').click(function(){ $.modal.close() });
+				},
+			onClose: function() {
+					$('.DTTT_button_search').removeClass('DTTT_disabled');
+					xhr.abort();
+				}
 	};

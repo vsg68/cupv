@@ -71,4 +71,5 @@
 	</div>
 </div>
 <div class='loader hidden'></div>
+<div class='abort hidden'>Операция прервана</div>
 
