@@ -18,8 +18,8 @@ class Page extends \PHPixie\Controller {
 
 	public function before() {
 
-		$this->auth = $this->pixie->auth;
-		$this->ctrl = $this->request->param('controller');
+		 $this->auth = $this->pixie->auth;
+		 $this->ctrl = $this->request->param('controller');
 
 		if( $this->ctrl == 'login' )
 			return false;
@@ -52,7 +52,7 @@ class Page extends \PHPixie\Controller {
 			return 0;
 
 		$name = $this->auth->user()->login;
-
+		$ctrl = $this->request->param('controller');
 
 		// вынимаем уровень доступа для страницы для пользователя
 		$result = $this->pixie->db->query('select')
@@ -63,7 +63,7 @@ class Page extends \PHPixie\Controller {
 									->join(array('slevels','S'),array('S.id','P.slevel_id'),'LEFT')
 									->join(array('auth','A'),array('A.role_id','P.role_id'),'LEFT')
 									->where('A.login',$name)
-									->where('C.class',$this->ctrl)
+									->where('C.class',$ctrl)
 									->where('R.active',1)
 									->where('C.active',1)
 									->where('A.active',1)
@@ -156,22 +156,5 @@ class Page extends \PHPixie\Controller {
 
 		$this->response->body = $this->view->render();
     }
-
-	//~ protected function action_abortQuery() {
-//~
-		//~ if(! $db = $this->request->post('db') )
-			//~ return;
-//~ $p='sdvsdvsdvsdv';
-//~ print_r($p);exit;
-		//~ $ourdb 		= $this->pixie->db->get($db);
-		//~ $processes	= $ourdb->execute('show processlist');
-//~
-		//~ foreach( $processes as $process ) {
-			//~ if( $process->db == $ourdb ) {
-				//~ $ourdb->execute('kill '.$process->Id);
-			//~ }
-		//~ }
-		//~ $this->response->body = $p;
-	//~ }
 
 }

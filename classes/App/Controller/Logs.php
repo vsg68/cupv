@@ -6,20 +6,20 @@ namespace App\Controller;
 
 class Logs extends \App\Page {
 
+    public function action_view() {
+
+			if( $this->permissions == $this::NONE_LEVEL )
+				return $this->noperm();
 
 
-	protected function action_abortQuery() {
+			$this->view->subview 		= 'logs';
 
-		$ourdb 		= $this->pixie->db->get('logs');
-		$processes	= $ourdb->execute('show processlist');
+			$this->view->script_file = '<script type="text/javascript" src="/js/logs.js"></script>';
+			$this->view->css_file 	 = '<link rel="stylesheet" href="/css/logs.css" type="text/css" />';
 
-		foreach( $processes as $process ) {
-			if( $process->db == 'logs' ) {
-				$ourdb->execute('KILL QUERY '.$process->Id);
-			}
-		}
+			$this->response->body	= $this->view->render();
+    }
 
-	}
 
 	public function action_show() {
 

@@ -6,8 +6,6 @@ namespace App\Controller;
 
 class Admin extends \App\Page {
 
-	private $section_id;
-	private $pages;
 
 	 /* получаем название имеющихся контроллеров */
 	private function get_ctrl() {
@@ -53,13 +51,61 @@ class Admin extends \App\Page {
         $this->response->body	= $this->view->render();
     }
 
-	public function action_single() {
+	public function action_showTable() {
 
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
+
+		if( $tab = $this->request->post('tab') )
+			return;
+
+		$returnData["aaData"] = array();
+
+		$entries = $this->pixie->db->query('select')
+									->fields($this->pixie->db->expr('
+														S.id AS sid,
+														S.name AS sname,
+														S.active AS sactive,
+														C.id AS cid,
+														C.name AS cname,
+														C.class AS cclass,
+														C.arrange AS carrange,
+														C.active AS cactive,
+														'))
+									->table('sections','S')
+									->join(array('controllers','C'),array('S.id','C.section_id')
+									->order_by('sname')
+									->order_by('carrange')
+									->execute()
+									->as_array();
+
+		if( $tab == "sections")	{
+
+			foreach($entries as $entry) {
+				$returnData["aaData"] = array(
+											$entry->sname,
+											$entry->sactive,
+											'DT_RowId'=>'tab-sections-'.$entry->sid
+											);
+				}
+		}
+		elseif( $tab == "controllers" ) {
+
+			foreach($entries as $entry) {
+				$returnData["aaData"] = array(
+											$entry->sname,
+											$entry->cname,
+											$entry->cclass,
+											$entry->active,
+											);
+				}
 		}
 
+		$this->response->body = json_encode($returnData);
+
+	}
+
+	public function action_new() {
 		$view 		= $this->pixie->view('admin_view');
 		$view->log 	= $this->getVar($this->logmsg,'');
 
@@ -94,7 +140,7 @@ class Admin extends \App\Page {
 		$this->response->body = $view->render();
     }
 
-	public function action_new() {
+
 
 		$view 	   = $this->pixie->view('admin_new');
 		$view->log = $this->getVar($this->logmsg,'<strong>Создание нового раздела.</strong>');

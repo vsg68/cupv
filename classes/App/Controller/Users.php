@@ -4,7 +4,7 @@ namespace App\Controller;
 
 class Users extends \App\Page {
 
-	public function action_showEditForm() {
+  	public function action_showEditForm() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
