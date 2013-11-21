@@ -21,11 +21,12 @@ class Page extends \PHPixie\Controller {
 		$this->auth = $this->pixie->auth;
 		$this->ctrl = $this->request->param('controller');
 
-		if( $this->request->param('controller') == 'login' )
+		if( $this->ctrl == 'login' )
 			return false;
 
 		$this->view = $this->pixie->view('main');
-
+	    $this->view->script_file = '';
+		$this->view->css_file 	 = '';
 
 		/* Определяем все контроллеры с одинаковыми ID */
 		$this->view->menuitems = $this->pixie->db
@@ -39,7 +40,7 @@ class Page extends \PHPixie\Controller {
 										->execute();
 
 		// Проверка легитимности пользователя и его прав
-        if( $this->request->param('controller') != 'login' )
+        if( $this->ctrl != 'login' )
 			$this->permissions = $this->is_approve();
 
 	}
@@ -143,15 +144,12 @@ class Page extends \PHPixie\Controller {
 			return  $this->noperm();
 
 		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js') ) {
-			$local_script = '<script type="text/javascript" src="../js/'.$this->ctrl.'.js"></script>';
+			$this->view->script_file = '<script type="text/javascript" src="../js/'.$this->ctrl.'.js"></script>';
 		}
 
 		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') ) {
-			$local_css = '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
+			$this->view->css_file = '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
 		}
-
-		$this->view->script_file = $this->getVar($local_script,'');
-		$this->view->css_file 	 = $this->getVar($local_css,'');
 
 		// Подключаем файл, с названием равным контроллеру
 		$this->view->subview = $this->ctrl;

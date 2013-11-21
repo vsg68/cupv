@@ -197,6 +197,23 @@ form#usersform {
 	color: #1e8af8 !important;
 */
 }
+/****** главная страница  ********/
+.vertical-50 {
+	width: 49%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.gorizont-50  {
+	width: 100%;
+	min-height: 100px;
+	margin: 0 0 40px 0;
+}
+
+.right-side {
+	float: right;
+}
+
 /**** картинки ***/
 
 #users,

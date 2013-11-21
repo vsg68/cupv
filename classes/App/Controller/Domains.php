@@ -10,7 +10,6 @@ class Domains extends \App\Page {
 		$this->view->subview 		= 'domains';
 
 		$this->view->script_file	= '<script type="text/javascript" src="/js/domains.js"></script>';
-		$this->view->css_file 		= '<link rel="stylesheet" href="/css/domains.css" type="text/css" />';
 
 		$entries = $this->pixie->db->query('select')
 										->table('domains')
