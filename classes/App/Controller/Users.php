@@ -4,21 +4,6 @@ namespace App\Controller;
 
 class Users extends \App\Page {
 
-    public function action_view() {
-
-
-		$this->view->script_file = '<script type="text/javascript" src="../js/users.js"></script>';
-		$this->view->css_file = '<link rel="stylesheet" href="/css/users.css" type="text/css" />';
-
-		// Проверка легитимности пользователя и его прав
-        if( $this->permissions == $this::NONE_LEVEL )
-			return  $this->noperm();
-
-		$this->view->subview = 'users';
-
-		$this->response->body = $this->view->render();
-    }
-
 	public function action_showEditForm() {
 
 		if( $this->permissions == $this::NONE_LEVEL )

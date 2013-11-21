@@ -6,7 +6,7 @@ class Page extends \PHPixie\Controller {
 	protected $_id;
 	protected $view;
 	protected $auth;
-	protected $logmsg;
+	protected $ctrl;
 	protected $permissiion;
 	const RIGHTS_ERROR = 'Не хватает прав для данной операции.';
 	const NONE_LEVEL = 0;
@@ -18,15 +18,17 @@ class Page extends \PHPixie\Controller {
 
 	public function before() {
 
-		 $this->auth = $this->pixie->auth;
+		$this->auth = $this->pixie->auth;
+		$this->ctrl = $this->request->param('controller');
 
-		 if( $this->request->param('controller') == 'login' )
+		if( $this->request->param('controller') == 'login' )
 			return false;
 
-		 $this->view = $this->pixie->view('main');
+		$this->view = $this->pixie->view('main');
 
-		 /* Определяем все контроллеры с одинаковыми ID */
-		 $this->view->menuitems = $this->pixie->db
+
+		/* Определяем все контроллеры с одинаковыми ID */
+		$this->view->menuitems = $this->pixie->db
 										->query('select')
 										->fields('Y.*')
 										->table('controllers','X')
@@ -49,7 +51,7 @@ class Page extends \PHPixie\Controller {
 			return 0;
 
 		$name = $this->auth->user()->login;
-		$ctrl = $this->request->param('controller');
+
 
 		// вынимаем уровень доступа для страницы для пользователя
 		$result = $this->pixie->db->query('select')
@@ -60,7 +62,7 @@ class Page extends \PHPixie\Controller {
 									->join(array('slevels','S'),array('S.id','P.slevel_id'),'LEFT')
 									->join(array('auth','A'),array('A.role_id','P.role_id'),'LEFT')
 									->where('A.login',$name)
-									->where('C.class',$ctrl)
+									->where('C.class',$this->ctrl)
 									->where('R.active',1)
 									->where('C.active',1)
 									->where('A.active',1)
@@ -133,4 +135,45 @@ class Page extends \PHPixie\Controller {
 
         $this->response->body = json_encode($arr);
     }
+
+	public function action_view() {
+
+		// Проверка легитимности пользователя и его прав
+        if( $this->permissions == $this::NONE_LEVEL )
+			return  $this->noperm();
+
+		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js') ) {
+			$local_script = '<script type="text/javascript" src="../js/'.$this->ctrl.'.js"></script>';
+		}
+
+		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') ) {
+			$local_css = '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
+		}
+
+		$this->view->script_file = $this->getVar($local_script,'');
+		$this->view->css_file 	 = $this->getVar($local_css,'');
+
+		// Подключаем файл, с названием равным контроллеру
+		$this->view->subview = $this->ctrl;
+
+		$this->response->body = $this->view->render();
+    }
+
+	//~ protected function action_abortQuery() {
+//~
+		//~ if(! $db = $this->request->post('db') )
+			//~ return;
+//~ $p='sdvsdvsdvsdv';
+//~ print_r($p);exit;
+		//~ $ourdb 		= $this->pixie->db->get($db);
+		//~ $processes	= $ourdb->execute('show processlist');
+//~
+		//~ foreach( $processes as $process ) {
+			//~ if( $process->db == $ourdb ) {
+				//~ $ourdb->execute('kill '.$process->Id);
+			//~ }
+		//~ }
+		//~ $this->response->body = $p;
+	//~ }
+
 }
