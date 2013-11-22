@@ -162,14 +162,13 @@ form#usersform {
 
 #usersform select {
 	height: 25px;
+	padding-left:3px;
 }
 
 #usersform input[type='text'],
 #usersform input[type='password']{
 	width: 100%;
-/*
 	padding-left:3px;
-*/
 	height: 21px;
 }
 

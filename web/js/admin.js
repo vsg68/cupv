@@ -3,44 +3,42 @@ $(document).ready(function() {
 /*
  * Общая для всех часть
  */
-	TTOpts.aButtons.pslice(3,2);
+	TTOpts.aButtons.splice(3,2);
 	var TOptions = {
 			"bJQueryUI": true,
-			//"sScrollY":  eH + "px",
+			//"sScrollY":  550 + "px",
 			"bPaginate": false,
-			"sDom": "<'H'Tf>t<'F'ip>",
-			"sServerMethod": "POST",
+			"sDom": "<'H'T>t<'F'ip>",
 			"fnInitComplete": function () {
 									this.fnAdjustColumnSizing();
 									this.fnDraw();
 							},
 			"aoColumnDefs": [
-								{"sClass": "center", "aTargets": [2] },
+								{ bSortable: true, aTargets: [ 0 ] },
+								{ bSortable: false, aTargets: [ '_all' ] },
+								{ sClass: "center", aTargets: [ -1 ] },
 							],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-								$('td:nth-last').addClass('center')
 								drawCheckBox(nRow);
-								addRowAttr(nRow,'mbox',1);
+								//addRowAttr(nRow,'mbox',1);
 							},
 			"oTableTools": TTOpts
 	}
 
 /********************************/
-		TOptions.oTableTools.sAjaxSource= "/admin/showTable/?tab=sections";
 		TOptions.oTableTools.aButtons[3].sButtonText = 'РАЗДЕЛЫ';
 		$('#tab-sections').dataTable(TOptions);
 
 
-		TOptions.oTableTools.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
 		TOptions.oTableTools.aButtons[3].sButtonText = 'СТРАНИЦЫ';
+		TOptions.oTableTools.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
 		$('#tab-controllers').dataTable(TOptions)
 
-		TOptions.oTableTools.sAjaxSource= "/admin/showTable/?tab=controller";
-		TOptions.oTableTools.aButtons[3].sButtonText = 'ОБЩЕЕ';
-		TOptions.oTableTools.aButtons.spice(0,2);
+		TOptions.oTableTools.aButtons[3].sButtonText = 'ОБЩИЙ СПИСОК РАЗДЕЛОВ';
+		TOptions.oTableTools.aButtons.splice(0,3);
 		$('#tab-full').dataTable(TOptions);
 
-
+/********************************/
 
 
 
@@ -48,7 +46,7 @@ $(document).ready(function() {
 
 
 /*
- *  Если НЕ выделена строка в таблице users - создавать для нее алиасы запрещаем
+ *  Если НЕ выделена строка в таблице sections - создавать для нее controllers запрещаем
  *  Запещаем редактировать и удалять, если не выделено
  */
 function blockNewButton(nodes) {
@@ -58,35 +56,71 @@ function blockNewButton(nodes) {
 			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
 		}
 
-		if( nodes.length && nodes[0].offsetParent.id == 'tab-users') {
-			$('#ToolTables_tab-aliases_1').addClass('DTTT_disabled');
-			$('#ToolTables_tab-lists_0').addClass('DTTT_disabled');
+		if( nodes.length && nodes[0].offsetParent.id == 'tab-sections') {
+			$('#ToolTables_tab-controllers_1').addClass('DTTT_disabled');
 		}
 }
 
 /*
- *  Если выделена строка в таблице users - разрешаем создавать для нее алиасы
+ *  Если выделена строка в таблице sections - разрешаем создавать для нее controllers
  *  Разрешаем редактировать и удалять, если выделено
  */
 function unblockNewButton(node) {
 
 		tab = node[0].offsetParent.id;
+		// не будем включать кнопку на пустой строке
+		if( isRowEmpty(node) )
+			return false;
+
 		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
+
+		if( node[0].offsetParent.id == 'tab-sections') {
+			$('#ToolTables_tab-controllers_1').removeClass('DTTT_disabled');
+		}
 }
 
 /*
- * Если хотим добавить в запрос на удаление какие-нить параметры -
- * то это делается тут
+ *  Получаю выделенную строку в таблице sections
  */
-function deleteWithParams(uid, tab, init) {
-	if(tab == 'domains') {
-		val = $('#'+uid).attr('domain');
-		init['aname'] = val;
-	}
+function usersRowID(objTT) {
 
-	return init;
+		if( objTT.s.dt.sTableId != 'tab-sections' )
+			return fnGetRowID("tab-sections");
+		return 0;
 }
+
+/*
+ *  Если выделена строка в таблице sections - показываем связанные с ней controllers
+ */
+function showMapsTable(node) {
+
+		if(node[0].offsetParent.id != 'tab-sections')
+			return false;
+
+		id = node[0].id.split('-')[2];
+		$.getJSON( '/'+ ctrl +'/records/' + id, function(response) {
+														$('#tab-controllers').dataTable().fnClearTable();
+														$('#tab-controllers').dataTable().fnAddData(response);
+												});
+}
+
+/*
+ * Функция срабатывает после обновления данных
+ * Изменяем таблицу tab-full
+ */
+function afterUpdateData(str,node) {
+
+}
+
+/*
+ * Функция срабатывает после добавления данных
+ * Изменяем таблицу tab-full
+ */
+function afterAddData(str,node) {
+
+}
+
 
 /*
  * Стираем значения в "подчиненных" таблицах
@@ -105,7 +139,9 @@ function clearChildTable(uids) {
  * Функции проверок при редактировании записей в таблицах.
  * Проверка на совпадения доменов, алиасов - не производится !!
  */
-modWin.validate_domains = function () {
+modWin.validate_sections = function () {
+
+			return true;
 
 			modWin.message 	= '';
 			name 			= $('form :text[name="all_email"]').val();
@@ -131,7 +167,8 @@ modWin.validate_domains = function () {
 			}
 }
 
-modWin.validate_transport = function () {
+modWin.validate_controllers = function () {
+			return true;
 			modWin.message 	= '';
 			address			= $('form :text[name="dalivery_to"]').val();
 			domain_name 	= $('form :text[name="domain_name"]').val();
@@ -148,27 +185,6 @@ modWin.validate_transport = function () {
 			if ( ! fnTestByType(address,'transport')) {
 				modWin.message += 'Поле "протокол:[адрес]" должно иметь правильный формат.';
 			}
-			if (modWin.message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
-}
-
-modWin.validate_aliases = function () {
-
-			modWin.message = '';
-			domain_name	= $('form :text[name="domain_name"]').val();
-
-
-			if ( ! domain_name ) {
-				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
-				if ( ! fnTestByType(domain_name,'domain')) {
-					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
-				}
-			}
-
 			if (modWin.message.length > 0) {
 				return false;
 			}

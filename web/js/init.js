@@ -43,7 +43,7 @@ function fnEdit(uid, pid) {
 		if( pid )
 		    pid = pid.split('-')[2];
 
-		$.post('/'+ ctrl +'/showEditForm/' + id, {t:tab,init:pid}, function(response){
+		$.post('/'+ ctrl +'/showEditForm/', {t:tab,id:id,init:pid}, function(response){
 					// Какую форму вернул запрос
 					if( $(response).find('.form-alert').length )
 						$(response).modal( modInfo );
@@ -146,6 +146,19 @@ function fnGetSelectedRowID( objTT ) {
 function addRowAttr( nRow, attrName, ind ) {
 		data = $('td:eq('+ind+')', nRow).text();
 		$(nRow).attr( attrName, data);
+}
+
+/*
+ * Проверка на пустую строку в таблице
+ */
+function isRowEmpty(Row) {
+
+	var x = 1;
+	$('td', Row).each(function(){
+			       if( $(this).text() )
+						return x = 0;
+				});
+	return x;
 }
 
 /*
@@ -264,15 +277,25 @@ var modWin = {
 							dataType: 'json',
 							success: function(str) {
 										// при удачном стечении обстоятельств
-										//if( RowNode != undefined) {
 										if( modWin.RowNode ) {
 											 $('#tab-'+modWin.TabID).dataTable().fnUpdate( str, modWin.RowNode );
 											 // Проверка на активность
 											 drawUnActiveRow( modWin.RowNode );
+
+											 // Какие-то действия еще
+											 if( function_exists('afterUpdateData') ){
+													afterUpdateData(str, modWin.RowNode);
+											 }
 										}
 										else {
-												$('#tab-'+modWin.TabID).dataTable().fnAddData(str);
+											 $('#tab-'+modWin.TabID).dataTable().fnAddData(str);
+											 // Какие-то действия еще
+											 if( function_exists('afterAddData') ){
+													afterAddData(str);
+											 }
+
 										}
+
 										$.modal.close();
 									},
 							error: function(response) {

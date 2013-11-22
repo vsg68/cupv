@@ -51,7 +51,6 @@ class Users extends \App\Page {
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
 
-		// если не редактирование,т.е. начальный вход
 		if( ! $this->_id = $this->request->param('id'))
 			return;
 
