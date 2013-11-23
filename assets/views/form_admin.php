@@ -13,11 +13,11 @@
 			<input type='hidden' name='tab' value='<?= $tab ?>' />
 			<h4></h4>
 			   <table>
+				   	<?php if( isset($options)): ?>
 					<tr>
-						<td class='formlabel noname'>Раздел:</td>
+						<td class='formlabel noname'>Страница:</td>
 						<td><input type='text' name='name' value='<?= isset($data->name) ? $data->name : '' ?>'  /></td>
 					</tr>
-					<?php if( isset($options)): ?>
 					<tr>
 						<td class='formlabel'>Контроллер:</td>
 						<td>
@@ -30,6 +30,10 @@
 						</td>
 					</tr>
 					<?php else: ?>
+					<tr>
+						<td class='formlabel noname'>Раздел:</td>
+						<td><input type='text' name='name' value='<?= isset($data->name) ? $data->name : '' ?>'  /></td>
+					</tr>
 					<tr>
 						<td class='formlabel'>Описание:</td>
 						<td><input type='text' name='note' value='<?= isset($data->note) ? $data->note : '' ?>' /></td>

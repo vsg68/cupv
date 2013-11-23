@@ -34,6 +34,10 @@ $(document).ready(function() {
 		TOptions.oTableTools.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
 		$('#tab-controllers').dataTable(TOptions)
 
+		// Общая таблица отличается от двух других
+		TOptions.aoColumnDefs.unshift({ bSortable: true, aTargets: [ 2 ] } );
+		TOptions.aaSorting = [[ 2, "asc" ]];
+		TOptions.sAjaxSource = "/admin/showTable/";
 		TOptions.oTableTools.aButtons[3].sButtonText = 'ОБЩИЙ СПИСОК РАЗДЕЛОВ';
 		TOptions.oTableTools.aButtons.splice(0,3);
 		$('#tab-full').dataTable(TOptions);
@@ -68,9 +72,6 @@ function blockNewButton(nodes) {
 function unblockNewButton(node) {
 
 		tab = node[0].offsetParent.id;
-		// не будем включать кнопку на пустой строке
-		if( isRowEmpty(node) )
-			return false;
 
 		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
@@ -110,7 +111,7 @@ function showMapsTable(node) {
  * Изменяем таблицу tab-full
  */
 function afterUpdateData(str,node) {
-
+	 $('#tab-full').dataTable().fnReloadAjax();
 }
 
 /*
@@ -118,21 +119,19 @@ function afterUpdateData(str,node) {
  * Изменяем таблицу tab-full
  */
 function afterAddData(str,node) {
-
+	$('#tab-full').dataTable().fnReloadAjax();
 }
-
 
 /*
  * Стираем значения в "подчиненных" таблицах
 */
 function clearChildTable(uids) {
 
-	if(tab == 'domains') {
-		for(i=0; i < uids.length; i++) {
-			id = '#tab-aliases-'+uids[i].id;
-			$('#tab-aliases').dataTable().fnDeleteRow( $(id).get(0) );
-		}
+	if(tab == 'sections') {
+		$('#tab-controllers').dataTable().fnClearTable();
 	}
+
+	$('#tab-full').dataTable().fnReloadAjax();
 }
 
 /*

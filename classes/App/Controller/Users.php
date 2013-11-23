@@ -73,7 +73,7 @@ class Users extends \App\Page {
 							 'DT_RowClass' => 'gradeA'
 							);
 
-		$fulldata['aliases'] =  $data ? $data : array('','','');
+		$fulldata['aliases'] =  $data;
 
 
 		$data  = array();
@@ -92,7 +92,7 @@ class Users extends \App\Page {
 							 'DT_RowClass' => 'gradeX'
 							);
 
-		$fulldata['lists'] 	 =  $data ? $data : array('','');
+		$fulldata['lists'] 	 =  $data;
 
 
 		$this->response->body = json_encode($fulldata);
@@ -218,33 +218,40 @@ class Users extends \App\Page {
 		if( ! $params = $this->request->post() )
 			return;
 
-		$this->pixie->db->query('delete')
-						->table($params['tab'])
-						->where('id',$params['id'])
-						->execute();
-
-		// Если удаляем из пользователей - удаляем все связнанные значения
-		// Но могут оставаться алиасы - тогда об этом предупреждаем
-		if( $params['tab'] == 'users' ) {
+		try {
 			$this->pixie->db->query('delete')
-							->table('aliases')
-							->where('delivery_to',$params['aname'])
+							->table($params['tab'])
+							->where('id',$params['id'])
 							->execute();
 
-			$aliases = $this->pixie->db->query('select')
-							->table('aliases')
-							->where('alias_name',$params['aname'])
-							->execute()
-							->as_array();
+			// Если удаляем из пользователей - удаляем все связнанные значения
+			// Но могут оставаться алиасы - тогда об этом предупреждаем
+			if( $params['tab'] == 'users' ) {
+				$this->pixie->db->query('delete')
+								->table('aliases')
+								->where('delivery_to',$params['aname'])
+								->execute();
 
-			// такие алиасы есть - предупреждаем
-			if( $aliases ) {
+				$aliases = $this->pixie->db->query('select')
+								->table('aliases')
+								->where('alias_name',$params['aname'])
+								->execute()
+								->as_array();
 
-				$view = $this->pixie->view('form_alert');
-				$view->aliases = $aliases;
+				// такие алиасы есть - предупреждаем
+				if( $aliases ) {
 
-				$this->response->body = $view->render();
+					$view = $this->pixie->view('form_alert');
+					$view->aliases = $aliases;
+
+					$this->response->body = $view->render();
+				}
 			}
+		}
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
+			$this->response->body = $view->render();
 		}
     }
 

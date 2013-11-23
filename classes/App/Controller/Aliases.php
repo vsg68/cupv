@@ -153,10 +153,17 @@ class Aliases extends \App\Page {
 		if( ! $params = $this->request->post() )
 			return;
 
-		$this->pixie->db->query('delete')
-						->table($params['tab'] )
-						->where('id',$params['id'])
-						->execute();
+		try {
+			$this->pixie->db->query('delete')
+							->table($params['tab'] )
+							->where('id',$params['id'])
+							->execute();
+		}
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
+			$this->response->body = $view->render();
+		}
     }
 
 

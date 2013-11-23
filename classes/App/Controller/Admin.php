@@ -15,7 +15,7 @@ class Admin extends \App\Page {
 
 			preg_match('/([^\/]+)\.php$/',$name, $matches);
 			if( isset($matches[1]) )
-				array_push($file_arr, strtolower($matches[1]));
+				$file_arr[strtolower($matches[1])] = '';
 		}
 
 		return $file_arr;
@@ -32,19 +32,9 @@ class Admin extends \App\Page {
 		$this->view->subview = 'admin';
 
 		$this->view->entries = $this->pixie->db->query('select')
-									->fields(array('S.id','s_id'),
-											 array('S.name','s_name'),
-											 array('S.note','s_note'),
-											 array('S.active', 's_active'),
-											 array('C.id', 'c_id'),
-											 array('C.name', 'c_name'),
-											 array('C.class', 'c_class'),
-											 array('C.active', 'c_active'))
-									->table('sections','S')
-									->join(array('controllers','C'),array('S.id','C.section_id'))
-									->order_by('S.name')
-									->execute()
-									->as_array();
+									->table('sections')
+									->execute();
+
 
         $this->response->body	= $this->view->render();
     }
@@ -68,11 +58,8 @@ class Admin extends \App\Page {
 							 $entry->class,
 							 $entry->active,
 							 'DT_RowId' => 'tab-controllers-'.$entry->id,
-							 'DT_RowClass' => 'gradeX'
+							 'DT_RowClass' => 'gradeA'
 							);
-
-		if( ! $data )
-		  $data = array('','','');
 
 		$this->response->body = json_encode($data);
 
@@ -87,7 +74,7 @@ class Admin extends \App\Page {
 		if( ! $tab = $this->request->post('t') )
 			return;
 
-		$this->_id 	= $this->request->param('id');
+		$this->_id 	= $this->request->post('id');
 		$view 		= $this->pixie->view('form_admin');
 		$view->pid	= $this->request->post('init');
 		$view->tab  = $tab;
@@ -100,7 +87,7 @@ class Admin extends \App\Page {
 
 		// Для дефолтных значений таблицы алиасов
 		if( $tab == 'controllers' ) {
-			$view->options = $this->get_ctrl();
+			$view->options = array_keys( $this->getFreeControllers() );
 		}
 
        $this->response->body = $view->render();
@@ -114,23 +101,23 @@ class Admin extends \App\Page {
 		if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();
 
-		// Массив, который будем возвращать. Позиция важна
-		$entry['name'] = $params['name'];
-
-		if($params['tab'] == 'sections' )
-			$entry['note'] = $this->getVar($params['note']);
-
-		if($params['tab'] == 'controllers' ) {
-
-			$entry['class'] = $params['class'];
-			$entry['section_id'] = $params['section_id'];
-		}
-
-		$entry['active'] = $this->getVar($params['active'],0);
-
-		$returnData  = array();
-
 		try {
+			$returnData  = array();
+			// Массив, который будем возвращать. Позиция важна
+			$entry['name'] = $params['name'];
+
+			if($params['tab'] == 'sections' )
+				$entry['note'] = $this->getVar($params['note']);
+
+			if($params['tab'] == 'controllers' ) {
+
+				$entry['class'] = $params['class'];
+				$entry['section_id'] = $params['section_id'];
+			}
+
+			$entry['active'] = $this->getVar($params['active'],0);
+
+
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
 				$this->pixie->db->query('insert')
@@ -157,9 +144,9 @@ class Admin extends \App\Page {
 
 		unset($entry['section_id']);
 
-		$returnData 			= array_values($entry);
-		$returnData['DT_RowId']	= 'tab-'.$params['tab'].'-'.$params['id'];
-
+		$returnData 				= array_values($entry);
+		$returnData['DT_RowId']		= 'tab-'.$params['tab'].'-'.$params['id'];
+		$returnData['DT_RowClass']	= ($params['tab'] == 'controllers') ? 'gradeA': '';
 
 		$this->response->body = json_encode($returnData);
 	}
@@ -173,39 +160,98 @@ class Admin extends \App\Page {
 		if( ! $params = $this->request->post() )
 			return;
 
-		$this->pixie->db->query('delete')
-						->table($params['tab'])
-						->where('id',$params['id'])
-						->execute();
-
-
-		// Если есть связанные страницы - обнуляем связь (section_id)
-		if( $params['tab'] == 'sections' ) {
-
-			$entries = $this->pixie->db->query('select')
-										->table('controllers')
-										->where('section_id',$params['id'])
-										->execute()
-										->as_array();
-
-			$this->pixie->db->query('update')
-							->table('controllers')
-							->data(array('section_id' => 0))
-							->where('section_id',$params['id'])
+		try {
+			$this->pixie->db->query('delete')
+							->table($params['tab'])
+							->where('id',$params['id'])
 							->execute();
 
 
-			// для изменения в общей таблице
-			if( $entries ) {
-				$returnData = array();
-				foreach($entries as $entry) {
-					$returnData[] = array('id' => 's'.$params['id'].'-c'.$entry->id);
-				}
+			// Если есть связанные страницы - обнуляем связь (section_id)
+			if( $params['tab'] == 'sections' ) {
 
-				$this->response->body = json_encode($returnData);
+				$this->pixie->db->query('delete')
+								->table('controllers')
+								->where('section_id',$params['id'])
+								->execute();
 			}
+		}
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
+			$this->response->body = $view->render();
 		}
     }
 
+/*
+ * Функция показывает общую таблицу
+ * Важно, что название класса - уникально
+ */
+	public function action_showTable() {
+
+		$entries = $this->pixie->db->query('select')
+									->fields(array('C.class', 'c_class'),
+											 array('C.name', 'c_name'),
+											 array('S.name','s_name'),
+											 array('C.active', 'c_active'),
+											 $this->pixie->db->expr('"gradeX" AS DT_RowClass'))
+									->table('controllers','C')
+									->join(array('sections','S'),array('S.id','C.section_id'))
+									->order_by('S.name')
+									->execute()
+									->as_array();
+
+		// Ищем, какие контроллеры еще остались не в базе
+		$controllers = $this->get_ctrl();
+		$data = array();
+		foreach($entries as $entry)	{
+
+			$data[] = array($entry->c_class,
+							$entry->c_name,
+							$entry->s_name,
+							$entry->c_active,
+							"DT_RowClass" => "gradeX"
+							);
+
+			unset($controllers[$entry->c_class]);
+		}
+
+		if(is_array($controllers)) {
+			// Если остались незадействованные контроллеры - мы их добавляем в конец задействованных
+			foreach($controllers as $k => $v) {
+				$data[] = array($k,'','','',"DT_RowClass" => "gradeX");
+			}
+		}
+
+		$retutnData = array("sEcho" => 1,
+							"iTotalRecords" => sizeof($data) + sizeof($controllers),
+							"iTotalDisplayRecords" => sizeof($data) + sizeof($controllers),
+							"aaData" => $data
+							);
+
+		$this->response->body = json_encode($retutnData);
+	}
+
+/*
+ * Берем еще свободные контроллеры
+ */
+	public function getFreeControllers() {
+
+		$entries = $this->pixie->db->query('select')
+									->table('controllers')
+									->execute()
+									->as_array();
+
+		// Ищем, какие контроллеры еще остались не в базе
+		$controllers = $this->get_ctrl();
+
+		foreach($entries as $entry)	{
+
+			unset($controllers[$entry->class]);
+		}
+
+		return $controllers;
+
+	}
 }
 ?>

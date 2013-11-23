@@ -160,7 +160,6 @@ class Domains extends \App\Page {
 			$view = $this->pixie->view('form_alert');
 			$view->errorMsg = $e->getMessage();
 			$this->response->body = $view->render();
-			return;
 		}
 
     }
