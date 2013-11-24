@@ -138,53 +138,19 @@ function clearChildTable(uids) {
  * Функции проверок при редактировании записей в таблицах.
  * Проверка на совпадения доменов, алиасов - не производится !!
  */
-modWin.validate_sections = function () {
+modWin.validate_sections = emptyValidate();
+modWin.validate_controllers = emptyValidate();
 
-			return true;
+function emptyValidate() {
 
-			modWin.message 	= '';
-			name 			= $('form :text[name="all_email"]').val();
-			domain_name 	= $('form :text[name="domain_name"]').val();
+			message 	= '';
+			name 			= $('form :text[name="name"]').val();
 
-			if ( email_enable) {
-				if (! name ) {
-					modWin.message += 'Если разрешена рассылка,то необходимо указать адрес. ';
-				}
-				// Нет проверки на существующие почтовые ящики
+			if (! name ) {
+				message += 'Необходимо указывать названия раздела. ';
 			}
-			if ( ! domain_name ) {
-				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
-				if ( ! fnTestByType(domain_name,'domain')) {
-					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
-				}
-			}
-			if (modWin.message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
-}
 
-modWin.validate_controllers = function () {
-			return true;
-			modWin.message 	= '';
-			address			= $('form :text[name="dalivery_to"]').val();
-			domain_name 	= $('form :text[name="domain_name"]').val();
-
-			if ( ! $('form :text[name="domain_name"]').val()) {
-				modWin.message += 'Name is required. ';
-			}
-			if ( ! domain_name ) {
-				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
-				if ( ! fnTestByType(domain_name,'domain')) {
-					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
-				}
-			}
-			if ( ! fnTestByType(address,'transport')) {
-				modWin.message += 'Поле "протокол:[адрес]" должно иметь правильный формат.';
-			}
-			if (modWin.message.length > 0) {
+			if (message.length > 0) {
 				return false;
 			}
 			else {

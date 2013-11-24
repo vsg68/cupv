@@ -219,7 +219,12 @@ form#usersform {
 #home-page,
 #aliases,
 #domains,
-#logs	{
+#groups,
+#logs,
+#admin,
+#auth,
+#roles
+{
 	background-repeat: no-repeat;
 	background-image: url('/css/smoothness/images/mail.png');
 }

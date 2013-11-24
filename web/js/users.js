@@ -140,9 +140,6 @@ function blockNewButton(nodes) {
  *  Разрешаем редактировать и удалять, если выделено
  */
 function unblockNewButton(node) {
-		// не будем включать кнопку на пустой строке
-		if( isRowEmpty(node) )
-			return false;
 
 		tab = node[0].offsetParent.id;
 

@@ -128,3 +128,32 @@ a.DTTT_button_search.DTTT_disabled span {
 #logs:hover {
 	background-position: -256px -64px;
 }
+/******************/
+#groups {
+	background-position: -320px 0px;
+}
+#groups.pagetab-selected,
+#groups:hover {
+	background-position: -320px -64px;
+}
+#admin {
+	background-position: -384px 0px;
+}
+#admin.pagetab-selected,
+#admin:hover {
+	background-position: -384px -64px;
+}
+#auth {
+	background-position: -448px 0px;
+}
+#auth.pagetab-selected,
+#auth:hover {
+	background-position: -448px -64px;
+}
+#roles {
+	background-position: -512px 0px;
+}
+#roles.pagetab-selected,
+#roles:hover {
+	background-position: -512px -64px;
+}

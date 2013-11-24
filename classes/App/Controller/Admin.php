@@ -87,7 +87,10 @@ class Admin extends \App\Page {
 
 		// Для дефолтных значений таблицы алиасов
 		if( $tab == 'controllers' ) {
-			$view->options = array_keys( $this->getFreeControllers() );
+			$freectrls = array_keys($this->getFreeControllers());
+			// Добавим туда текущий контроллер
+			array_push( $freectrls, $view->data->class);
+			$view->options =  $freectrls;
 		}
 
        $this->response->body = $view->render();
