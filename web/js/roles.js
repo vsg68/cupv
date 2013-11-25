@@ -8,7 +8,7 @@ $(document).ready(function() {
 			"bJQueryUI": true,
 			//"sScrollY":  550 + "px",
 			"bPaginate": false,
-			"sDom": "<'H'T>t<'F'i>",
+			"sDom": "<'H'T>t<'F'ip>",
 			"fnInitComplete": function () {
 									this.fnAdjustColumnSizing();
 									this.fnDraw();
@@ -26,21 +26,20 @@ $(document).ready(function() {
 	}
 
 /********************************/
-		TOptions.oTableTools.aButtons[3].sButtonText = 'РАЗДЕЛЫ';
-		$('#tab-sections').dataTable(TOptions);
+		TOptions.oTableTools.aButtons[3].sButtonText = 'РОЛИ';
+		$('#tab-roles').dataTable(TOptions);
 
 
-		TOptions.oTableTools.aButtons[3].sButtonText = 'СТРАНИЦЫ';
+		TOptions.oTableTools.aButtons[3].sButtonText = 'ПРАВА НА СТРАНИЦЫ';
 		TOptions.oTableTools.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-		$('#tab-controllers').dataTable(TOptions)
+		$('#tab-rights').dataTable(TOptions)
 
 		// Общая таблица отличается от двух других
-		TOptions.aoColumnDefs.unshift({ bSortable: true, aTargets: [ 2 ] } );
-		TOptions.aaSorting = [[ 2, "asc" ]];
-		TOptions.sAjaxSource = "/"+ ctrl +"/showTable/";
-		TOptions.oTableTools.aButtons[3].sButtonText = 'ОБЩИЙ СПИСОК РАЗДЕЛОВ';
+		//TOptions.aoColumnDefs.unshift({ bSortable: true, aTargets: [ 2 ] } );
+		//TOptions.sAjaxSource = "/"+ ctrl +"/showTable/";
+		TOptions.oTableTools.aButtons[3].sButtonText = 'МАТРИЦА РОЛЕЙ';
 		TOptions.oTableTools.aButtons.splice(0,3);
-		$('#tab-full').dataTable(TOptions);
+		$('#tab-matrix').dataTable(TOptions);
 
 /********************************/
 
@@ -60,8 +59,8 @@ function blockNewButton(nodes) {
 			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
 		}
 
-		if( nodes.length && nodes[0].offsetParent.id == 'tab-sections') {
-			$('#ToolTables_tab-controllers_1').addClass('DTTT_disabled');
+		if( nodes.length && nodes[0].offsetParent.id == 'tab-roles') {
+			$('#ToolTables_tab-rights_1').addClass('DTTT_disabled');
 		}
 }
 
@@ -76,8 +75,8 @@ function unblockNewButton(node) {
 		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
 
-		if( node[0].offsetParent.id == 'tab-sections') {
-			$('#ToolTables_tab-controllers_1').removeClass('DTTT_disabled');
+		if( node[0].offsetParent.id == 'tab-roles') {
+			$('#ToolTables_tab-rights_1').removeClass('DTTT_disabled');
 		}
 }
 
@@ -86,8 +85,8 @@ function unblockNewButton(node) {
  */
 function usersRowID(objTT) {
 
-		if( objTT.s.dt.sTableId != 'tab-sections' )
-			return fnGetRowID("tab-sections");
+		if( objTT.s.dt.sTableId != 'tab-roles' )
+			return fnGetRowID("tab-roles");
 		return 0;
 }
 
@@ -96,15 +95,14 @@ function usersRowID(objTT) {
  */
 function showMapsTable(node) {
 
-		if(node[0].offsetParent.id != 'tab-sections')
+		if(node[0].offsetParent.id != 'tab-roles')
 			return false;
 
 		id = node[0].id.split('-')[2];
 		$.getJSON( '/'+ ctrl +'/records/' + id, function(response) {
-														$('#tab-controllers').dataTable().fnClearTable();
-														$('#tab-controllers').dataTable().fnAddData(response);
+														$('#tab-rights').dataTable().fnClearTable();
+														$('#tab-rights').dataTable().fnAddData(response);
 												});
-
 }
 
 /*

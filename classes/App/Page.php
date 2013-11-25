@@ -157,4 +157,19 @@ class Page extends \PHPixie\Controller {
 		$this->response->body = $this->view->render();
     }
 
+	 /* получаем название имеющихся контроллеров */
+	protected function get_ctrl() {
+
+		$file_arr = Array();
+		foreach( glob(dirname(__FILE__).'/Controller/*.php') as $name ) {
+
+			preg_match('/([^\/]+)\.php$/',$name, $matches);
+			if( isset($matches[1]) )
+				$file_arr[strtolower($matches[1])] = '';
+		}
+
+		return $file_arr;
+	}
+
+
 }

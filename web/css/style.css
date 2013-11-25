@@ -201,6 +201,7 @@ form#usersform {
 	width: 49%;
 	display: inline-block;
 	vertical-align: top;
+	overflow-x: hidden;
 }
 
 .gorizont-50  {

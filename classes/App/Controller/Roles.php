@@ -4,27 +4,30 @@ namespace App\Controller;
 
 class Roles extends \App\Page {
 
-   private $role_id;
-
-
     public function action_view() {
 
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
-		$this->view->subview 		= 'roles_main';
+		$this->view->subview 		= 'roles';
 
-		$this->view->script_file	= '<script type="text/javascript" src="/roles.js"></script>'.
-									  '<script type="text/javascript" src="/jquery.accordion.2.0.min.js"></script>'	;
-		$this->view->css_file 		= '<link rel="stylesheet" href="/roles.css" type="text/css" />';
+		$this->view->script_file	= '<script type="text/javascript" src="/js/roles.js"></script>';
+		$this->view->css_file 		= '';//<link rel="stylesheet" href="/roles.css" type="text/css" />';
 
 		$roles = array();
 
-		$this->view->roles = $this->pixie->db->query('select')
+		$this->view->entries = $this->pixie->db->query('select')
 											->table('roles')
 											->execute();
+
+        $this->response->body = $this->view->render();
+    }
+
+/*
+ * Функция показывает общую матрицу
+ */
+	public function action_showTable() {
+return;
 
 		$matrix = $this->pixie->db->query('select')
 								->fields(array('C.name','ctrl_name'),
@@ -54,12 +57,63 @@ class Roles extends \App\Page {
 
 		$this->view->mroles = array_keys($mroles);
 		$this->view->ctrls  = $ctrls;
+	}
 
-		$this->view->roles_block = $this->action_single();
+	public function action_records() {
 
-        $this->response->body = $this->view->render();
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
+
+		if( ! $this->_id = $this->request->param('id'))
+			return;
+
+		$data 	 = array();
+
+		$entries = $this->pixie->db->query('select')
+								->fields(array('C.name','ctrl_name'),
+										 array('C.class','class'),
+										 array('S.name','sect_name'),
+										 array( $this->pixie->db->expr('IFNULL(L.slevel,0)'),'slevel'),
+										 array('C.id','control_id ')
+										 )
+								->table('controllers','C')
+								->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
+								->join(array('page_roles','P'),array('C.id','P.control_id'),'LEFT')
+								->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
+								->where('P.role_id', $this->_id)
+								->order_by('S.id')
+								->execute()
+								->as_array();
+print_r($entries);exit;
+		// Ищем, какие контроллеры еще остались не в базе
+		$controllers = $this->get_ctrl();
+		$data = array();
+
+		foreach($entries as $entry) {
+			$data[] = array( $entry->sect_name,
+							 $entry->ctrl_name,
+							 $entry->slevel,
+							 'DT_RowId' => 'tab-rights-'.$entry->class,
+							 'DT_RowClass' => 'gradeA'
+							);
+			unset($controllers[$entry->class]);
+		}
+
+		if(is_array($controllers)) {
+			// Если остались незадействованные контроллеры - мы их добавляем в конец задействованных
+			foreach($controllers as $k => $v) {
+				$data[] = array('-',
+								$k,
+								'0',
+								'DT_RowId' => 'tab-rights-'.$entry->class,
+								"DT_RowClass" => "gradeA gradeUU",
+								);
+			}
+		}
+
+		$this->response->body = json_encode($data);
+
     }
-
 
 	public function action_single() {
 

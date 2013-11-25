@@ -7,19 +7,6 @@ namespace App\Controller;
 class Admin extends \App\Page {
 
 
-	 /* получаем название имеющихся контроллеров */
-	private function get_ctrl() {
-
-		$file_arr = Array();
-		foreach( glob(dirname(__FILE__).'/*.php') as $name ) {
-
-			preg_match('/([^\/]+)\.php$/',$name, $matches);
-			if( isset($matches[1]) )
-				$file_arr[strtolower($matches[1])] = '';
-		}
-
-		return $file_arr;
-	}
 
     public function action_view() {
 
@@ -244,7 +231,7 @@ class Admin extends \App\Page {
 /*
  * Берем еще свободные контроллеры
  */
-	public function getFreeControllers() {
+	private function getFreeControllers() {
 
 		$entries = $this->pixie->db->query('select')
 									->table('controllers')
