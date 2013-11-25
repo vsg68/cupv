@@ -27,13 +27,6 @@
 							<th>Active</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</tbody>
 				</table>
 			</div>
 			<div class='divider-30'>
@@ -44,12 +37,6 @@
 							<th>описание</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<td></td>
-						</tr>
-					</tbody>
 				</table>
 			</div>
 		</div>

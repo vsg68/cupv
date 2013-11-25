@@ -37,7 +37,7 @@ $(document).ready(function() {
 		// Общая таблица отличается от двух других
 		TOptions.aoColumnDefs.unshift({ bSortable: true, aTargets: [ 2 ] } );
 		TOptions.aaSorting = [[ 2, "asc" ]];
-		TOptions.sAjaxSource = "/admin/showTable/";
+		TOptions.sAjaxSource = "/"+ ctrl +"/showTable/";
 		TOptions.oTableTools.aButtons[3].sButtonText = 'ОБЩИЙ СПИСОК РАЗДЕЛОВ';
 		TOptions.oTableTools.aButtons.splice(0,3);
 		$('#tab-full').dataTable(TOptions);

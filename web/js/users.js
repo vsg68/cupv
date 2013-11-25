@@ -299,7 +299,6 @@ var modGroup = {
 
 modWin.validate_users = function () {
 
-			modWin.message 	= '';
 			login 			= $('form :text[name="login"]').val();
 			mailbox 		=  login + '@' +  $('form option:selected').val();
 			allow_nets 		= $('form :text[name="allow_nets"]').val();
@@ -338,7 +337,6 @@ modWin.validate_users = function () {
 
 modWin.validate_aliases = function () {
 
-			modWin.message = '';
 			alias_name	= $('form :text[name="alias_name"]').val();
 			delivery_to	= $('form :text[name="delivery_to"]').val();
 			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
