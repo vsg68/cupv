@@ -81,10 +81,12 @@ return;
 								->join(array('page_roles','P'),array('C.id','P.control_id'),'LEFT')
 								->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
 								->where('P.role_id', $this->_id)
-								->order_by('S.id')
+								->where('or',array($this->pixie->db->expr('coalesce(P.role_id,0)'), 0))
+								//->where($this->pixie->db->expr('coalesce(P.role_id,1)'), 0)
+								//->order_by('S.id')
 								->execute()
 								->as_array();
-print_r($entries);exit;
+//print_r($entries);exit;
 		// Ищем, какие контроллеры еще остались не в базе
 		$controllers = $this->get_ctrl();
 		$data = array();
@@ -105,7 +107,6 @@ print_r($entries);exit;
 				$data[] = array('-',
 								$k,
 								'0',
-								'DT_RowId' => 'tab-rights-'.$entry->class,
 								"DT_RowClass" => "gradeA gradeUU",
 								);
 			}
