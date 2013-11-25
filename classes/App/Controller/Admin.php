@@ -74,12 +74,12 @@ class Admin extends \App\Page {
 		if( ! $tab = $this->request->post('t') )
 			return;
 
-		$this->_id 	= $this->request->post('id');
+		$this->_id 	= $this->request->param('id');
 		$view 		= $this->pixie->view('form_admin');
 		$view->pid	= $this->request->post('init');
 		$view->tab  = $tab;
 
-		$view->data = $this->pixie->db->query('select')
+		$data = $this->pixie->db->query('select')
 										->table($tab)
 										->where('id',$this->_id)
 										->execute()
@@ -87,12 +87,18 @@ class Admin extends \App\Page {
 
 		// Для дефолтных значений таблицы алиасов
 		if( $tab == 'controllers' ) {
-			$freectrls = array_keys($this->getFreeControllers());
+
+			$options = $this->getFreeControllers();
+
 			// Добавим туда текущий контроллер
-			array_push( $freectrls, $view->data->class);
-			$view->options =  $freectrls;
+			if( $data ) {
+				array_push( $options, $data->class);
+			}
+
+			$view->options = $options;
 		}
 
+	   $view->data = $data;
        $this->response->body = $view->render();
     }
 
@@ -253,7 +259,7 @@ class Admin extends \App\Page {
 			unset($controllers[$entry->class]);
 		}
 
-		return $controllers;
+		return array_keys($controllers);
 
 	}
 }

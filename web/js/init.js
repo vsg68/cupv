@@ -43,7 +43,7 @@ function fnEdit(uid, pid) {
 		if( pid )
 		    pid = pid.split('-')[2];
 
-		$.post('/'+ ctrl +'/showEditForm/', {t:tab,id:id,init:pid}, function(response){
+		$.post('/'+ ctrl +'/showEditForm/'+id, {t:tab,init:pid}, function(response){
 					// Какую форму вернул запрос
 					if( $(response).find('.form-alert').length )
 						$(response).modal( modInfo );
@@ -267,8 +267,9 @@ var modWin = {
 
 				// каждый модуль содержит свою функцию валидации
 				validateFunctionName = 'modWin.validate_' + modWin.TabID + '()';
-
-				if (eval(validateFunctionName)) {
+				modWin.message = '';
+				modWin.message = eval(validateFunctionName);
+				if (! modWin.message ) {
 					// Работа с запросом
 					$.ajax ({
 							url: '/'+ ctrl +'/edit/',

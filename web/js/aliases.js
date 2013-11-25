@@ -80,7 +80,6 @@ function drawNA(nRow) {
 
 modWin.validate_aliases = function () {
 
-			modWin.message = '';
 			alias_name	= $('form :text[name="alias_name"]').val();
 			delivery_to	= $('form :text[name="delivery_to"]').val();
 			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
@@ -113,10 +112,5 @@ modWin.validate_aliases = function () {
 
 			}
 
-			if (modWin.message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
+			return modWin.message;
 }

@@ -144,72 +144,61 @@ function clearChildTable(uids) {
  */
 modWin.validate_domains = function () {
 
-			modWin.message 	= '';
-			name 			= $('form :text[name="all_email"]').val();
+			all_enable		= $('form :checkbox[name="all_enable"]').filter(':checked').length;
+			all_email		= $('form :text[name="all_email"]').val();
 			domain_name 	= $('form :text[name="domain_name"]').val();
 
-			if ( email_enable) {
-				if (! name ) {
+			if ( all_enable) {
+				if (! all_email ) {
 					modWin.message += 'Если разрешена рассылка,то необходимо указать адрес. ';
 				}
 				// Нет проверки на существующие почтовые ящики
 			}
 			if ( ! domain_name ) {
 				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
+			}
+			else {
 				if ( ! fnTestByType(domain_name,'domain')) {
 					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
 				}
 			}
-			if (modWin.message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
+
+			return modWin.message;
 }
 
 modWin.validate_transport = function () {
-			modWin.message 	= '';
-			address			= $('form :text[name="dalivery_to"]').val();
+
+			address			= $('form :text[name="delivery_to"]').val();
 			domain_name 	= $('form :text[name="domain_name"]').val();
 
-			if ( ! $('form :text[name="domain_name"]').val()) {
-				modWin.message += 'Name is required. ';
-			}
 			if ( ! domain_name ) {
 				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
+			}
+			else {
 				if ( ! fnTestByType(domain_name,'domain')) {
 					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
 				}
 			}
+
 			if ( ! fnTestByType(address,'transport')) {
 				modWin.message += 'Поле "протокол:[адрес]" должно иметь правильный формат.';
 			}
-			if (modWin.message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
+
+			return modWin.message;
 }
 
 modWin.validate_aliases = function () {
 
-			modWin.message = '';
 			domain_name	= $('form :text[name="domain_name"]').val();
-
 
 			if ( ! domain_name ) {
 				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
+			}
+			else {
 				if ( ! fnTestByType(domain_name,'domain')) {
 					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
 				}
 			}
 
-			if (modWin.message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
+			return modWin.message;
 }

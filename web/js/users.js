@@ -332,12 +332,8 @@ modWin.validate_users = function () {
 			if ( ! fnTestByType(allow_nets,'nets')) {
 				modWin.message += 'Поле "разрешенные сети" должно содержать правильную маску сети.\n';
 			}
-			if (modWin.message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
+
+			return modWin.message;
 }
 
 modWin.validate_aliases = function () {
@@ -376,10 +372,5 @@ modWin.validate_aliases = function () {
 
 			}
 
-			if (modWin.message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
+			return modWin.message;
 }

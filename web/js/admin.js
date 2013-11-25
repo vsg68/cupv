@@ -138,22 +138,22 @@ function clearChildTable(uids) {
  * Функции проверок при редактировании записей в таблицах.
  * Проверка на совпадения доменов, алиасов - не производится !!
  */
-modWin.validate_sections = emptyValidate();
-modWin.validate_controllers = emptyValidate();
+modWin.validate_sections = function() {
+									return emptyValidate();
+								}
+
+
+modWin.validate_controllers = function() {
+									return emptyValidate();
+								}
 
 function emptyValidate() {
 
-			message 	= '';
-			name 			= $('form :text[name="name"]').val();
+			msg 	= '';
 
-			if (! name ) {
-				message += 'Необходимо указывать названия раздела. ';
+			if (! $('form :text[name="name"]').val() ) {
+				msg = 'Необходимо указывать названия раздела. '
 			}
 
-			if (message.length > 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
+			return msg;
 }
