@@ -58,7 +58,7 @@ class Page extends \PHPixie\Controller {
 		$result = $this->pixie->db->query('select')
 									->fields('S.slevel')
 									->table('controllers','C')
-									->join(array('page_roles','P'),array('C.id','P.control_id'),'LEFT')
+									->join(array('rights','P'),array('C.id','P.control_id'),'LEFT')
 									->join(array('roles','R'),array('R.id','P.role_id'),'LEFT')
 									->join(array('slevels','S'),array('S.id','P.slevel_id'),'LEFT')
 									->join(array('auth','A'),array('A.role_id','P.role_id'),'LEFT')

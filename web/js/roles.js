@@ -29,17 +29,15 @@ $(document).ready(function() {
 		TOptions.oTableTools.aButtons[3].sButtonText = 'РОЛИ';
 		$('#tab-roles').dataTable(TOptions);
 
-
+		TOptions.oTableTools.aButtons[0].fnClick = function( nButton, oConfig, oFlash ){
+														if( ! $(nButton).hasClass('DTTT_disabled') ) {
+															fnEdit( fnGetSelectedRowID(this), fnGetParentSelectedRowID('#tab-roles'));
+														}
+													};
 		TOptions.oTableTools.aButtons[3].sButtonText = 'ПРАВА НА СТРАНИЦЫ';
-		TOptions.oTableTools.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
+		TTOpts.aButtons.splice(1,2);
 		$('#tab-rights').dataTable(TOptions)
 
-		// Общая таблица отличается от двух других
-		//TOptions.aoColumnDefs.unshift({ bSortable: true, aTargets: [ 2 ] } );
-		//TOptions.sAjaxSource = "/"+ ctrl +"/showTable/";
-		TOptions.oTableTools.aButtons[3].sButtonText = 'МАТРИЦА РОЛЕЙ';
-		TOptions.oTableTools.aButtons.splice(0,3);
-		$('#tab-matrix').dataTable(TOptions);
 
 /********************************/
 
@@ -99,10 +97,22 @@ function showMapsTable(node) {
 			return false;
 
 		id = node[0].id.split('-')[2];
-		$.getJSON( '/'+ ctrl +'/records/' + id, function(response) {
-														$('#tab-rights').dataTable().fnClearTable();
-														$('#tab-rights').dataTable().fnAddData(response);
-												});
+		$.ajax({
+				url: '/'+ ctrl +'/records/' + id,
+				type: "GET",
+				dataType: "json",
+				success: function(response) {
+												$('#tab-rights').dataTable().fnClearTable();
+												$('#tab-rights').dataTable().fnAddData(response);
+						},
+				error: function(response) {
+
+							var msg = response.responseText;
+							if( $(msg).find('.form-alert').length ) {
+								$(msg).modal( modInfo );
+							}
+						},
+				});
 }
 
 /*
@@ -121,29 +131,18 @@ function afterAddData(str,node) {
 	$('#tab-full').dataTable().fnReloadAjax();
 }
 
-/*
- * Стираем значения в "подчиненных" таблицах
-*/
-function clearChildTable(uids) {
-
-	if(tab == 'sections') {
-		$('#tab-controllers').dataTable().fnClearTable();
-	}
-
-	$('#tab-full').dataTable().fnReloadAjax();
-}
 
 /*
  * Функции проверок при редактировании записей в таблицах.
  * Проверка на совпадения доменов, алиасов - не производится !!
  */
-modWin.validate_sections = function() {
+modWin.validate_roles = function() {
 									return emptyValidate();
 								}
 
 
-modWin.validate_controllers = function() {
-									return emptyValidate();
+modWin.validate_rights = function() {
+									return false;
 								}
 
 function emptyValidate() {

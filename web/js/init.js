@@ -140,6 +140,16 @@ function fnGetSelectedRowID( objTT ) {
 }
 
 /*
+ *  Получаем ID  выделеной строки в связанной таблице
+ */
+
+function fnGetParentSelectedRowID(tabID) {
+
+		RowID = $('.DTTT_selected', tabID)[0].id;
+		return (RowID) ? RowID : 0;
+}
+
+/*
  *  При создании строки в аттрибут data заносим значение поля mailbox
  *  для последующей проверки на совпадение значений mailbox
  */
