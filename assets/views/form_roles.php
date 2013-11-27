@@ -9,19 +9,12 @@
 			</p>
 		</div>
 		<form id='usersform' action='#' method='post'>
-			<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : '0') ?>'  />
+			<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : (isset($ctrl) ? $ctrl : '0')) ?>'  />
 			<input type='hidden' name='tab' value='<?= $tab ?>' />
 			<h4></h4>
 			   <table>
 				   	<?php if( $pid ): ?>
-					<tr>
-						<input type='hidden' name='role_id' value='<?= $pid  ?>'  />
-						<input type='hidden' name='ctrl' value='<?= $ctrl  ?>'  />
-						<td class='formlabel'>Раздел:</td><td class='section'></td>
-					</tr>
-					<tr>
-						<td class='formlabel'>Страница:</td><td class='control'></td>
-					</tr>
+					<input type='hidden' name='role_id' value='<?= $pid  ?>'  />
 					<tr>
 						<td class='formlabel'>Права:</td>
 						<td>

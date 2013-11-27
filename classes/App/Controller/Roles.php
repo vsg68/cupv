@@ -37,7 +37,6 @@ class Roles extends \App\Page {
 		$view->pid	= $this->request->post('init');
 		$view->tab  = $tab;
 
-
 		$data = $this->pixie->db->query('select')
 										->table($tab)
 										->where( ( $tab == 'rights' ? 'role_' : '').'id',$this->_id )
@@ -52,7 +51,7 @@ class Roles extends \App\Page {
 											->as_array();
 
 			// передаем ссылку на контроллер для дальнейшего отслеживания
-			$view->ctrl = isset($data->id) ? '' : $this->_id;
+			$view->ctrl =  $this->_id;
 		}
 
 	   $view->data = $data;
@@ -60,9 +59,6 @@ class Roles extends \App\Page {
     }
 
 	public function action_records() {
-
-		if( $this->permissions == $this::NONE_LEVEL )
-			return $this->noperm();
 
 		if( ! $this->_id = $this->request->param('id'))
 			return;
@@ -91,16 +87,17 @@ class Roles extends \App\Page {
 									->as_array();
 
 			$data = array();
-
+			$count = 0;
 			foreach($entries as $entry) {
 
 				$data[] = array( $entry->sect_name,
 								 $entry->ctrl_name,
 								 $entry->slevel,
 								 $entry->c_active,
-								 'DT_RowId'    => 'tab-rights-'.( $entry->role_id ? $entry->ctrl_id : '0_'.$entry->ctrl_class),
+								 'DT_RowId'    => 'tab-rights-'.( $entry->role_id ? $entry->ctrl_id : '0'.$count.'_'.$entry->ctrl_id),
 								 'DT_RowClass' => ($entry->slevel == 'WRITE') ? 'gradeA' : ( ($entry->slevel == 'NONE') ? 'gradeX' : '')
 								);
+				$count++;
 			}
 
 			$this->response->body = json_encode($data);
@@ -113,6 +110,89 @@ class Roles extends \App\Page {
 
     }
 
+	public function action_edit() {
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		try {
+			$returnData  = array();
+
+			if($params['tab'] == 'roles' ) {
+				$entry['note'] = $this->getVar($params['note']);
+				$entry['name'] = $params['name'];
+				$entry['active'] = $this->getVar($params['active'],0);
+			}
+			elseif($params['tab'] == 'rights' ) {
+
+				if( preg_match('/^0\d*_(\d+)$/', $params['id'], $match) ) {
+				// 	новая запись !
+					$params['id'] 		 = 0;
+					$entry['control_id'] = $match[1];
+					$entry['role_id'] 	 = $params['role_id'];
+				}
+
+				$entry['slevel_id'] = $params['slevel_id'];
+			}
+
+//print_r($entry);exit;
+			if ( $params['id'] == 0 ) {
+				// новый пользователь
+				$this->pixie->db->query('insert')
+								->table($params['tab'])
+								->data($entry)
+								->execute();
+
+				$params['id'] = $this->pixie->db->insert_id();
+
+			}
+			else {
+			// Существующая запись
+				$this->pixie->db->query('update')
+								->table($params['tab'])
+								->data($entry)
+								->where('id',$params['id'])
+								->execute();
+			}
+
+			//Нужно отдать инфу в права в том же формате,
+			//в котором оно представлено
+			if( $params['tab'] == 'rights' ) {
+
+				$req = $this->pixie->db->query('select')
+									->fields(array('S.name','sect_name'),
+											 array('C.name','ctrl_name'),
+											 array('L.name','slevel'),
+											 array('C.active','active')
+											 )
+									->table('controllers','C')
+									->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
+									->join(array('rights','P'),array('P.control_id','C.id'))
+									->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
+									->where('P.id', $params['id'])
+									->execute()
+									->current();
+
+				// переводим ответ в нужный формат
+				$entry = array($req->sect_name,
+								$req->ctrl_name,
+								$req->slevel,
+								$req->active);
+			}
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
+		}
+
+		$returnData 				= array_values($entry);
+		$returnData['DT_RowId']		= 'tab-'.$params['tab'].'-'.$params['id'];
+
+		$this->response->body = json_encode($returnData);
+	}
 
 
 }

@@ -20,7 +20,7 @@ $(document).ready(function() {
 							],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 								drawCheckBox(nRow);
-								//addRowAttr(nRow,'mbox',1);
+								updateClass(nRow);
 							},
 			"oTableTools": TTOpts
 	}
@@ -79,7 +79,7 @@ function unblockNewButton(node) {
 }
 
 /*
- *  Получаю выделенную строку в таблице sections
+ *  Получаю выделенную строку в таблице rights
  */
 function usersRowID(objTT) {
 
@@ -119,18 +119,34 @@ function showMapsTable(node) {
  * Функция срабатывает после обновления данных
  * Изменяем таблицу tab-full
  */
-function afterUpdateData(str,node) {
-	 $('#tab-full').dataTable().fnReloadAjax();
+function updateClass(nRow) {
+
+	  if(nRow.id.split('-')[1] == 'roles' )
+		return false;
+
+	  mode = $('td:eq(2)', nRow).text();
+	  $(nRow).removeClass('gradeX').removeClass('gradeA');
+
+	  if( mode == 'WRITE') {
+		$(nRow).addClass('gradeA');
+	  }
+
+	  if( mode == 'NONE') {
+		 $(nRow).addClass('gradeX');
+	  }
 }
 
 /*
- * Функция срабатывает после добавления данных
- * Изменяем таблицу tab-full
+ * Функция срабатывает после изменения данных
+ * Почему-то не изменяется ID строки программно
+ * поэтому делаю это руками
  */
-function afterAddData(str,node) {
-	$('#tab-full').dataTable().fnReloadAjax();
-}
+function afterUpdateData(str,node) {
 
+	if(node.id.split('-')[1] == 'rights' ) {
+		node.id = str.DT_RowId ;
+	}
+}
 
 /*
  * Функции проверок при редактировании записей в таблицах.
