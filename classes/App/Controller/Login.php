@@ -21,7 +21,7 @@ class Login extends \App\Page {
 											->fields($this->pixie->db->expr('S.name, S.note, COALESCE(C.class,"#") AS link'))
 											->table('sections','S')
 											->join(array('controllers','C'),array('S.id','C.section_id'),'LEFT')
-											->join(array('page_roles','P'),array('C.id','P.control_id'),'LEFT')
+											->join(array('rights','P'),array('C.id','P.control_id'),'LEFT')
 											->join(array('roles','R'),array('R.id','P.role_id'),'LEFT')
 											->join(array('slevels','SL'),array('SL.id','P.slevel_id'),'LEFT')
 											->join(array('auth','A'),array('A.role_id','P.role_id'),'LEFT')
@@ -30,9 +30,10 @@ class Login extends \App\Page {
 											->where('R.active',1)
 											->where('C.active',1)
 											->where('A.active',1)
-											->where('C.arrange',0)
+											//->where('C.arrange',0)
 											->where('SL.slevel','>',0)
 											->group_by('S.name')
+											->order_by('C.id','asc')
 											->execute();
 
 		}
