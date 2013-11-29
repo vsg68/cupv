@@ -3,82 +3,105 @@ $(document).ready(function() {
 /*
  * Общая для всех настройка
  */
-var TOptions = {
-		"bJQueryUI": true,
-		//"sScrollY":  H/2 -110 + "px",
-		"bPaginate": false,
-		"sDom": "<'H'T>t<'F'>",
-		"aoColumnDefs": [
-							{"bSortable":true, "aTargets": [0,1] },
-							{"sClass": "center", "aTargets": [3,4] },
-						],
-		"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-							drawCheckBox(nRow);
-							addRowAttr(nRow,'domain',0); // Запоминаю имя домена для удаления алиасов
-						},
-		"oTableTools" : {
-				"sRowSelect": "single",
-				"fnRowSelected": function(node){
-									// Только для таблицы пользователей
-									//tab = node[0].id.split('-')[0];
-									if( function_exists('showMapsTable') )
-										showMapsTable( node );
+//~ var TOptions = {
+		//~ "bJQueryUI": true,
+		//~ //"sScrollY":  H/2 -110 + "px",
+		//~ "bPaginate": false,
+		//~ "sDom": "<'H'T>t<'F'>",
+		//~ "aoColumnDefs": [
+							//~ {"bSortable":true, "aTargets": [0,1] },
+							//~ {"sClass": "center", "aTargets": [3,4] },
+						//~ ],
+		//~ "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+							//~ drawCheckBox(nRow);
+							//~ addRowAttr(nRow,'domain',0); // Запоминаю имя домена для удаления алиасов
+						//~ },
+		//~ "oTableTools" : {
+				//~ "sRowSelect": "single",
+				//~ "fnRowSelected": function(node){
+									//~ // Только для таблицы пользователей
+									//~ //tab = node[0].id.split('-')[0];
+									//~ if( function_exists('showMapsTable') )
+										//~ showMapsTable( node );
+//~
+									//~ if( function_exists('unblockNewButton') )
+										//~ unblockNewButton( node );  // Разблокировка кнопки
+								//~ },
+				//~ "fnRowDeselected": function(nodes){
+									//~ // ставим блокировку на "New" для алиасов
+										//~ if( function_exists('blockNewButton'))
+											//~ blockNewButton( nodes );
+									//~ },
+				//~ "aButtons":[
+								//~ {
+									//~ "sExtends":"text",
+									//~ "sButtonText": ".",
+									//~ "sButtonClass": "DTTT_button_edit DTTT_disabled",
+									//~ "fnClick": function( nButton, oConfig, oFlash ){
+													//~ RowID = fnGetSelectedRowID(this);
+													//~ fnEdit( RowID , 0);
+												//~ },
+								//~ },
+								//~ {
+									//~ "sExtends":"text",
+									//~ "sButtonText": ".",
+									//~ "sButtonClass": "DTTT_button_new",
+									//~ "fnClick": function( nButton, oConfig, oFlash ){
+													//~ if( ! $(nButton).hasClass('DTTT_disabled') ) {
+														//~ pid = function_exists('usersRowID') ? usersRowID(this) : 0;
+														//~ fnEdit( this.s.dt.sTableId +'-0', pid);
+													//~ }
+												//~ },
+								//~ },
+								//~ {
+									//~ "sExtends":"text",
+									//~ "sButtonText": ".",
+									//~ "sButtonClass": "DTTT_button_del DTTT_disabled",
+									//~ "fnClick": function( nButton, oConfig, oFlash ){
+													//~ RowID = fnGetSelectedRowID(this);
+													//~ fnDelete( RowID, 0 );
+												//~ }
+								//~ },
+								//~ {
+									//~ "sExtends":    "text",
+									//~ "sButtonText": "ПОЧТОВЫЕ ДОМЕНЫ",
+									//~ "sButtonClass": 'DTTT_label  DTTT_disabled',
+								//~ }
+							//~ ],
+				//~ }
+//~ };
 
-									if( function_exists('unblockNewButton') )
-										unblockNewButton( node );  // Разблокировка кнопки
+		TTOpts.aButtons.splice(3,2);
+		var TOptions = {
+				"bJQueryUI": true,
+				//"sScrollY":  550 + "px",
+				"bPaginate": false,
+				"sDom": "<'H'T>t<'F'ip>",
+				"sAjaxSource": "/"+ ctrls +"/showTable/groups",
+				"fnInitComplete": function () {
+										this.fnAdjustColumnSizing();
+										this.fnDraw();
 								},
-				"fnRowDeselected": function(nodes){
-									// ставим блокировку на "New" для алиасов
-										if( function_exists('blockNewButton'))
-											blockNewButton( nodes );
-									},
-				"aButtons":[
-								{
-									"sExtends":"text",
-									"sButtonText": ".",
-									"sButtonClass": "DTTT_button_edit DTTT_disabled",
-									"fnClick": function( nButton, oConfig, oFlash ){
-													RowID = fnGetSelectedRowID(this);
-													fnEdit( RowID , 0);
-												},
+				"aoColumnDefs": [
+									{ bSortable: true, aTargets: [ 0 ] },
+									{ bSortable: false, aTargets: [ '_all' ] },
+									{ sClass: "center", aTargets: [ -1 ] },
+								],
+				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+									drawCheckBox(nRow);
+									updateClass(nRow);
 								},
-								{
-									"sExtends":"text",
-									"sButtonText": ".",
-									"sButtonClass": "DTTT_button_new",
-									"fnClick": function( nButton, oConfig, oFlash ){
-													if( ! $(nButton).hasClass('DTTT_disabled') ) {
-														pid = function_exists('usersRowID') ? usersRowID(this) : 0;
-														fnEdit( this.s.dt.sTableId +'-0', pid);
-													}
-												},
-								},
-								{
-									"sExtends":"text",
-									"sButtonText": ".",
-									"sButtonClass": "DTTT_button_del DTTT_disabled",
-									"fnClick": function( nButton, oConfig, oFlash ){
-													RowID = fnGetSelectedRowID(this);
-													fnDelete( RowID, 0 );
-												}
-								},
-								{
-									"sExtends":    "text",
-									"sButtonText": "ПОЧТОВЫЕ ДОМЕНЫ",
-									"sButtonClass": 'DTTT_label  DTTT_disabled',
-								}
-							],
-				}
-};
+				"oTableTools": TTOpts
+		}
 
-		$('#tab-domains').dataTable(TOptions);
 
-		TOptions.aoColumnDefs[1] = {"sClass": "center", "aTargets": [3] }; //
-		TOptions.oTableTools.aButtons[3].sButtonText = 'АЛИАСЫ ДОМЕНОВ';
-		$('#tab-aliases').dataTable(TOptions)
+		//TOptions.aoColumnDefs[1] = {"sClass": "center", "aTargets": [3] }; //
+		TOptions.oTableTools.aButtons[3].sButtonText = 'ГРУППЫ РАССЫЛКИ';
+		$('#tab-groups').dataTable(TOptions)
 
-		TOptions.oTableTools.aButtons[3].sButtonText = 'ТРАНСПОРТ';
-		$('#tab-transport').dataTable(TOptions);
+		TOptions.sAjaxSource = "/"+ ctrls +"/showTable/users",
+		TOptions.oTableTools.aButtons[3].sButtonText = 'ОБЩИЙ СПИСОКСПИСОК';
+		$('#tab-full').dataTable(TOptions);
 
 
 });

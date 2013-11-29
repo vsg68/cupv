@@ -4,23 +4,55 @@ namespace App\Controller;
 
 class Domains extends \App\Page {
 
-    public function action_view() {
+
+	public function action_showTable() {
+
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
 
-		$this->view->subview 		= 'domains';
+		if( !$tab 	= $this->request->param('id'); )
+			return;
 
-		$this->view->script_file	= '<script type="text/javascript" src="/js/domains.js"></script>';
+		if($tab = 'groups') {
 
-		$entries = $this->pixie->db->query('select')
-										->table('domains')
+			$entries = $this->pixie->db->query('select')
+										->table('groups')
 										->execute()
 										->as_array();
-		$this->view->entries = $entries;
+			foreach($entries as $entry)	{
+				$data[] = array($entry->name,
+								$entry->note,
+								$entry->active,
+								'DT_RowId' => $entry->id
+								);
+			}
+		}elseif($tab = 'groups') {
 
-        $this->response->body = $this->view->render();
-    }
+			$entries = $this->pixie->db->query('select')
+										->fields(array('G.name', 'group'),
+												 array('U.mailbox','login')
+												 array('U.username', 'username')
+												 array('U.active', 'active'))
+										->table('users','U')
+										->join(array('users_groups','G'),array('U.group_id','G.user_id'))
+										->execute()
+										->as_array();
+			foreach($entries as $entry)	{
+				$data[] = array($entry->name,
+								$entry->note,
+								'DT_RowId' => $entry->id
+								);
+			}
 
-	public function action_showEditForm() {
+
+		}
+		$view 		= $this->pixie->view('form_domains');
+		$view->tab  = $tab;
+
+	}
+
+  	public function action_showEditForm() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
