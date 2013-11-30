@@ -94,13 +94,15 @@ $(document).ready(function() {
 				"oTableTools": TTOpts
 		}
 
+		TOptions.oTableTools.aButtons[3].sButtonText = 'СПИСКИ РАССЫЛКИ';
+		$('#tab-sections').dataTable(TOptions);
 
 		//TOptions.aoColumnDefs[1] = {"sClass": "center", "aTargets": [3] }; //
-		TOptions.oTableTools.aButtons[3].sButtonText = 'ГРУППЫ РАССЫЛКИ';
+		TOptions.oTableTools.aButtons[3].sButtonText = 'ЧЛЕНЫ СПИСКА';
 		$('#tab-groups').dataTable(TOptions)
 
 		TOptions.sAjaxSource = "/"+ ctrls +"/showTable/users",
-		TOptions.oTableTools.aButtons[3].sButtonText = 'ОБЩИЙ СПИСОКСПИСОК';
+		TOptions.oTableTools.aButtons[3].sButtonText = 'ОБЩИЙ СПИСОК';
 		$('#tab-full').dataTable(TOptions);
 
 

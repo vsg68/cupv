@@ -20,6 +20,7 @@ class Domains extends \App\Page {
 										->table('groups')
 										->execute()
 										->as_array();
+
 			foreach($entries as $entry)	{
 				$data[] = array($entry->name,
 								$entry->note,
@@ -27,17 +28,21 @@ class Domains extends \App\Page {
 								'DT_RowId' => $entry->id
 								);
 			}
-		}elseif($tab = 'groups') {
+		}
+		elseif($tab = 'full') {
 
 			$entries = $this->pixie->db->query('select')
 										->fields(array('G.name', 'group'),
 												 array('U.mailbox','login')
 												 array('U.username', 'username')
-												 array('U.active', 'active'))
-										->table('users','U')
-										->join(array('users_groups','G'),array('U.group_id','G.user_id'))
+												 array('G.active', 'active'))
+										->table('groups','G')
+										->join(array('lists','L'),array('G.id','L.group_id'))
+										->join(array('users','U'),array('L.user_id','U.id'))
+										->order_by('G.name')
 										->execute()
 										->as_array();
+
 			foreach($entries as $entry)	{
 				$data[] = array($entry->name,
 								$entry->note,
@@ -47,10 +52,45 @@ class Domains extends \App\Page {
 
 
 		}
-		$view 		= $this->pixie->view('form_domains');
-		$view->tab  = $tab;
+
+		$returnData['aaData'] = $data;
+		$this->response->body = json_encode($data);
 
 	}
+
+	public function action_records() {
+
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
+
+		if( ! $this->_id = $this->request->param('id'))
+			return;
+
+		$data 	 = array();
+
+		$entries = $this->pixie->db->query('select')
+									->fields(array('U.mailbox','login')
+											 array('U.username', 'username')
+											 array('U.active', 'active'))
+									->table('users','U')
+									->join(array('lists','L'),array('U.id','L.user_id'))
+									->where('L.group_id', $this->_id)
+									->execute()
+									->as_array();
+
+		foreach($entries as $entry)	{
+			$data[] = array($entry->mailbox,
+							$entry->username,
+							$entry->active,
+							'DT_RowId' => 'tab-lists-'$entry->id,
+							'DT_RowClass' => 'gradeA'
+							);
+		}
+
+		$returnData['aaData'] = $data;
+		$this->response->body = json_encode($returnData);
+
+    }
 
   	public function action_showEditForm() {
 
