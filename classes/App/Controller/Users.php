@@ -78,10 +78,10 @@ class Users extends \App\Page {
 
 		$data  = array();
 		$lists = $this->pixie->db->query('select')
-								->fields('U.id','L.id', 'L.name', 'L.note')
-								->table('users_lists','A')
-								->join(array('users','U'),array('U.id','A.users_id'))
-								->join(array('lists','L'),array('L.id','A.lists_id'))
+								->fields('U.id','G.id', 'G.name', 'G.note')
+								->table('lists','A')
+								->join(array('users','U'),array('U.id','A.user_id'))
+								->join(array('groups','G'),array('G.id','A.group_id'))
 								->where('U.id',$this->_id)
 								->execute();
 

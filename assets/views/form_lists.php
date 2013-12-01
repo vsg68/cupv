@@ -1,9 +1,9 @@
 <div class='user-form ui-widget ui-corner-all'>
 
 
-<table class='table-grp' id='pid-<?= $pid ?>'>
+<table class='table-grp' id='pid-<?= (isset($pid) ? $pid : '') ?>'>
 	<tr>
-		<th>Доступные группы</th>
+		<th>Доступные</th>
 		<th></th>
 		<th>Задействованные</th>
 	</tr>
@@ -11,10 +11,10 @@
 		<td class='ui-widget-content ui-corner-all'>
 			<div class='ui-window'>
 			<ul id='grp-left' class='nest-grp'>
-			<?php foreach( $groups as $group) {
-					if( ! isset($group->users_id) ):
+			<?php foreach( $entries as $entry) {
+					if( ! $entry->gid ):
 			?>
-				<li id="gr-<?= $group->id ?>"><span title="<?= $group->note ?>"><?= $group->name ?></span></li>
+				<li id="gr-<?= $entry->id ?>"><span title="<?= $entry->note ?>"><?= $entry->name ?></span></li>
 
 			<?php endif;
 					}
@@ -29,10 +29,10 @@
 		<td class='ui-window ui-widget-content ui-corner-all'>
 			<div class='ui-window'>
 			<ul id='grp-right' class='nest-grp'>
-			<?php foreach( $groups as $group) {
-					if( isset($group->users_id) ):
+			<?php foreach( $entries as $entry) {
+					if( $entry->gid ):
 			?>
-				<li id="gr-<?= $group->id ?>"><span title="<?= $group->note ?>"><?= $group->name ?></span></li>
+				<li id="gr-<?= $entry->id ?>"><span title="<?= $entry->note ?>"><?= $entry->name ?></span></li>
 
 			<?php endif;
 					}

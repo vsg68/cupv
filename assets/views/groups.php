@@ -1,6 +1,6 @@
 <div class='vertical-50'>
 			<div class='gorizont-50'>
-				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-sections">
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-groups">
 					<thead>
 						<tr>
 							<th>Группа</th>
@@ -9,18 +9,18 @@
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach($entries as $entry): 	?>
-						<tr id="tab-groups-<?= $entry->id ?>">
-							<td><?= $entry->name ?></td>
-							<td><?= $entry->note ?></td>
-							<td><?= $entry->active ?></td>
+					<?php foreach($groups as $group): 	?>
+						<tr id="tab-groups-<?= $group['id'] ?>">
+							<td><?= $group['name'] ?></td>
+							<td><?= $group['note'] ?></td>
+							<td><?= $group['active'] ?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
 				</table>
 			</div>
 			<div class='gorizont-50'>
-				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-controllers">
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-lists">
 					<thead>
 						<tr>
 							<th>Пользователь</th>
@@ -43,10 +43,11 @@
 				</thead>
 				<tbody>
 					<?php foreach($entries as $entry): 	?>
-						<tr id="tab-groups-<?= $entry->id ?>">
+						<tr id="tab-full-<?= $entry->lid ?>" class='gradeA'>
 							<td><?= $entry->name ?></td>
-							<td><?= $entry->note ?></td>
-							<td><?= $entry->active ?></td>
+							<td><?= $entry->username ?></td>
+							<td><?= $entry->login ?></td>
+							<td><?= $entry->g_active ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>

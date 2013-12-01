@@ -2,60 +2,52 @@
 
 namespace App\Controller;
 
-class Domains extends \App\Page {
+class Groups extends \App\Page {
 
+	public function action_view() {
 
-	public function action_showTable() {
+		$this->view->script_file	= '<script type="text/javascript" src="/js/groups.js"></script>';
+		$this->view->css_file 		= '<link rel="stylesheet" href="/css/users.css" type="text/css" />';  // !!!
 
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
 
+		$entries = $this->pixie->db->query('select')
+							->fields(array('G.name', 'name'),
+									 array('G.note', 'note'),
+									 array('G.id', 'gid'),
+									 array('G.active', 'g_active'),
+									 array('U.mailbox','login'),
+									 array('U.username', 'username'),
+									 array('U.active', 'u_active'),
+									 array('L.id', 'lid'))
+							->table('groups','G')
+							->join(array('lists','L'),array('G.id','L.group_id'))
+							->join(array('users','U'),array('L.user_id','U.id'))
+							->order_by('G.name')
+							->execute()
+							->as_array();
 
-		if( !$tab 	= $this->request->param('id'); )
-			return;
+		$groups = array();
+		$oldgroup = '';
+		foreach( $entries as $entry ) {
 
-		if($tab = 'groups') {
+			if( $oldgroup != $entry->gid ) {
 
-			$entries = $this->pixie->db->query('select')
-										->table('groups')
-										->execute()
-										->as_array();
+				$groups[] = array('id' => $entry->gid,
+								  'name' => $entry->name,
+								  'note' => $entry->note,
+								  'active' => $entry->g_active);
 
-			foreach($entries as $entry)	{
-				$data[] = array($entry->name,
-								$entry->note,
-								$entry->active,
-								'DT_RowId' => $entry->id
-								);
+				$oldgroup = $entry->gid;
 			}
 		}
-		elseif($tab = 'full') {
 
-			$entries = $this->pixie->db->query('select')
-										->fields(array('G.name', 'group'),
-												 array('U.mailbox','login')
-												 array('U.username', 'username')
-												 array('G.active', 'active'))
-										->table('groups','G')
-										->join(array('lists','L'),array('G.id','L.group_id'))
-										->join(array('users','U'),array('L.user_id','U.id'))
-										->order_by('G.name')
-										->execute()
-										->as_array();
+		$this->view->groups = $groups;
+		$this->view->entries = $entries;
+		$this->view->subview = 'groups';
 
-			foreach($entries as $entry)	{
-				$data[] = array($entry->name,
-								$entry->note,
-								'DT_RowId' => $entry->id
-								);
-			}
-
-
-		}
-
-		$returnData['aaData'] = $data;
-		$this->response->body = json_encode($data);
-
+		$this->response->body	= $this->view->render();
 	}
 
 	public function action_records() {
@@ -69,9 +61,10 @@ class Domains extends \App\Page {
 		$data 	 = array();
 
 		$entries = $this->pixie->db->query('select')
-									->fields(array('U.mailbox','login')
-											 array('U.username', 'username')
-											 array('U.active', 'active'))
+									->fields(array('U.mailbox','login'),
+											 array('U.username', 'username'),
+											 array('U.active', 'active'),
+											 array('L.id', 'lid'))
 									->table('users','U')
 									->join(array('lists','L'),array('U.id','L.user_id'))
 									->where('L.group_id', $this->_id)
@@ -79,17 +72,15 @@ class Domains extends \App\Page {
 									->as_array();
 
 		foreach($entries as $entry)	{
-			$data[] = array($entry->mailbox,
+
+			$data[] = array($entry->login,
 							$entry->username,
 							$entry->active,
-							'DT_RowId' => 'tab-lists-'$entry->id,
-							'DT_RowClass' => 'gradeA'
-							);
+							'DT_RowId' => 'tab-lists-'.$entry->lid,
+							'DT_RowClass' => 'gradeB');
 		}
 
-		$returnData['aaData'] = $data;
-		$this->response->body = json_encode($returnData);
-
+		$this->response->body = json_encode($data);
     }
 
   	public function action_showEditForm() {
@@ -102,19 +93,14 @@ class Domains extends \App\Page {
 			return;
 
 		$this->_id 	= $this->request->param('id');
-		$view 		= $this->pixie->view('form_domains');
+		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
 
-        $view->data = $this->pixie->db->query('select')
-										->table('domains')
+		$view->data = $this->pixie->db->query('select')
+										->table($tab)
 										->where('id',$this->_id)
 										->execute()
 										->current();
-
-		$view->domains = $this->pixie->db->query('select')
-										->table('domains')
-										->where('domain_type',0)
-										->execute();
 
         $this->response->body = $view->render();
     }
@@ -236,5 +222,84 @@ class Domains extends \App\Page {
 
     }
 
+    public function action_edGroup() {
+
+		if( $this->permissions == $this::NONE_LEVEL )
+				return $this->noperm();
+
+		// Родительский ID
+		if( ! $this->_id = $this->request->param('id'))
+			return;
+
+		$entries = $data = array();
+		// Если массив не пустой - значит редактирование
+		if( $grp_ids = $this->request->post('grp_id') ) {
+
+			// Первым делом - удаляем
+				$this->pixie->db->query('delete')
+								->table('users_lists')
+								->where('users_id',$this->_id)
+								->execute();
+
+			foreach ($grp_ids as $grp_id ) {
+			// вторым делом - вставляем
+				$this->pixie->db->query('insert')
+								->table('users_lists')
+								->data(array('users_id' => $this->_id,'lists_id' => $grp_id))
+								->execute();
+			}
+
+		}
+
+		// Последним делом - вынимаем
+
+
+		//~ $groups = $this->pixie->db->query('select')
+									//~ ->fields('L.name', 'L.note','L.id', 'UL.user_id')
+									//~ ->table('groups','L')
+									//~ ->join( array('lists','UL'),
+											//~ array(
+													//~ array('UL.user_id',$this->pixie->db->expr($this->_id)),
+													//~ array('UL.group_id','L.id')
+												//~ ),
+											//~ 'left outer')
+									//~ ->execute()
+									//~ ->as_array();
+
+		// 	Если у нас редактирование
+		if( $grp_ids ) 	{
+
+			foreach($groups as $group) {
+
+				if( ! $group->users_id )
+					continue;
+				$data[] = array( $group->name,
+								 $group->note,
+								 'DT_RowClass' => 'gradeX'
+								);
+			}
+			$this->response->body = json_encode($data);
+		}
+		else {
+
+			$entries = $this->pixie->db->query('select')
+									->fields(array('U.username','name'),
+											 array('U.mailbox', 'note'),
+											 array('L.user_id', 'id'),
+											 array('L.group_id', 'gid'))  // ??? может и не надо
+									->table('users', 'U')
+									->join(array('lists','L'),
+										   array( array('L.user_id','U.id'),
+												  array('L.group_id',$this->pixie->db->expr($this->_id))
+												 ))
+									->execute()
+									->as_array();
+
+			$view = $this->pixie->view('form_lists');
+			$view->entries = $entries;
+			$view->pid 	  = $this->_id;
+			$this->response->body = $view->render();
+		}
+	}
 }
 ?>

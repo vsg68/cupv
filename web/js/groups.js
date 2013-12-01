@@ -77,7 +77,7 @@ $(document).ready(function() {
 				//"sScrollY":  550 + "px",
 				"bPaginate": false,
 				"sDom": "<'H'T>t<'F'ip>",
-				"sAjaxSource": "/"+ ctrls +"/showTable/groups",
+				//"sAjaxSource": "/"+ ctrl +"/showTable/groups",
 				"fnInitComplete": function () {
 										this.fnAdjustColumnSizing();
 										this.fnDraw();
@@ -89,20 +89,30 @@ $(document).ready(function() {
 								],
 				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 									drawCheckBox(nRow);
-									updateClass(nRow);
+									//updateClass(nRow);
 								},
 				"oTableTools": TTOpts
 		}
 
 		TOptions.oTableTools.aButtons[3].sButtonText = 'СПИСКИ РАССЫЛКИ';
-		$('#tab-sections').dataTable(TOptions);
+		$('#tab-groups').dataTable(TOptions);
 
-		//TOptions.aoColumnDefs[1] = {"sClass": "center", "aTargets": [3] }; //
+		TOptions.oTableTools.aButtons[2] = {
+											"sExtends":    "text",
+											"sButtonText": ".",
+											"sButtonClass": 'DTTT_button_group  DTTT_disabled',
+											"fnClick": function( nButton, oConfig, oFlash ){
+												//предотвращаем новое, если в основной таблице ничего не выбрано
+												if( ! $(nButton).hasClass('DTTT_disabled') ) {
+													fnGroupEdit( fnGetParentSelectedRowID('#tab-groups') );
+												}
+											}};
 		TOptions.oTableTools.aButtons[3].sButtonText = 'ЧЛЕНЫ СПИСКА';
-		$('#tab-groups').dataTable(TOptions)
+		TTOpts.aButtons.splice(0,2);
+		$('#tab-lists').dataTable(TOptions)
 
-		TOptions.sAjaxSource = "/"+ ctrls +"/showTable/users",
-		TOptions.oTableTools.aButtons[3].sButtonText = 'ОБЩИЙ СПИСОК';
+		TOptions.oTableTools.aButtons[1].sButtonText = 'ОБЩИЙ СПИСОК';
+		TTOpts.aButtons.splice(0,1);
 		$('#tab-full').dataTable(TOptions);
 
 
@@ -120,8 +130,7 @@ function blockNewButton(nodes) {
 			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
 		}
 
-		if( nodes.length && nodes[0].offsetParent.id == 'tab-users') {
-			$('#ToolTables_tab-aliases_1').addClass('DTTT_disabled');
+		if( nodes.length && nodes[0].offsetParent.id == 'tab-groups') {
 			$('#ToolTables_tab-lists_0').addClass('DTTT_disabled');
 		}
 }
@@ -135,33 +144,52 @@ function unblockNewButton(node) {
 		tab = node[0].offsetParent.id;
 		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
+
+		if( node[0].offsetParent.id == 'tab-groups') {
+			$('#ToolTables_tab-lists_0').removeClass('DTTT_disabled');
+		}
 }
 
-/*
- * Если хотим добавить в запрос на удаление какие-нить параметры -
- * то это делается тут
- */
-function deleteWithParams(uid, tab, init) {
-	if(tab == 'domains') {
-		val = $('#'+uid).attr('domain');
-		init['aname'] = val;
-	}
-
-	return init;
-}
 
 /*
  * Стираем значения в "подчиненных" таблицах
 */
 function clearChildTable(uids) {
 
-	if(tab == 'domains') {
-		for(i=0; i < uids.length; i++) {
-			id = '#tab-aliases-'+uids[i].id;
-			$('#tab-aliases').dataTable().fnDeleteRow( $(id).get(0) );
-		}
+	if(tab == 'groups') {
+		$('#tab-lists').dataTable().fnClearTable();
 	}
 }
+
+
+/*
+ *  Если выделена строка в таблице users - показываем связанные с ней алиасы
+ */
+function showMapsTable(node) {
+
+		if(node[0].offsetParent.id != 'tab-groups')
+			return false;
+
+		id = node[0].id.split('-')[2];
+		$.ajax({
+				type: "GET",
+				url: '/'+ ctrl +'/records/' + id,
+				dataType: "json",
+				success: function(response) {
+										$('#tab-lists').dataTable().fnClearTable();
+										$('#tab-lists').dataTable().fnAddData(response);
+
+										},
+				error: function() {
+									$('#tab-lists').dataTable().fnClearTable();
+									}
+		});
+}
+
+/*
+ * Выполняется после апдейта групп
+ */
+function afterEditGroup(response) {};
 
 /*
  * Функции проверок при редактировании записей в таблицах.
