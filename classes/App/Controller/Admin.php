@@ -45,7 +45,7 @@ class Admin extends \App\Page {
 							 $entry->class,
 							 $entry->active,
 							 'DT_RowId' => 'tab-controllers-'.$entry->id,
-							 'DT_RowClass' => 'gradeA'
+							 'DT_RowClass' => 'gradeB'
 							);
 
 		$this->response->body = json_encode($data);
@@ -142,7 +142,7 @@ class Admin extends \App\Page {
 
 		$returnData 				= array_values($entry);
 		$returnData['DT_RowId']		= 'tab-'.$params['tab'].'-'.$params['id'];
-		$returnData['DT_RowClass']	= ($params['tab'] == 'controllers') ? 'gradeA': '';
+		$returnData['DT_RowClass']	= ($params['tab'] == 'controllers') ? 'gradeB': '';
 
 		$this->response->body = json_encode($returnData);
 	}
@@ -206,7 +206,7 @@ class Admin extends \App\Page {
 							$entry->c_name,
 							$entry->s_name,
 							$entry->c_active,
-							"DT_RowClass" => "gradeX"
+							"DT_RowClass" => "gradeA"
 							);
 
 			unset($controllers[$entry->c_class]);
@@ -215,7 +215,7 @@ class Admin extends \App\Page {
 		if(is_array($controllers)) {
 			// Если остались незадействованные контроллеры - мы их добавляем в конец задействованных
 			foreach($controllers as $k => $v) {
-				$data[] = array($k,'','','',"DT_RowClass" => "gradeX");
+				$data[] = array($k,'','','',"DT_RowClass" => "gradeA");
 			}
 		}
 
