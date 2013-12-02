@@ -4,9 +4,9 @@ $(function(){
 		eH	= H - 150;	// Скролл главной таблицы
 
 		TTOpts.aButtons[5].sButtonText = 'АВТОРИЗОВАННЫЕ ПОЛЬЗОВАТЕЛИ';
-		TTOpts.aButtons.splice(4,1);
+		TTOpts.aButtons.splice(3,2);
 
-		var oTable = $('#tab-aliases').dataTable({
+		var oTable = $('#tab-auth').dataTable({
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
@@ -57,28 +57,24 @@ function unblockNewButton(node) {
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
 }
 
-
 /*
- *  Замена значений чекбоксов на картинку
+ * Функция срабатывает после обновления данных
+ * Изменяем таблицу tab-full
  */
-function drawNA(nRow) {
-
-		// смотрим на активность записи
-		$('td', nRow).each(function(){
-
-			if( $(this).text() == '->' )
-				$(this).html('<span class="ui-icon ui-icon-arrowthick-1-e"></span>');
-
-			if( $(this).text() == 'N/A' )
-				$(this).html('<span class="ui-icon ui-icon-person"></span>');
-				//~$(this).addClass('noname');
-		});
-
+function afterUpdateData(str,node) {
+	 $('#tab-auth').dataTable().fnReloadAjax();
 }
 
+/*
+ * Функция срабатывает после добавления данных
+ * Изменяем таблицу tab-full
+ */
+function afterAddData(str) {
+	 $('#tab-auth').dataTable().fnReloadAjax();
+}
 
 modWin.validate_aliases = function () {
-
+return false;
 			alias_name	= $('form :text[name="alias_name"]').val();
 			delivery_to	= $('form :text[name="delivery_to"]').val();
 			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
