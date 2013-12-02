@@ -24,7 +24,9 @@
 	color: #1e8af8;
 }
 .nest-grp {
+/*
 	list-style-image: url('/css/smoothness/images/groups.png');
+*/
 	list-style-type: none;
 	padding: 5px;
 	margin: 5px 5px 0 30px;

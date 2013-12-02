@@ -95,7 +95,7 @@ class Roles extends \App\Page {
 								 $entry->slevel,
 								 $entry->c_active,
 								 'DT_RowId'    => 'tab-rights-'.( $entry->role_id ? $entry->ctrl_id : '0'.$count.'_'.$entry->ctrl_id),
-								 'DT_RowClass' => ($entry->slevel == 'WRITE') ? 'gradeA' : ( ($entry->slevel == 'NONE') ? 'gradeX' : '')
+								 'DT_RowClass' => ($entry->slevel == 'WRITE') ? 'gradeB' : ( ($entry->slevel == 'NONE') ? 'gradeX' : '')
 								);
 				$count++;
 			}

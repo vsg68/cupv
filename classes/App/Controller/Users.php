@@ -18,29 +18,49 @@ class Users extends \App\Page {
 		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
 
-		if( $tab == 'users' ) {
-			$view->domains = $this->pixie->db->query('select')
-										->table('domains')
-										->group_by('domain_name')
-										->where('delivery_to','virtual')
-										->execute();
+		if( $tab == 'lists' ) {
+
+			$entries = $this->pixie->db->query('select')
+									->fields(array('G.name','name'),
+											 array('G.note', 'note'),
+											 array('G.id', 'id'),
+											 array('L.user_id', 'gid'))  // ??? может и не надо
+									->table('groups', 'G')
+									->join(array('lists','L'),
+										   array( array('L.group_id','G.id'),
+												  array('L.user_id',$this->pixie->db->expr($this->_id))
+												 ))
+									->execute()
+									->as_array();
+
+			$view->entries = $entries;
+			$view->pid 	   = $this->_id;
 		}
+		else {
+			if( $tab == 'users' ) {
+				$view->domains = $this->pixie->db->query('select')
+											->table('domains')
+											->group_by('domain_name')
+											->where('delivery_to','virtual')
+											->execute();
+			}
 
-        $view->data = $this->pixie->db->query('select')
-										->table($tab)
-										->where('id',$this->_id)
-										->execute()
-										->current();
-
-		// Для дефолтных значений таблицы алиасов
-		if( $init ) {
 			$view->data = $this->pixie->db->query('select')
-										->fields($this->pixie->db->expr('mailbox AS alias_name, mailbox AS delivery_to'))
-										->table('users')
-										->where('id',$init)
-										->execute()
-										->current();
+											->table($tab)
+											->where('id',$this->_id)
+											->execute()
+											->current();
 
+			// Для дефолтных значений таблицы алиасов
+			if( $init ) {
+				$view->data = $this->pixie->db->query('select')
+											->fields($this->pixie->db->expr('mailbox AS alias_name, mailbox AS delivery_to'))
+											->table('users')
+											->where('id',$init)
+											->execute()
+											->current();
+
+			}
 		}
 
        $this->response->body = $view->render();
@@ -70,7 +90,7 @@ class Users extends \App\Page {
 							 $alias->delivery_to,
 							 $alias->active,
 							 'DT_RowId' => 'tab-aliases-'.$alias->id,
-							 'DT_RowClass' => 'gradeA'
+							 'DT_RowClass' => 'gradeB'
 							);
 
 		$fulldata['aliases'] =  $data;
@@ -88,8 +108,8 @@ class Users extends \App\Page {
 		foreach($lists as $list)
 			$data[] = array( $list->name,
 							 $list->note,
-							 'DT_RowId' => 'tab-aliases-'.$list->id,
-							 'DT_RowClass' => 'gradeX'
+							 'DT_RowId' => 'tab-lists-'.$list->id,
+							 'DT_RowClass' => 'gradeA'
 							);
 
 		$fulldata['lists'] 	 =  $data;
@@ -257,65 +277,56 @@ class Users extends \App\Page {
 
     public function action_edGroup() {
 
+
 		if( $this->permissions == $this::NONE_LEVEL )
 				return $this->noperm();
 
+		// Родительский ID
 		if( ! $this->_id = $this->request->param('id'))
 			return;
 
-		$entry = $data = array();
-		// Если массив не пустой - значит редактирование
-		if( $grp_ids = $this->request->post('grp_id') ) {
-
+		$entries = $data = array();
+		try {
 			// Первым делом - удаляем
-				$this->pixie->db->query('delete')
-								->table('users_lists')
-								->where('users_id',$this->_id)
-								->execute();
+			$this->pixie->db->query('delete')
+							->table('lists')
+							->where('user_id',$this->_id)
+							->execute();
 
-			foreach ($grp_ids as $grp_id ) {
+			$obj_ids = is_array($this->request->post('obj_id')) ? $this->request->post('obj_id') : array();
+
 			// вторым делом - вставляем
+			foreach ($obj_ids as $obj_id ) {
 				$this->pixie->db->query('insert')
-								->table('users_lists')
-								->data(array('users_id' => $this->_id,'lists_id' => $grp_id))
+								->table('lists')
+								->data(array('user_id' => $this->_id,'group_id' => $obj_id))
 								->execute();
 			}
 
-		}
+			// Последним делом - вынимаем
+			$entries = $this->pixie->db->query('select')
+										->table('groups','G')
+										->join( array('lists','UL'), array('UL.group_id','G.id') )
+										->join( array('users','U'), array('UL.user_id','U.id') )
+										->where('U.id',$this->_id)
+										->execute()
+										->as_array();
 
-		// Последним делом - вынимаем
-		$groups = $this->pixie->db->query('select')
-									->fields('L.name', 'L.note','L.id', 'UL.users_id')
-									->table('lists','L')
-									->join( array('users_lists','UL'),
-											array(
-													array('UL.users_id',$this->pixie->db->expr($this->_id)),
-													array('UL.lists_id','L.id')
-												),
-											'left outer')
-									->execute()
-									->as_array();
-
-		// 	Если у нас редактирование
-		if( $grp_ids ) 	{
-
-			foreach($groups as $group) {
-
-				if( ! $group->users_id )
-					continue;
-				$data[] = array( $group->name,
-								 $group->note,
-								 'DT_RowClass' => 'gradeX'
+			foreach($entries as $entry) {
+				$data[] = array( $entry->name,
+								 $entry->note,
+								 'DT_RowClass' => 'gradeA'
 								);
 			}
+
 			$this->response->body = json_encode($data);
 		}
-		else {
-			$view = $this->pixie->view('form_lists');
-			$view->groups = $groups;
-			$view->pid 	  = $this->_id;
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
 			$this->response->body = $view->render();
 		}
+
 	}
 
 }

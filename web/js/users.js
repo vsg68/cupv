@@ -25,13 +25,13 @@ $(document).ready(function() {
 														"fnClick": function( nButton, oConfig, oFlash ){
 															//предотвращаем новое, если в основной таблице ничего не выбрано
 															if( ! $(nButton).hasClass('DTTT_disabled') ) {
-																fnGroupEdit( usersRowID(this) );
+																fnGroupEdit( fnGetParentSelectedRowID('#tab-users'), 'lists' );
 															}
 														},
 													},
 													{
 														"sExtends":    "text",
-														"sButtonText": "РАССЫЛКА",
+														"sButtonText": "СПИСКИ РАССЫЛКИ",
 														"sButtonClass": 'DTTT_label  DTTT_disabled',
 													}
 												]
@@ -90,6 +90,9 @@ $(document).ready(function() {
 
 
 });
+
+
+var url = 'url(/css/smoothness/images/groups.png)';
 
 /*
  *  Если выделена строка в таблице users - показываем связанные с ней алиасы

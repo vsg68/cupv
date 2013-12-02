@@ -9,7 +9,7 @@
 						<th>Passwd</th>
 						<th>Nets</th>
 						<th>Path</th>
-						<th>Groups</th>
+						<th>ACL_groups</th>
 						<th>Imap</th>
 						<th>Active</th>
 					</tr>

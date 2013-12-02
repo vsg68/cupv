@@ -160,17 +160,21 @@ function addRowAttr( nRow, attrName, ind ) {
 /*
  * Редактирование групп
  */
-function fnGroupEdit(uid) {
+function fnGroupEdit( uid, tab ) {
 
 		if( ! uid.length )
 			return false;
 
-		tab = uid.split('-')[1];
 		pid = uid.split('-')[2];
 
-		$.post('/'+ ctrl +'/edGroup/'+pid, {}, function(response){
-												$(response).modal(modGroup);
-										});
+		$.post('/'+ ctrl +'/showEditForm/'+pid, {t:tab}, function(response){
+							// Какую форму вернул запрос
+							if( $(response).find('.form-alert').length )
+								$(response).modal( modInfo );
+							else
+								$(response).modal( modGroup );
+		});
+
 }
 
 /*
@@ -253,8 +257,8 @@ function postGroupData() {
 									$('#tab-lists').dataTable().fnClearTable();
 									$('#tab-lists').dataTable().fnAddData(response);
 
-									if( function_exists('afterEditGroup') ) {
-										afterEditGroup(response);
+									if( function_exists('afterUpdateData') ) {
+										afterUpdateData(response);
 									}
 
 									$.modal.close();
@@ -375,6 +379,8 @@ var modGroup = {
 					postGroupData();
 			});
 
+			$('.nest-grp').css('list-style-image', url);
+
 			$(".nest-grp").selectable({
 						start: function( event, ui ) {
 										tid = event.target.id;
@@ -392,19 +398,20 @@ var modGroup = {
 
 			$('.image-arrow').click(function(){
 
-										if($(this).hasClass('disable-arrow'))
-											return false;
+							if($(this).hasClass('disable-arrow'))
+								return false;
 
-										var this_area_id = '#grp-'+this.id.split('-')[1];
-										var target_area_id = $('.nest-grp').not(this_area_id);
+							var this_area_id = '#grp-'+this.id.split('-')[1];
+							var target_area_id = $('.nest-grp').not(this_area_id);
 
-										$('li.ui-selected').each(function(){
-																		obj = $(this).clone().removeClass('ui-selected');
-																		$(target_area_id).append(obj);
-																		this.remove();
-																});
+							$('li.ui-selected').each(function(){
 
-										$(this).addClass('disable-arrow');
+												obj = $(this).clone().removeClass('ui-selected');
+												$(target_area_id).append(obj);
+												this.remove();
+										});
+
+							$(this).addClass('disable-arrow');
 							});
 
 		},

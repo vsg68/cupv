@@ -9,11 +9,11 @@
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach($groups as $group): 	?>
-						<tr id="tab-groups-<?= $group['id'] ?>">
-							<td><?= $group['name'] ?></td>
-							<td><?= $group['note'] ?></td>
-							<td><?= $group['active'] ?></td>
+					<?php foreach($entries as $entry): 	?>
+						<tr id="tab-groups-<?= $entry->id ?>">
+							<td><?= $entry->name ?></td>
+							<td><?= $entry->note ?></td>
+							<td><?= $entry->active ?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -41,15 +41,6 @@
 						<th>Active</th>
 					</tr>
 				</thead>
-				<tbody>
-					<?php foreach($entries as $entry): 	?>
-						<tr id="tab-full-<?= $entry->lid ?>" class='gradeA'>
-							<td><?= $entry->name ?></td>
-							<td><?= $entry->username ?></td>
-							<td><?= $entry->login ?></td>
-							<td><?= $entry->g_active ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
+
 			</table>
 		</div>
