@@ -19,7 +19,7 @@
 				</tr>
 				<tr>
 					<td class='formlabel'>Пароль:<span class='ui-icon ui-icon-gear mkpwd' title='Pass Generator'></span></td>
-					<td><input type='text' name='password' value=''></td>
+					<td><input type='text' name='passwd'></td>
 				</tr>
 				<tr>
 					<td class='formlabel'>ФИО:</td>
@@ -28,7 +28,7 @@
 				<tr>
 					<td class='formlabel'>Профиль:</td>
 					<td>
-						<select name='role'>
+						<select name='role_id'>
 							<?php foreach( $roles as $role): ?>
 							<option value='<?= $role->id ?>' <?= ( $role->id == ( isset($data->role_id) ? $data->role_id : 0) ? 'selected': '') ?> > <?= $role->name ?> </option>
 							<?php endforeach; ?>

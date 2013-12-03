@@ -30,12 +30,6 @@ class Auth extends \App\Page {
         $this->response->body	= json_encode($returnData);
     }
 
-
-//~ if( isset( $params['auth_passwd']) )
-//~								$entry['passwd']  = $this->auth->provider('Password')->hash_password($params['auth_passwd']); // хешируем пароль средством модля
-
-
-
 	public function action_showEditForm() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
@@ -71,17 +65,17 @@ class Auth extends \App\Page {
 		if( ! $params = $this->request->post() )
 			return;
 
-		$returnData  = array();
+		//$returnData  = array();
 
-		$entry = array('role_id' => $params['alias_name'],
-					   'login'=> $params['delivery_to'],
-					   'note'=> $this->getVar($params['alias_notes']),
-					   'active'		=> $this->getVar($params['active'],0)
-					 );
+		$entry = array('role_id' => $params['role_id'],
+					   'login'	 => $params['login'],
+					   'note'	 => $this->getVar($params['note']),
+					   'active'	 => $this->getVar($params['active'],0)
+					   );
 
 		// хешируем пароль средством модуля
-		if( isset( $params['passwd']) ) {
-			$entry['passwd']  = $this->auth->provider('Password')->hash_password($params['passwd']);
+		if( isset( $params['passwd']) && $params['passwd'] ) {
+			$entry['passwd']  = $this->auth->provider('password')->hash_password($params['passwd']);
 		}
 
 		try {
@@ -104,19 +98,28 @@ class Auth extends \App\Page {
 								->execute();
 			}
 
+			// Что будем возвращать
+			$entry = $this->pixie->db->query('select')
+										->fields('login', 'note', array('R.name', 'role'), 'active' )
+										->table('auth')
+										->join(array('roles','R'),array('role_id','R.id'))
+										->where('id',$params['id'])
+										->execute()
+										->current();
+
+			// Массив, который будем возвращать
+			$returnData = array($entry->login,
+								$entry->note,
+								$entry->role,
+								$entry->active,
+								'DT_RowId' => 'tab-auth-'.$params['id']);
+
+			$this->response->body 		= json_encode($returnData);
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
 			return;
 		}
-
-		// Массив, который будем возвращать
-		//~ $returnData 				= array_values($entry);
-		//~ $returnData['DT_RowId']		= 'tab-aliases-'.$params['id'];
-//~
-//~
-		//~ $this->response->body = json_encode($returnData);
-		//обновляем средствами жаваскрипта
 	}
 
 	public function action_delEntry() {

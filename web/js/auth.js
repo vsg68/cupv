@@ -9,6 +9,7 @@ $(function(){
 		var oTable = $('#tab-auth').dataTable({
 								"bJQueryUI": true,
 								"sScrollY":  eH + "px",
+								"bScrollCollapse": true,
 								"bPaginate": false,
 								"sDom": '<"H"Tf>t<"F"ip>',
 								//"aaSorting": [[3,"asc"]],
@@ -20,16 +21,21 @@ $(function(){
 												},
 								"aoColumnDefs": [
 													{"sClass": "center", "aTargets": [-1] },
-													{"bSortable":false, "aTargets": [-1] },
-													{"bVisible":false,"aTargets": [2] },
+													{"bSortable":true, "aTargets": [0] },
+													{"bSortable":false, "aTargets": ['_all'] },
 												],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
+													addRowAttr(nRow,'login',0);
 												},
 								"oTableTools": TTOpts
 
 								});
 
+
+		$('body').on('click','.mkpwd', function(){
+			$(this).closest('tr').find(':text[name="passwd"]').val(mkpasswd());
+		});
 
 
 })
@@ -57,54 +63,30 @@ function unblockNewButton(node) {
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
 }
 
-/*
- * Функция срабатывает после обновления данных
- * Изменяем таблицу tab-full
- */
-function afterUpdateData(str,node) {
-	 $('#tab-auth').dataTable().fnReloadAjax();
-}
 
-/*
- * Функция срабатывает после добавления данных
- * Изменяем таблицу tab-full
- */
-function afterAddData(str) {
-	 $('#tab-auth').dataTable().fnReloadAjax();
-}
+modWin.validate_auth = function () {
 
-modWin.validate_aliases = function () {
-return false;
-			alias_name	= $('form :text[name="alias_name"]').val();
-			delivery_to	= $('form :text[name="delivery_to"]').val();
-			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
+			name	= $('form :text[name="login"]').val();
+			pass	= $('form :text[name="passwd"]').val();
+			id		= '#tab-auth-' + $(':hidden[name="id"]').val();
 
-			if ( ! (alias_name && delivery_to) ) {
-				modWin.message += 'Поля адресов должны быть заполнены. ';
+			if ( ! (id && pass) ) {
+				modWin.message = 'В новой записи заполнение полей логин и пароль - обязательно. ';
 			}
 
-			if ( ! fnTestByType( alias_name, 'mail') ) {
-				modWin.message += 'поле должно содержать почтовый адрес';
+			if ( ! name ) {
+				modWin.message += 'Поле Логин обязательно к заполнению';
 			}
 
-			if ( ! fnTestByType( delivery_to, 'mail') ) {
-				modWin.message += 'поле должно содержать почтовый адрес';
-			}
 
-			existNameID = 	$('tr')
-									.filter('[aname="'+ alias_name + '"]')
-									.filter('[fname="'+ delivery_to + '"]')
+			existNameID = 	$('tr').filter('[login="'+ name + '"]')
 									.filter( id )
 									.length;
-			existName = 	$('tr')
-									.filter('[aname="'+ alias_name + '"]')
-									.filter('[fname="'+ delivery_to + '"]')
+			existName = 	$('tr').filter('[login="'+ name + '"]')
 									.length;
 
 			if( ! existNameID && existName ) {
-					modWin.message += "Такие сочетания алиасов уже присутствуют";
-					$('form :text[name="delivery_to"]').val('');
-
+					modWin.message += "Такой логин уже существует";
 			}
 
 			return modWin.message;

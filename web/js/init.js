@@ -327,6 +327,7 @@ var modWin = {
 							success: function(str) {
 										// при удачном стечении обстоятельств
 										if( modWin.RowNode ) {
+											// Предполагается, что возвращается непустое значение
 											 $('#tab-'+modWin.TabID).dataTable().fnUpdate( str, modWin.RowNode );
 											 // Проверка на активность
 											 drawUnActiveRow( modWin.RowNode );
@@ -337,12 +338,13 @@ var modWin = {
 											 }
 										}
 										else {
+											// Предполагается, что возвращается непустое значение
 											 $('#tab-'+modWin.TabID).dataTable().fnAddData(str);
+
 											 // Какие-то действия еще
 											 if( function_exists('afterAddData') ){
 													afterAddData(str);
 											 }
-
 										}
 
 										$.modal.close();
