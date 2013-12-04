@@ -29,12 +29,14 @@ $(document).ready(function() {
 		TOptions.oTableTools.aButtons[3].sButtonText = 'РАЗДЕЛЫ';
 		$('#tab-sections').dataTable(TOptions);
 
-
+		TOptions.bSort = false;
+		//TOptions.aoColumnDefs.push({ "bVisible": false, aTargets: [ 0 ] });
 		TOptions.oTableTools.aButtons[3].sButtonText = 'СТРАНИЦЫ';
 		TOptions.oTableTools.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-		$('#tab-controllers').dataTable(TOptions)
+		$('#tab-controllers').dataTable(TOptions).rowReordering();//{sURL:"UpdateRowOrder.php"});
 
 		// Общая таблица отличается от двух других
+		TOptions.bSort = true;
 		TOptions.aoColumnDefs.unshift({ bSortable: true, aTargets: [ 2 ] } );
 		TOptions.aaSorting = [[ 2, "asc" ]];
 		TOptions.sAjaxSource = "/"+ ctrl +"/showTable/";
@@ -135,6 +137,13 @@ function clearChildTable(uids) {
 	$('#tab-full').dataTable().fnReloadAjax();
 }
 
+
+function deleteWithParams(uid, tab, params) {
+
+	params.ord = $('tr', tab).index(uid);
+
+	return params;
+}
 /*
  * Функции проверок при редактировании записей в таблицах.
  * Проверка на совпадения доменов, алиасов - не производится !!

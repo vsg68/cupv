@@ -11,6 +11,7 @@ class Admin extends \App\Page {
     public function action_view() {
 
  		$this->view->script_file	= '<script type="text/javascript" src="/js/admin.js"></script>';
+ 		$this->view->script_file	.= '<script type="text/javascript" src="/js/rowReordering.js"></script>';
 		//$this->view->css_file 		= '<link rel="stylesheet" href="/admin.css" type="text/css" />';
 
 		if( $this->permissions == $this::NONE_LEVEL )
@@ -18,10 +19,7 @@ class Admin extends \App\Page {
 
 		$this->view->subview = 'admin';
 
-		$this->view->entries = $this->pixie->db->query('select')
-									->table('sections')
-									->execute();
-
+		$this->view->entries = $this->pixie->orm->get('section')->find_all();
 
         $this->response->body	= $this->view->render();
     }
@@ -35,16 +33,18 @@ class Admin extends \App\Page {
 			return;
 
 		$data 	 = array();
-		$entries = $this->pixie->db->query('select')
-									->table('controllers')
-									->where('section_id',$this->_id)
-									->execute();
+		$entries = $this->pixie->orm->get('section')->where('id',$this->_id)->find();
 
-		foreach($entries as $entry)
-			$data[] = array( $entry->name,
-							 $entry->class,
-							 $entry->active,
-							 'DT_RowId' => 'tab-controllers-'.$entry->id,
+		// json controllers array
+		$controllers = ($entries->ctrls) ? unseriaize($entries->ctrls) : array();
+
+//print_r($entries); exit;
+		foreach($controllers as $entry)
+			$data[] = array( $entry['order'],
+							 $entry['name'],
+							 $entry['class'],
+							 $entry['active'],
+							 'DT_RowId' => 'tab-controllers-'.$entry['id'],
 							 'DT_RowClass' => 'gradeB'
 							);
 
@@ -61,32 +61,29 @@ class Admin extends \App\Page {
 		if( ! $tab = $this->request->post('t') )
 			return;
 
-		$this->_id 	= $this->request->param('id');
+		$this->_id 	= $this->request->param('id');  // ID раздела
 		$view 		= $this->pixie->view('form_admin');
-		$view->pid	= $this->request->post('init');
+		$ord		= $this->request->post('init'); //
 		$view->tab  = $tab;
 
-		$data = $this->pixie->db->query('select')
-										->table($tab)
-										->where('id',$this->_id)
-										->execute()
-										->current();
+		$data = $this->pixie->orm->get( 'section' )->where('id',$this->_id)->find()->as_array();
 
 		// Для дефолтных значений таблицы алиасов
 		if( $tab == 'controllers' ) {
 
-			$options = $this->getFreeControllers();
+			$options 	 = $this->getFreeControllers();
+			$controllers = $data->ctrls ? unserialize($data->ctrls) : array();
 
 			// Добавим туда текущий контроллер
 			if( $data ) {
-				array_push( $options, $data->class);
+				array_push( $options, $data[$ord]['name']);
 			}
 
 			$view->options = $options;
 		}
 
-	   $view->data = $data;
-       $this->response->body = $view->render();
+	    $view->data = $data;
+        $this->response->body = $view->render();
     }
 
 	public function action_edit() {
@@ -98,53 +95,56 @@ class Admin extends \App\Page {
 			return $this->noperm();
 
 		try {
+			/*
+			 * 1) Сначала выбираем список контроллеров нужного раздела
+			 * 2) Редактируем
+			 * 3) Сохраняем
+			 *
+			 */
 			$returnData  = array();
-			// Массив, который будем возвращать. Позиция важна
-			$entry['name'] = $params['name'];
 
-			if($params['tab'] == 'sections' )
-				$entry['note'] = $this->getVar($params['note']);
+			// 1)
+			$data = $this->pixie->orm->get('section')->where('id',$this->_id)->find();
 
-			if($params['tab'] == 'controllers' ) {
+			// 2)
+			$newdata = array('name'   => $params['name'],
+							 'note'   => $this->getVar($params['note']),
+							 'active' => $this->getVar($params['active'],0));
 
-				$entry['class'] = $params['class'];
-				$entry['section_id'] = $params['section_id'];
+			if($params['tab'] == 'sections' ) {
+				$data->name   = $newdata['name'];
+				$data->note   = $newdata['note'];
+				$data->active = $newdata['active'];
+			}
+			elseif ($params['tab'] == 'controllers' ) {
+
+				$controllers = ($data->ctrls) ? unserialize($data->ctrls) : array();
+
+				// Если есть такой массив - редактируем, нет - добавляем
+				if ( $controllers[$params['ord']] ) {
+					$controllers[$params['ord']] = $newdata;
+				}
+				else {
+					array_push($controllers, $newdata);
+				}
+
+				$data->ctrls = serialize($controllers);
 			}
 
-			$entry['active'] = $this->getVar($params['active'],0);
+			// 3)
+			$data->save();
 
+			// Отсылаем ответ
+			$returnData 				= array_values($newdata);
+			$returnData['DT_RowId']		= 'tab-'.$params['tab'].'-'.$params['id'];
+			$returnData['DT_RowClass']	= ($params['tab'] == 'controllers') ? 'gradeB': '';
 
-			if ( $params['id'] == 0 ) {
-				// новый пользователь
-				$this->pixie->db->query('insert')
-								->table($params['tab'])
-								->data($entry)
-								->execute();
-
-				$params['id'] = $this->pixie->db->insert_id();
-
-			}
-			else {
-			// Существующая запись
-				$this->pixie->db->query('update')
-								->table($params['tab'])
-								->data($entry)
-								->where('id',$params['id'])
-								->execute();
-			}
+			$this->response->body = json_encode($returnData);
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
 			return;
 		}
-
-		unset($entry['section_id']);
-
-		$returnData 				= array_values($entry);
-		$returnData['DT_RowId']		= 'tab-'.$params['tab'].'-'.$params['id'];
-		$returnData['DT_RowClass']	= ($params['tab'] == 'controllers') ? 'gradeB': '';
-
-		$this->response->body = json_encode($returnData);
 	}
 
 	public function action_delEntry() {
@@ -157,19 +157,18 @@ class Admin extends \App\Page {
 			return;
 
 		try {
-			$this->pixie->db->query('delete')
-							->table($params['tab'])
-							->where('id',$params['id'])
-							->execute();
-
-
-			// Если есть связанные страницы - обнуляем связь (section_id)
 			if( $params['tab'] == 'sections' ) {
+				$this->pixie->orm->get('section')->where('id',$this->_id)->delete();
+			}
+			elseif( $params['tab'] == 'controllers' ) {
 
-				$this->pixie->db->query('delete')
-								->table('controllers')
-								->where('section_id',$params['id'])
-								->execute();
+				$data = $this->pixie->orm->get('section')->where('id',$this->_id)->find();
+				$controllers = unserialize($data->ctrls);
+
+				unset($controllers[$ord]);
+
+				$data->ctrls = serialize($controllers);
+				$data->save();
 			}
 		}
 		catch (\Exception $e) {
@@ -231,19 +230,16 @@ class Admin extends \App\Page {
 /*
  * Берем еще свободные контроллеры
  */
-	private function getFreeControllers() {
+	private function getFreeControllers($id) {
 
-		$entries = $this->pixie->db->query('select')
-									->table('controllers')
-									->execute()
-									->as_array();
+		$entries = $this->pixie->orm->get('section')->where('id',$id)->find()->as_array();
 
 		// Ищем, какие контроллеры еще остались не в базе
 		$controllers = $this->get_ctrl();
 
 		foreach($entries as $entry)	{
 
-			unset($controllers[$entry->class]);
+			unset($controllers[$entry['name']]);
 		}
 
 		return array_keys($controllers);

@@ -36,7 +36,7 @@ class Page extends \PHPixie\Controller {
 										->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
 										->where('X.class',strtolower($this->request->param('controller')))
 										->where('Y.active',1)
-										->order_by('Y.id','asc')
+										->order_by('Y.order')
 										->execute();
 
 		// Проверка легитимности пользователя и его прав
