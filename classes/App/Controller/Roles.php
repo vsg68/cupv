@@ -16,7 +16,7 @@ class Roles extends \App\Page {
 
 		$roles = array();
 
-		$this->view->entries = $this->pixie->db->query('select')
+		$this->view->entries = $this->pixie->db->query('select','admin')
 											->table('roles')
 											->execute();
 
@@ -37,7 +37,7 @@ class Roles extends \App\Page {
 		$view->pid	= $this->request->post('init');
 		$view->tab  = $tab;
 
-		$data = $this->pixie->db->query('select')
+		$data = $this->pixie->db->query('select','admin')
 										->table($tab)
 										->where( ( $tab == 'rights' ? 'role_' : '').'id',$this->_id )
 										->execute()
@@ -45,7 +45,7 @@ class Roles extends \App\Page {
 
 		if( $tab == 'rights' ) {
 
-			$view->slevels = $this->pixie->db->query('select')
+			$view->slevels = $this->pixie->db->query('select','admin')
 											->table('slevels')
 											->execute()
 											->as_array();
@@ -64,7 +64,7 @@ class Roles extends \App\Page {
 			return;
 
 		try {
-			$entries = $this->pixie->db->query('select')
+			$entries = $this->pixie->db->query('select','admin')
 									->fields(array('S.name','sect_name'),
 											 array('C.name','ctrl_name'),
 											 array('C.class','ctrl_class'),
@@ -141,7 +141,7 @@ class Roles extends \App\Page {
 //print_r($entry);exit;
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
-				$this->pixie->db->query('insert')
+				$this->pixie->db->query('insert','admin')
 								->table($params['tab'])
 								->data($entry)
 								->execute();
@@ -151,7 +151,7 @@ class Roles extends \App\Page {
 			}
 			else {
 			// Существующая запись
-				$this->pixie->db->query('update')
+				$this->pixie->db->query('update','admin')
 								->table($params['tab'])
 								->data($entry)
 								->where('id',$params['id'])
@@ -162,7 +162,7 @@ class Roles extends \App\Page {
 			//в котором оно представлено
 			if( $params['tab'] == 'rights' ) {
 
-				$req = $this->pixie->db->query('select')
+				$req = $this->pixie->db->query('select','admin')
 									->fields(array('S.name','sect_name'),
 											 array('C.name','ctrl_name'),
 											 array('L.name','slevel'),

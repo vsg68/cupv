@@ -18,7 +18,7 @@ class Admin extends \App\Page {
 
 		$this->view->subview = 'admin';
 
-		$this->view->entries = $this->pixie->db->query('select')
+		$this->view->entries = $this->pixie->db->query('select','admin')
 									->table('sections')
 									->execute();
 
@@ -35,7 +35,7 @@ class Admin extends \App\Page {
 			return;
 
 		$data 	 = array();
-		$entries = $this->pixie->db->query('select')
+		$entries = $this->pixie->db->query('select','admin')
 									->table('controllers')
 									->where('section_id',$this->_id)
 									->execute();
@@ -66,7 +66,7 @@ class Admin extends \App\Page {
 		$view->pid	= $this->request->post('init');
 		$view->tab  = $tab;
 
-		$data = $this->pixie->db->query('select')
+		$data = $this->pixie->db->query('select','admin')
 										->table($tab)
 										->where('id',$this->_id)
 										->execute()
@@ -116,7 +116,7 @@ class Admin extends \App\Page {
 
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
-				$this->pixie->db->query('insert')
+				$this->pixie->db->query('insert','admin')
 								->table($params['tab'])
 								->data($entry)
 								->execute();
@@ -126,7 +126,7 @@ class Admin extends \App\Page {
 			}
 			else {
 			// Существующая запись
-				$this->pixie->db->query('update')
+				$this->pixie->db->query('update','admin')
 								->table($params['tab'])
 								->data($entry)
 								->where('id',$params['id'])
@@ -157,7 +157,7 @@ class Admin extends \App\Page {
 			return;
 
 		try {
-			$this->pixie->db->query('delete')
+			$this->pixie->db->query('delete','admin')
 							->table($params['tab'])
 							->where('id',$params['id'])
 							->execute();
@@ -166,7 +166,7 @@ class Admin extends \App\Page {
 			// Если есть связанные страницы - обнуляем связь (section_id)
 			if( $params['tab'] == 'sections' ) {
 
-				$this->pixie->db->query('delete')
+				$this->pixie->db->query('delete','admin')
 								->table('controllers')
 								->where('section_id',$params['id'])
 								->execute();
@@ -185,7 +185,7 @@ class Admin extends \App\Page {
  */
 	public function action_showTable() {
 
-		$entries = $this->pixie->db->query('select')
+		$entries = $this->pixie->db->query('select','admin')
 									->fields(array('C.class', 'c_class'),
 											 array('C.name', 'c_name'),
 											 array('S.name','s_name'),
@@ -233,7 +233,7 @@ class Admin extends \App\Page {
  */
 	private function getFreeControllers() {
 
-		$entries = $this->pixie->db->query('select')
+		$entries = $this->pixie->db->query('select','admin')
 									->table('controllers')
 									->execute()
 									->as_array();

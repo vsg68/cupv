@@ -17,7 +17,7 @@ class Login extends \App\Page {
 
 			$name = $this->auth->user()->login ;
 
-			$this->view->pages = $this->pixie->db->query('select')
+			$this->view->pages = $this->pixie->db->query('select','admin')
 											->fields($this->pixie->db->expr('S.name, S.note, COALESCE(C.class,"#") AS link'))
 											->table('sections','S')
 											->join(array('controllers','C'),array('S.id','C.section_id'),'LEFT')
