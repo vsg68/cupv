@@ -125,10 +125,10 @@ function updateClass(nRow) {
 		return false;
 
 	  mode = $('td:eq(2)', nRow).text();
-	  $(nRow).removeClass('gradeX').removeClass('gradeA');
+	  $(nRow).removeClass('gradeX').removeClass('gradeB');
 
 	  if( mode == 'WRITE') {
-		$(nRow).addClass('gradeA');
+		$(nRow).addClass('gradeB');
 	  }
 
 	  if( mode == 'NONE') {

@@ -166,10 +166,22 @@ class Admin extends \App\Page {
 			// Если есть связанные страницы - обнуляем связь (section_id)
 			if( $params['tab'] == 'sections' ) {
 
+				// удаляем все связанные права
+				$this->pixie->db->query('delete','admin')
+								->table('rights')
+								->where('control_id', 'IN',
+										$this->pixie->db->query('select','admin')
+														->table('controllers')
+														->fields('id')
+														->where('section_id',$params['id'])
+										)
+								->execute();
+				// удаляем все связанные контроллеры
 				$this->pixie->db->query('delete','admin')
 								->table('controllers')
 								->where('section_id',$params['id'])
 								->execute();
+
 			}
 		}
 		catch (\Exception $e) {

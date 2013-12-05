@@ -9,7 +9,7 @@
 			</p>
 		</div>
 		<form id='usersform' action='#' method='post'>
-			<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : (isset($ctrl) ? $ctrl : '0')) ?>'  />
+			<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : (isset($ctrl) ? '0_'.$ctrl : '0')) ?>'  />
 			<input type='hidden' name='tab' value='<?= $tab ?>' />
 			<h4></h4>
 			   <table>
