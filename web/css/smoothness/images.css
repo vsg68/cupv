@@ -157,3 +157,10 @@ a.DTTT_button_search.DTTT_disabled span {
 #roles:hover {
 	background-position: -512px -64px;
 }
+#dns {
+	background-position: -576px 0px;
+}
+#dns.pagetab-selected,
+#dns:hover {
+	background-position: -576px -64px;
+}
