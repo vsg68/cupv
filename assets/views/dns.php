@@ -5,7 +5,6 @@
 				<tr>
 					<th>Название</th>
 					<th>Тип</th>
-					<th>Last_check</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -13,7 +12,6 @@
 				<tr id="tab-dns-<?= $entry->id ?>">
 					<td><?= $entry->name ?></td>
 					<td><?= $entry->master ?></td>
-					<td><?= $entry->last_check ?></td>
 				</tr>
 			<?php endforeach; ?>
 			</tbody>

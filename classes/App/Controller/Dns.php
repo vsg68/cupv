@@ -24,15 +24,9 @@ class Dns extends \App\Page {
 		if( ! $this->_id = $this->request->param('id'))
 			return;
 
-		$data 	 = array();
-/*
-		// сначала выбираем нужную запись, а потом по ней вынимаем из связанной таблице все записи
-		$dns = $this->pixie->orm->get('dns',$this->_id)->find();
-		$entries = $dns->records->count_all();
-*/
-		// А можно вот так
 		$entries = $this->pixie->orm->get('records')->where('domain_id',$this->_id)->find_all();
 
+		$data = array();
 		foreach($entries as $entry)	{
 
 			$data[] = array($entry->name,
@@ -46,38 +40,6 @@ class Dns extends \App\Page {
 		$this->response->body = json_encode($data);
     }
 
-	public function action_showTable() {
-
-		$entries = $this->pixie->db->query('select')
-							->fields(array('G.name', 'name'),
-									 array('U.mailbox','login'),
-									 array('U.username', 'username'),
-									 array('U.active', 'active'))
-							->table('groups','G')
-							->join(array('lists','L'),array('G.id','L.group_id'))
-							->join(array('users','U'),array('L.user_id','U.id'))
-							->order_by('G.name')
-							->execute();
-
-		$data = array();
-
-		foreach($entries as $entry)
-			$data[] = array($entry->name,
-							$entry->login,
-							$entry->username,
-							$entry->active,
-							"DT_RowClass" => "gradeA"
-							);
-
-		$retutnData = array("sEcho" => 1,
-							"iTotalRecords" => sizeof($data),
-							"iTotalDisplayRecords" => sizeof($data),
-							"aaData" => $data
-							);
-
-		$this->response->body = json_encode($retutnData);
-	}
-
   	public function action_showEditForm() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
@@ -88,9 +50,16 @@ class Dns extends \App\Page {
 
 		$this->_id 	= $this->request->param('id');
 		$view 		= $this->pixie->view('form_dns');
+		$init 		= $this->request->post('init');
 		$view->tab  = $tab;
 		// Запрос к бд
 		$view->data = $this->pixie->orm->get($tab)->where('id',$this->_id)->find();
+
+		// Для новой записи
+		if( !$this->_id && $init) {
+			$view->data->domain_id = $init;
+		}
+
 
         $this->response->body = $view->render();
     }
@@ -108,46 +77,19 @@ class Dns extends \App\Page {
 			$tab = $params['tab'];
 			unset($params['tab']);
 
-			// меняем значения
-			//~ if($params['tab'] == 'records' ) {
-//~
-					//~ $entry->name => $params['name'];
-					//~ $entry->type => $params['type'];
-					//~ $entry->domain_id => $params['domain_id'];
-					//~ $entry->content => $params['content'];
-				//~ $entry = array('name' 	   => $params['name'],
-							   //~ 'type' 	   => $params['type'],
-							   //~ 'content'   => $params['content'],
-							   //~ 'domain_id' => $params['domain_id'],
-							   //~ 'ttl'	   => $params['ttl'],
-							   //~ 'id'		   => $params['id'],
-							   //~ );
-			//~ }
-			//~ elseif( $params['tab'] == 'dns' ) {
-						//~ $entry->name => $params['name'];
-						//~ $entry->master => $params['type'];
-						//~ $entry->last_check => $this-getVar($params['last_check']);
-				//~ $entry = array('name' 		=> $params['name'],
-							   //~ 'master'		=> $params['type'],
-							   //~ 'last_check' => $this-getVar($params['last_check']),
-							   //~ 'id'			=> $params['id'],
-							   //~ );
-			//~ }
-
 			$not_new = $params['id'] ? true : false;
 
-// вынимаем модель
+			// вынимаем модель
 			$row = $this->pixie->orm->get($tab)->values($params, $not_new)->save();
 
 
-			unset( $params['domain_id']);
 			$id = $params['id'];
-			unset( $params['id']);
+			unset( $params['domain_id'], $params['id'] );
 
 			// отдаем
-			$returnData 			= array_values($params);
-			$returnData['DT_RowId']	= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
-
+			$returnData 				= array_values($params);
+			$returnData['DT_RowClass']  = 'gradeB';
+			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
 
 			$this->response->body = json_encode($returnData);
 		}
@@ -159,7 +101,6 @@ class Dns extends \App\Page {
 
 	public function action_delEntry() {
 
-
 		if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();
 
@@ -167,11 +108,13 @@ class Dns extends \App\Page {
 			return;
 
 		try {
+			$entry = $this->pixie->orm->get($params['tab'])->where( 'id', $params['id'])->find();
+			// если это запись домена
+			if ( $params['tab'] == 'dns' ) {
+				$entry->records->delete_all();
+			}
 
-			$this->pixie->db->query('delete')
-									->table($params['tab'])
-									->where('id',$params['id'])
-									->execute();
+			$entry->delete();
 		}
 		catch (\Exception $e) {
 			$view = $this->pixie->view('form_alert');

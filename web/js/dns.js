@@ -14,8 +14,9 @@ $(document).ready(function() {
 								{ bSortable: false, aTargets: [ '_all' ] },
 							],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-								//drawCheckBox(nRow);
-								//updateClass(nRow);
+								if( nRow.id.split('-')[1] == 'records') {
+									addRowAttr(nRow,'type',1);
+								}
 							},
 			"oTableTools": TTOpts
 	}
@@ -73,8 +74,8 @@ function unblockNewButton(node) {
  */
 function usersRowID(objTT) {
 
-		if( objTT.s.dt.sTableId != 'tab-roles' )
-			return fnGetRowID("tab-roles");
+		if( objTT.s.dt.sTableId != 'tab-dns' )
+			return fnGetRowID("tab-dns");
 		return 0;
 }
 
@@ -92,11 +93,10 @@ function showMapsTable(node) {
 				type: "GET",
 				dataType: "json",
 				success: function(response) {
-												$('#tab-records').dataTable().fnClearTable();
-												$('#tab-records').dataTable().fnAddData(response);
+								$('#tab-records').dataTable().fnClearTable();
+								$('#tab-records').dataTable().fnAddData(response);
 						},
 				error: function(response) {
-
 							var msg = response.responseText;
 							if( $(msg).find('.form-alert').length ) {
 								$(msg).modal( modInfo );
@@ -106,60 +106,38 @@ function showMapsTable(node) {
 }
 
 /*
- * Функция срабатывает после обновления данных
- * Изменяем таблицу tab-full
- */
-function updateClass(nRow) {
+ * Стираем значения "подчиненных" таблиц
+*/
+function clearChildTable(info_data) {
 
-	  if(nRow.id.split('-')[1] == 'roles' )
-		return false;
+	$('#tab-records').dataTable().fnClearTable();
 
-	  mode = $('td:eq(2)', nRow).text();
-	  $(nRow).removeClass('gradeX').removeClass('gradeB');
-
-	  if( mode == 'WRITE') {
-		$(nRow).addClass('gradeB');
-	  }
-
-	  if( mode == 'NONE') {
-		 $(nRow).addClass('gradeX');
-	  }
-}
-
-/*
- * Функция срабатывает после изменения данных
- * Почему-то не изменяется ID строки программно
- * поэтому делаю это руками
- */
-function afterUpdateData(str,node) {
-
-	if(node.id.split('-')[1] == 'rights' ) {
-		node.id = str.DT_RowId ;
+	if(info_data) {
+		$(info_data).modal(modInfo);
 	}
 }
+
 
 /*
  * Функции проверок при редактировании записей в таблицах.
  * Проверка на совпадения доменов, алиасов - не производится !!
  */
-modWin.validate_roles = function() {
-									return emptyValidate();
-								}
+modWin.validate_dns = function() {
+			if ( ! $('form :text[name="name"]').val() )	 {
+				return modWin.message = 'Заполнение полей  - обязательно. ';
+			}
+}
 
 
 modWin.validate_records = function() {
-									return false;
-								}
 
 
-
-function emptyValidate() {
-
-			msg 	= '';
-
-			if (! $('form :text[name="name"]').val() ) {
-				msg = 'Необходимо указывать названия раздела. '
+			if ( ! $('form :text[name="name"]').val() ||
+				 ! $('form :text[name="content"]').val() ||
+				 ! $('form :text[name="ttl"]').val()
+				)
+			 {
+				return modWin.message = 'Заполнение полей  - обязательно. ';
 			}
 
-			return msg;
 }

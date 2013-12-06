@@ -17,21 +17,21 @@
 					<input type='hidden' name='domain_id' value='<?= $data->domain_id ?>'  />
 					<tr>
 						<td class='formlabel'>Hostname:</td>
-						<td><input type='text' name='name' value='<?= isset($data->name) ? $data->name : '' ?>'  /></td>
+						<td><input type='text' name='name' value='<?= isset($data->name) ? $data->name : '' ?>' placeholder='host or domain name' /></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Тип:</td>
 						<td>
 							<select name='type'>
 								<?php foreach( array('SOA','NS','MX','A','TXT') as $entry ): ?>
-								<option value='<?= $entry ?>' <?= ($entry == ( isset($data->type) ? $data->type : '') ? ' selected' : '') ?>> <?= $entry ?> </option>
+								<option value='<?= $entry ?>' <?= ($entry == ( isset($data->type) ? $data->type : 'A') ? ' selected' : '') ?>> <?= $entry ?> </option>
 								<?php endforeach; ?>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td class='formlabel'>name/ip:</td>
-						<td><input type='text' class='formtext' name='content' value='<?= isset($data->content) ? $data->content : '' ?>' ></td>
+						<td><input type='text' class='formtext' name='content' value='<?= isset($data->content) ? $data->content : '' ?>' placeholder='name or ip address'></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>TTL(sec):</td>
@@ -40,16 +40,18 @@
 				<?php else: ?>
 					<tr>
 						<td class='formlabel'>Название:</td>
-						<td><input type='text' name='name' value='<?= isset($data->name) ? $data->name : '' ?>'  /></td>
+						<td><input type='text' name='name' value='<?= isset($data->name) ? $data->name : '' ?>' placeholder='domain name' /></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Тип:</td>
-						<td><input type='text' name='type' value='<?= isset($data->master) ? $data->master : '' ?>' /></td>
+						<td>
+							<select name='master'>
+								<?php foreach( array('MASTER','SLAVE') as $entry ): ?>
+								<option value='<?= $entry ?>' <?= ($entry == ( isset($data->master) ? $data->master : 'MASTER') ? ' selected' : '') ?>> <?= $entry ?> </option>
+								<?php endforeach; ?>
+							</select>
 					</tr>
-					<tr>
-						<td class='formlabel'>Last_check:</td>
-						<td><input type='text' class='formtext' name='last_check' value='<?= isset($data->last_check) ?  $data->last_check : '' ?>' ></td>
-					</tr>
+
 				<?php endif; ?>
 				</table>
 				<div class='submit'><div id='sb'></div></div>
