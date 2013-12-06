@@ -121,8 +121,7 @@ class Admin extends \App\Page {
 								->data($entry)
 								->execute();
 
-				$params['id'] = $this->pixie->db->insert_id();
-
+				$params['id'] = $this->pixie->db->insert_id('admin');
 			}
 			else {
 			// Существующая запись

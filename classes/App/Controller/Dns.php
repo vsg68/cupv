@@ -88,7 +88,7 @@ class Dns extends \App\Page {
 
 			// отдаем
 			$returnData 				= array_values($params);
-			$returnData['DT_RowClass']  = 'gradeB';
+			$returnData['DT_RowClass']  = ($tab == 'records') ? 'gradeB' : '';
 			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
 
 			$this->response->body = json_encode($returnData);
