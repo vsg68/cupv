@@ -29,10 +29,10 @@ $(document).ready(function() {
 		TOptions.oTableTools.aButtons[3].sButtonText = 'РАЗДЕЛЫ';
 		$('#tab-sections').dataTable(TOptions);
 
-
+		TOptions.aoColumnDefs.push({bVisible:false, aTarget: [0]})
 		TOptions.oTableTools.aButtons[3].sButtonText = 'СТРАНИЦЫ';
 		TOptions.oTableTools.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-		$('#tab-controllers').dataTable(TOptions)
+		$('#tab-controllers').dataTable(TOptions).rowReordering({sURL:'/admin/Reorder/'});
 
 		// Общая таблица отличается от двух других
 		TOptions.aoColumnDefs.unshift({ bSortable: true, aTargets: [ 2 ] } );

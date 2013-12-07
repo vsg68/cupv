@@ -77,11 +77,13 @@ class Dns extends \App\Page {
 			$tab = $params['tab'];
 			unset($params['tab']);
 
-			$not_new = $params['id'] ? true : false;
+			$is_update = $params['id'] ? true : false;
 
-			// вынимаем модель
-			$row = $this->pixie->orm->get($tab)->values($params, $not_new)->save();
-
+			// сохраняем модель
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get($tab)
+									->values($params, ($params['id'] ? true : false))
+									->save();
 
 			$id = $params['id'];
 			unset( $params['domain_id'], $params['id'] );
