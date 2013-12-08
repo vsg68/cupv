@@ -7,7 +7,10 @@ class Controllers extends \PHPixie\ORM\Model{
     public $connection = 'admin';
 	public $table='controllers';
 
-
+	protected $belongs_to = array('sections' => array(
+											'model'=>'sections',
+											'key'=>'section_id'
+								));
 
     protected $has_many = array(
 							'rights'=>array(

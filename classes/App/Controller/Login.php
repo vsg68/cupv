@@ -30,10 +30,9 @@ class Login extends \App\Page {
 											->where('R.active',1)
 											->where('C.active',1)
 											->where('A.active',1)
-											//->where('C.arrange',0)
+											->where('C.order',0)
 											->where('SL.slevel','>',0)
 											->group_by('S.name')
-											->order_by('C.id','asc')
 											->execute();
 
 		}

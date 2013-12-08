@@ -11,7 +11,7 @@ class Admin extends \App\Page {
     public function action_view() {
 
  		$this->view->script_file = '<script type="text/javascript" src="/js/admin.js"></script>';
-		$this->view->script_file .= '<script type="text/javascript" src="/js/rowReordering.js"></script>';
+		$this->view->script_file .= '<script type="text/javascript" src="/js/rowReordering.min.js"></script>';
 
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
@@ -39,7 +39,8 @@ class Admin extends \App\Page {
 									//~ ->find_all();
 
 		foreach($entries as $entry) {
-			$data[] = array( $entry->name,
+			$data[] = array( $entry->order,
+							 $entry->name,
 							 $entry->class,
 							 $entry->active,
 							 'DT_RowId' => 'tab-controllers-'.$entry->id,
@@ -77,7 +78,15 @@ class Admin extends \App\Page {
 				array_push( $options, $data->class);
 			}
 
-			$view->options = $options;
+			$view->options  = $options;
+
+			// Смотрим порядковый номер
+			if( $this->_id == 0 ) {
+				$view->count = $this->pixie->orm->get('sections')
+												->where('id',$view->pid)
+												->controllers
+												->count_all();
+			}
 		}
 
 	    $view->data = $data;
@@ -128,9 +137,34 @@ class Admin extends \App\Page {
 		if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();
 
-		try {
-			$entries = $this->pixie->orm->get($params['t'])->find_all();
+		$tab = explode('-',$params['id'])[1];
+		$id  = explode('-',$params['id'])[2];
 
+		$lowEgde = ($params['direction'] == 'forward') ? $params['fromPosition'] : $params['toPosition'];
+		$topEdge = ($params['direction'] == 'forward') ? $params['toPosition'] : $params['fromPosition'];
+
+		try {
+			$entries = $this->pixie->orm->get($tab)  	// controllers
+										->where('id', $id)
+										->sections  	// находим, какой у контроллера раздел
+										->controllers   // находим контроллеры в этом разделе
+										->where('order', '<=', $topEdge)
+										->where('order', '>=', $lowEgde)
+										->order_by('order')
+										->find_all();
+
+			foreach($entries as $entry) {
+				if( $entry->order == $params['fromPosition']) {
+					// Присваиваем полученный порядковый номер
+					$entry->order = $params['toPosition'];
+				}
+				else {
+					// В зависимости от направления мы либо увеличиваем,либо уменьшаем порядковый номер
+					$entry->order = $entry->order + ($params['direction'] == 'forward' ? (-1) : 1);
+				}
+
+				$entry->save();
+			}
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
@@ -192,6 +226,7 @@ class Admin extends \App\Page {
 			// Ищем, какие контроллеры еще остались не в базе
 			unset($controllers[$entry->ctrls->class]);
 		}
+//print_r($controllers); exit;
 
 		if(is_array($controllers)) {
 			// Если остались незадействованные контроллеры - мы их добавляем в конец задействованных

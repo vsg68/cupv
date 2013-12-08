@@ -14,6 +14,7 @@
 			<h4></h4>
 			   <table>
 				   	<?php if( isset($options)): ?>
+				   	<input type='hidden' name='order' value='<?= (isset($data->order) ? $data->order : $count ) ?>'  />
 					<tr>
 						<td class='formlabel noname'>Страница:</td>
 						<td><input type='text' name='name' value='<?= isset($data->name) ? $data->name : '' ?>'  /></td>

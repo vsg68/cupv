@@ -19,8 +19,8 @@
 -->
 
 
-		<script type="text/javascript" language="javascript" src="../js/jquery-1.9.1.js"></script>
-		<script type="text/javascript" language="javascript" src="../js/jquery.dataTables.js"></script>
+		<script type="text/javascript" language="javascript" src="../js/jquery.min.js"></script>
+		<script type="text/javascript" language="javascript" src="../js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" language="javascript" src="../js/jquery-ui.min.js"></script>
 		<script type="text/javascript" language="javascript" src="../js/TableTools.min.js"></script>
 		<script type="text/javascript" language="javascript" src="../js/TableTools.plugins.js"></script>
