@@ -82,7 +82,7 @@ class Dns extends \App\Page {
 			// сохраняем модель
 			// Если в запрос поместить true -  предполагается UPDATE
 			$row = $this->pixie->orm->get($tab)
-									->values($params, ($params['id'] ? true : false))
+									->values($params, $is_update)
 									->save();
 
 			$id = $params['id'];

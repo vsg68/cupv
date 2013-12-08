@@ -3,21 +3,12 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Users</title>
-<!--
-		<link rel="stylesheet" href="../css/humanity/jquery-ui-1.10.3.custom.min.css" type="text/css" />
--->
+
 		<link rel="stylesheet" href="../css/smoothness/jquery-ui.min.css" type="text/css" />
 		<link rel="stylesheet" href="../css/demo_table_jui.css" type="text/css" />
-<!--
-		<link rel="stylesheet" href="../css/TableTools.css" type="text/css" />
--->
 		<link rel="stylesheet" href="../css/TableTools_JUI.css" type="text/css" />
 		<link rel="stylesheet" href="../css/style.css" type="text/css" />
 		<link rel="stylesheet" href="../css/smoothness/images.css" type="text/css" />
-<!--
-		<link rel="stylesheet" href="../css/basic.css" type="text/css" />
--->
-
 
 		<script type="text/javascript" language="javascript" src="../js/jquery.min.js"></script>
 		<script type="text/javascript" language="javascript" src="../js/jquery.dataTables.min.js"></script>
