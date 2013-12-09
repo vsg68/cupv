@@ -64,7 +64,7 @@ class Admin extends \App\Page {
 
 		$this->_id 	= $this->request->param('id');  // ID раздела
 		$view 		= $this->pixie->view('form_admin');
-		$ord		= $this->request->post('init'); //
+		$view->pid	= $this->request->post('init'); //
 		$view->tab  = $tab;
 
 		$data = $this->pixie->orm->get($tab)
@@ -74,7 +74,6 @@ class Admin extends \App\Page {
 		if( $tab == 'controllers' ) {
 
 			$options 	 = $this->getFreeControllers();
-			$controllers = $data->ctrls ? unserialize($data->ctrls) : array();
 
 			// Добавим туда текущий контроллер
 			if( $data->loaded() ) {
@@ -235,7 +234,6 @@ class Admin extends \App\Page {
 			// Ищем, какие контроллеры еще остались не в базе
 			unset($controllers[$entry->ctrls->class]);
 		}
-//print_r($controllers); exit;
 
 		if(is_array($controllers)) {
 			// Если остались незадействованные контроллеры - мы их добавляем в конец задействованных
@@ -256,7 +254,7 @@ class Admin extends \App\Page {
 /*
  * Берем еще свободные контроллеры
  */
-	private function getFreeControllers($id) {
+	private function getFreeControllers() {
 
 		$entries = $this->pixie->orm->get('controllers')->find_all();
 
@@ -265,7 +263,7 @@ class Admin extends \App\Page {
 
 		foreach($entries as $entry)	{
 
-			unset($controllers[$entry['name']]);
+			unset($controllers[$entry->class]);
 		}
 
 		return array_keys($controllers);
