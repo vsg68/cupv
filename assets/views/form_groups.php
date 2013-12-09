@@ -9,21 +9,21 @@
 			</p>
 		</div>
 		<form id='usersform' action='#' method='post'>
-			<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : '0') ?>'  />
+			<input type='hidden' name='id' value='<?= (isset($entries->id) ? $entries->id : '0') ?>'  />
 			<input type='hidden' name='tab' value='<?= $tab ?>' />
 			<h4></h4>
 			   <table>
 					<tr>
 						<td class='formlabel'>Группа:</td>
-						<td><input type='text' name='name' value='<?= isset($data->name) ? $data->name : '' ?>'  /></td>
+						<td><input type='text' name='name' value='<?= isset($entries->name) ? $entries->name : '' ?>'  /></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Описание:</td>
-						<td><input type='text' name='note' value='<?= isset($data->note) ? $data->note : '' ?>' /></td>
+						<td><input type='text' name='note' value='<?= isset($entries->note) ? $entries->note : '' ?>' /></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Активно:</td>
-						<td><input type='checkbox' class='formtext' name='active' value='1' <?php isset($data->active) ?  ($data->active & 1) && print('checked') : print('checked') ?> ></td>
+						<td><input type='checkbox' class='formtext' name='active' value='1' <?php isset($entries->active) ?  ($entries->active & 1) && print('checked') : print('checked') ?> ></td>
 					</tr>
 				</table>
 				<div class='submit'><div id='sb'></div></div>

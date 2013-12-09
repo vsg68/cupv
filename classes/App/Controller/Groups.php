@@ -12,9 +12,7 @@ class Groups extends \App\Page {
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
 
-		$this->view->entries = $this->pixie->db->query('select')
-												->table('groups','G')
-												->execute();
+		$this->view->entries = $this->pixie->orm->get('groups')->find_all();
 		$this->view->subview = 'groups';
 
 		$this->response->body	= $this->view->render();
@@ -29,24 +27,16 @@ class Groups extends \App\Page {
 			return;
 
 		$data 	 = array();
-
-		$entries = $this->pixie->db->query('select')
-									->fields(array('U.mailbox','login'),
-											 array('U.username', 'username'),
-											 array('U.active', 'active'),
-											 array('L.id', 'lid'))
-									->table('users','U')
-									->join(array('lists','L'),array('U.id','L.user_id'))
-									->where('L.group_id', $this->_id)
-									->execute()
-									->as_array();
-
+		// подготовка запроса
+		$entries = $this->pixie->orm->get('users')->with('lists')
+												  ->where('lists.group_id', $this->_id)
+												  ->find_all();
 		foreach($entries as $entry)	{
 
-			$data[] = array($entry->login,
+			$data[] = array($entry->mailbox,
 							$entry->username,
 							$entry->active,
-							'DT_RowId' => 'tab-lists-'.$entry->lid,
+							'DT_RowId' => 'tab-lists-'.$entry->lists->id,
 							'DT_RowClass' => 'gradeB');
 		}
 
@@ -54,25 +44,19 @@ class Groups extends \App\Page {
     }
 
 	public function action_showTable() {
+		// поскольку нет возможности preload связь has_many, то делаем две связи has_one & belongs_to
+		$entries = $this->pixie->orm->get('groups')->with('lists') 			// has_one
+												   ->with('lists.users')	// belongs_to
+												   ->order_by('name')
+												   ->find_all();
 
-		$entries = $this->pixie->db->query('select')
-							->fields(array('G.name', 'name'),
-									 array('U.mailbox','login'),
-									 array('U.username', 'username'),
-									 array('U.active', 'active'))
-							->table('groups','G')
-							->join(array('lists','L'),array('G.id','L.group_id'))
-							->join(array('users','U'),array('L.user_id','U.id'))
-							->order_by('G.name')
-							->execute();
 
 		$data = array();
-
 		foreach($entries as $entry)
 			$data[] = array($entry->name,
-							$entry->login,
-							$entry->username,
-							$entry->active,
+							$entry->lists->users->mailbox,
+							$entry->lists->users->username,
+							$entry->lists->users->active,
 							"DT_RowClass" => "gradeA"
 							);
 
@@ -99,31 +83,31 @@ class Groups extends \App\Page {
 		$view->tab  = $tab;
 
 		if( $tab == 'groups' ) {
-			$view->data = $this->pixie->db->query('select')
-											->table($tab)
-											->where('id',$this->_id)
-											->execute()
-											->current();
+
+			$entries = $this->pixie->orm->get($tab)->where('id',$this->_id)->find();
 		}
 		elseif( $tab == 'lists' ) {
 
-			$entries = $this->pixie->db->query('select')
-									->fields(array('U.username','name'),
-											 array('U.mailbox', 'note'),
-											 array('U.id', 'id'),
-											 array('L.group_id', 'gid'))  // ??? может и не надо
-									->table('users', 'U')
-									->join(array('lists','L'),
-										   array( array('L.user_id','U.id'),
-												  array('L.group_id',$this->pixie->db->expr($this->_id))
-												 ))
-									->execute()
-									->as_array();
-
-			$view->entries = $entries;
-			$view->pid 	   = $this->_id;
+			//~ $entries = $this->pixie->db->query('select')
+									//~ ->fields(array('U.username','name'),
+											 //~ array('U.mailbox', 'note'),
+											 //~ array('U.id', 'id'),
+											 //~ array('L.group_id', 'gid'))  // ??? может и не надо
+									//~ ->table('users', 'U')
+									//~ ->join(array('lists','L'),
+										   //~ array( array('L.user_id','U.id'),
+												  //~ array('L.group_id',$this->pixie->db->expr($this->_id))
+												 //~ ))
+									//~ ->execute()
+									//~ ->as_array();
+			$entries = $this->pixie->orm->get('users')->with('lists')
+										->where('lists.group_id',$this->_id)
+										->find_all()->as_array(true);
+print_r($entries);exit;
+			$view->pid = $this->_id;
 		}
 
+		$view->entries = $entries;
         $this->response->body = $view->render();
     }
 
@@ -132,55 +116,42 @@ class Groups extends \App\Page {
 		if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();
 
-
 		if( ! $params = $this->request->post() )
 			return;
 
-		// Массив, который будем возвращать. Позиция важна
-
 		if($params['tab'] != 'groups' )
 			return;
-
-		$entry = array( 'name' 	=> $params['name'],
-						'note' 	=> $this->getVar($params['note']),
-						'active'=> $this->getVar($params['active'],0),
-						);
-
-		$returnData  = array();
 		try {
-			if ( $params['id'] == 0 ) {
-				// новый пользователь
-				$this->pixie->db->query('insert')
-								->table($params['tab'])
-								->data($entry)
-								->execute();
+			$tab  = $params['tab'];
+			unset($params['tab']);
 
-				$params['id'] = $this->pixie->db->insert_id();
+			$params['active'] = $this->getVar($params['active'],0);
 
-			}
-			else {
-			// Существующая запись
-				$this->pixie->db->query('update')
-								->table($params['tab'])
-								->data($entry)
-								->where('id',$params['id'])
-								->execute();
-			}
+			$is_update = $params['id'] ? true : false;
+
+			// сохраняем модель
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get($tab)
+									->values($params, $is_update)
+									->save();
+
+			$id = $params['id'];
+			unset( $params['id'] );
+
+			$returnData  = array_values($params);
+			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
+
+			$this->response->body = json_encode($returnData);
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
 			return;
 		}
 
-		$returnData 			= array_values($entry);
-		$returnData['DT_RowId']	= 'tab-'.$params['tab'].'-'.$params['id'];
 
-
-		$this->response->body = json_encode($returnData);
 	}
 
 	public function action_delEntry() {
-
 
 		if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();
@@ -190,10 +161,9 @@ class Groups extends \App\Page {
 
 		try {
 
-			$this->pixie->db->query('delete')
-									->table($params['tab'])
-									->where('id',$params['id'])
-									->execute();
+			$this->pixie->orm->get($params['tab'])
+							 ->where('id',$params['id'])
+							 ->delete();
 		}
 		catch (\Exception $e) {
 			$view = $this->pixie->view('form_alert');
@@ -231,20 +201,14 @@ class Groups extends \App\Page {
 			}
 
 			// Последним делом - вынимаем
-			$entries = $this->pixie->db->query('select')
-										->fields(array('U.username','name'),
-												 array('U.mailbox', 'note'),
-												 array('U.active', 'active'))
-										->table('users','U')
-										->join( array('lists','UL'), array('UL.user_id','U.id') )
-										->join( array('groups','G'), array('UL.group_id','G.id') )
-										->where('G.id',$this->_id)
-										->execute()
-										->as_array();
+			$entries = $this->pixie->orm->get('groups')
+										->where('id',$this->_id)
+									    ->users
+									    ->find_all();
 
 			foreach($entries as $entry) {
-				$data[] = array( $entry->name,
-								 $entry->note,
+				$data[] = array( $entry->username,
+								 $entry->mailbox,
 								 $entry->active,
 								 'DT_RowClass' => 'gradeB'
 								);

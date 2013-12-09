@@ -30,7 +30,7 @@ class Page extends \PHPixie\Controller {
 
 		/* Определяем все контроллеры с одинаковыми ID */
 		$this->view->menuitems = $this->pixie->db
-										->query('select')
+										->query('select','admin')
 										->fields('Y.*')
 										->table('controllers','X')
 										->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
@@ -55,7 +55,7 @@ class Page extends \PHPixie\Controller {
 		$ctrl = $this->request->param('controller');
 
 		// вынимаем уровень доступа для страницы для пользователя
-		$result = $this->pixie->db->query('select')
+		$result = $this->pixie->db->query('select','admin')
 									->fields('S.slevel')
 									->table('controllers','C')
 									->join(array('rights','P'),array('C.id','P.control_id'),'LEFT')

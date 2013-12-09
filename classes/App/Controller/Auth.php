@@ -11,7 +11,7 @@ class Auth extends \App\Page {
 		$returnData = $data = array();
 
 		$entries = $this->pixie->db
-							->query('select')
+							->query('select','admin')
 							->fields('id', 'login', 'note', array('R.name', 'role'), 'active' )
 							->table('auth')
 							->join(array('roles','R'),array('role_id','R.id'))
@@ -43,13 +43,13 @@ class Auth extends \App\Page {
 		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
 
-        $view->data = $this->pixie->db->query('select')
+        $view->data = $this->pixie->db->query('select','admin')
 										->table($tab)
 										->where('id',$this->_id)
 										->execute()
 										->current();
 
-        $view->roles = $this->pixie->db->query('select')
+        $view->roles = $this->pixie->db->query('select','admin')
 										->table('roles')
 										->execute();
 
@@ -81,7 +81,7 @@ class Auth extends \App\Page {
 		try {
 			if ( $params['id'] == 0 ) {
 				// новый пользователь
-				$this->pixie->db->query('insert')
+				$this->pixie->db->query('insert','admin')
 								->table( $params['tab'] )
 								->data($entry)
 								->execute();
@@ -91,7 +91,7 @@ class Auth extends \App\Page {
 			}
 			else {
 			// Существующий пользователь
-				$this->pixie->db->query('update')
+				$this->pixie->db->query('update','admin')
 								->table( $params['tab'] )
 								->data($entry)
 								->where('id',$params['id'])
@@ -99,7 +99,7 @@ class Auth extends \App\Page {
 			}
 
 			// Что будем возвращать
-			$entry = $this->pixie->db->query('select')
+			$entry = $this->pixie->db->query('select','admin')
 										->fields('login', 'note', array('R.name', 'role'), 'active' )
 										->table('auth')
 										->join(array('roles','R'),array('role_id','R.id'))
@@ -132,7 +132,7 @@ class Auth extends \App\Page {
 			return;
 
 		try {
-			$this->pixie->db->query('delete')
+			$this->pixie->db->query('delete','admin')
 							->table($params['tab'] )
 							->where('id',$params['id'])
 							->execute();

@@ -294,7 +294,7 @@ var modWin = {
 			message: null;
 			TabID: null;
 			RowNode: null;
-			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
+			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>";
 
 			$(':text, select').addClass('ui-widget-content ui-corner-all');
 

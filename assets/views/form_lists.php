@@ -12,9 +12,9 @@
 			<div class='ui-window'>
 			<ul id='grp-left' class='nest-grp'>
 			<?php foreach( $entries as $entry) {
-					if( ! $entry->gid ):
+					if( ! $entry->group_id ):
 			?>
-				<li id="gr-<?= $entry->id ?>"><span title="<?= $entry->note ?>"><?= $entry->name ?></span></li>
+				<li id="gr-<?= $entry->id ?>"><span title="<?= $entry->mailbox ?>"><?= $entry->username ?></span></li>
 
 			<?php endif;
 					}
@@ -30,9 +30,9 @@
 			<div class='ui-window'>
 			<ul id='grp-right' class='nest-grp'>
 			<?php foreach( $entries as $entry) {
-					if( $entry->gid ):
+					if( $entry->group_id ):
 			?>
-				<li id="gr-<?= $entry->id ?>"><span title="<?= $entry->note ?>"><?= $entry->name ?></span></li>
+				<li id="gr-<?= $entry->id ?>"><span title="<?= $entry->mailbox ?>"><?= $entry->username ?></span></li>
 
 			<?php endif;
 					}

@@ -4,193 +4,127 @@ namespace App\Controller;
 
 class Dns extends \App\Page {
 
-    public function action_view() {
+	public function action_view() {
 
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
-		$this->view->script_file = '<script type="text/javascript" src="/dns.js"></script>';
-		$this->view->css_file = '<link rel="stylesheet" href="/dns.css" type="text/css" />';
+		$this->view->script_file	= '<script type="text/javascript" src="/js/dns.js"></script>';
+		$this->view->entries 		= $this->pixie->orm->get('dns')->find_all();
+		$this->view->subview 		= 'dns';
 
-		// Проверка легитимности пользователя и его прав
-        if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-		$this->view->subview = 'dns_main';
-
-		$this->view->domains = $this->pixie->db->query('select','dns')
-												->table('domains')
-												->execute();
-
-		$this->view->dns_block = $this->action_single();
-
-        $this->response->body = $this->view->render();
-    }
-
-	public function action_new() {
-
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-        $view = $this->pixie->view('dns_new');
-
-		$view->log = isset($this->logmsg) ?  $this->logmsg : '';
-
-        $this->response->body = $view->render();
-    }
-
-	public function action_del() {
-
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-		if ($this->request->method != 'POST')
-			return false;
-
-        // удаляем зону
-
-		 $params = $this->request->post();
-
-		 $this->pixie->db->query('delete','dns')
-						 ->table('domains')
-						 ->where('id',$params['id'])
-						 ->execute();
-
-		 $this->pixie->db->query('delete','dns')
-						 ->table('records')
-						 ->where('domain_id',$params['id'])
-						 ->execute();
-    }
-
-	public function action_single() {
-
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-		$view = $this->pixie->view('dns_view');
-
-		// вывод лога
-		$view->log = $this->getVar($this->logmsg,'');
-
-		// если не редактирование,т.е. начальный вход
-		if( ! $this->request->param('id') )
-			return; // "<img class='lb' src='/Dns.png' />";
-
-		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
-
-		$view->records = $this->pixie->db->query('select','dns')
-										->table('records')
-										->where('domain_id',$this->_id)
-										->order_by('type','desc')
-										->execute();
-
-
-		// Редактирование
-		if( ! $this->request->get('act') )
-			return $view->render();
-
-        $this->response->body = $view->render();
-    }
-
-	public function action_add() {
-
-		if( $this->permissions != $this::WRITE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-        if ($this->request->method == 'POST') {
-
-			$params = $this->request->post();
-
-			if ( ! isset($params['domain_id']) ) {
-				// новая зона
-				$this->pixie->db->query('insert','dns')
-								->table('domains')
-								->data(array('name' => $params['zname'],
-											 'master' => 'MASTER'))
-								->execute();
-
-				$params['domain_id'] = $this->pixie->db->insert_id('dns');
-
-				//for($i=0; $i < count($params['fname']); $i++)
-				foreach( $params['fname'] as $fname)
-				{
-					$params['stat'][] = 1;
-					$params['fid'][] = 0;
-				}
-			}
-
-			// Обработка записей
-			foreach ($params['fname'] as $key=>$fname ) {
-
-				$entry = array( 'name' 		=> $fname,
-								'type' 		=> $params['ftype'][$key],
-								'content' 	=> $params['faddr'][$key],
-								'ttl'		=> $params['ttl'],
-								'domain_id' => $params['domain_id']
-						);
-				// добавляем приоритет (для записи MX)
-				if(  $params['ftype'][$key] == 'MX' ) {
-
-					if( preg_match('/((?:\w+\.)+\w+)\s*\(\s*(\d+)\s*\)/', $params['faddr'][$key], $matches) ) {
-
-						$entry['content'] = $matches[1];
-						$entry['prio'] 	  =  $matches[2];
-					}
-					else
-						$entry['prio'] 	  =  '10';
-				}
-//print_r($entry); continue;
-
-				if( $params['stat'][$key] == 2 ) {
-				// Удаление
-					$this->pixie->db->query('delete','dns')
-									->table('records')
-									->where('id',$params['fid'][$key])
-									->execute();
-				}
-				elseif( $params['fid'][$key] == 0 ) {  // or undefined
-				// Новый
-					$this->pixie->db->query('insert','dns')
-									->table('records')
-									->data($entry)
-									->execute();
-				}
-				else {
-				// Изменение
-					$this->pixie->db->query('update','dns')
-									->table('records')
-									->data($entry)
-									->where('id', $params['fid'][$key])
-									->execute();
-				}
-			}
-//exit;
-			// Ошибки имели место
-			if( isset( $this->logmsg ) ) {
-
-				if ( $params['domain_id'] ) {
-					// Ошибка во время редактирования
-					$this->_id = $params['domain_id'];
-					$this->action_single();
-				}
-				else
-					$this->action_new();
-			}
-			else
-				$this->response->body = $params['domain_id'];
-		}
-
+		$this->response->body	= $this->view->render();
 	}
 
+	public function action_records() {
 
- }
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
+		if( ! $this->_id = $this->request->param('id'))
+			return;
+
+		$entries = $this->pixie->orm->get('records')->where('domain_id',$this->_id)->find_all();
+
+		$data = array();
+		foreach($entries as $entry)	{
+
+			$data[] = array($entry->name,
+							$entry->type,
+							$entry->content,
+							$entry->ttl,
+							'DT_RowId' => 'tab-records-'.$entry->id,
+							'DT_RowClass' => 'gradeB');
+		}
+
+		$this->response->body = json_encode($data);
+    }
+
+  	public function action_showEditForm() {
+
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
+
+		if( ! $tab = $this->request->post('t') )
+			return;
+
+		$this->_id 	= $this->request->param('id');
+		$view 		= $this->pixie->view('form_dns');
+		$init 		= $this->request->post('init');
+		$view->tab  = $tab;
+		// Запрос к бд
+		$view->data = $this->pixie->orm->get($tab)->where('id',$this->_id)->find();
+
+		// Для новой записи
+		if( !$this->_id && $init) {
+			$view->data->domain_id = $init;
+		}
+
+
+        $this->response->body = $view->render();
+    }
+
+	public function action_edit() {
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$tab = $params['tab'];
+			unset($params['tab']);
+
+			$is_update = $params['id'] ? true : false;
+
+			// сохраняем модель
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get($tab)
+									->values($params, $is_update)
+									->save();
+
+			$id = $params['id'];
+			unset( $params['domain_id'], $params['id'] );
+
+			// отдаем
+			$returnData 				= array_values($params);
+			$returnData['DT_RowClass']  = ($tab == 'records') ? 'gradeB' : '';
+			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
+
+			$this->response->body = json_encode($returnData);
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
+		}
+	}
+
+	public function action_delEntry() {
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$entry = $this->pixie->orm->get($params['tab'])->where( 'id', $params['id'])->find();
+			// если это запись домена
+			if ( $params['tab'] == 'dns' ) {
+				$entry->records->delete_all();
+			}
+
+			$entry->delete();
+		}
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
+			$this->response->body = $view->render();
+		}
+
+    }
+
+}
 ?>

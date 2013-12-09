@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="../css/smoothness/jquery-ui.min.css" type="text/css" />
 		<link rel="stylesheet" href="../css/style.css" type="text/css" />
 		<link rel="stylesheet" href="../css/smoothness/images.css" type="text/css" />
-		<script type="text/javascript" language="javascript" src="../js/jquery-1.9.1.js"></script>
+		<script type="text/javascript" language="javascript" src="../js/jquery.min.js"></script>
 		<script type="text/javascript" language="javascript" src="../js/jquery-ui.min.js"></script>
 		<script type="text/javascript" language="javascript" src="../js/init.js"></script>
 

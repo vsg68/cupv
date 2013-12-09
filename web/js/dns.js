@@ -9,34 +9,25 @@ $(document).ready(function() {
 			//"sScrollY":  550 + "px",
 			"bPaginate": false,
 			"sDom": "<'H'T>t<'F'ip>",
-			"fnInitComplete": function () {
-									this.fnAdjustColumnSizing();
-									this.fnDraw();
-							},
 			"aoColumnDefs": [
 								{ bSortable: true, aTargets: [ 0 ] },
 								{ bSortable: false, aTargets: [ '_all' ] },
-								{ sClass: "center", aTargets: [ -1 ] },
 							],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-								drawCheckBox(nRow);
-								updateClass(nRow);
+								if( nRow.id.split('-')[1] == 'records') {
+									addRowAttr(nRow,'type',1);
+								}
 							},
 			"oTableTools": TTOpts
 	}
 
 /********************************/
-		TOptions.oTableTools.aButtons[3].sButtonText = 'РОЛИ';
-		$('#tab-roles').dataTable(TOptions);
+		TOptions.oTableTools.aButtons[3].sButtonText = 'DOMAIN NAME SERVER';
+		$('#tab-dns').dataTable(TOptions);
 
-		TOptions.oTableTools.aButtons[0].fnClick = function( nButton, oConfig, oFlash ){
-														if( ! $(nButton).hasClass('DTTT_disabled') ) {
-															fnEdit( fnGetSelectedRowID(this), fnGetParentSelectedRowID('#tab-roles'));
-														}
-													};
-		TOptions.oTableTools.aButtons[3].sButtonText = 'ПРАВА НА СТРАНИЦЫ';
-		TTOpts.aButtons.splice(1,2);
-		$('#tab-rights').dataTable(TOptions)
+		TOptions.oTableTools.aButtons[3].sButtonText = 'DOMAIN RECORDS';
+		TOptions.oTableTools.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
+		$('#tab-records').dataTable(TOptions)
 
 
 /********************************/
@@ -57,8 +48,8 @@ function blockNewButton(nodes) {
 			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
 		}
 
-		if( nodes.length && nodes[0].offsetParent.id == 'tab-roles') {
-			$('#ToolTables_tab-rights_1').addClass('DTTT_disabled');
+		if( nodes.length && nodes[0].offsetParent.id == 'tab-dns') {
+			$('#ToolTables_tab-records_1').addClass('DTTT_disabled');
 		}
 }
 
@@ -73,8 +64,8 @@ function unblockNewButton(node) {
 		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
 
-		if( node[0].offsetParent.id == 'tab-roles') {
-			$('#ToolTables_tab-rights_1').removeClass('DTTT_disabled');
+		if( node[0].offsetParent.id == 'tab-dns') {
+			$('#ToolTables_tab-records_1').removeClass('DTTT_disabled');
 		}
 }
 
@@ -83,8 +74,8 @@ function unblockNewButton(node) {
  */
 function usersRowID(objTT) {
 
-		if( objTT.s.dt.sTableId != 'tab-roles' )
-			return fnGetRowID("tab-roles");
+		if( objTT.s.dt.sTableId != 'tab-dns' )
+			return fnGetRowID("tab-dns");
 		return 0;
 }
 
@@ -93,7 +84,7 @@ function usersRowID(objTT) {
  */
 function showMapsTable(node) {
 
-		if(node[0].offsetParent.id != 'tab-roles')
+		if(node[0].offsetParent.id != 'tab-dns')
 			return false;
 
 		id = node[0].id.split('-')[2];
@@ -102,11 +93,10 @@ function showMapsTable(node) {
 				type: "GET",
 				dataType: "json",
 				success: function(response) {
-												$('#tab-rights').dataTable().fnClearTable();
-												$('#tab-rights').dataTable().fnAddData(response);
+								$('#tab-records').dataTable().fnClearTable();
+								$('#tab-records').dataTable().fnAddData(response);
 						},
 				error: function(response) {
-
 							var msg = response.responseText;
 							if( $(msg).find('.form-alert').length ) {
 								$(msg).modal( modInfo );
@@ -116,58 +106,38 @@ function showMapsTable(node) {
 }
 
 /*
- * Функция срабатывает после обновления данных
- * Изменяем таблицу tab-full
- */
-function updateClass(nRow) {
+ * Стираем значения "подчиненных" таблиц
+*/
+function clearChildTable(info_data) {
 
-	  if(nRow.id.split('-')[1] == 'roles' )
-		return false;
+	$('#tab-records').dataTable().fnClearTable();
 
-	  mode = $('td:eq(2)', nRow).text();
-	  $(nRow).removeClass('gradeX').removeClass('gradeB');
-
-	  if( mode == 'WRITE') {
-		$(nRow).addClass('gradeB');
-	  }
-
-	  if( mode == 'NONE') {
-		 $(nRow).addClass('gradeX');
-	  }
-}
-
-/*
- * Функция срабатывает после изменения данных
- * Почему-то не изменяется ID строки программно
- * поэтому делаю это руками
- */
-function afterUpdateData(str,node) {
-
-	if(node.id.split('-')[1] == 'rights' ) {
-		node.id = str.DT_RowId ;
+	if(info_data) {
+		$(info_data).modal(modInfo);
 	}
 }
+
 
 /*
  * Функции проверок при редактировании записей в таблицах.
  * Проверка на совпадения доменов, алиасов - не производится !!
  */
-modWin.validate_roles = function() {
-									return emptyValidate();
-								}
+modWin.validate_dns = function() {
+			if ( ! $('form :text[name="name"]').val() )	 {
+				return modWin.message = 'Заполнение полей  - обязательно. ';
+			}
+}
 
 
-modWin.validate_rights = function() {
-									return false;
-								}
+modWin.validate_records = function() {
 
-function emptyValidate() {
 
-			msg 	= '';
-
-			if (! $('form :text[name="name"]').val() ) {
-				msg = 'Необходимо указывать названия раздела. '
+			if ( ! $('form :text[name="name"]').val() ||
+				 ! $('form :text[name="content"]').val() ||
+				 ! $('form :text[name="ttl"]').val()
+				)
+			 {
+				return modWin.message = 'Заполнение полей  - обязательно. ';
 			}
 
-			return msg;
 }

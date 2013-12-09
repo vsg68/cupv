@@ -105,18 +105,18 @@
         "source": {
             "type": "git",
             "url": "https://github.com/dracony/PHPixie-ORM.git",
-            "reference": "526ffdb542656a401ba92ce2e53b8859484a11b8"
+            "reference": "2c42d4b89cbee11eb7a886c18530dbea3bde0830"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/dracony/PHPixie-ORM/zipball/526ffdb542656a401ba92ce2e53b8859484a11b8",
-            "reference": "526ffdb542656a401ba92ce2e53b8859484a11b8",
+            "url": "https://api.github.com/repos/dracony/PHPixie-ORM/zipball/2c42d4b89cbee11eb7a886c18530dbea3bde0830",
+            "reference": "2c42d4b89cbee11eb7a886c18530dbea3bde0830",
             "shasum": ""
         },
         "require": {
             "phpixie/db": "2.*@dev"
         },
-        "time": "2013-08-03 17:01:37",
+        "time": "2013-11-25 14:42:28",
         "type": "library",
         "extra": {
             "branch-alias": {
