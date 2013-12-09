@@ -88,22 +88,7 @@ class Groups extends \App\Page {
 		}
 		elseif( $tab == 'lists' ) {
 
-			//~ $entries = $this->pixie->db->query('select')
-									//~ ->fields(array('U.username','name'),
-											 //~ array('U.mailbox', 'note'),
-											 //~ array('U.id', 'id'),
-											 //~ array('L.group_id', 'gid'))  // ??? может и не надо
-									//~ ->table('users', 'U')
-									//~ ->join(array('lists','L'),
-										   //~ array( array('L.user_id','U.id'),
-												  //~ array('L.group_id',$this->pixie->db->expr($this->_id))
-												 //~ ))
-									//~ ->execute()
-									//~ ->as_array();
-			$entries = $this->pixie->orm->get('users')->with('lists')
-										->where('lists.group_id',$this->_id)
-										->find_all()->as_array(true);
-print_r($entries);exit;
+			$entries = $this->pixie->orm->get('users')->with('lists')->find_all()->as_array();
 			$view->pid = $this->_id;
 		}
 
@@ -185,19 +170,15 @@ print_r($entries);exit;
 		$entries = $data = array();
 		try {
 			// Первым делом - удаляем
-			$this->pixie->db->query('delete')
-							->table('lists')
-							->where('group_id',$this->_id)
-							->execute();
+			$this->pixie->orm->get('lists')->where('group_id',$this->_id)->delete_all();
 
 			$obj_ids = is_array($this->request->post('obj_id')) ? $this->request->post('obj_id') : array();
 
 			// вторым делом - вставляем
 			foreach ($obj_ids as $obj_id ) {
-				$this->pixie->db->query('insert')
-								->table('lists')
-								->data(array('group_id' => $this->_id,'user_id' => $obj_id))
-								->execute();
+				$this->pixie->orm->get('lists')
+								 ->values(array('group_id' => $this->_id,'user_id' => $obj_id))
+								 ->save();
 			}
 
 			// Последним делом - вынимаем
