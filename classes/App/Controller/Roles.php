@@ -10,13 +10,9 @@ class Roles extends \App\Page {
 			return $this->noperm();
 
 		$this->view->subview 		= 'roles';
-
 		$this->view->script_file	= '<script type="text/javascript" src="/js/roles.js"></script>';
-		$this->view->css_file 		= '';//<link rel="stylesheet" href="/roles.css" type="text/css" />';
 
-		$this->view->entries = $this->pixie->db->query('select','admin')
-											->table('roles')
-											->execute();
+		$this->view->entries = $this->pixie->orm->get('roles')->find_all();
 
         $this->response->body = $this->view->render();
     }
@@ -40,27 +36,16 @@ class Roles extends \App\Page {
 			$this->_id  = 0;
 		}
 
+		$data = $this->pixie->orm->get($tab)
+								 ->where('id', $this->_id)
+								 ->find();
 
-		$data = $this->pixie->db->query('select','admin')
-										->table($tab)
-										//->where( ( $tab == 'rights' ? 'control_' : '').'id',$this->_id )
-										->where('id', $this->_id)
-										->execute()
-										->current();
-//print_r($data);exit;
 		if( $tab == 'rights' ) {
-
-			$view->slevels = $this->pixie->db->query('select','admin')
-											->table('slevels')
-											->execute()
-											->as_array();
-
-			// передаем ссылку на контроллер для дальнейшего отслеживания
-
+			$view->slevels = $this->pixie->orm->get('slevels')->find_all();
 		}
 
-	   $view->data = $data;
-       $this->response->body = $view->render();
+		$view->data = $data;
+		$this->response->body = $view->render();
     }
 
 	public function action_records() {
@@ -93,7 +78,6 @@ class Roles extends \App\Page {
 									->as_array();
 
 			$data = array();
-			//$count = 0;
 			foreach($entries as $entry) {
 
 				$data[] = array( $entry->sect_name,
@@ -104,7 +88,6 @@ class Roles extends \App\Page {
 								 'DT_RowId'    => 'tab-rights-'.( $entry->role_id ? $entry->id : '0_'.$entry->ctrl_id),
 								 'DT_RowClass' => ($entry->slevel == 'WRITE') ? 'gradeB' : ( ($entry->slevel == 'NONE') ? 'gradeX' : '')
 								);
-				//$count++;
 			}
 
 			$this->response->body = json_encode($data);
@@ -127,47 +110,33 @@ class Roles extends \App\Page {
 
 		try {
 			$returnData  = array();
+			$tab  = $params['tab'];
+			unset($params['tab']);
 
-			if($params['tab'] == 'roles' ) {
-				$entry['note'] = $this->getVar($params['note']);
-				$entry['name'] = $params['name'];
-				$entry['active'] = $this->getVar($params['active'],0);
+			if($tab == 'roles' ) {
+				$params['active'] = $this->getVar($params['active'],0);
+
 			}
-			elseif($params['tab'] == 'rights' ) {
+			elseif($tab == 'rights' ) {
 
 				if( preg_match('/^0\d*_(\d+)$/', $params['id'], $match) ) {
 				// 	новая запись !
 					$params['id'] 		 = 0;
-					$entry['control_id'] = $match[1];
-					$entry['role_id'] 	 = $params['role_id'];
+					$params['control_id'] = $match[1];
 				}
-
-				$entry['slevel_id'] = $params['slevel_id'];
 			}
 
+			$is_update = $params['id'] ? true : false;
 
-			if ( $params['id'] == 0 ) {
-				// новый пользователь
-				$this->pixie->db->query('insert','admin')
-								->table($params['tab'])
-								->data($entry)
-								->execute();
-
-				$params['id'] = $this->pixie->db->insert_id('admin');
-			}
-			else {
-
-			// Существующая запись
-				$this->pixie->db->query('update','admin')
-								->table($params['tab'])
-								->data($entry)
-								->where('id',$params['id'])
-								->execute();
-			}
+			// сохраняем модель
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get($tab)
+									->values($params, $is_update)
+									->save();
 
 			//Нужно отдать инфу в права в том же формате,
 			//в котором оно представлено
-			if( $params['tab'] == 'rights' ) {
+			if( $tab == 'rights' ) {
 
 				$req = $this->pixie->db->query('select','admin')
 									->fields(array('S.name','sect_name'),
@@ -180,7 +149,7 @@ class Roles extends \App\Page {
 									->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
 									->join(array('rights','P'),array('P.control_id','C.id'))
 									->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
-									->where('P.id', $params['id'])
+									->where('P.id', $row->id)
 									->execute()
 									->current();
 
@@ -190,16 +159,13 @@ class Roles extends \App\Page {
 								$req->slevel,
 								$req->active);
 
-				$params['id'] = $req->control_id;
+				$row->id = $req->control_id;
 			}
 
-			//print_r($entry); exit;
 			$returnData 				= array_values($entry);
-			//$returnData['DT_RowClass']  = ($req->slevel == 'WRITE') ? 'gradeB' : ( ($req->slevel == 'NONE') ? 'gradeX' : '');
-			$returnData['DT_RowId']		= 'tab-'.$params['tab'].'-'.$params['id'];
+			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.$row->id;
 
 			$this->response->body = json_encode($returnData);
-//print_r($returnData);exit;
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();

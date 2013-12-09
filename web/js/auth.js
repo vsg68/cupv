@@ -70,7 +70,7 @@ modWin.validate_auth = function () {
 			pass	= $('form :text[name="passwd"]').val();
 			id		= '#tab-auth-' + $(':hidden[name="id"]').val();
 
-			if ( ! (id && pass) ) {
+			if ( ! (id  || pass) ) {
 				modWin.message = 'В новой записи заполнение полей логин и пароль - обязательно. ';
 			}
 

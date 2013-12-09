@@ -231,7 +231,7 @@ class Users extends \App\Page {
 
 	public function action_delEntry() {
 
-		if( $this->permissions == $this::NONE_LEVEL )
+		if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();
 
 

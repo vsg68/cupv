@@ -8,14 +8,28 @@ class Controllers extends \PHPixie\ORM\Model{
 	public $table='controllers';
 
 	protected $belongs_to = array('sections' => array(
-											'model'=>'sections',
-											'key'=>'section_id'
+											'model'	=> 'sections',
+											'key'	=> 'section_id'
 								));
 
-    protected $has_many = array(
+    //~ protected $has_many = array(
+							//~ 'rights'=>array(
+									//~ 'model'	=> 'rights',
+									//~ 'key'	=> 'control_id'
+							//~ ));
+
+	//~ protected $has_many = array(
+							//~ 'slevels'=>array(
+									//~ 'model'		 => 'slevels',
+									//~ 'through' 	 => 'rights',
+									//~ 'key'		 => 'slevel_id',
+									//~ 'foreign_key'=> 'control_id'
+							//~ ));
+
+	protected $has_one = array(
 							'rights'=>array(
-									'model'=>'rights',
-									'key'=>'control_id'
+									'model'	=> 'rights',
+									'key'	=> 'control_id'
 							));
 
 }

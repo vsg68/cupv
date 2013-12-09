@@ -130,7 +130,9 @@ function updateClass(nRow) {
 	  if( mode == 'WRITE') {
 		$(nRow).addClass('gradeB');
 	  }
-
+	  if( mode == 'READ') {
+		$(nRow).addClass('gradeA');
+	  }
 	  if( mode == 'NONE') {
 		 $(nRow).addClass('gradeX');
 	  }

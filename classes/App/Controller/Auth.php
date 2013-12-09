@@ -10,17 +10,12 @@ class Auth extends \App\Page {
 
 		$returnData = $data = array();
 
-		$entries = $this->pixie->db
-							->query('select','admin')
-							->fields('id', 'login', 'note', array('R.name', 'role'), 'active' )
-							->table('auth')
-							->join(array('roles','R'),array('role_id','R.id'))
-							->execute();
+		$entries = $this->pixie->orm->get('auth')->with('roles')->find_all();
 
 		foreach( $entries as $entry ) {
 			$data[] = array($entry->login,
 							$entry->note,
-							$entry->role,
+							$entry->roles->name,
 							$entry->active,
 							"DT_RowId" => 'tab-auth-'.$entry->id
 							);
@@ -43,15 +38,11 @@ class Auth extends \App\Page {
 		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
 
-        $view->data = $this->pixie->db->query('select','admin')
-										->table($tab)
-										->where('id',$this->_id)
-										->execute()
-										->current();
+        $view->data = $this->pixie->orm->get($tab)
+									   ->where('id',$this->_id)
+									   ->find();
 
-        $view->roles = $this->pixie->db->query('select','admin')
-										->table('roles')
-										->execute();
+        $view->roles = $this->pixie->orm->get('roles')->find_all();
 
        $this->response->body = $view->render();
     }
@@ -65,54 +56,38 @@ class Auth extends \App\Page {
 		if( ! $params = $this->request->post() )
 			return;
 
-		//$returnData  = array();
-
-		$entry = array('role_id' => $params['role_id'],
-					   'login'	 => $params['login'],
-					   'note'	 => $this->getVar($params['note']),
-					   'active'	 => $this->getVar($params['active'],0)
-					   );
-
 		// хешируем пароль средством модуля
 		if( isset( $params['passwd']) && $params['passwd'] ) {
-			$entry['passwd']  = $this->auth->provider('password')->hash_password($params['passwd']);
+			$passwd['passwd']  = $this->auth->provider('password')->hash_password($params['passwd']);
 		}
 
+		$params['active'] = $this->getVar($params['active'],0);
+
 		try {
-			if ( $params['id'] == 0 ) {
-				// новый пользователь
-				$this->pixie->db->query('insert','admin')
-								->table( $params['tab'] )
-								->data($entry)
-								->execute();
 
-				$params['id'] = $this->pixie->db->insert_id();
+			$tab = $params['tab'];
+			unset($params['tab']);
 
-			}
-			else {
-			// Существующий пользователь
-				$this->pixie->db->query('update','admin')
-								->table( $params['tab'] )
-								->data($entry)
-								->where('id',$params['id'])
-								->execute();
-			}
+			$is_update = $params['id'] ? true : false;
+
+			// сохраняем модель
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get($tab)
+									->values($params, $is_update)
+									->save();
+
+			$id = ($params['id']) ? $params['id'] : $row->id;
+			unset( $params['id'] );
 
 			// Что будем возвращать
-			$entry = $this->pixie->db->query('select','admin')
-										->fields('login', 'note', array('R.name', 'role'), 'active' )
-										->table('auth')
-										->join(array('roles','R'),array('role_id','R.id'))
-										->where('id',$params['id'])
-										->execute()
-										->current();
+			$entry = $this->pixie->orm->get('auth')->where('id',$id)->find();
 
 			// Массив, который будем возвращать
 			$returnData = array($entry->login,
 								$entry->note,
-								$entry->role,
+								$entry->roles->name,	// Не указывал в запросе - она уже есть из модели !!!
 								$entry->active,
-								'DT_RowId' => 'tab-auth-'.$params['id']);
+								'DT_RowId' => 'tab-auth-'.$id);
 
 			$this->response->body 		= json_encode($returnData);
 		}
@@ -124,7 +99,7 @@ class Auth extends \App\Page {
 
 	public function action_delEntry() {
 
-		if( $this->permissions == $this::NONE_LEVEL )
+		if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();
 
 
@@ -132,10 +107,7 @@ class Auth extends \App\Page {
 			return;
 
 		try {
-			$this->pixie->db->query('delete','admin')
-							->table($params['tab'] )
-							->where('id',$params['id'])
-							->execute();
+			$this->pixie->orm->get($params['tab'])->where('id',$params['id'])->delete_all();
 		}
 		catch (\Exception $e) {
 			$view = $this->pixie->view('form_alert');
