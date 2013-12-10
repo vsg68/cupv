@@ -11,13 +11,23 @@
 		<td class='ui-widget-content ui-corner-all'>
 			<div class='ui-window'>
 			<ul id='grp-left' class='nest-grp'>
-			<?php foreach( $entries as $entry) {
-					if( $entry->lists->group_id != $pid ):
-			?>
-				<li id="gr-<?= $entry->id ?>"><span title="<?= $entry->mailbox ?>"><?= $entry->username ?></span></li>
+			<?php // раздел users -> groups
+				 if(isset($entries) ) {
+					foreach( $entries as $entry) {
 
-			<?php endif;
+						if( $entry->lists->group_id != $pid ) {
+							echo '<li id="gr-'. $entry->id .'"><span title="'. $entry->mailbox .'">'. $entry->username .'</span></li>';
+						}
 					}
+				 }
+				// раздел groups -> users
+				 elseif(isset($rows) ) {
+					 foreach( $rows as $row) {
+						if( $row->user_id != $pid ) {
+							echo '<li id="gr-'. $row->id .'"><span title="'. $row->note  .'">'. $row->name .'</span></li>';
+						}
+					}
+				}
 			?>
             </ul>
             </div>
@@ -29,13 +39,23 @@
 		<td class='ui-window ui-widget-content ui-corner-all'>
 			<div class='ui-window'>
 			<ul id='grp-right' class='nest-grp'>
-			<?php foreach( $entries as $entry) {
-					if( $entry->lists->group_id == $pid ):
-			?>
-				<li id="gr-<?= $entry->id ?>"><span title="<?= $entry->mailbox ?>"><?= $entry->username ?></span></li>
+			<?php // раздел users -> groups
+				 if(isset($entries) ) {
+					foreach( $entries as $entry) {
 
-			<?php endif;
+						if( $entry->lists->group_id == $pid ) {
+							echo '<li id="gr-'. $entry->id .'"><span title="'. $entry->mailbox .'">'. $entry->username .'</span></li>';
+						}
 					}
+				 }
+				// раздел groups -> users
+				 elseif(isset($rows) ) {
+					 foreach( $rows as $row) {
+						if( $row->user_id == $pid ) {
+							echo '<li id="gr-'. $row->id .'"><span title="'. $row->note  .'">'. $row->name .'</span></li>';
+						}
+					}
+				}
 			?>
             </ul>
             </div>
