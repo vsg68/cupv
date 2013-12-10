@@ -24,7 +24,7 @@ class Users extends \App\Page {
 									->fields(array('G.name','name'),
 											 array('G.note', 'note'),
 											 array('G.id', 'id'),
-											 array('L.user_id', 'gid'))  // ??? может и не надо
+											 array('L.user_id', 'user_id'))  // ??? может и не надо
 									->table('groups', 'G')
 									->join(array('lists','L'),
 										   array( array('L.group_id','G.id'),
@@ -33,7 +33,7 @@ class Users extends \App\Page {
 									->execute()
 									->as_array();
 
-			$view->entries = $entries;
+			$view->rows = $entries;
 			$view->pid 	   = $this->_id;
 		}
 		else {
