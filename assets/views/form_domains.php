@@ -22,9 +22,12 @@
 					<td><input type='text' name='domain_notes' value='<?= isset($data->domain_notes) ? $data->domain_notes : '' ?>'></td>
 				</tr>
 			<?php if($tab == 'domains'): ?>
+				<input type='hidden' name='delivery_to' value='virtual' />
+				<input type='hidden' name='domain_type' value='0' />
 				<tr>
 					<td class='formlabel'>Адрес рассылки:</td>
 					<td><input class='login' type='text' name='all_email' value='<?= isset($data->all_email) ? explode('@',$data->all_email)[0] : '' ?>' />&nbsp;<strong>@</strong>
+
 						<?php if( isset($data->all_email) ): ?>
 							<select class='ui-widget-content ui-corner-all' name='domain'>
 								<?php foreach( $domains as $domain): ?>
@@ -53,12 +56,14 @@
 						</select>
 					</td>
 				</tr>
+				<input type='hidden' name='domain_type' value='1' />
 			<?php endif; ?>
 			<?php if($tab == 'transport'): ?>
 				<tr>
 					<td class='formlabel'>Протокол:[Адрес] пересылки</td>
 					<td><input type='text' name='delivery_to' value='<?= isset($data->delivery_to) ? $data->delivery_to : '' ?>'  /></td>
 				</tr>
+				<input type='hidden' name='domain_type' value='2' />
 			<?php endif; ?>
 				<tr>
 					<td class='formlabel'>Активно:</td>

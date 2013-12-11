@@ -8,14 +8,8 @@ class Domains extends \App\Page {
 
 
 		$this->view->subview 		= 'domains';
-
 		$this->view->script_file	= '<script type="text/javascript" src="/js/domains.js"></script>';
-
-		$entries = $this->pixie->db->query('select')
-										->table('domains')
-										->execute()
-										->as_array();
-		$this->view->entries = $entries;
+		$this->view->entries 		= $this->pixie->orm->get('domains')->find_all()->as_array();
 
         $this->response->body = $this->view->render();
     }
@@ -33,16 +27,8 @@ class Domains extends \App\Page {
 		$view 		= $this->pixie->view('form_domains');
 		$view->tab  = $tab;
 
-        $view->data = $this->pixie->db->query('select')
-										->table('domains')
-										->where('id',$this->_id)
-										->execute()
-										->current();
-
-		$view->domains = $this->pixie->db->query('select')
-										->table('domains')
-										->where('domain_type',0)
-										->execute();
+        $view->data		=  $this->pixie->orm->get('domains')->where('id',$this->_id)->find();
+		$view->domains	=  $this->pixie->orm->get('domains')->where('domain_type',0)->find_all();
 
         $this->response->body = $view->render();
     }
@@ -56,73 +42,56 @@ class Domains extends \App\Page {
 		if( ! $params = $this->request->post() )
 			return;
 
-		// Массив, который будем возвращать. Позиция важна
-
-		if($params['tab'] == 'domains' ) {
-			$entry = array( 'domain_name' 	=> $params['domain_name'],
-							'delivery_to'	=> 'virtual',
-							'domain_type'	=> 0,
-							'domain_notes' 	=> $this->getVar($params['domain_notes']),
-							'all_email'		=> $this->getVar($params['all_email']) ? ($params['all_email'].'@'.$params['domain_name']): '',
-							'all_enable'	=> $this->getVar($params['all_enable'],0),
-							'active'		=> $this->getVar($params['active'],0),
-							);
-		}
-		elseif($params['tab'] == 'aliases' ) {
-			$entry = array( 'domain_name' 	=> $params['domain_name'],
-							'delivery_to'	=> $params['delivery_to'],
-							'domain_type'	=> 1,
-							'domain_notes' 	=> $this->getVar($params['domain_notes']),
-							'active'		=> $this->getVar($params['active'],0),
-							);
-		}
-		elseif($params['tab'] == 'transport' ) {
-			$entry = array( 'domain_name' 	=> $params['domain_name'],
-							'domain_notes' 	=> $this->getVar($params['domain_notes']),
-							'delivery_to'	=> $params['delivery_to'],
-							'domain_type'	=> 2,
-							'active'		=> $this->getVar($params['active'],0),
-							);
-		}
-
 		$returnData  = array();
 
 		try {
-			if ( $params['id'] == 0 ) {
-				// новый пользователь
-				$this->pixie->db->query('insert')
-								->table('domains')
-								->data($entry)
-								->execute();
+			$params['active'] 		= $this->getVar($params['active'],0);
+			$params['all_enable']	= $this->getVar($params['all_enable'],0);
+			$params['all_email']	= $this->getVar($params['all_email']) ? ($params['all_email'].'@'.$params['domain_name']): '';
 
-				$params['id'] = $this->pixie->db->insert_id();
+			$tab = $params['tab'];
+			unset($params['tab']);
 
+			$is_update = $params['id'] ? true : false;
+
+			// сохраняем модель
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get('domains')
+									->values($params, $is_update)
+									->save();
+
+			$id = ($params['id']) ? $params['id'] : $row->id;
+			unset( $params['id'] );
+
+			// Составляем правильный ответ
+			$entry = array( $params['domain_name'] );
+
+			if( $tab == 'domains' ) {
+				array_push($entry,  $params['domain_notes'],
+									$params['all_email'],
+									$params['all_enable']);
 			}
-			else {
-			// Существующая запись
-				$this->pixie->db->query('update')
-								->table('domains')
-								->data($entry)
-								->where('id',$params['id'])
-								->execute();
+			elseif( $tab == 'aliases') {
+				array_push($entry,  $params['delivery_to'],
+									$params['domain_notes']);
 			}
+			elseif( $tab == 'transport') {
+				array_push($entry,  $params['domain_notes'],
+									$params['delivery_to']);
+			}
+
+			array_push($entry, $params['active']);
+
+			$returnData 			= $entry;
+			$returnData['DT_RowId']	= 'tab-'.$tab.'-'.$id;
+
+			$this->response->body = json_encode($returnData);
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
 			return;
 		}
 
-		// Составляем правильный ответ
-		if( !$entry['domain_type'] ) {
-			unset($entry['delivery_to']);
-		}
-		unset($entry['domain_type']);
-
-		$returnData 			= array_values($entry);
-		$returnData['DT_RowId']	= 'tab-'.$params['tab'].'-'.$params['id'];
-
-
-		$this->response->body = json_encode($returnData);
 	}
 
 	public function action_delEntry() {
@@ -137,23 +106,24 @@ class Domains extends \App\Page {
 		try {
 			$delivery_to = $this->getVar($params['aname'],0);
 
-			$this->pixie->db->query('delete')
-									->table('domains')
-									->where('id',$params['id'])
-									->where('or',array('delivery_to',$delivery_to))   // и алиасы
-									->execute();
+
+			$aliases = $this->pixie->orm->get('domains')
+										->where('delivery_to',$delivery_to)
+										->find_all();
+
+			$this->pixie->orm->get('domains')
+								->where('id',$params['id'])
+								->where('or',array('delivery_to',$delivery_to))   // и алиасы
+								->delete_all();
 
 			if( $params['tab'] == 'domains' ) {
 
-				$aliases = $this->pixie->db->query('select')
-											->fields('id')
-											->table('domains')
-											->where('delivery_to',$delivery_to)
-											->execute()
-											->as_array();
+				$val = array();
+				foreach($aliases as $alias) {
+					array_push($val, array('id' => $alias->id) );
+				}
 
-				$val = array_values($aliases);
-				$this->response->body = json_encode( $val );
+				$this->response->body = $val ? json_encode( $val ) : '';
 			}
 		}
 		catch (\Exception $e) {
