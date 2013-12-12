@@ -5,37 +5,61 @@ class ItBase extends Page {
 
 	protected $view_tmpl;
 
-	public function before() {
+	//~ public function before1() {
+//~
+		//~ $this->view = $this->pixie->view('main');
+		//~ $this->auth = $this->pixie->auth;
+//~
+		//~ $this->view->subview = 'itbase';
+//~
+//~
+		//~ $this->view->script_file = '<script type="text/javascript" src="/jquery.dynatree.js"></script>';
+		//~ $this->view->script_file .= '<script type="text/javascript" src="/tree_init.js"></script>';
+//~
+		//~ $this->view->css_file = '<link rel="stylesheet" href="/skin/ui.dynatree.css" type="text/css" />';
+		//~ $this->view->css_file .= '<link rel="stylesheet" href="/tree_init.css" type="text/css" />';
+//~
+//~
+		//~ /* Определяем все контроллеры с одинаковыми ID */
+		//~ $this->view->menuitems = $this->pixie->db
+										//~ ->query('select')
+										//~ ->fields('Y.*')
+										//~ ->table('controllers','X')
+										//~ ->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
+										//~ ->where('X.class',strtolower($this->request->param('controller')))
+										//~ ->where('Y.active',1)
+										//~ ->order_by('Y.arrange')
+										//~ ->execute();
+//~
+		//~ // Проверка легитимности пользователя и его прав
+        //~ if( $this->request->param('controller') != 'login' )
+			//~ $this->permissions = $this->is_approve();
+//~
+	//~ }
 
-		$this->view = $this->pixie->view('main');
-		$this->auth = $this->pixie->auth;
-
-		$this->view->subview = 'base_main';
-
-
-		$this->view->script_file = '<script type="text/javascript" src="/jquery.dynatree.js"></script>';
-		$this->view->script_file .= '<script type="text/javascript" src="/tree_init.js"></script>';
-
-		$this->view->css_file = '<link rel="stylesheet" href="/skin/ui.dynatree.css" type="text/css" />';
-		$this->view->css_file .= '<link rel="stylesheet" href="/tree_init.css" type="text/css" />';
-
-
-		/* Определяем все контроллеры с одинаковыми ID */
-		$this->view->menuitems = $this->pixie->db
-										->query('select')
-										->fields('Y.*')
-										->table('controllers','X')
-										->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
-										->where('X.class',strtolower($this->request->param('controller')))
-										->where('Y.active',1)
-										->order_by('Y.arrange')
-										->execute();
+	public function action_view() {
 
 		// Проверка легитимности пользователя и его прав
-        if( $this->request->param('controller') != 'login' )
-			$this->permissions = $this->is_approve();
+        if( $this->permissions == $this::NONE_LEVEL )
+			return  $this->noperm();
 
-	}
+		$this->view->script_file = "<script type='text/javascript' src='/js/jquery.dynatree.min.js'></script>";
+		$this->view->script_file .= "<script type='text/javascript' src='/js/tree_init.js'></script>";
+		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js') ) {
+			$this->view->script_file .= '<script type="text/javascript" src="/js/'.$this->ctrl.'.js"></script>';
+		}
+
+		$this->view->css_file = '<link rel="stylesheet" href="/css/skin/ui.dynatree.css" type="text/css" />';
+		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') ) {
+			$this->view->css_file .= '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
+		}
+
+		// Подключаем файл, с названием равным контроллеру
+		$this->view->subview = $this->ctrl;
+
+		$this->response->body = $this->view->render();
+    }
+
 
 	protected function RecursiveTree(&$rs,$parent) {
 
@@ -48,7 +72,7 @@ class ItBase extends Page {
 				$chidls = $this->RecursiveTree($rs,$row->id);
 
 				//$prn_child = ($chidls) ? ', "isFolder":"true", "key":"folder2", "children": ['.$chidls.']' : '';
-				$prn_child = ($chidls) ? ', "children": ['.$chidls.']' : '';
+				$prn_child = ($chidls) ? ', "children": ['.$chidls.'],"isFolder": true' : '';
 
 				$out .= '{"title":"'.$row->name. '", "key":"'.$row->id.'"' . $prn_child .'},';
 		}
@@ -60,19 +84,15 @@ class ItBase extends Page {
 
 		$tree = $rs = array();
 
-//		$typenow = $this->request->get('page');
 		$typenow = $this->request->param('controller');
 
-		$tree = $this->pixie->db->query('select','itbase')
-								->table('names')
+		$tree = $this->pixie->orm->get('names')
 								->where('page', $this->getVar($typenow))
 								->order_by('pid')
-								->order_by('name')
-								->execute()
-								->as_array();
+								//->order_by('name')
+								->find_all();
 
 		foreach ($tree as $row)	{
-
 			$rs[$row->pid][] = $row;
 		}
 
@@ -170,38 +190,24 @@ class ItBase extends Page {
 
 	}
 
-	protected function show_single($view) {
+	public function action_records() {
 
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
+		if( ! $this->_id = $this->request->param('id') )
+			return;
+
+		$entry = $this->pixie->orm->get('names')->where('id',$this->_id)->find();
+
+		$data = array();
+		$rows = json_decode($entry->records);
+
+		for($i=0; $i < count($rows); $i++) {
+
+			$data[] = array($rows[$i]->fname,
+							$rows[$i]->fval,
+							'DT_RowID'=>"tab-rec-".$i);
 		}
-		//$view = $this->pixie->view( $this->request->param('controller').'_view' );
-		//$view = $view_tmpl;
 
-		// вывод лога
-		$view->log = $this->getVar($this->logmsg,'');
-
-		// если не редактирование,т.е. начальный вход
-		if( ! $this->request->param('id') )
-			return; // "<img class='lb' src='/Dns.png' />";
-
-		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
-
-
-		$view->entries = $this->pixie->db->query('select','itbase')
-										->table('names')
-										->where('id',$this->_id)
-										->execute()
-										->current();
-
-		$view->templ = ($view->entries->templ) ? unserialize($view->entries->templ) : array();
-
-		// Редактирование
-		if( ! $this->request->get('act') )
-			return $view->render();
-
-        $this->response->body = $view->render();
+        $this->response->body = json_encode($data);
     }
 
 

@@ -9,7 +9,10 @@ ul.dynatree-container
 	padding: 3px;
 	margin: 0; /* issue 201 */
 	background-color: white;
+/*
 	border: 1px dotted gray;
+*/
+	border: 0;
 	overflow: auto;
 	height: 100%; /* issue 263 */
 }
@@ -37,6 +40,7 @@ ul.dynatree-container li
 	margin:0;
 	padding:1px 0 0 0;
 }
+
 /* Suppress lines for last child node */
 ul.dynatree-container li.dynatree-lastsib
 {
@@ -449,4 +453,17 @@ span.dynatree-drop-target.dynatree-drop-reject
 }
 span.dynatree-drop-target.dynatree-drop-after a
 {
+}
+
+/**************    MY     *************/
+.ogr:hover {
+	background-color: #green
+}
+
+table.display td {
+	padding: 6px 10px;
+}
+
+.gorizont-50 .DTTT_container {
+	margin: 5px 0;
 }

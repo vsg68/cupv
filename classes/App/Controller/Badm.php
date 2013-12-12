@@ -5,7 +5,7 @@ namespace App\Controller;
 class Badm extends \App\ItBase {
 
 
-    public function action_view() {
+    public function action_view1() {
 
 
 		$this->view->script_file .= '<script type="text/javascript" src="/badm.js"></script>';
@@ -20,7 +20,7 @@ class Badm extends \App\ItBase {
 
 		$this->view->menu_block = $this->getTemplItems(); // Тут стоит меню шаблонов
 
-		$this->view->ed_block = $this->action_single();
+		//$this->view->ed_block = $this->action_single();
 
         $this->response->body = $this->view->render();
     }
