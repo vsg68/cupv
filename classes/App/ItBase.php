@@ -211,6 +211,48 @@ class ItBase extends Page {
         $this->response->body = json_encode($data);
     }
 
+	public function action_showEditForm() {
+
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
+
+
+		if( ! $tab = $this->request->post('t') )
+			return;
+
+		$this->_id 	= $this->request->param('id');  // ID раздела
+		$view 		= $this->pixie->view('form_'.$tab);
+		$view->page	= $this->request->param('controller');
+		$view->pid	= $this->request->post('pid');
+		$view->tab  = $tab;
+
+		$data = $this->pixie->orm->get('names')
+								 ->where('id',$this->_id)
+								 ->find();
+		//~ // редактируем разделы
+		//~ if( $tab == 'tree' ) {
+//~
+			//~ $options 	 = $this->getFreeControllers();
+//~
+			//~ // Добавим туда текущий контроллер
+			//~ if( $data->loaded() ) {
+				//~ array_push( $options, $data->class);
+			//~ }
+//~
+			//~ $view->options  = $options;
+//~
+			//~ // Смотрим порядковый номер
+			//~ if( $this->_id == 0 ) {
+				//~ $view->count = $this->pixie->orm->get('sections')
+												//~ ->where('id',$view->pid)
+												//~ ->controllers
+												//~ ->count_all();
+			//~ }
+		//~ }
+
+	    $view->data = $data;
+        $this->response->body = $view->render();
+    }
 
 	protected function getTemplItems() {
 

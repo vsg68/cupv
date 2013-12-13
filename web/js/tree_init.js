@@ -59,7 +59,9 @@ $(function(){
 				node = node.getParent();
 			}
 
-			$.post('/'+ ctrl +'/showEditForm/'+node.data.key, {t:'tab-tree'}, function(response){
+			pid = node.getParent().data.key;
+
+			$.post('/'+ ctrl +'/showEditForm/'+node.data.key, {t:'tree',pid: pid}, function(response){
 					// Какую форму вернул запрос
 					if( $(response).find('.form-alert').length )
 						$(response).modal( modInfo );
@@ -72,14 +74,19 @@ $(function(){
 	/*
 	 * Реакция на добавление папки к дереву
 	 */
-	$('#tab-tree_1').not('.DTTT_disabled').click( function() {
+	$('#tab-tree_1').click( function() {
 
 			if( $(this).hasClass('DTTT_disabled') ) {
 				return false;
 			}
 
-			//$.get('/'+ctrl+'/editNode/' + node.key)
-			alert(id);
+			$.post('/'+ ctrl +'/showEditForm/0', {t:'tree',pid: 0}, function(response){
+					// Какую форму вернул запрос
+					if( $(response).find('.form-alert').length )
+						$(response).modal( modInfo );
+					else
+						$(response).modal( modWin );
+			});
 	});
 
 
