@@ -3,16 +3,16 @@
 			<div class="dataTables_wrapper">
 				<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix">
 					<div class="DTTT_container ui-buttonset ui-buttonset-multi">
-						<a class="DTTT_button ui-button ui-state-default DTTT_button_edit DTTT_disabled" id="ToolTables_tab-sections_0"><span>.</span></a>
-						<a class="DTTT_button ui-button ui-state-default DTTT_button_new" id="ToolTables_tab-sections_1"><span>.</span></a>
-						<a class="DTTT_button ui-button ui-state-default DTTT_button_del DTTT_disabled" id="ToolTables_tab-sections_2"><span>.</span></a>
-						<a class="DTTT_button ui-button ui-state-default DTTT_label  DTTT_disabled" id="ToolTables_tab-sections_3"><span>РАЗДЕЛЫ</span></a>
+						<a class="DTTT_button ui-button ui-state-default DTTT_button_edit DTTT_disabled" id="tab-tree_0"><span>.</span></a>
+						<a class="DTTT_button ui-button ui-state-default DTTT_button_new" id="ToolTables_tab-tree_1"><span>.</span></a>
+						<a class="DTTT_button ui-button ui-state-default DTTT_button_del DTTT_disabled" id="tab-tree_2"><span>.</span></a>
+						<a class="DTTT_button ui-button ui-state-default DTTT_label  DTTT_disabled" id="tab-tree_3"><span>РАЗДЕЛЫ</span></a>
 					</div>
 				</div>
 
 				<div id="tree"></div>
 				<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix">
-					<div class="dataTables_info" id="tab-sections_info"></div>
+					<div class="dataTables_info" id="tab-tree_info"></div>
 				</div>
 			</div>
 		</div>

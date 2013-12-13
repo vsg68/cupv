@@ -204,7 +204,8 @@ class ItBase extends Page {
 
 			$data[] = array($rows[$i]->fname,
 							$rows[$i]->fval,
-							'DT_RowID'=>"tab-rec-".$i);
+							"DT_RowClass" => "gradeA",
+							'DT_RowId'=>"tab-rec-".$i);
 		}
 
         $this->response->body = json_encode($data);

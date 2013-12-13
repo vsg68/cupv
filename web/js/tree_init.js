@@ -44,19 +44,71 @@ $(function(){
 			//~ return false;
 	//~ });
 
-	// Menu
-	$('#ddmenu li').hover(
-			function () {
-				 clearTimeout($.data(this,'timer'));
-				 $('ul',this).stop(true,true).slideDown(200);
-			},
-			function () {
-				$.data(this,'timer', setTimeout($.proxy(function() {
-				  $('ul',this).stop(true,true).slideUp(200);
-				}, this), 100));
+	/*
+	 * Реакция на редактирование дерева
+	 */
+	$('#tab-tree_0').click( function() {
+
+			if( $(this).hasClass('DTTT_disabled') ) {
+				return false;
+			}
+			// если выделеный узел не фолдер - то беру фолдер выделенного узла
+			var node = $("#tree").dynatree("getActiveNode");
+
+			if( node.data.isFolder != true ) {
+				node = node.getParent();
+			}
+
+			$.post('/'+ ctrl +'/showEditForm/'+node.data.key, {t:'tab-tree'}, function(response){
+					// Какую форму вернул запрос
+					if( $(response).find('.form-alert').length )
+						$(response).modal( modInfo );
+					else
+						$(response).modal( modWin );
 			});
 
+	});
 
+	/*
+	 * Реакция на добавление папки к дереву
+	 */
+	$('#tab-tree_1').not('.DTTT_disabled').click( function() {
+
+			if( $(this).hasClass('DTTT_disabled') ) {
+				return false;
+			}
+
+			//$.get('/'+ctrl+'/editNode/' + node.key)
+			alert(id);
+	});
+
+
+	/*
+	 * Реакция на Удаление папки дерева
+	 */
+	$('#tab-tree_2').not('.DTTT_disabled').click( function() {
+			if( $(this).hasClass('DTTT_disabled') ) {
+				return false;
+			}
+			// если выделеный узел не фолдер - то беру фолдер выделенного узла
+			var node = $("#tree").dynatree("getActiveNode");
+
+			if( node.hasChildren() == true ) {
+				alert('Раздел удалять нельзя, если там есть данные');
+				return false;
+			}
+
+			$.post('/'+ ctrl +'/delEntry/' + node.data.id, params, function(response){
+					// Какую форму вернул запрос ?
+
+					if( $(response).find('.form-alert').length ) {
+							$(response).modal( modInfo );
+					}
+					else {
+						$('#tab-'+tab).dataTable().fnDeleteRow( $('#'+uid).get(0) );
+					}
+			});
+	});
 
 
 });
@@ -64,23 +116,27 @@ $(function(){
 var id  = window.location.pathname.split('/')[3];
 var oldPid;
 
+
+
+
 var treeOpts = {
-		clickFolderMode: 2,
+		//clickFolderMode: 2,
 		fx: { height: "toggle", duration: 200 },
 		initAjax: {
 			url: "/"+ ctrl +"/getTree",
 		},
 		onRender: function(node, nodeSpan) {
-
-			if( node.hasChildren() === true ) {
-
-				$(nodeSpan).addClass('dynatree-ico-cf');
-			}
+//~
+			//~ if( node.hasChildren() === true ) {
+//~
+				//~ $(nodeSpan).addClass('dynatree-ico-cf');
+			//~ }
 		},
 		onClick: function(node, event) {
 			// показываем данные
 			if( node.hasChildren() != true) {
 				getData(node.data.key);
+
 			}
 		},
 		onPostInit: function(isReloading, isError) {
@@ -92,10 +148,13 @@ var treeOpts = {
 			//~ $('#tree').dynatree("getTree").activateKey(id);
 
 		},
-		onActivate: function(node) {
-
-			//alert(node.data.key);
-			//alert('parent:' + node.getParent().data.key + '\n self: ' + node.data.key);
+		onActivate: function( node) {
+			if( function_exists('blockButtons') ) {
+					blockButtons(node);
+			}
+			//~ if( !flag && function_exists('blockNewButton') && node.hasChildren() != true) {
+					//~ blockNewButton(node);
+			//~ }
 		},
 		debugLevel: 0,
 		dnd: {
