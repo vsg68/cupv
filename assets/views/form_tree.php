@@ -9,16 +9,22 @@
 			</p>
 		</div>
 		<form id='usersform' action='#' method='post'>
-			<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : (isset($ctrl) ? '0_'.$ctrl : '0')) ?>'  />
+			<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : '0') ?>'  />
 			<input type='hidden' name='tab' value='<?= $tab ?>' />
 			<input type='hidden' name='pid' value='<?= $pid ?>' />
-			<input type='hidden' name='page' value='<?= $page ?>' />
 			<h4></h4>
 			   <table>
-					<?php if( $tab == 'tree'): ?>
 					<tr>
 						<td class='formlabel'>Название:</td>
 						<td><input type='text' name='name' value='<?= isset($data->name) ? $data->name : '' ?>'  /></td>
+					</tr>
+					<?php if( !isset($data->id) ): ?>
+					<tr>
+						<td class='formlabel'>Позиция раздела:</td>
+						<td>
+							В корне<input type='radio' name='in_root' value='1' checked /> &nbsp;&nbsp;
+							В текущем разделе<input type='radio' name='in_root' value='0'  />
+						</td>
 					</tr>
 					<?php endif; ?>
 			  </table>

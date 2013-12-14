@@ -3,9 +3,11 @@ $(function(){
 	$('#tree').dynatree( treeOpts );
 
 	H 	= $(window).outerHeight();
-	rH	= 100;	// Скролл таблицы записей
-	d_min = rH + 110;  // Расстояние от главной таблицы до дна
+	rH	= 110;	// Скролл таблицы записей
 	eH	= H-rH;	// Скролл главной таблицы
+
+	// scroll контейнера
+	$('.dynatree-container').css('max-height', eH+'px');
 
 	TTOpts.aButtons.splice(3,3);
 	TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
@@ -34,7 +36,6 @@ function unblockNewButton(nodes) {
 function blockNewButton(nodes) {
 
 		$('.DTTT_button', '#tab-rec_wrapper').addClass('DTTT_disabled');
-
 }
 
 
@@ -57,5 +58,19 @@ function blockButtons(node) {
 
 }
 
+
+/*
+ * Функции проверок при редактировании записей в таблицах.
+ * Проверка на совпадения доменов, алиасов - не производится !!
+ */
+function validate_tree() {
+
+			in_root = $(':radio[name="in_root"]').val();
+			pid	 	= $(':hidden[name="pid"]').val();
+
+			if ( ! (pid || in_root) ) {
+				return  modWin.message = 'Определитесь, где будет новый раздел. ';
+			}
+}
 
 

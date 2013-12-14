@@ -5,37 +5,6 @@ class ItBase extends Page {
 
 	protected $view_tmpl;
 
-	//~ public function before1() {
-//~
-		//~ $this->view = $this->pixie->view('main');
-		//~ $this->auth = $this->pixie->auth;
-//~
-		//~ $this->view->subview = 'itbase';
-//~
-//~
-		//~ $this->view->script_file = '<script type="text/javascript" src="/jquery.dynatree.js"></script>';
-		//~ $this->view->script_file .= '<script type="text/javascript" src="/tree_init.js"></script>';
-//~
-		//~ $this->view->css_file = '<link rel="stylesheet" href="/skin/ui.dynatree.css" type="text/css" />';
-		//~ $this->view->css_file .= '<link rel="stylesheet" href="/tree_init.css" type="text/css" />';
-//~
-//~
-		//~ /* Определяем все контроллеры с одинаковыми ID */
-		//~ $this->view->menuitems = $this->pixie->db
-										//~ ->query('select')
-										//~ ->fields('Y.*')
-										//~ ->table('controllers','X')
-										//~ ->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
-										//~ ->where('X.class',strtolower($this->request->param('controller')))
-										//~ ->where('Y.active',1)
-										//~ ->order_by('Y.arrange')
-										//~ ->execute();
-//~
-		//~ // Проверка легитимности пользователя и его прав
-        //~ if( $this->request->param('controller') != 'login' )
-			//~ $this->permissions = $this->is_approve();
-//~
-	//~ }
 
 	public function action_view() {
 
@@ -63,7 +32,7 @@ class ItBase extends Page {
 
 	protected function RecursiveTree(&$rs,$parent) {
 
-	    $out = '';
+	    $data = array();
 
 		if (!isset($rs[$parent])) return false;
 
@@ -71,13 +40,16 @@ class ItBase extends Page {
 
 				$chidls = $this->RecursiveTree($rs,$row->id);
 
-				//$prn_child = ($chidls) ? ', "isFolder":"true", "key":"folder2", "children": ['.$chidls.']' : '';
-				$prn_child = ($chidls) ? ', "children": ['.$chidls.'],"isFolder": true' : '';
-
-				$out .= '{"title":"'.$row->name. '", "key":"'.$row->id.'"' . $prn_child .'},';
+				$out = array("title"=>$row->name, "key" => $row->id);
+				// $row->records пусто для разделов
+				if( $chidls || !$row->records) {
+					 $out["isFolder"] = true;
+					 $out["children"] = $chidls;
+				}
+				array_push($data, $out);
 		}
 
-		return $out;
+		return $data;
 	}
 
 	protected function action_getTree() {
@@ -96,97 +68,8 @@ class ItBase extends Page {
 			$rs[$row->pid][] = $row;
 		}
 
-		$tree_struct = str_replace('},]', '}]', '['. $this->RecursiveTree($rs,0) .']') ;
-
-		$this->response->body =  $tree_struct;
-
-	}
-
-	public function action_add() {
-
-		if( $this->permissions != $this::WRITE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-        if ($this->request->method == 'POST') {
-
-			$entry = $templ = array();
-			$params = $this->request->post();
-
-			if( isset($params['fname']) ) {
-				foreach($params['fname'] as $key=>$val) {
-
-					$templ['entry'][$key] = array('fname' => $params['fname'][$key],
-												  'ftype' => $params['ftype'][$key],
-												  'fval'  => $params['fval'][$key]
-												  );
-				}
-			}
-
-			if( isset($params['tdname']) ) {
-
-				foreach($params['tdname'] as $key=>$tdvalues) {
-
-					foreach($tdvalues as $tdvalue) {
-
-						if( !isset($templ['records'][$key]) )
-							$templ['records'][$key] = array();
-
-						array_push($templ['records'][$key], $tdvalue);
-					}
-				}
-			}
-
-			// копирование шаблона
-			if( isset($params['tmpl_id']) ) {
-
-					$template = $this->pixie->db->query('select','itbase')
-												->table('names')
-												->where('id',$params['tmpl_id'])
-												->execute()
-												->current();
-
-					$entry['templ'] = $template->templ;
-			}
-
-			// заполняем массив
-			if( isset($params['name']) )	$entry['name'] = $params['name'];
-			if( isset($params['pid']) )		$entry['pid']  = $params['pid'];
-			if( count($templ) )				$entry['templ'] = serialize($templ);
-
-			$entry['page'] = $this->request->param('controller');
-
-			if ( $params['id'] == 0 ) {
-			// Новая запись
-				$this->pixie->db->query('insert','itbase')
-								->table('names')
-								->data($entry)
-								->execute();
-
-				$params['id'] = $this->pixie->db->insert_id('itbase');
-
-			}
-			elseif ( $this->getVar($params['stat'],0) == 2)	{
-			// Удаляем запись
-				$this->pixie->db->query('delete','itbase')
-								->table('names')
-								->where('id', $params['id'])
-								->where('or',array('pid', $params['id']))
-								->execute();
-
-			}
-			else {
-			// Редактирование
-				$this->pixie->db->query('update','itbase')
-								->table('names')
-								->data($entry)
-								->where('id', $params['id'])
-								->execute();
-			}
-
-			$this->response->body = $params['id'];
-		}
+		$tree_struct = $this->RecursiveTree($rs,0);
+		$this->response->body =  json_encode($tree_struct);
 
 	}
 
@@ -216,7 +99,6 @@ class ItBase extends Page {
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
 
-
 		if( ! $tab = $this->request->post('t') )
 			return;
 
@@ -226,56 +108,72 @@ class ItBase extends Page {
 		$view->pid	= $this->request->post('pid');
 		$view->tab  = $tab;
 
-		$data = $this->pixie->orm->get('names')
+		$view->data = $this->pixie->orm->get('names')
 								 ->where('id',$this->_id)
 								 ->find();
-		//~ // редактируем разделы
-		//~ if( $tab == 'tree' ) {
-//~
-			//~ $options 	 = $this->getFreeControllers();
-//~
-			//~ // Добавим туда текущий контроллер
-			//~ if( $data->loaded() ) {
-				//~ array_push( $options, $data->class);
-			//~ }
-//~
-			//~ $view->options  = $options;
-//~
-			//~ // Смотрим порядковый номер
-			//~ if( $this->_id == 0 ) {
-				//~ $view->count = $this->pixie->orm->get('sections')
-												//~ ->where('id',$view->pid)
-												//~ ->controllers
-												//~ ->count_all();
-			//~ }
-		//~ }
 
-	    $view->data = $data;
         $this->response->body = $view->render();
     }
 
-	protected function getTemplItems() {
+	//~ public function action_edit() {
+//~
+		//~ if( $this->permissions != $this::WRITE_LEVEL )
+			//~ return $this->noperm();
+//~
+		//~ if( ! $params = $this->request->post() )
+			//~ return;
+//~
+		//~ try {
+			//~ $tab  = $params['tab'];
+			//~
+			//~ $params['pid'] = $params['in_root'] ? '0' : $params['pid'];
+			//~ unset($params['tab'], $params['in_root']);
+//~
+			//~ $is_update = $params['id'] ? true : false;
+//~
+			//~ // сохраняем модель
+			//~ // Если в запрос поместить true -  предполагается UPDATE
+			//~ $row = $this->pixie->orm->get($tab)
+									//~ ->values($params, $is_update)
+									//~ ->save();
+//~
+			//~ $id = $params['id'];
+			//~ unset( $params['id'] );
+//~
+			//~ $returnData  = array_values($params);
+			//~ $returnData['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
+//~
+			//~ $this->response->body = json_encode($returnData);
+		//~ }
+		//~ catch (\Exception $e) {
+			//~ $this->response->body = $e->getMessage();
+			//~ return;
+		//~ }
+//~
+//~
+	//~ }
 
-		$menu_ul = '';
+	public function action_delEntry() {
 
-		$menu_block = $this->pixie->db->query('select','itbase')
-									 ->table('names')
-									 ->where('page','btmpl')
-									 ->execute()
-									 ->as_array();
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
 
+		if( ! $params = $this->request->post() or
+			! $this->_id = $this->request->param('id') )
+			return;
 
-		if( is_array($menu_block) )	{
+		try {
 
-			$menu_ul .= '<ul>';
-
-			foreach($menu_block as $item)
-				$menu_ul .= '<li><span id="x-'. $item->id .'">'.$item->name.'</span></li>';
-
-			$menu_ul .= '</ul>';
+			$this->pixie->orm->get($params['tab'])
+							 ->where('id', $this->_id)
+							 ->delete_all();
+		}
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
+			$this->response->body = $view->render();
 		}
 
-		return $menu_ul;
+    }
 
-	}
 }

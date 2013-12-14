@@ -4,7 +4,7 @@
 				<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix">
 					<div class="DTTT_container ui-buttonset ui-buttonset-multi">
 						<a class="DTTT_button ui-button ui-state-default DTTT_button_edit DTTT_disabled" id="tab-tree_0"><span>.</span></a>
-						<a class="DTTT_button ui-button ui-state-default DTTT_button_new" id="ToolTables_tab-tree_1"><span>.</span></a>
+						<a class="DTTT_button ui-button ui-state-default DTTT_button_new" id="tab-tree_1"><span>.</span></a>
 						<a class="DTTT_button ui-button ui-state-default DTTT_button_del DTTT_disabled" id="tab-tree_2"><span>.</span></a>
 						<a class="DTTT_button ui-button ui-state-default DTTT_label  DTTT_disabled" id="tab-tree_3"><span>РАЗДЕЛЫ</span></a>
 					</div>

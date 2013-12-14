@@ -5,29 +5,43 @@ namespace App\Controller;
 class Badm extends \App\ItBase {
 
 
-    public function action_view1() {
+ 	public function action_edit() {
 
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
 
-		$this->view->script_file .= '<script type="text/javascript" src="/badm.js"></script>';
+		if( ! $params = $this->request->post() )
+			return;
 
-		$this->view->css_file 	 .= '<link rel="stylesheet" href="/badm.css" type="text/css" />';
+		try {
+			$tab  = $params['tab'];
 
-		// Проверка легитимности пользователя и его прав
-        if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
+			$params['pid'] = $params['in_root'] ? '0' : $params['pid'];
+			unset($params['tab'], $params['in_root']);
+			$params['page'] = $this->request->param('controller');
+
+			$is_update = $params['id'] ? true : false;
+
+			// сохраняем модель
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get('names')
+									->values($params, $is_update)
+									->save();
+
+			$id = $params['id'];
+			unset( $params['id'] );
+
+			$returnData  = array('title' => $params['name'],
+								 'isFolder' => true,
+								 'key'   => ($id ? $id : $row->id));
+
+			$this->response->body = json_encode($returnData);
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
 		}
 
-		$this->view->menu_block = $this->getTemplItems(); // Тут стоит меню шаблонов
-
-		//$this->view->ed_block = $this->action_single();
-
-        $this->response->body = $this->view->render();
-    }
-
-	public function action_single() {
-
-		return $this->show_single( $this->pixie->view('badm_view') );
 
 	}
  }
