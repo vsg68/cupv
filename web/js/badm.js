@@ -60,17 +60,17 @@ function blockButtons(node) {
 
 
 /*
- * Функции проверок при редактировании записей в таблицах.
- * Проверка на совпадения доменов, алиасов - не производится !!
+ *
  */
-function validate_tree() {
-
-			in_root = $(':radio[name="in_root"]').val();
-			pid	 	= $(':hidden[name="pid"]').val();
-
-			if ( ! (pid || in_root) ) {
-				return  modWin.message = 'Определитесь, где будет новый раздел. ';
-			}
-}
+//~ function validate_tree() {
+//~
+		//~ in_root = $(':radio[name="in_root"]').val();
+		//~ pid	 	= $(':hidden[name="pid"]').val();
+		//~ id	 	= $(':hidden[name="id"]').val();
+//~ return false;
+		//~ if ( id == 0 && pid != 0 && in_root == 1 ) {
+			//~ return  modWin.message = 'Определитесь, где будет новый раздел. ';
+		//~ }
+//~ }
 
 

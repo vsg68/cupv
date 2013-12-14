@@ -11,7 +11,7 @@
 		<form id='usersform' action='#' method='post'>
 			<input type='hidden' name='id' value='<?= (isset($data->id) ? $data->id : '0') ?>'  />
 			<input type='hidden' name='tab' value='<?= $tab ?>' />
-			<input type='hidden' name='pid' value='<?= $pid ?>' />
+			<input type='hidden' name='pid' value='<?= (isset($data->pid) ? $data->pid : $pid) ?>' />
 			<h4></h4>
 			   <table>
 					<tr>

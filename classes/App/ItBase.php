@@ -61,7 +61,6 @@ class ItBase extends Page {
 		$tree = $this->pixie->orm->get('names')
 								->where('page', $this->getVar($typenow))
 								->order_by('pid')
-								//->order_by('name')
 								->find_all();
 
 		foreach ($tree as $row)	{

@@ -340,7 +340,7 @@ var modTree = {
 		onShow: function(dialog){
 			message: null;
 			PidNode: null;
-			Node: null;
+			ThisNode: null;
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>";
 
 			$(':text, select').addClass('ui-widget-content ui-corner-all');
@@ -351,22 +351,22 @@ var modTree = {
 			$('#sb').click(function (e) {
 				e.preventDefault();
 				// С какими строками какой таблицы работаем
-				RowID 	= 1 * $('form :hidden[name="id"]').val();
+				RowID 	= $('form :hidden[name="id"]').val();
 				in_root = 1 * $(':radio:checked[name="in_root"]').val(); // конвертируем в int
 				pid	 	= $(':hidden[name="pid"]').val();
-				root	= $("#tree").dynatree("getRoot");
+				tree	= $("#tree").dynatree("getTree");
 
-				if ( RowID ) {
+				if ( RowID != 0 ) {
 				// редактирование
-					modTree.Node = root.tree.getNodeByKey( RowID );
+					modTree.ThisNode = tree.getNodeByKey( RowID );
 				}
 				else {
 				// Новая запись. Определяем ID родителя
-					modTree.PidNode = (in_root ) ? root.tree.getRoot() : root.tree.getNodeByKey( pid );
+					modTree.PidNode = (in_root ) ? tree.getRoot() : tree.getNodeByKey( pid );
 				}
-				modTree.message = '';
-				modTree.message = validate_tree();
-				if (! modTree.message ) {
+				//~ modTree.message = '';
+				//~ modTree.message = validate_tree();
+				//~ if (! modTree.message ) {
 					// Работа с запросом
 					$.ajax ({
 							url: '/'+ ctrl +'/edit/',
@@ -375,8 +375,9 @@ var modTree = {
 							dataType: 'json',
 							success: function(str) {
 										// Если у нас редактирование
-										if( modTree.RowNode ) {
-											 modTree.Node.data.title = str.title;
+										if( modTree.ThisNode ) {
+											 modTree.ThisNode.data.title = str.title;
+											 modTree.ThisNode.render();
 										}
 										else {// Добавляем значение к родителю
 											 modTree.PidNode.addChild(str);
@@ -387,9 +388,9 @@ var modTree = {
 										$('.ui-state-error').empty().append(response.responseText).fadeIn('fast');
 									},
 					});
-				}
-				else
-					modTree.showError();
+				//~ }
+				//~ else
+					//~ modTree.showError();
 
 			})
 		},

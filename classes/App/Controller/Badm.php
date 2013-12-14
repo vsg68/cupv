@@ -16,10 +16,10 @@ class Badm extends \App\ItBase {
 		try {
 			$tab  = $params['tab'];
 
-			$params['pid'] = $params['in_root'] ? '0' : $params['pid'];
-			unset($params['tab'], $params['in_root']);
+			$params['pid']  = (isset($params['in_root']) && $params['in_root']) ? '0' : $params['pid'];
 			$params['page'] = $this->request->param('controller');
-
+			unset($params['tab'], $params['in_root']);
+//~ print_r($params);exit;
 			$is_update = $params['id'] ? true : false;
 
 			// сохраняем модель
