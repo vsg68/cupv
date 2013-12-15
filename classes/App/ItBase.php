@@ -46,6 +46,7 @@ class ItBase extends Page {
 					 $out["isFolder"] = true;
 					 $out["children"] = $chidls;
 				}
+
 				array_push($data, $out);
 		}
 

@@ -407,8 +407,10 @@ div.dynatree-drop-reject span.dynatree-drag-helper-img
 #dynatree-drop-marker.dynatree-drop-after,
 #dynatree-drop-marker.dynatree-drop-before
 {
+/*
 	width:64px;
 	background-position: 0 -144px;
+*/
 }
 #dynatree-drop-marker.dynatree-drop-copy
 {
@@ -456,9 +458,6 @@ span.dynatree-drop-target.dynatree-drop-after a
 }
 
 /**************    MY     *************/
-.ogr:hover {
-	background-color: #green
-}
 
 table.display td {
 	padding: 6px 10px;
@@ -467,3 +466,4 @@ table.display td {
 .gorizont-50 .DTTT_container {
 	margin: 5px 0;
 }
+

@@ -14,12 +14,12 @@ class Badm extends \App\ItBase {
 			return;
 
 		try {
-			$tab  = $params['tab'];
+			$tab  = isset($params['tab']) ? $params['tab'] : '';
 
 			$params['pid']  = (isset($params['in_root']) && $params['in_root']) ? '0' : $params['pid'];
 			$params['page'] = $this->request->param('controller');
 			unset($params['tab'], $params['in_root']);
-//~ print_r($params);exit;
+
 			$is_update = $params['id'] ? true : false;
 
 			// сохраняем модель
@@ -31,11 +31,14 @@ class Badm extends \App\ItBase {
 			$id = $params['id'];
 			unset( $params['id'] );
 
-			$returnData  = array('title' => $params['name'],
-								 'isFolder' => true,
-								 'key'   => ($id ? $id : $row->id));
+			// tab = '' - идет запрос на изменение принадлежности
+			if( $tab ) {
+				$returnData  = array('title' => $params['name'],
+									 'isFolder' => true,
+									 'key'   => ($id ? $id : $row->id));
 
-			$this->response->body = json_encode($returnData);
+				$this->response->body = json_encode($returnData);
+			}
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();

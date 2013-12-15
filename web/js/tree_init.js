@@ -145,21 +145,14 @@ $(function(){
 var id  = window.location.pathname.split('/')[3];
 var oldPid;
 
-
-
-
 var treeOpts = {
 		//clickFolderMode: 2,
 		fx: { height: "toggle", duration: 200 },
 		initAjax: {
 			url: "/"+ ctrl +"/getTree",
 		},
-		onRender: function(node, nodeSpan) {
-//~
-			//~ if( node.hasChildren() === true ) {
-//~
-				//~ $(nodeSpan).addClass('dynatree-ico-cf');
-			//~ }
+		onFocus: function(node) {
+			node.activate();
 		},
 		onClick: function(node, event) {
 			// показываем данные
@@ -176,112 +169,34 @@ var treeOpts = {
 			//~ // select by key
 			//~ $('#tree').dynatree("getTree").activateKey(id);
 
+
 		},
 		onActivate: function( node) {
 			if( function_exists('blockButtons') ) {
 					blockButtons(node);
 			}
-			//~ if( !flag && function_exists('blockNewButton') && node.hasChildren() != true) {
-					//~ blockNewButton(node);
-			//~ }
 		},
 		debugLevel: 0,
 		dnd: {
-			  onDragStart: function(node) {
-					return false;
-			  },
+			  onDragStart: function(node) {	return true; },
 			  autoExpandMS: 1000,
 			  preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-			  onDragStart: function(node) {
-					oldPid = node.getParent().data.key;
-					return true;
-			  },
-			  onDragStop: function(node) {
-					if( oldPid != node.getParent().data.key) {
-						sendChange(node);
-					}
-			  },
-			  //~ autoExpandMS: 1000,
-			  //~ preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-			  onDragEnter: function(node, sourceNode) { return true; },
-			  onDragOver: function(node, sourceNode, hitMode) {
-					// Prevent dropping a parent below it's own child
-					if(node.isDescendantOf(sourceNode)){
-					  return false;
-					}
-					// Prohibit creating childs in non-folders (only sorting allowed)
-					if( !node.data.isFolder && hitMode === "over" ){
-					  return "after";
-					}
+			  onDragEnter: function(node, sourceNode) {
+						// Запрещаем перемещать в своем разделе
+						if( node.data.isFolder && !sourceNode.data.isFolder && (node !== sourceNode.parent) ) {
+							return true;
+						}
+						return false;
 			  },
 			  onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-					// This function MUST be defined to enable dropping of items on the tree.
-					sourceNode.move(node, hitMode);
+						// This function MUST be defined to enable dropping of items on the tree.
+						sourceNode.move(node, hitMode);
+						// Послали запрос на изменение
+						$.post('/'+ctrl+'/edit',{id: sourceNode.data.key, pid: node.data.key});
 			  },
 		}
 };
 
-function editNode(node){
-
-	  var prevTitle = node.data.title,
-		  tree = node.tree;
-
-	  // Disable dynatree mouse- and key handling
-	  tree.$widget.unbind();
-
-	  // Replace node with <input>
-	  $(".dynatree-title", node.span).html("<input id='editNode' value='" + prevTitle + "'>");
-
-	  // Focus <input> and bind keyboard handler
-	  $("input#editNode")
-			.focus()
-			.keydown(function(event){
-			  switch( event.which ) {
-			  case 27: // [esc]
-					// discard changes on [esc]
-					$("input#editNode").val(prevTitle);
-					$(this).blur();
-					break;
-			  case 13: // [enter]
-					// simulate blur to accept new value
-					$(this).blur();
-					break;
-			  }
-		}).blur(function(event){
-			  // Accept new value, when user leaves <input>
-			  var title = $("input#editNode").val();
-			  node.setTitle(title);
-			  // Re-enable mouse and keyboard handlling
-			  tree.$widget.bind();
-			  node.focus();
-		});
-
-
-	$("input#editNode").change(function(){
-
-		 if(prevTitle != node.data.title) {
-
-				sendChange(node);
-		 }
-	});
-
-}
-
-function sendChange(node) {
-
-	  tmpl = /^_/;
-	  pid = node.getParent().data.key;
-
-	  if( tmpl.test(pid) )
-			pid = 0;
-
-	  $.post('/'+ctrl+'/add',{
-						  id: node.data.key,
-						  name: node.data.title,
-						  pid: pid
-						  }
-	  );
-}
 // показываем данные
 function getData(id) {
 
@@ -292,8 +207,8 @@ function getData(id) {
 				type: "GET",
 				dataType: "json",
 				success: function(response) {
-												$('#tab-rec').dataTable().fnClearTable();
-												$('#tab-rec').dataTable().fnAddData(response);
+								$('#tab-rec').dataTable().fnClearTable();
+								$('#tab-rec').dataTable().fnAddData(response);
 						},
 				error: function(response) {
 
@@ -356,14 +271,10 @@ var modTree = {
 				pid	 	= $(':hidden[name="pid"]').val();
 				tree	= $("#tree").dynatree("getTree");
 
-				if ( RowID != 0 ) {
-				// редактирование
-					modTree.ThisNode = tree.getNodeByKey( RowID );
-				}
-				else {
+
 				// Новая запись. Определяем ID родителя
-					modTree.PidNode = (in_root ) ? tree.getRoot() : tree.getNodeByKey( pid );
-				}
+				modTree.PidNode  = (in_root ) ? tree.getRoot() : tree.getNodeByKey( pid );
+				modTree.ThisNode = tree.getNodeByKey( RowID );
 				//~ modTree.message = '';
 				//~ modTree.message = validate_tree();
 				//~ if (! modTree.message ) {
@@ -376,8 +287,7 @@ var modTree = {
 							success: function(str) {
 										// Если у нас редактирование
 										if( modTree.ThisNode ) {
-											 modTree.ThisNode.data.title = str.title;
-											 modTree.ThisNode.render();
+											 modTree.ThisNode.setTitle(str.title);
 										}
 										else {// Добавляем значение к родителю
 											 modTree.PidNode.addChild(str);
