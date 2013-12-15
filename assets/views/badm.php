@@ -16,7 +16,7 @@
 				</div>
 			</div>
 		</div>
-		<div class='vertical-80 right-side'>
+		<div class='vertical-80'>
 			<div class='gorizont-50'>
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-rec">
 

@@ -202,6 +202,7 @@ form#usersform {
 .vertical-50
 {
 	width: 49%;
+	float:left;
 /*
 	display: inline-block;
 */
@@ -236,7 +237,14 @@ form#usersform {
 	float: right;
 }
 
+.vertical-50 .right-side {
+	width: 100%;
+	margin-right: -49%;
+	float: right;
+}
 /**** картинки ***/
+#badm,
+#bcont,
 #dns,
 #users,
 #home-page,

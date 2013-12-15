@@ -164,3 +164,18 @@ a.DTTT_button_search.DTTT_disabled span {
 #dns:hover {
 	background-position: -576px -64px;
 }
+#badm {
+	background-position: -640px 0px;
+}
+#badm.pagetab-selected,
+#badm:hover {
+	background-position: -640px -64px;
+}
+#bcont {
+	background-position: -704px 0px;
+}
+#bcont.pagetab-selected,
+#bcont:hover {
+	background-position: -704px -64px;
+}
+
