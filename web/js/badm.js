@@ -35,8 +35,7 @@ $(function(){
 												return false;
 
 											RowID = fnGetSelectedRowID(this);
-											pid = $('#'+RowID).attr('pid');
-											fnDelete( RowID, 'tab-tree-' + node.data.key);
+											fnDelete( RowID );
 										};
 
 	$('#tab-rec').dataTable({
@@ -95,7 +94,14 @@ function blockButtons(node) {
 
 }
 
+/*
+ * Передаем ID записи в качестве PID
+ */
+function deleteWithParams(uid, tab, params) {
 
+		params.pid = $('#' + uid).attr('pid');
+		return  params;
+}
 /*
  *
  */

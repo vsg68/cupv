@@ -217,4 +217,36 @@ class ItBase extends Page {
 
     }
 
+    public function action_delEntry() {
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+
+			$row = $this->pixie->orm->get('names')
+									->where('id', $params['pid'])
+									->find();
+
+			$records = json_decode($row->records);
+
+			unset($records[$params['id']]);
+
+			$row->records = json_encode($records);
+			$row->save();
+
+
+
+		}
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
+			$this->response->body = $view->render();
+		}
+
+    }
+
 }
