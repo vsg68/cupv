@@ -127,7 +127,7 @@ $(function(){
 			if( ! confirm('Уверены, что надо стирать?') )
 				return false;
 
-			$.post('/' + ctrl + '/delEntry/' + node.data.key, {tab:'names'}, function(response){
+			$.post('/' + ctrl + '/delEntryTree/' + node.data.key, {tab:'names'}, function(response){
 					// Какую форму вернул запрос ?
 					if( $(response).find('.form-alert').length ) {
 							$(response).modal( modInfo );
@@ -192,7 +192,7 @@ var treeOpts = {
 						// This function MUST be defined to enable dropping of items on the tree.
 						sourceNode.move(node, hitMode);
 						// Послали запрос на изменение
-						$.post('/'+ctrl+'/edit',{id: sourceNode.data.key, pid: node.data.key});
+						$.post('/'+ctrl+'/editTree',{id: sourceNode.data.key, pid: node.data.key});
 			  },
 		}
 };
@@ -280,7 +280,7 @@ var modTree = {
 				//~ if (! modTree.message ) {
 					// Работа с запросом
 					$.ajax ({
-							url: '/'+ ctrl +'/edit/',
+							url: '/'+ ctrl +'/editTree/',
 							data: $('form').serialize(),
 							type: 'post',
 							dataType: 'json',

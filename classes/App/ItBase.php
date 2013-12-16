@@ -91,8 +91,32 @@ class ItBase extends Page {
 							'DT_RowId'=>"tab-rec-".$i);
 		}
 
-        $this->response->body = json_encode($data);
+        $this->response->body = $data ? json_encode($data) : '';
     }
+
+	//~ public function action_showEditFormTree() {
+//~
+		//~ if( $this->permissions == $this::NONE_LEVEL )
+			//~ return $this->noperm();
+//~
+		//~ if( ! $tab = $this->request->post('t') )
+			//~ return;
+//~
+		//~ // при tab = rec ID и PID меняются местми
+		//~ $this->_id 	= $this->request->param('id');
+		//~ $view 		= $this->pixie->view('form_'.$tab);
+		//~ $view->page	= $this->request->param('controller');
+		//~ $view->pid	= $this->request->post('pid');
+		//~ $view->tab  = $tab;
+//~
+		//~ $data = $this->pixie->orm->get('names')
+								 //~ ->where('id',$this->_id)
+								 //~ ->find();
+//~
+		//~ $view->data = $data;
+//~
+        //~ $this->response->body = $view->render();
+    //~ }
 
 	public function action_showEditForm() {
 
@@ -102,58 +126,75 @@ class ItBase extends Page {
 		if( ! $tab = $this->request->post('t') )
 			return;
 
-		$this->_id 	= $this->request->param('id');  // ID раздела
+		// для правильного отображения меняем местами id и  pid
+		$this->_id 	= ($tab == 'tree') ? $this->request->param('id') : $this->request->post('init');
 		$view 		= $this->pixie->view('form_'.$tab);
-		$view->page	= $this->request->param('controller');
-		$view->pid	= $this->request->post('pid');
 		$view->tab  = $tab;
 
-		$view->data = $this->pixie->orm->get('names')
+		$view->page	= $this->request->param('controller');
+		// Во втором случае пид - это ID записи
+		$view->pid	= ($tab == 'tree') ? $this->request->post('pid') : $this->_id;
+
+		$view->id = $this->request->param('id');
+
+		$data = $this->pixie->orm->get('names')
 								 ->where('id',$this->_id)
 								 ->find();
+
+		if( $tab == 'rec' ) {
+			$data->records = isset($data->records) ? json_decode($data->records) : '';
+		}
+
+		$view->data = $data;
 
         $this->response->body = $view->render();
     }
 
-	//~ public function action_edit() {
-//~
-		//~ if( $this->permissions != $this::WRITE_LEVEL )
-			//~ return $this->noperm();
-//~
-		//~ if( ! $params = $this->request->post() )
-			//~ return;
-//~
-		//~ try {
-			//~ $tab  = $params['tab'];
-			//~
-			//~ $params['pid'] = $params['in_root'] ? '0' : $params['pid'];
-			//~ unset($params['tab'], $params['in_root']);
-//~
-			//~ $is_update = $params['id'] ? true : false;
-//~
-			//~ // сохраняем модель
-			//~ // Если в запрос поместить true -  предполагается UPDATE
-			//~ $row = $this->pixie->orm->get($tab)
-									//~ ->values($params, $is_update)
-									//~ ->save();
-//~
-			//~ $id = $params['id'];
-			//~ unset( $params['id'] );
-//~
-			//~ $returnData  = array_values($params);
-			//~ $returnData['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
-//~
-			//~ $this->response->body = json_encode($returnData);
-		//~ }
-		//~ catch (\Exception $e) {
-			//~ $this->response->body = $e->getMessage();
-			//~ return;
-		//~ }
-//~
-//~
-	//~ }
+	public function action_editTree() {
 
-	public function action_delEntry() {
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$tab  = isset($params['tab']) ? $params['tab'] : '';
+
+			$params['pid']  = (isset($params['in_root']) && $params['in_root']) ? '0' : $params['pid'];
+			$params['page'] = $this->request->param('controller');
+			unset($params['tab'], $params['in_root']);
+
+			$is_update = $params['id'] ? true : false;
+
+			// сохраняем модель
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get('names')
+									->values($params, $is_update)
+									->save();
+
+			$id = $params['id'];
+			unset( $params['id'] );
+
+			// tab = '' - идет запрос на изменение принадлежности
+			if( $tab ) {
+				$returnData  = array('title' => $params['name'],
+									 'isFolder' => true,
+									 'key'   => ($id ? $id : $row->id));
+
+				$this->response->body = json_encode($returnData);
+			}
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
+		}
+
+
+	}
+
+
+	public function action_delEntryTree() {
 
 		if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();

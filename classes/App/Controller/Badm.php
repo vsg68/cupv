@@ -5,7 +5,7 @@ namespace App\Controller;
 class Badm extends \App\ItBase {
 
 
- 	public function action_edit() {
+	public function action_edit() {
 
 		if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();
@@ -14,39 +14,40 @@ class Badm extends \App\ItBase {
 			return;
 
 		try {
-			$tab  = isset($params['tab']) ? $params['tab'] : '';
 
-			$params['pid']  = (isset($params['in_root']) && $params['in_root']) ? '0' : $params['pid'];
-			$params['page'] = $this->request->param('controller');
-			unset($params['tab'], $params['in_root']);
-
-			$is_update = $params['id'] ? true : false;
-
-			// сохраняем модель
-			// Если в запрос поместить true -  предполагается UPDATE
 			$row = $this->pixie->orm->get('names')
-									->values($params, $is_update)
-									->save();
+									->where('id', $params['pid'])
+									->find();
 
-			$id = $params['id'];
-			unset( $params['id'] );
 
-			// tab = '' - идет запрос на изменение принадлежности
-			if( $tab ) {
-				$returnData  = array('title' => $params['name'],
-									 'isFolder' => true,
-									 'key'   => ($id ? $id : $row->id));
+			$records = json_decode($row->records);
 
-				$this->response->body = json_encode($returnData);
-			}
+			// Если новая запись - порядковый номер делаем руками
+			$ord = ($params['id'] != '_0') ? $params['id'] : count($records) ;
+
+			$records[$ord] = array('fname' => $params['fname'],
+								   'fval'  => $params['fval']);
+
+			$row->records = json_encode($records);
+			$row->save();
+
+			$returnData  = array($params['fname'],
+								 $params['fval'],
+								 'DT_RowClass' => 'gradeA',
+								 'DT_RowID' => 'tab-rec-'.$params['id']);
+
+			$this->response->body = json_encode($returnData);
+
 		}
 		catch (\Exception $e) {
+
 			$this->response->body = $e->getMessage();
 			return;
 		}
 
 
 	}
- }
+
+}
 
 ?>

@@ -158,6 +158,13 @@ function addRowAttr( nRow, attrName, ind ) {
 }
 
 /*
+ *  При создании строки в аттрибут data заносим необходимое значение
+ */
+function makeRowAttr( nRow, attrName, value ) {
+		$(nRow).attr( attrName, value);
+}
+
+/*
  * Редактирование групп
  */
 function fnGroupEdit( uid, tab ) {
@@ -296,7 +303,7 @@ var modWin = {
 			RowNode: null;
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>";
 
-			$(':text, select').addClass('ui-widget-content ui-corner-all');
+			$(':text, select, textarea').addClass('ui-widget-content ui-corner-all');
 
 			$('.autocomp').autocomplete({source: '/' + ctrl +'/searchMailbox/'});
 

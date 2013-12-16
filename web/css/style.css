@@ -156,7 +156,9 @@ form#usersform {
 }
 
 #usersform input[type='text'],
-#usersform select {
+#usersform textarea,
+#usersform select
+{
 	background: none;
 }
 
@@ -166,10 +168,16 @@ form#usersform {
 }
 
 #usersform input[type='text'],
-#usersform input[type='password']{
+#usersform input[type='password'],
+#usersform textarea
+{
 	width: 100%;
 	padding-left:3px;
 	height: 21px;
+}
+
+#usersform textarea {
+	resize: vertical;
 }
 
 .submit {
@@ -196,6 +204,7 @@ form#usersform {
 	color: #1e8af8 !important;
 */
 }
+
 /****** главная страница  ********/
 .vertical-20,
 .vertical-80,
