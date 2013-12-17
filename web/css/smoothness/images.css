@@ -88,6 +88,17 @@ a.DTTT_button_search.DTTT_disabled span {
 	background-position: -126px -42px;
 }
 
+a.DTTT_button_foldernew span {
+	background-position: -147px -0px;
+}
+
+a.DTTT_button_foldernew:hover span {
+	background-position: -147px -21px;
+}
+a.DTTT_button_foldernew.DTTT_disabled span {
+	background-position: -147px -42px;
+}
+/*********************************************/
 #users {
 	background-position: -192px 0px;
 }

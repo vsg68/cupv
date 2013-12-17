@@ -270,13 +270,15 @@ form#usersform {
 }
 
 .Search_active,
+a.DTTT_button_foldernew span,
 a.DTTT_button_search span,
 a.DTTT_button_vis span,
 a.DTTT_button_group span,
 a.DTTT_button_print span,
 a.DTTT_button_edit span,
 a.DTTT_button_new span,
-a.DTTT_button_del span {
+a.DTTT_button_del span
+{
 	height: 21px;
 	width: 21px;
 	background-repeat: no-repeat;

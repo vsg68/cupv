@@ -205,9 +205,18 @@ class ItBase extends Page {
 
 		try {
 
-			$this->pixie->orm->get($params['tab'])
-							 ->where('id', $this->_id)
-							 ->delete_all();
+			$data = $this->pixie->orm->get($params['tab'])
+									 ->where('id', $this->_id)
+									 ->find();
+			// вынимаем данные
+			$records = json_decode($data->records);
+
+			if( count($records) ) {
+				throw new \Exception("Сначала нужно удалить все данные объекта, а потом удалить сам объект. Кол-во записей: ".count($records));
+			}
+			else {
+				$data->delete();
+			}
 		}
 		catch (\Exception $e) {
 			$view = $this->pixie->view('form_alert');

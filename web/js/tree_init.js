@@ -3,47 +3,6 @@ var ctrl = window.location.pathname.split('/')[1];
 
 $(function(){
 
-	$('#new, #del').unbind("click");
-
-
-
-
-	$('#del').click(function(){
-
-			var node = $("#tree").dynatree("getActiveNode");
-			id = node.data.key;
-
-			if( id && confirm('Удалятся так же все дочерние элементы.\n Удаляем?')) {
-				//$("#tree").dynatree("getActiveNode").remove();
-				$.post('/'+ctrl+'/add',{id:id,stat:2});
-				node.remove();
-				$('#ed').empty();
-			}
-	});
-
-	//~ $('.delRow').live('click', function(){
-//~
-			//~ // последнюю не убираем
-			//~ if( $(this).closest('tr').siblings().length > 1)
-				//~ $(this).closest('tr').remove();
-	//~ });
-
-	//~ $('#submit_view').live('click', function(event){
-//~
-			//~ var params =  $('#usersform').serialize();
-//~
-			//~ $.post(	'/'+ ctrl +'/add/', params , function(response) {
-//~
-								//~ tmpl = /^\d+$/;
-//~
-								//~ if( tmpl.test(response) )
-									//~ window.location = '/'+ ctrl +'/view/' + response;
-								//~ else
-									//~ $('#ed').empty().html(response);
-							//~ });
-			//~ return false;
-	//~ });
-
 	/*
 	 * Реакция на редактирование дерева
 	 */
@@ -115,10 +74,10 @@ $(function(){
 			// если выделеный узел не фолдер - то беру фолдер выделенного узла
 			var node = $("#tree").dynatree("getActiveNode");
 
-			if( node.data.isFolder != true ) {
-				alert('Выделите раздел');
-				return false;
-			}
+			//~ if( node.data.isFolder != true ) {
+				//~ alert('Выделите раздел');
+				//~ return false;
+			//~ }
 
 			if( node.hasChildren() == true ) {
 				alert('Раздел удалять нельзя, если там есть данные');
@@ -138,12 +97,34 @@ $(function(){
 			});
 	});
 
+	/*
+	 * Добавление нового пункта
+	 */
+	$('#tab-tree_3').click( function(e) {
+
+			e.preventDefault();
+
+			if( $(this).hasClass('DTTT_disabled') ) {
+				return false;
+			}
+			// если выделеный узел не фолдер - то беру фолдер выделенного узла
+			var node = $("#tree").dynatree("getActiveNode");
+
+			folderID = ( node.data.isFolder ) ? node.data.key : node.parent.data.key;
+
+			$.post('/' + ctrl + '/addNewEntryTree/' + folderID, {tab:'names'}, function(response){
+					// Какую форму вернул запрос
+					if( $(response).find('.form-alert').length )
+						$(response).modal( modInfo );
+					else
+						$(response).modal( modTree );
+			});
+	});
+
+	title = $('.pagetab-selected').closest('.theme').attr('title').toUpperCase();
+	$('#tab-tree_4 span').append(title);
 
 });
-
-
-var id  = window.location.pathname.split('/')[3];
-var oldPid;
 
 var treeOpts = {
 		//clickFolderMode: 2,
@@ -158,18 +139,7 @@ var treeOpts = {
 			// показываем данные
 			if( node.data.isFolder != true) {
 				getData(node.data.key);
-
 			}
-		},
-		onPostInit: function(isReloading, isError) {
-			//~ // All expand;
-			//~ $("#tree").dynatree("getRoot").visit(function(node){
-				//~ node.expand(true);
-			//~ });
-			//~ // select by key
-			//~ $('#tree').dynatree("getTree").activateKey(id);
-
-
 		},
 		onActivate: function( node) {
 			if( function_exists('blockButtons') ) {
@@ -218,33 +188,6 @@ function getData(id) {
 							}
 						},
 				});
-}
-
-function createItem(obj) {
-
-		var tmpl = /^\d+$/;
-		var tmpl_id;
-
-		tmp = $(obj).attr('id').replace('x-','');
-
-		if( tmpl.test(tmp) )  tmpl_id = tmp;
-
-		$("#tree").dynatree("getRoot").addChild({"title":"new-node", "key":"00"});
-
-		var node = $("#tree").dynatree("getTree").getNodeByKey('00');
-
-
-		$.post('/'+ ctrl +'/add',{id:0, name:node.data.title, pid:0, tmpl_id:tmpl_id }, function(response){
-
-						if( tmpl.test(response) ) {
-							node.data.key = response;
-							getData(node.data.key);
-						}
-						else {
-							node.remove();
-							alert('при сохранении произошла ошибка');
-						}
-		})
 }
 
 /*
