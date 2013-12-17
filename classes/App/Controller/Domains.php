@@ -47,6 +47,8 @@ class Domains extends \App\Page {
 		try {
 			$params['active'] 		= $this->getVar($params['active'],0);
 			$params['all_enable']	= $this->getVar($params['all_enable'],0);
+			$params['relay_domain']	= $this->getVar($params['relay_domain'],0);
+			$params['relay_notcheckusers']	= $this->getVar($params['relay_notcheckusers'],0);
 			$params['all_email']	= $this->getVar($params['all_email']) ? ($params['all_email'].'@'.$params['domain_name']): '';
 
 			$tab = $params['tab'];
@@ -69,7 +71,10 @@ class Domains extends \App\Page {
 			if( $tab == 'domains' ) {
 				array_push($entry,  $params['domain_notes'],
 									$params['all_email'],
-									$params['all_enable']);
+									$params['all_enable'],
+									$params['relay_notcheckusers'],
+									$params['relay_address'],
+									$params['relay_domain']);
 			}
 			elseif( $tab == 'aliases') {
 				array_push($entry,  $params['delivery_to'],

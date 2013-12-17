@@ -9,8 +9,9 @@ var TOptions = {
 		"bPaginate": false,
 		"sDom": "<'H'T>t<'F'>",
 		"aoColumnDefs": [
-							{"bSortable":true, "aTargets": [0,1] },
-							{"sClass": "center", "aTargets": [3,4] },
+							//{"bSortable":true, "aTargets": [0,1] },
+							{"bSortable":false, "aTargets": ["_all"] },
+							{"sClass": "center", "aTargets": [3,4,6,7] },
 						],
 		"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 							drawCheckBox(nRow);

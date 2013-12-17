@@ -29,7 +29,7 @@
 					<td><input class='login' type='text' name='all_email' value='<?= isset($data->all_email) ? explode('@',$data->all_email)[0] : '' ?>' />&nbsp;<strong>@</strong>
 
 						<?php if( isset($data->all_email) ): ?>
-							<select class='ui-widget-content ui-corner-all' name='domain'>
+							<select class='ui-widget-content ui-corner-all' name='domain_name'>
 								<?php foreach( $domains as $domain): ?>
 								<option value='<?= $domain->domain_name ?>' <?= (( isset($data->domain_name) ? $data->domain_name : 'gmpro.ru') == $domain->domain_name) ? 'selected': '' ?> ><?= $domain->domain_name ?></option>
 								<?php endforeach; ?>
@@ -43,6 +43,18 @@
 				<tr>
 					<td class='formlabel'>Включение рассылки:</td>
 					<td><input type='checkbox' class='formtext' name='all_enable' value='1' <?php isset($data->all_enable) ? ($data->all_enable & 1) && print('checked') : '' ?> ></td>
+				</tr>
+				<tr>
+					<td class='formlabel'>Relay, верификация адресов:</td>
+					<td><input type='checkbox' class='formtext' name='relay_notcheckusers' value='1' <?php isset($data->relay_notcheckusers) ? ($data->relay_notcheckusers & 1) && print('checked') : '' ?> ></td>
+				</tr>
+				<tr>
+					<td class='formlabel'>Relay, адрес пересылки:</td>
+					<td><input type='text' name='relay_address' value='<?= isset($data->relay_address) ? $data->relay_address : '192.168.0.3' ?>'></td>
+				</tr>
+				<tr>
+					<td class='formlabel'>Relay, прием домена:</td>
+					<td><input type='checkbox' class='formtext' name='relay_domain' value='1' <?php isset($data->relay_domain) ? ($data->relay_domain & 1) && print('checked') :  print('checked') ?> ></td>
 				</tr>
 			<?php endif; ?>
 			<?php if($tab == 'aliases'): ?>
