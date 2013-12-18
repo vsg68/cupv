@@ -3,126 +3,126 @@ var ctrl = window.location.pathname.split('/')[1];
 
 $(function(){
 
-	/*
-	 * Реакция на редактирование дерева
-	 */
-	$('#tab-tree_0').click( function(e) {
+		/*
+		 * Реакция на редактирование дерева
+		 */
+		$('#tab-tree_0').click( function(e) {
 
-			e.preventDefault();
+				e.preventDefault();
 
-			if( $(this).hasClass('DTTT_disabled') ) {
-				return false;
-			}
-			// если выделеный узел не фолдер - то беру фолдер выделенного узла
-			var node = $("#tree").dynatree("getActiveNode");
+				if( $(this).hasClass('DTTT_disabled') ) {
+					return false;
+				}
+				// если выделеный узел не фолдер - то беру фолдер выделенного узла
+				var node = $("#tree").dynatree("getActiveNode");
 
-			if( node.data.isFolder != true ) {
-				alert('Выделите раздел');
-				return false;
-			}
-
-
-			$.post('/'+ ctrl +'/showEditForm/'+node.data.key, {t:'tree'}, function(response){
-					// Какую форму вернул запрос
-					if( $(response).find('.form-alert').length )
-						$(response).modal( modInfo );
-					else
-						$(response).modal( modTree );
-			});
-
-	});
-
-	/*
-	 * Реакция на добавление папки к дереву
-	 */
-	$('#tab-tree_1').click( function(e) {
-
-			e.preventDefault();
-
-			if( $(this).hasClass('DTTT_disabled') ) {
-				return false;
-			}
-
-			var node = $("#tree").dynatree("getActiveNode");
-
-			if( node && node.data.isFolder != true ) {
-				node = node.getParent();
-			}
-
-			pid = (node) ? node.data.key : 0;
-
-			$.post('/'+ ctrl +'/showEditForm/0', {t:'tree',pid: pid}, function(response){
-					// Какую форму вернул запрос
-					if( $(response).find('.form-alert').length )
-						$(response).modal( modInfo );
-					else
-						$(response).modal( modTree );
-			});
-	});
+				if( node.data.isFolder != true ) {
+					alert('Выделите раздел');
+					return false;
+				}
 
 
-	/*
-	 * Реакция на Удаление папки дерева
-	 */
-	$('#tab-tree_2').click( function(e) {
-
-			e.preventDefault();
-
-			if( $(this).hasClass('DTTT_disabled') ) {
-				return false;
-			}
-			// если выделеный узел не фолдер - то беру фолдер выделенного узла
-			var node = $("#tree").dynatree("getActiveNode");
-
-			//~ if( node.data.isFolder != true ) {
-				//~ alert('Выделите раздел');
-				//~ return false;
-			//~ }
-
-			if( node.hasChildren() == true ) {
-				alert('Раздел удалять нельзя, если там есть данные');
-				return false;
-			}
-			if( ! confirm('Уверены, что надо стирать?') )
-				return false;
-
-			$.post('/' + ctrl + '/delEntryTree/' + node.data.key, {tab:'names'}, function(response){
-					// Какую форму вернул запрос ?
-					if( $(response).find('.form-alert').length ) {
+				$.post('/'+ ctrl +'/showEditForm/'+node.data.key, {t:'tree'}, function(response){
+						// Какую форму вернул запрос
+						if( $(response).find('.form-alert').length )
 							$(response).modal( modInfo );
-					}
-					else {
-						node.remove();
-					}
-			});
-	});
+						else
+							$(response).modal( modTree );
+				});
 
-	/*
-	 * Добавление нового пункта
-	 */
-	$('#tab-tree_3').click( function(e) {
+		});
 
-			e.preventDefault();
+		/*
+		 * Реакция на добавление папки к дереву
+		 */
+		$('#tab-tree_1').click( function(e) {
 
-			if( $(this).hasClass('DTTT_disabled') ) {
-				return false;
-			}
-			// если выделеный узел не фолдер - то беру фолдер выделенного узла
-			var node = $("#tree").dynatree("getActiveNode");
+				e.preventDefault();
 
-			folderID = ( node.data.isFolder ) ? node.data.key : node.parent.data.key;
+				if( $(this).hasClass('DTTT_disabled') ) {
+					return false;
+				}
 
-			$.post('/' + ctrl + '/addNewEntryTree/' + folderID, {tab:'names'}, function(response){
-					// Какую форму вернул запрос
-					if( $(response).find('.form-alert').length )
-						$(response).modal( modInfo );
-					else
-						$(response).modal( modTree );
-			});
-	});
+				var node = $("#tree").dynatree("getActiveNode");
 
-	title = $('.pagetab-selected').closest('.theme').attr('title').toUpperCase();
-	$('#tab-tree_4 span').append(title);
+				if( node && node.data.isFolder != true ) {
+					node = node.getParent();
+				}
+
+				pid = (node) ? node.data.key : 0;
+
+				$.post('/'+ ctrl +'/showEditForm/0', {t:'tree',pid: pid}, function(response){
+						// Какую форму вернул запрос
+						if( $(response).find('.form-alert').length )
+							$(response).modal( modInfo );
+						else
+							$(response).modal( modTree );
+				});
+		});
+
+
+		/*
+		 * Реакция на Удаление папки дерева
+		 */
+		$('#tab-tree_2').click( function(e) {
+
+				e.preventDefault();
+
+				if( $(this).hasClass('DTTT_disabled') ) {
+					return false;
+				}
+				// если выделеный узел не фолдер - то беру фолдер выделенного узла
+				var node = $("#tree").dynatree("getActiveNode");
+
+				//~ if( node.data.isFolder != true ) {
+					//~ alert('Выделите раздел');
+					//~ return false;
+				//~ }
+
+				if( node.hasChildren() == true ) {
+					alert('Раздел удалять нельзя, если там есть данные');
+					return false;
+				}
+				if( ! confirm('Уверены, что надо стирать?') )
+					return false;
+
+				$.post('/' + ctrl + '/delEntryTree/' + node.data.key, {tab:'names'}, function(response){
+						// Какую форму вернул запрос ?
+						if( $(response).find('.form-alert').length ) {
+								$(response).modal( modInfo );
+						}
+						else {
+							node.remove();
+						}
+				});
+		});
+
+		/*
+		 * Добавление нового пункта
+		 */
+		$('#tab-tree_3').click( function(e) {
+
+				e.preventDefault();
+
+				if( $(this).hasClass('DTTT_disabled') ) {
+					return false;
+				}
+				// если выделеный узел не фолдер - то беру фолдер выделенного узла
+				var node = $("#tree").dynatree("getActiveNode");
+
+				folderID = ( node.data.isFolder ) ? node.data.key : node.parent.data.key;
+
+				$.post('/' + ctrl + '/showNewForm/' + folderID, {}, function(response){
+						// Какую форму вернул запрос
+						if( $(response).find('.form-alert').length )
+							$(response).modal( modInfo );
+						else
+							$(response).modal( modNewTree );
+				});
+		});
+
+		title = $('.pagetab-selected').closest('.theme').attr('title').toUpperCase();
+		$('#tab-tree_4 span').append(title);
 
 });
 
@@ -218,38 +218,74 @@ var modTree = {
 				// Новая запись. Определяем ID родителя
 				modTree.PidNode  = (in_root ) ? tree.getRoot() : tree.getNodeByKey( pid );
 				modTree.ThisNode = tree.getNodeByKey( RowID );
-				//~ modTree.message = '';
-				//~ modTree.message = validate_tree();
-				//~ if (! modTree.message ) {
-					// Работа с запросом
-					$.ajax ({
-							url: '/'+ ctrl +'/editTree/',
-							data: $('form').serialize(),
-							type: 'post',
-							dataType: 'json',
-							success: function(str) {
-										// Если у нас редактирование
-										if( modTree.ThisNode ) {
-											 modTree.ThisNode.setTitle(str.title);
-										}
-										else {// Добавляем значение к родителю
-											 modTree.PidNode.addChild(str);
-										}
-										$.modal.close();
-									},
-							error: function(response) {
-										$('.ui-state-error').empty().append(response.responseText).fadeIn('fast');
-									},
-					});
-				//~ }
-				//~ else
-					//~ modTree.showError();
 
+				// Работа с запросом
+				$.ajax ({
+						url: '/'+ ctrl +'/editTree/',
+						data: $('form').serialize(),
+						type: 'post',
+						dataType: 'json',
+						success: function(str) {
+									// Если у нас редактирование
+									if( modTree.ThisNode ) {
+										 modTree.ThisNode.setTitle(str.title);
+									}
+									else {// Добавляем значение к родителю
+										 modTree.PidNode.addChild(str);
+									}
+									$.modal.close();
+								},
+						error: function(response) {
+									$('.ui-state-error').empty().append(response.responseText).fadeIn('fast');
+								},
+				});
 			})
 		},
 
 		showError: function () {
 			$('#mesg').empty().append(modTree.message).closest('.ui-state-error').fadeIn('fast');
+		},
+};
+
+var modNewTree = {
+
+		onShow: function(dialog){
+			PidNode: null;
+			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>";
+
+			$(':text, select').addClass('ui-widget-content ui-corner-all');
+
+			$('#sb').button({label: 'Send'});
+
+			// Показе документа инициализирую функции
+			$('#sb').click(function (e) {
+				e.preventDefault();
+				// С какими строками какой таблицы работаем
+				PID 	= $('form :hidden[name="pid"]').val();
+				var tree = $("#tree").dynatree("getTree");
+				modNewTree.PidNode  = tree.getNodeByKey( PID );
+
+				// Работа с запросом
+				$.ajax ({
+						url: '/'+ ctrl +'/addNewItem/',
+						data: $('form').serialize(),
+						type: 'post',
+						dataType: 'json',
+						success: function(response) {
+									// Если у нас редактирование
+									if( response ) {
+										 modNewTree.PidNode.addChild(response);
+										 tree.activateKey(response.key);
+										 getData(response.key);
+									}
+									$.modal.close();
+								},
+						error: function(response) {
+									$('.ui-state-error').empty().append(response.responseText).fadeIn('fast');
+								},
+				});
+
+			})
 		},
 
 };

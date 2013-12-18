@@ -48,6 +48,18 @@ class Badm extends \App\ItBase {
 
 	}
 
+	public function action_showNewForm() {
+
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
+
+		$view = $this->pixie->view('form_'.$this->request->param('controller'));
+
+		if( ! $view->pid = $this->request->param('id') )
+			return;
+
+        $this->response->body = $view->render();
+    }
 }
 
 ?>

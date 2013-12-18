@@ -3,9 +3,6 @@ namespace App;
 
 class ItBase extends Page {
 
-	protected $view_tmpl;
-
-
 	public function action_view() {
 
 		// Проверка легитимности пользователя и его прав
@@ -94,30 +91,6 @@ class ItBase extends Page {
         $this->response->body = $data ? json_encode($data) : '';
     }
 
-	//~ public function action_showEditFormTree() {
-//~
-		//~ if( $this->permissions == $this::NONE_LEVEL )
-			//~ return $this->noperm();
-//~
-		//~ if( ! $tab = $this->request->post('t') )
-			//~ return;
-//~
-		//~ // при tab = rec ID и PID меняются местми
-		//~ $this->_id 	= $this->request->param('id');
-		//~ $view 		= $this->pixie->view('form_'.$tab);
-		//~ $view->page	= $this->request->param('controller');
-		//~ $view->pid	= $this->request->post('pid');
-		//~ $view->tab  = $tab;
-//~
-		//~ $data = $this->pixie->orm->get('names')
-								 //~ ->where('id',$this->_id)
-								 //~ ->find();
-//~
-		//~ $view->data = $data;
-//~
-        //~ $this->response->body = $view->render();
-    //~ }
-
 	public function action_showEditForm() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
@@ -193,6 +166,49 @@ class ItBase extends Page {
 
 	}
 
+	public function action_addNewItem() {
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$returnData = array();
+
+			foreach($params['fname'] as $key=>$val) {
+				$record[$key] = array('fname' => $params['fname'][$key],
+									  'fval'  => $params['fval'][$key]
+									  );
+			}
+
+			$data = array('records' => json_encode($record),
+						  'pid' 	=> $params['pid'],
+						  'name' 	=> $params['fval'][0], //NAME
+						  'page' 	=> $this->request->param('controller'));
+
+			$row = $this->pixie->orm->get('names')
+									 ->values($data)
+									 ->save();
+
+			$returnData	= array('title' => $data['name'],
+								'key' 	=> $row->id);
+
+			//~ for($i=0; $i<count($params['fval']); $i++) {
+				//~ $returnData['table'][$i] = array($params['fname'][$i],
+												 //~ $params['fval'][$i],
+												 //~ 'DT_RowId' => 'tab-rec-'.$i,
+												 //~ 'DT_RowClass' => 'gradeA');
+			//~ }
+
+			$this->response->body = json_encode($returnData);
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
+		}
+	}
 
 	public function action_delEntryTree() {
 
@@ -257,5 +273,6 @@ class ItBase extends Page {
 		}
 
     }
+
 
 }
