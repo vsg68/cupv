@@ -307,7 +307,7 @@ var modWin = {
 
 			$('.autocomp').autocomplete({source: '/' + ctrl +'/searchMailbox/'});
 
-			$('#sb').button({label: 'Send'});
+			$('#sb').button({ label: '<a href=#>Send</a>'});
 
 			// Показе документа инициализирую функции
 			$('#sb').click(function (e) {
@@ -380,7 +380,7 @@ var modGroup = {
 
 		onShow: function(dialog){
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
-			$('#sb').button({label: 'Send'});
+			$('#sb').button({ label: '<a href=#>Send</a>'});
 
 			// Показе документа инициализирую функции
 			$('#sb').click(function (e) {
@@ -437,7 +437,7 @@ var modInfo = {
 		closeHTML: '',
 		opacity: 0,
 		onShow: function(dialog){
-				$('#ok').button({label: 'OK'});
+				$('#ok').button({ label: '<a href=#>OK</a>'});
 				$('#ok').click(function(){
 									$.modal.close();
 									});
