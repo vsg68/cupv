@@ -23,6 +23,7 @@ class Badm extends \App\ItBase {
 			$ord = ($params['id'] != '_0') ? $params['id'] : count($records) ;
 
 			$records[$ord] = array('fname' => $params['fname'],
+								   'ftype' => $params['ftype'],
 								   'fval'  => $params['fval']);
 
 			$row->records = json_encode($records);
