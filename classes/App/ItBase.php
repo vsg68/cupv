@@ -123,6 +123,19 @@ class ItBase extends Page {
         $this->response->body = $view->render();
     }
 
+	public function action_showNewForm() {
+
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
+
+		$view = $this->pixie->view('form_'.$this->request->param('controller'));
+
+		if( ! $view->pid = $this->request->param('id') )
+			return;
+
+        $this->response->body = $view->render();
+    }
+
 	public function action_editTree() {
 
 		if( $this->permissions != $this::WRITE_LEVEL )
@@ -195,13 +208,6 @@ class ItBase extends Page {
 			$returnData	= array('title' => $data['name'],
 								'key' 	=> $row->id);
 
-			//~ for($i=0; $i<count($params['fval']); $i++) {
-				//~ $returnData['table'][$i] = array($params['fname'][$i],
-												 //~ $params['fval'][$i],
-												 //~ 'DT_RowId' => 'tab-rec-'.$i,
-												 //~ 'DT_RowClass' => 'gradeA');
-			//~ }
-
 			$this->response->body = json_encode($returnData);
 		}
 		catch (\Exception $e) {
@@ -251,20 +257,16 @@ class ItBase extends Page {
 			return;
 
 		try {
-
 			$row = $this->pixie->orm->get('names')
 									->where('id', $params['pid'])
 									->find();
 
 			$records = json_decode($row->records);
-
+			// delete item
 			unset($records[$params['id']]);
 
 			$row->records = json_encode($records);
 			$row->save();
-
-
-
 		}
 		catch (\Exception $e) {
 			$view = $this->pixie->view('form_alert');

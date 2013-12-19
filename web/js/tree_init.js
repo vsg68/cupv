@@ -247,6 +247,9 @@ var modTree = {
 		},
 };
 
+/*
+ *  Опции модального окна для новой записи
+ */
 var modNewTree = {
 
 		onShow: function(dialog){
