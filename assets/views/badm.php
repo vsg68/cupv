@@ -1,3 +1,31 @@
+		<div class='vertical-80'>
+			<div class='gorizont-50'>
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-rec">
+
+					<thead>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<?php if( $ctrl == 'bcont'): ?>
+			<div class='gorizont-50'>
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-cont">
+					<thead>
+						<tr>
+							<th>Контакт</th>
+							<th>Должность</th>
+							<th>Телефон</th>
+							<th>Email</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<?php endif; ?>
+		</div>
 
 		<div class='vertical-20 '>
 			<div class="dataTables_wrapper">
@@ -16,31 +44,5 @@
 					<div class="dataTables_info" id="tab-tree_info"></div>
 				</div>
 			</div>
-		</div>
-		<div class='vertical-80'>
-			<div class='gorizont-50'>
-				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-rec">
-
-					<thead>
-						<tr>
-							<th></th>
-							<th></th>
-						</tr>
-					</thead>
-				</table>
-			</div>
-<!--
-			<div class='gorizont-50'>
-				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-lists">
-					<thead>
-						<tr>
-							<th>Пользователь</th>
-							<th>mailbox</th>
-							<th>Active</th>
-						</tr>
-					</thead>
-				</table>
-			</div>
--->
 		</div>
 

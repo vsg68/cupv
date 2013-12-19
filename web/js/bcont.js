@@ -2,12 +2,13 @@
 $(function(){
 	$('#tree').dynatree( treeOpts );
 
-	//~ H 	= $(window).outerHeight();
-	//~ rH	= 110;	// Скролл таблицы записей
-	//~ eH	= H-rH;	// Скролл главной таблицы
+	H 	= $(window).outerHeight();
+	rH	= 110;	// Скролл таблицы записей
+	eH	= H-rH;	// Скролл главной таблицы
 
 	// scroll контейнера
 	$('.dynatree-container').css('max-height', eH+'px');
+
 
 	TTOpts.aButtons.splice(3,2);
 	TTOpts.aButtons[3].sButtonText = 'ДАННЫЕ';
@@ -39,24 +40,12 @@ $(function(){
 										};
 
 	$('#tab-rec').dataTable(DTOpts);
-	//~ {
-							//~ //"bJQueryUI": true,
-							//~ "sScrollY":  eH + "px",
-							//~ "bScrollCollapse": true,
-							//~ "bPaginate": false,
-							//~ "bSort":	false,
-							//~ //"sDom": '<"H"Tf>t<"F"ip>',
-							//~ "sDom": '<T>t',
-							//~ "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-														//~ node = $("#tree").dynatree("getActiveNode");
-														//~ makeRowAttr(nRow,'pid',node.data.key);
-													//~ },
-							//~ "aoColumnDefs": [{ "sWidth": "10%", "aTargets": [ 0 ] },
-											 //~ { "bVisible": false, "aTargets": [ 1 ] },
-											 //~ ],
-							//~ "oTableTools": TTOpts
-							//~ });
 
+	TTOpts.aButtons[3].sButtonText = 'КОНТАКТЫ';
+	DTOpts.sDom = '<"H"T>t<"F"ip>';
+	DTOpts.bJQueryUI = true;
+	DTOpts.aoColumnDefs = [];
+	$('#tab-cont').dataTable(DTOpts);
 });
 
 /*

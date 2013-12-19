@@ -21,11 +21,11 @@ class ItBase extends Page {
 		}
 
 		// Подключаем файл, с названием равным контроллеру
-		$this->view->subview = $this->ctrl;
+		$this->view->subview = 'badm';
+		$this->view->ctrl = $this->ctrl;
 
 		$this->response->body = $this->view->render();
     }
-
 
 	protected function RecursiveTree(&$rs,$parent) {
 
@@ -54,10 +54,8 @@ class ItBase extends Page {
 
 		$tree = $rs = array();
 
-		$typenow = $this->request->param('controller');
-
 		$tree = $this->pixie->orm->get('names')
-								->where('page', $this->getVar($typenow))
+								->where('page', $this->ctrl)
 								->order_by('pid')
 								->find_all();
 
@@ -77,18 +75,31 @@ class ItBase extends Page {
 
 		$entry = $this->pixie->orm->get('names')->where('id',$this->_id)->find();
 
-		$data = array();
+		$returnData = array();
 		$rows = json_decode($entry->records);
+		if( isset($rows->entry) ) {
 
-		for($i=0; $i < count($rows); $i++) {
+			foreach($rows->entry as $key => $val) {
 
-			$data[] = array($rows[$i]->fname,
-							$rows[$i]->fval,
-							"DT_RowClass" => "gradeA",
-							'DT_RowId'=>"tab-rec-".$i);
+				$returnData['entry'][] = array($val->fname,
+												$val->ftype,
+												$val->fval,
+												"DT_RowClass" => "gradeA",
+												'DT_RowId' => "tab-rec-".$key);
+			}
 		}
 
-        $this->response->body = $data ? json_encode($data) : '';
+		if( isset($rows->records) ) {
+//~ //~
+			foreach($rows->records as $key => $val) {
+//~ //~
+				$returnData['records'][] = array($val,
+												"DT_RowClass" => "gradeA",
+												'DT_RowId'=>"tab-rec-".$key);
+			}
+		}
+
+        $this->response->body = json_encode($returnData);
     }
 
 	public function action_showEditForm() {
@@ -104,7 +115,7 @@ class ItBase extends Page {
 		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
 
-		$view->page	= $this->request->param('controller');
+		$view->page	= $this->ctrl;
 		// Во втором случае пид - это ID записи
 		$view->pid	= ($tab == 'tree') ? $this->request->post('pid') : $this->_id;
 
@@ -128,7 +139,7 @@ class ItBase extends Page {
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
 
-		$view = $this->pixie->view('form_'.$this->request->param('controller'));
+		$view = $this->pixie->view('form_'.$this->ctrl);
 
 		if( ! $view->pid = $this->request->param('id') )
 			return;
@@ -148,7 +159,7 @@ class ItBase extends Page {
 			$tab  = isset($params['tab']) ? $params['tab'] : '';
 
 			$params['pid']  = (isset($params['in_root']) && $params['in_root']) ? '0' : $params['pid'];
-			$params['page'] = $this->request->param('controller');
+			$params['page'] = $this->ctrl;
 			unset($params['tab'], $params['in_root']);
 
 			$is_update = $params['id'] ? true : false;
@@ -179,43 +190,6 @@ class ItBase extends Page {
 
 	}
 
-	public function action_addNewItem() {
-
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
-		if( ! $params = $this->request->post() )
-			return;
-
-		try {
-			$returnData = array();
-
-			foreach($params['fname'] as $key=>$val) {
-				$record[$key] = array('fname' => $params['fname'][$key],
-									  'fval'  => $params['fval'][$key]
-									  );
-			}
-
-			$data = array('records' => json_encode($record),
-						  'pid' 	=> $params['pid'],
-						  'name' 	=> $params['fval'][0], //NAME
-						  'page' 	=> $this->request->param('controller'));
-
-			$row = $this->pixie->orm->get('names')
-									 ->values($data)
-									 ->save();
-
-			$returnData	= array('title' => $data['name'],
-								'key' 	=> $row->id);
-
-			$this->response->body = json_encode($returnData);
-		}
-		catch (\Exception $e) {
-			$this->response->body = $e->getMessage();
-			return;
-		}
-	}
-
 	public function action_delEntryTree() {
 
 		if( $this->permissions != $this::WRITE_LEVEL )
@@ -233,8 +207,9 @@ class ItBase extends Page {
 			// вынимаем данные
 			$records = json_decode($data->records);
 
-			if( count($records) ) {
-				throw new \Exception("Сначала нужно удалить все данные объекта, а потом удалить сам объект. Кол-во записей: ".count($records));
+			if( count($records->entry) && count($records->records) ) {
+				throw new \Exception("Сначала нужно удалить все данные объекта, а потом удалить сам объект. Кол-во записей: ".
+										count($records->entry)."; ".count($records->records));
 			}
 			else {
 				$data->delete();
@@ -262,8 +237,15 @@ class ItBase extends Page {
 									->find();
 
 			$records = json_decode($row->records);
-			// delete item
-			unset($records[$params['id']]);
+			if($params['tab'] == 'rec') {
+				// delete item
+				unset($records->entry[$params['id']]);
+			}
+
+			if($params['tab'] == 'cont') {
+				// delete item
+				unset($records->records[$params['id']]);
+			}
 
 			$row->records = json_encode($records);
 			$row->save();
@@ -275,6 +257,93 @@ class ItBase extends Page {
 		}
 
     }
+/*** OLD ***/
+	public function action_add() {
 
+		if( $this->permissions != $this::WRITE_LEVEL ) {
+			$this->noperm();
+			return false;
+		}
+
+        if ($this->request->method == 'POST') {
+
+			$entry = $templ = array();
+			$params = $this->request->post();
+
+			if( isset($params['fname']) ) {
+				foreach($params['fname'] as $key=>$val) {
+
+					$templ['entry'][$key] = array('fname' => $params['fname'][$key],
+												  'ftype' => $params['ftype'][$key],
+												  'fval'  => $params['fval'][$key]
+												  );
+				}
+			}
+
+			if( isset($params['tdname']) ) {
+
+				foreach($params['tdname'] as $key=>$tdvalues) {
+
+					foreach($tdvalues as $tdvalue) {
+
+						if( !isset($templ['records'][$key]) )
+							$templ['records'][$key] = array();
+
+						array_push($templ['records'][$key], $tdvalue);
+					}
+				}
+			}
+
+			// копирование шаблона
+			if( isset($params['tmpl_id']) ) {
+
+					$template = $this->pixie->db->query('select','itbase')
+												->table('names')
+												->where('id',$params['tmpl_id'])
+												->execute()
+												->current();
+
+					$entry['templ'] = $template->templ;
+			}
+
+			// заполняем массив
+			if( isset($params['name']) )	$entry['name'] = $params['name'];
+			if( isset($params['pid']) )		$entry['pid']  = $params['pid'];
+			if( count($templ) )				$entry['templ'] = serialize($templ);
+
+			$entry['page'] = $this->request->param('controller');
+
+			if ( $params['id'] == 0 ) {
+			// Новая запись
+				$this->pixie->db->query('insert','itbase')
+								->table('names')
+								->data($entry)
+								->execute();
+
+				$params['id'] = $this->pixie->db->insert_id('itbase');
+
+			}
+			elseif ( $this->getVar($params['stat'],0) == 2)	{
+			// Удаляем запись
+				$this->pixie->db->query('delete','itbase')
+								->table('names')
+								->where('id', $params['id'])
+								->where('or',array('pid', $params['id']))
+								->execute();
+
+			}
+			else {
+			// Редактирование
+				$this->pixie->db->query('update','itbase')
+								->table('names')
+								->data($entry)
+								->where('id', $params['id'])
+								->execute();
+			}
+
+			$this->response->body = $params['id'];
+		}
+
+	}
 
 }

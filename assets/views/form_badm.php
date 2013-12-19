@@ -14,44 +14,82 @@
 			   <table>
 					<tr>
 						<td class='formlabel'>Название:</td>
-						<td><input type='hidden' name='fname[]' value='Название'/><input type='text' name='fval[]'/></td>
+						<td>
+							<input type='hidden' name='fname[]' value='Название'/>
+							<input type='hidden' name='ftype[]' value='text'/>
+							<input type='text' name='fval[]'/>
+						</td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Модель:</td>
-						<td><input type='hidden' name='fname[]' value='Модель'/><input type='text' name='fval[]'/></td>
+						<td>
+							<input type='hidden' name='fname[]' value='Модель'/>
+							<input type='hidden' name='ftype[]' value='text'/>
+							<input type='text' name='fval[]'/>
+						</td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Адрес:</td>
-						<td><input type='hidden' name='fname[]' value='Адрес'/><input type='text' name='fval[]'/></td>
+						<td>
+							<input type='hidden' name='fname[]' value='Адрес'/>
+							<input type='hidden' name='ftype[]' value='text'/>
+							<input type='text' name='fval[]'/>
+						</td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Логин:</td>
-						<td><input type='hidden' name='fname[]' value='Логин'/><input type='text' name='fval[]'/><td>
+						<td>
+							<input type='hidden' name='fname[]' value='Логин'/>
+							<input type='hidden' name='ftype[]' value='text'/>
+							<input type='text' name='fval[]'/>
+						<td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Пароль:</td>
-						<td><input type='hidden' name='fname[]' value='Пароль'/><input type='text' name='fval[]'/><td>
+						<td>
+							<input type='hidden' name='fname[]' value='Пароль'/>
+							<input type='hidden' name='ftype[]' value='text'/>
+							<input type='text' name='fval[]'/>
+						<td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Enable:</td>
-						<td><input type='hidden' name='fname[]' value='Enable'/><input type='text' name='fval[]'/><td>
+						<td>
+							<input type='hidden' name='fname[]' value='Enable'/>
+							<input type='hidden' name='ftype[]' value='text'/>
+							<input type='text' name='fval[]'/>
+						<td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Доступ(протокол):</td>
-						<td><input type='hidden' name='fname[]' value='Доступ(протокол)'/><input type='text' name='fval[]'/><td>
+						<td>
+							<input type='hidden' name='fname[]' value='Доступ(протокол)'/>
+							<input type='hidden' name='ftype[]' value='text'/>
+							<input type='text' name='fval[]'/>
+						<td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Расположение:</td>
-						<td><input type='hidden' name='fname[]' value='Расположение'/><input type='text' name='fval[]'/><td>
+						<td>
+							<input type='hidden' name='fname[]' value='Расположение'/>
+							<input type='hidden' name='ftype[]' value='text'/>
+							<input type='text' name='fval[]'/>
+						<td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Описание:</td>
-						<td><input type='hidden' name='fname[]' value='Описание'/><input type='text' name='fval[]'/><td>
+						<td>
+							<input type='hidden' name='fname[]' value='Описание'/>
+							<input type='hidden' name='ftype[]' value='textarea'/>
+							<textarea name='fval[]'/></textarea>
+						<td>
 					</tr>
+<!--
 					<tr>
 						<td class='formlabel'>Конфиг:</td>
 						<input type='hidden' name='fname[]' value='Конфиг'/><td>Есть<input type='radio' name='fval[]' value='1' />&nbsp;Нет<input type='radio' name='fval[]' value='0' checked /></td>
 					</tr>
+-->
 
 			  </table>
 				<div class='submit'><div id='sb'></div></div>

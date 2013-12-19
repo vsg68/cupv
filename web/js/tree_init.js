@@ -74,11 +74,6 @@ $(function(){
 				// если выделеный узел не фолдер - то беру фолдер выделенного узла
 				var node = $("#tree").dynatree("getActiveNode");
 
-				//~ if( node.data.isFolder != true ) {
-					//~ alert('Выделите раздел');
-					//~ return false;
-				//~ }
-
 				if( node.hasChildren() == true ) {
 					alert('Раздел удалять нельзя, если там есть данные');
 					return false;
@@ -126,6 +121,26 @@ $(function(){
 
 });
 
+	H 	= $(window).outerHeight();
+	rH	= 110;	// Скролл таблицы записей
+var	eH	= H-rH;	// Скролл главной таблицы
+
+var DTOpts = {
+		//"bJQueryUI": true,
+			"sScrollY":  eH + "px",
+			"bScrollCollapse": true,
+			"bPaginate": false,
+			"bSort":	false,
+			//"sDom": '<"H"Tf>t<"F"ip>',
+			"sDom": '<T>t',
+			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+										node = $("#tree").dynatree("getActiveNode");
+										makeRowAttr(nRow,'pid',node.data.key);
+									},
+			"aoColumnDefs": [{ "sWidth": "10%", "aTargets": [ 0 ] },{ "bVisible": false, "aTargets": [ 1 ] }],
+			"oTableTools": TTOpts,
+};
+
 var treeOpts = {
 		//clickFolderMode: 2,
 		fx: { height: "toggle", duration: 200 },
@@ -134,6 +149,7 @@ var treeOpts = {
 		},
 		onFocus: function(node) {
 			node.activate();
+			node.expand(true);
 		},
 		onClick: function(node, event) {
 			// показываем данные
@@ -170,15 +186,18 @@ var treeOpts = {
 // показываем данные
 function getData(id) {
 
-	//	var node = $("#tree").dynatree("getTree").getNodeByKey(id);
-
+	//	возожны две таблицы
 		$.ajax({
 				url: '/'+ ctrl +'/records/' + id,
 				type: "GET",
 				dataType: "json",
 				success: function(response) {
 								$('#tab-rec').dataTable().fnClearTable();
-								$('#tab-rec').dataTable().fnAddData(response);
+								$('#tab-rec').dataTable().fnAddData(response.entry);
+								if(response.records) {
+									$('#tab-cont').dataTable().fnClearTable();
+									$('#tab-cont').dataTable().fnAddData(response.records);
+								}
 						},
 				error: function(response) {
 
@@ -207,38 +226,38 @@ var modTree = {
 
 			// Показе документа инициализирую функции
 			$('#sb').click(function (e) {
-				e.preventDefault();
-				// С какими строками какой таблицы работаем
-				RowID 	= $('form :hidden[name="id"]').val();
-				in_root = 1 * $(':radio:checked[name="in_root"]').val(); // конвертируем в int
-				pid	 	= $(':hidden[name="pid"]').val();
-				tree	= $("#tree").dynatree("getTree");
+					e.preventDefault();
+					// С какими строками какой таблицы работаем
+					RowID 	= $('form :hidden[name="id"]').val();
+					in_root = 1 * $(':radio:checked[name="in_root"]').val(); // конвертируем в int
+					pid	 	= $(':hidden[name="pid"]').val();
+					tree	= $("#tree").dynatree("getTree");
 
 
-				// Новая запись. Определяем ID родителя
-				modTree.PidNode  = (in_root ) ? tree.getRoot() : tree.getNodeByKey( pid );
-				modTree.ThisNode = tree.getNodeByKey( RowID );
+					// Новая запись. Определяем ID родителя
+					modTree.PidNode  = (in_root ) ? tree.getRoot() : tree.getNodeByKey( pid );
+					modTree.ThisNode = tree.getNodeByKey( RowID );
 
-				// Работа с запросом
-				$.ajax ({
-						url: '/'+ ctrl +'/editTree/',
-						data: $('form').serialize(),
-						type: 'post',
-						dataType: 'json',
-						success: function(str) {
-									// Если у нас редактирование
-									if( modTree.ThisNode ) {
-										 modTree.ThisNode.setTitle(str.title);
-									}
-									else {// Добавляем значение к родителю
-										 modTree.PidNode.addChild(str);
-									}
-									$.modal.close();
-								},
-						error: function(response) {
-									$('.ui-state-error').empty().append(response.responseText).fadeIn('fast');
-								},
-				});
+					// Работа с запросом
+					$.ajax ({
+							url: '/'+ ctrl +'/editTree/',
+							data: $('form').serialize(),
+							type: 'post',
+							dataType: 'json',
+							success: function(str) {
+										// Если у нас редактирование
+										if( modTree.ThisNode ) {
+											 modTree.ThisNode.setTitle(str.title);
+										}
+										else {// Добавляем значение к родителю
+											 modTree.PidNode.addChild(str);
+										}
+										$.modal.close();
+									},
+							error: function(response) {
+										$('.ui-state-error').empty().append(response.responseText).fadeIn('fast');
+									},
+					});
 			})
 		},
 
