@@ -203,7 +203,7 @@ var modTree = {
 
 			$(':text, select').addClass('ui-widget-content ui-corner-all');
 
-			$('#sb').button({label: 'Send'});
+			$('#sb').button({ label: '<a href=#>Send</a>'});
 
 			// Показе документа инициализирую функции
 			$('#sb').click(function (e) {
@@ -258,7 +258,7 @@ var modNewTree = {
 
 			$(':text, select').addClass('ui-widget-content ui-corner-all');
 
-			$('#sb').button({label: 'Send'});
+			$('#sb').button({ label: '<a href=#>Send</a>'});
 
 			// Показе документа инициализирую функции
 			$('#sb').click(function (e) {

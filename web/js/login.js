@@ -7,7 +7,7 @@ $(function(){
 
 	$(':text, :password, select').addClass('ui-widget-content ui-corner-all');
 
-	$('#sb').button({ label: 'Вход'});
+	$('#sb').button({ label: '<a href=#>Вход</a>'});
 
 	$('#sb').click(function (e) {
 		e.preventDefault();
