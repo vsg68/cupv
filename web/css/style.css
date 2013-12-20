@@ -13,19 +13,28 @@ body {
 	overflow: hidden;
 }
 
-.content {
-	float:right;
-	margin-right:-125px;
-	width:100%;
+table.container-inner {
+	width: 100%;
+	border-collapse: collapse;
 }
 
-.content-left {
-	float:left;
+td {
+	vertical-align: top;
+}
+/*
+td.content {
+	width:125px;
+}
+*/
+
+td.content-left {
 	width:125px;
 }
 
 .content-center {
-	margin-right:125px;
+	 margin-left: -25%;
+	 width: 100%;
+	 float: right;
 }
 
 .divider {
@@ -207,33 +216,29 @@ form#usersform {
 
 /****** главная страница  ********/
 .vertical-20,
-.vertical-80,
 .vertical-50
 {
 	width: 49%;
-/*
   	float:left;
-	display: inline-block;
-*/
 	vertical-align: top;
 	overflow-x: hidden;
 }
 
 .vertical-20 {
 	width: 25%;
+	float:left;
 /*
-  	float:left;
-	background-color: silver;
+ 	background-color: silver;
 */
 }
 
 .vertical-80 {
-	width: 100%;
-	float:right;
-	margin-right: -25.5%;
+	margin-left: 25%;
 /*
+	border: 1px solid green;
 	background-color: yellow;
 */
+
 }
 
 .gorizont-50  {

@@ -23,22 +23,23 @@
     </head>
     <body>
         <div class="container">
-			<div class="content">
-				<div class="content-center">
-					<?php include($subview.'.php'); ?>
-				</div>
-			</div>
-			<div class="content-left">
-					<div class='theme homepage ui-corner-all box-shadow'>
-						<a href="/"  title='На главную'><div id='home-page' class='pagetab'></div></a>
-					</div>
-				<?php foreach( $menuitems as $item ): ?>
-					<div class='theme box-shadow ui-corner-all' title='<?= $item->name ?>'>
-						<a href="/<?= $item->class ?>/"><div  id='<?= $item->class ?>'  class='pagetab'></div></a>
-					</div>
-				<?php endforeach; ?>
-
-			</div>
-        </div>
+			<table class='container-inner'>
+				<tr>
+					<td class="content-left">
+						<div class='theme homepage ui-corner-all box-shadow'>
+							<a href="/"  title='На главную'><div id='home-page' class='pagetab'></div></a>
+						</div>
+					<?php foreach( $menuitems as $item ): ?>
+						<div class='theme box-shadow ui-corner-all' title='<?= $item->name ?>'>
+							<a href="/<?= $item->class ?>/"><div  id='<?= $item->class ?>'  class='pagetab'></div></a>
+						</div>
+					<?php endforeach; ?>
+					</td>
+					<td class="content">
+						<?php include($subview.'.php'); ?>
+					</td>
+				</tr>
+			</table>
+		</div>
     </body>
 </html>

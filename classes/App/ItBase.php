@@ -90,12 +90,11 @@ class ItBase extends Page {
 		}
 
 		if( isset($rows->records) ) {
-//~ //~
+
 			foreach($rows->records as $key => $val) {
-//~ //~
-				$returnData['records'][] = array($val,
-												"DT_RowClass" => "gradeA",
-												'DT_RowId'=>"tab-rec-".$key);
+				$val["DT_RowClass"] = "gradeB";
+				$val['DT_RowId'] 	= "tab-cont-".$key;
+				$returnData['records'][] = $val;
 			}
 		}
 

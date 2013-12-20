@@ -125,13 +125,14 @@ $(function(){
 	rH	= 110;	// Скролл таблицы записей
 var	eH	= H-rH;	// Скролл главной таблицы
 
+/*
+ * Опции стандартной таблицы
+ */
 var DTOpts = {
-		//"bJQueryUI": true,
 			"sScrollY":  eH + "px",
 			"bScrollCollapse": true,
 			"bPaginate": false,
 			"bSort":	false,
-			//"sDom": '<"H"Tf>t<"F"ip>',
 			"sDom": '<T>t',
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 										node = $("#tree").dynatree("getActiveNode");

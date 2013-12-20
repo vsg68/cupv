@@ -1,10 +1,11 @@
+<div class="content-center">
+
 		<div class='vertical-80'>
 			<div class='gorizont-50'>
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-rec">
 
 					<thead>
 						<tr>
-							<th></th>
 							<th></th>
 							<th></th>
 						</tr>
@@ -24,9 +25,9 @@
 					</thead>
 				</table>
 			</div>
-			<?php endif; ?>
+			<?php endif ?>
 		</div>
-
+</div>
 		<div class='vertical-20 '>
 			<div class="dataTables_wrapper">
 				<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix">
@@ -45,4 +46,5 @@
 				</div>
 			</div>
 		</div>
+
 
