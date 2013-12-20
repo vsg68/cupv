@@ -59,11 +59,13 @@ function unblockNewButton(nodes) {
 			return false;
 
 		$('.DTTT_button', '#tab-rec_wrapper').removeClass('DTTT_disabled');
+		$('.DTTT_button', '#tab-cont_wrapper').removeClass('DTTT_disabled');
 }
 
 function blockNewButton(nodes) {
 
 		$('.DTTT_button', '#tab-rec_wrapper').addClass('DTTT_disabled');
+		$('.DTTT_button', '#tab-cont_wrapper').addClass('DTTT_disabled');
 }
 
 
@@ -75,9 +77,11 @@ function blockButtons(node) {
 
 		if( node.data.isFolder ) {
 			$('.DTTT_button', '#tab-rec_wrapper').addClass('DTTT_disabled');
+			$('.DTTT_button', '#tab-cont_wrapper').addClass('DTTT_disabled');
 		}
 		else {
 			$('#ToolTables_tab-rec_1').removeClass('DTTT_disabled');
+			$('#ToolTables_tab-cont_1').removeClass('DTTT_disabled');
 		}
 
 		$('#tab-tree_0').removeClass('DTTT_disabled');

@@ -80,7 +80,6 @@ class ItBase extends Page {
 		if( isset($rows->entry) ) {
 
 			foreach($rows->entry as $key => $val) {
-
 				$returnData['entry'][] = array($val->fname,
 												$val->ftype,
 												$val->fval,
@@ -111,7 +110,7 @@ class ItBase extends Page {
 
 		// для правильного отображения меняем местами id и  pid
 		$this->_id 	= ($tab == 'tree') ? $this->request->param('id') : $this->request->post('init');
-		$view 		= $this->pixie->view('form_'.$tab);
+		$view 		= ($tab == 'tree') ? $this->pixie->view('form_tree') : $this->pixie->view('form_rec');
 		$view->tab  = $tab;
 
 		$view->page	= $this->ctrl;
@@ -124,10 +123,10 @@ class ItBase extends Page {
 								 ->where('id',$this->_id)
 								 ->find();
 
-		if( $tab == 'rec' ) {
-			$data->records = isset($data->records) ? json_decode($data->records) : '';
+		if( $tab != 'tree' ) {
+			$data = isset($data->records) ? json_decode($data->records) : '';
 		}
-
+print_r($data->records[0]);exit;
 		$view->data = $data;
 
         $this->response->body = $view->render();
@@ -236,6 +235,7 @@ class ItBase extends Page {
 									->find();
 
 			$records = json_decode($row->records);
+
 			if($params['tab'] == 'rec') {
 				// delete item
 				unset($records->entry[$params['id']]);
@@ -243,7 +243,9 @@ class ItBase extends Page {
 
 			if($params['tab'] == 'cont') {
 				// delete item
+
 				unset($records->records[$params['id']]);
+print_r($records->records); exit;
 			}
 
 			$row->records = json_encode($records);

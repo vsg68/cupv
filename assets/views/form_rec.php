@@ -13,16 +13,37 @@
 		<input type='hidden' name='tab' value='<?= $tab ?>' />
 		<input type='hidden' name='pid' value='<?= $pid ?>' />
 		<h4></h4>
+		<?php if($tab == 'rec'): ?>
 		   <table>
 				<tr>
 					<td class='formlabel'>Название:</td>
-					<td><input type='text' name='fname' value='<?= isset($data->records[$id]->fname) ? $data->records[$id]->fname : '' ?>'  /></td>
+					<td><input type='text' name='fname' value='<?= isset($data->entry[$id]->fname) ? $data->entry[$id]->fname : '' ?>'  /></td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Данные:</td>
-					<td><textarea name='fval'><?= isset($data->records[$id]->fval) ? $data->records[$id]->fval : '' ?></textarea></td>
+					<td><textarea name='fval'><?= isset($data->entry[$id]->fval) ? $data->entry[$id]->fval : '' ?></textarea></td>
 				</tr>
 			</table>
+		<?php elseif($tab == 'cont'): ?>
+			<table>
+				<tr>
+					<td class='formlabel'>Контакт:</td>
+					<td><input type='text' name='fval[]' value='<?= isset($data->records[$id]) ? $data->records[$id] : "" ?>'  /></td>
+				</tr>
+				<tr>
+					<td class='formlabel'>Должность:</td>
+					<td><input type='text' name='fval[]' value='<?= isset($data->records[$id][1]) ? $data->records[$id][1] : "" ?>'  /></td>
+				</tr>
+				<tr>
+					<td class='formlabel'>Телефон:</td>
+					<td><input type='text' name='fval[]' value='<?= isset($data->records[$id][2]) ? $data->records[$id][2] : "" ?>'  /></td>
+				</tr>
+				<tr>
+					<td class='formlabel'>Email:</td>
+					<td><input type='text' name='fval[]' value='<?= isset($data->records[$id][3]) ? $data->records[$id][3] : "" ?>'  /></td>
+				</tr>
+			</table>
+		<?php endif; ?>
 			<div class='submit'><div id='sb'></div></div>
 	</form>
 	</div>

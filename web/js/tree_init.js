@@ -150,7 +150,6 @@ var treeOpts = {
 		},
 		onFocus: function(node) {
 			node.activate();
-			node.expand(true);
 		},
 		onClick: function(node, event) {
 			// показываем данные
@@ -162,6 +161,7 @@ var treeOpts = {
 			if( function_exists('blockButtons') ) {
 					blockButtons(node);
 			}
+			node.expand(true);
 		},
 		debugLevel: 0,
 		dnd: {

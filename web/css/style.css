@@ -32,7 +32,7 @@ td.content-left {
 }
 
 .content-center {
-	 margin-left: -25%;
+	 margin-left: -25.5%;
 	 width: 100%;
 	 float: right;
 }
@@ -233,7 +233,7 @@ form#usersform {
 }
 
 .vertical-80 {
-	margin-left: 25%;
+	margin-left: 25.5%;
 /*
 	border: 1px solid green;
 	background-color: yellow;
