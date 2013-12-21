@@ -138,6 +138,7 @@ var DTOpts = {
 										node = $("#tree").dynatree("getActiveNode");
 										makeRowAttr(nRow,'pid',node.data.key);
 									},
+			"aoColumns" : [{'mData':'fname'},{'mData':'ftype'},{'mData':'fval'}],
 			"aoColumnDefs": [{ "sWidth": "10%", "aTargets": [ 0 ] },{ "bVisible": false, "aTargets": [ 1 ] }],
 			"oTableTools": TTOpts,
 };
@@ -161,7 +162,7 @@ var treeOpts = {
 			if( function_exists('blockButtons') ) {
 					blockButtons(node);
 			}
-			node.expand(true);
+			//node.expand(true);
 		},
 		debugLevel: 0,
 		dnd: {
@@ -194,7 +195,7 @@ function getData(id) {
 				dataType: "json",
 				success: function(response) {
 								$('#tab-rec').dataTable().fnClearTable();
-								$('#tab-rec').dataTable().fnAddData(response.entry);
+								$('#tab-rec').dataTable().fnAddData(response.aaData);
 								if(response.records) {
 									$('#tab-cont').dataTable().fnClearTable();
 									$('#tab-cont').dataTable().fnAddData(response.records);

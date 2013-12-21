@@ -38,6 +38,7 @@ $(function(){
 											fnDelete( RowID );
 										};
 
+
 	$('#tab-rec').dataTable(DTOpts);
 	//~ {
 							//~ //"bJQueryUI": true,

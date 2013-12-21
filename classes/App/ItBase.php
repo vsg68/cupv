@@ -75,19 +75,28 @@ class ItBase extends Page {
 
 		$entry = $this->pixie->orm->get('names')->where('id',$this->_id)->find();
 
+		//~ $entries = $this->pixie->orm->get('names')->find_all();
+		//~ foreach($entries as $entry) {
+			//~ $row = unserialize($entry->templ);
+			//~ $entry->templ = json_encode($row);
+			//~ $entry->save();
+		//~ }
+		//~ exit;
+
+
 		$returnData = array();
 		$rows = json_decode($entry->records);
-		if( isset($rows->entry) ) {
-
-			foreach($rows->entry as $key => $val) {
-				$returnData['entry'][] = array($val->fname,
-												$val->ftype,
-												$val->fval,
-												"DT_RowClass" => "gradeA",
-												'DT_RowId' => "tab-rec-".$key);
-			}
-		}
-
+		//~ if( isset($rows->entry) ) {
+//~
+			//~ foreach($rows->entry as $key => $val) {
+				//~ $returnData['entry'][] = array($val->fname,
+												//~ $val->ftype,
+												//~ $val->fval,
+												//~ "DT_RowClass" => "gradeA",
+												//~ 'DT_RowId' => "tab-rec-".$key);
+			//~ }
+		//~ }
+$returnData['aaData'] = $rows->entry;
 		if( isset($rows->records) ) {
 
 			foreach($rows->records as $key => $val) {
@@ -122,11 +131,13 @@ class ItBase extends Page {
 		$data = $this->pixie->orm->get('names')
 								 ->where('id',$this->_id)
 								 ->find();
-
+//~ print_r($data['records']);
+//~ $this->excute = false;
+//~ return;
 		if( $tab != 'tree' ) {
 			$data = isset($data->records) ? json_decode($data->records) : '';
 		}
-print_r($data->records[0]);exit;
+
 		$view->data = $data;
 
         $this->response->body = $view->render();
