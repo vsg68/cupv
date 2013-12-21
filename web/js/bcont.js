@@ -44,7 +44,9 @@ $(function(){
 	TTOpts.aButtons[3].sButtonText = 'КОНТАКТЫ';
 	DTOpts.sDom = '<"H"T>t<"F"ip>';
 	DTOpts.bJQueryUI = true;
-	DTOpts.aoColumnDefs = [];
+	delete(DTOpts.aoColumns);
+	delete(DTOpts.aoColumnDefs);
+
 	$('#tab-cont').dataTable(DTOpts);
 });
 

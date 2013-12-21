@@ -3,6 +3,27 @@ namespace App;
 
 class ItBase extends Page {
 
+	/*
+	 * Функция добавляет элементы массива, для правильной передачи
+	 */
+	protected function DTPropAddToAssocArray($row) {
+		static $i;
+		$row->DT_RowClass = 'gradeA';
+		$row->DT_RowId = 'tab-rec-'.(isset($i) ? $i : 0);
+		$i++;
+		return $row;
+	}
+
+	/*
+	 * Функция добавляет элементы массива, для правильной передачи
+	 */
+	protected function DTPropAddToArray($row) {
+		static $i;
+		$row['DT_RowClass'] = 'gradeB';
+		$row['DT_RowId'] = 'tab-cont-'.(isset($i) ? $i : 0);
+		$i++;
+		return $row;
+	}
 	public function action_view() {
 
 		// Проверка легитимности пользователя и его прав
@@ -39,7 +60,7 @@ class ItBase extends Page {
 
 				$out = array("title"=>$row->name, "key" => $row->id);
 				// $row->records пусто для разделов
-				if( $chidls || !$row->records) {
+				if( $chidls || !$row->data) {
 					 $out["isFolder"] = true;
 					 $out["children"] = $chidls;
 				}
@@ -85,29 +106,18 @@ class ItBase extends Page {
 
 
 		$returnData = array();
-		$rows = json_decode($entry->records);
-		//~ if( isset($rows->entry) ) {
-//~
-			//~ foreach($rows->entry as $key => $val) {
-				//~ $returnData['entry'][] = array($val->fname,
-												//~ $val->ftype,
-												//~ $val->fval,
-												//~ "DT_RowClass" => "gradeA",
-												//~ 'DT_RowId' => "tab-rec-".$key);
-			//~ }
-		//~ }
-$returnData['aaData'] = $rows->entry;
+		$rows = json_decode($entry->data);
+
+		$returnData['aaData'] = array_map(array($this,'DTPropAddToAssocArray'), $rows->entry);
+
 		if( isset($rows->records) ) {
 
-			foreach($rows->records as $key => $val) {
-				$val["DT_RowClass"] = "gradeB";
-				$val['DT_RowId'] 	= "tab-cont-".$key;
-				$returnData['records'][] = $val;
-			}
+			$returnData['records'] = array_map(array($this,'DTPropAddToArray'), $rows->records);
 		}
 
         $this->response->body = json_encode($returnData);
     }
+
 
 	public function action_showEditForm() {
 
@@ -128,17 +138,15 @@ $returnData['aaData'] = $rows->entry;
 
 		$view->id = $this->request->param('id');
 
-		$data = $this->pixie->orm->get('names')
+		$entry = $this->pixie->orm->get('names')
 								 ->where('id',$this->_id)
 								 ->find();
-//~ print_r($data['records']);
-//~ $this->excute = false;
-//~ return;
+
 		if( $tab != 'tree' ) {
-			$data = isset($data->records) ? json_decode($data->records) : '';
+			$entry = isset($entry->data) ? json_decode($entry->data) : '';
 		}
 
-		$view->data = $data;
+		$view->data = $entry;
 
         $this->response->body = $view->render();
     }
@@ -210,18 +218,18 @@ $returnData['aaData'] = $rows->entry;
 
 		try {
 
-			$data = $this->pixie->orm->get($params['tab'])
+			$entry = $this->pixie->orm->get($params['tab'])
 									 ->where('id', $this->_id)
 									 ->find();
 			// вынимаем данные
-			$records = json_decode($data->records);
+			$rows = json_decode($entry->data);
 
-			if( count($records->entry) && count($records->records) ) {
+			if( count($rows->entry) && count($rows->records) ) {
 				throw new \Exception("Сначала нужно удалить все данные объекта, а потом удалить сам объект. Кол-во записей: ".
-										count($records->entry)."; ".count($records->records));
+										count($rows->entry)."; ".count($rows->records));
 			}
 			else {
-				$data->delete();
+				$entry->delete();
 			}
 		}
 		catch (\Exception $e) {
@@ -241,26 +249,25 @@ $returnData['aaData'] = $rows->entry;
 			return;
 
 		try {
-			$row = $this->pixie->orm->get('names')
+			$entry = $this->pixie->orm->get('names')
 									->where('id', $params['pid'])
 									->find();
 
-			$records = json_decode($row->records);
+			$rows = json_decode($entry->data);
 
 			if($params['tab'] == 'rec') {
 				// delete item
-				unset($records->entry[$params['id']]);
+				unset($rows->entry[$params['id']]);
 			}
 
 			if($params['tab'] == 'cont') {
 				// delete item
-
-				unset($records->records[$params['id']]);
-print_r($records->records); exit;
+				unset($rows->records[$params['id']]);
+				$rows->records = array_values($rows->records);  // Иначе будет ассоциированный массив
 			}
 
-			$row->records = json_encode($records);
-			$row->save();
+			$entry->data = json_encode($rows);
+			$entry->save();
 		}
 		catch (\Exception $e) {
 			$view = $this->pixie->view('form_alert');

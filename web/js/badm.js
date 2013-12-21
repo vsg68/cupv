@@ -40,23 +40,6 @@ $(function(){
 
 
 	$('#tab-rec').dataTable(DTOpts);
-	//~ {
-							//~ //"bJQueryUI": true,
-							//~ "sScrollY":  eH + "px",
-							//~ "bScrollCollapse": true,
-							//~ "bPaginate": false,
-							//~ "bSort":	false,
-							//~ //"sDom": '<"H"Tf>t<"F"ip>',
-							//~ "sDom": '<T>t',
-							//~ "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-														//~ node = $("#tree").dynatree("getActiveNode");
-														//~ makeRowAttr(nRow,'pid',node.data.key);
-													//~ },
-							//~ "aoColumnDefs": [{ "sWidth": "10%", "aTargets": [ 0 ] },
-											 //~ { "bVisible": false, "aTargets": [ 1 ] },
-											 //~ ],
-							//~ "oTableTools": TTOpts
-							//~ });
 
 });
 

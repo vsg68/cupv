@@ -84,12 +84,7 @@
 							<textarea name='fval[]'/></textarea>
 						<td>
 					</tr>
-<!--
-					<tr>
-						<td class='formlabel'>Конфиг:</td>
-						<input type='hidden' name='fname[]' value='Конфиг'/><td>Есть<input type='radio' name='fval[]' value='1' />&nbsp;Нет<input type='radio' name='fval[]' value='0' checked /></td>
-					</tr>
--->
+
 
 			  </table>
 				<div class='submit'><div id='sb'></div></div>
