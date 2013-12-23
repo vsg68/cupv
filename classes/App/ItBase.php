@@ -6,24 +6,42 @@ class ItBase extends Page {
 	/*
 	 * Функция добавляет элементы массива, для правильной передачи
 	 */
-	protected function DTPropAddToAssocArray($row) {
-		static $i;
-		$row->DT_RowClass = 'gradeA';
-		$row->DT_RowId = 'tab-rec-'.(isset($i) ? $i : 0);
-		$i++;
+
+	protected function DTPropAddToEntry($row,$tab,$class) {
+
+		if(! count($row)) {	return false;	}
+
+		$row['DT_RowClass'] = $class;
+		$row['DT_RowId'] = 'tab-'.$tab;
 		return $row;
 	}
 
 	/*
 	 * Функция добавляет элементы массива, для правильной передачи
 	 */
-	protected function DTPropAddToArray($row) {
-		static $i;
-		$row['DT_RowClass'] = 'gradeB';
-		$row['DT_RowId'] = 'tab-cont-'.(isset($i) ? $i : 0);
-		$i++;
-		return $row;
+	//~ protected function DTPropAddToArray($row) {
+		//~ static $i;
+		//~ $row['DT_RowClass'] = 'gradeB';
+		//~ $row['DT_RowId'] = 'tab-cont-'.(isset($i) ? $i : 0);
+		//~ $i++;
+		//~ return $row;
+	//~ }
+	 //~
+	protected function DTPropAddToArray($row,$tab,$class) {
+
+		$arr = array();
+
+		if( count($row) ) {
+			foreach( $row as $k => $val ) {
+					$val['DT_RowClass'] = $class;
+					$val['DT_RowId'] = 'tab-'.$tab.'-'.$k;
+					$arr[] = $val;
+			}
+		}
+
+		return $arr;
 	}
+
 	public function action_view() {
 
 		// Проверка легитимности пользователя и его прав
@@ -96,6 +114,7 @@ class ItBase extends Page {
 
 		$entry = $this->pixie->orm->get('names')->where('id',$this->_id)->find();
 
+		// Начальный раздербан
 		//~ $entries = $this->pixie->orm->get('names')->find_all();
 		//~ foreach($entries as $entry) {
 			//~ $row = unserialize($entry->templ);
@@ -104,15 +123,41 @@ class ItBase extends Page {
 		//~ }
 		//~ exit;
 
+		//~ // новые веяния - делаем данные, как массив
+		//~ $entries = $this->pixie->orm->get('names')->where('id','>', 57)->where('id','<', 60)->find_all();
+		//~ foreach($entries as $entry) {
+//~ //print_r($entry->data); continue;
+			//~ $row = json_decode($entry->data);
+//~ //print_r($entry->data); continue;
+			//~ $tmp = array();
+			//~ if( !isset($row->entry))
+				//~ continue;
+//~ //echo $entry->name;
+			//~ foreach($row->entry as $onerow) {
+//~
+				//~ if(is_array($onerow)) {
+					//~ $tmp[] = $onerow;
+				//~ }
+				//~ else {
+					//~ $tmp[] = array($onerow->fname,$onerow->ftype,$onerow->fval);
+				//~ }
+			//~ }
+			//~ $row->entry = $tmp;
+//~ //print_r($tmp);
+			//~ $entry->data = json_encode($row);
+			//~ $entry->save();
+		//~ }
+		//~ exit;
 
 		$returnData = array();
 		$rows = json_decode($entry->data);
+//print_r($rows->entry); exit;
+		$returnData['aaData'] = $this->DTPropAddToArray($rows->entry, 'rec', 'gradeA');
 
-		$returnData['aaData'] = array_map(array($this,'DTPropAddToAssocArray'), $rows->entry);
 
 		if( isset($rows->records) ) {
 
-			$returnData['records'] = array_map(array($this,'DTPropAddToArray'), $rows->records);
+			$returnData['records'] = $this->DTPropAddToArray($rows->records, 'cont', 'gradeB');
 		}
 
         $this->response->body = json_encode($returnData);
@@ -255,15 +300,17 @@ class ItBase extends Page {
 
 			$rows = json_decode($entry->data);
 
-			if($params['tab'] == 'rec') {
-				// delete item
-				unset($rows->entry[$params['id']]);
-			}
+			$data = ($params['tab'] == 'rec') : $rows->entry ? $rows->records;
 
-			if($params['tab'] == 'cont') {
-				// delete item
-				unset($rows->records[$params['id']]);
-				$rows->records = array_values($rows->records);  // Иначе будет ассоциированный массив
+			// delete item
+			unset($data[$params['id']]);
+			$data = array_values($data);  // Иначе будет ассоциированный массив
+
+			if($params['tab'] == 'rec') {
+				$rows->entry = $data;
+			}
+			else {
+				$rows->records = $data;
 			}
 
 			$entry->data = json_encode($rows);
@@ -276,93 +323,87 @@ class ItBase extends Page {
 		}
 
     }
-/*** OLD ***/
-	public function action_add() {
 
-		if( $this->permissions != $this::WRITE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
+   	public function action_edit() {
 
-        if ($this->request->method == 'POST') {
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
 
-			$entry = $templ = array();
-			$params = $this->request->post();
+		if( ! $params = $this->request->post() )
+			return;
 
-			if( isset($params['fname']) ) {
-				foreach($params['fname'] as $key=>$val) {
+		try {
+			$row = $this->pixie->orm->get('names')
+									->where('id', $params['pid'])
+									->find();
 
-					$templ['entry'][$key] = array('fname' => $params['fname'][$key],
-												  'ftype' => $params['ftype'][$key],
-												  'fval'  => $params['fval'][$key]
-												  );
-				}
-			}
+			$records = json_decode($row->data);
 
-			if( isset($params['tdname']) ) {
 
-				foreach($params['tdname'] as $key=>$tdvalues) {
+			$data = ( $params['tab'] == 'rec' ) ? $records->entry : $records->records;
 
-					foreach($tdvalues as $tdvalue) {
+			// Если новая запись - порядковый номер делаем руками
+			$ord = ($params['id'] != '_0') ? $params['id'] : count($data) ;
 
-						if( !isset($templ['records'][$key]) )
-							$templ['records'][$key] = array();
+			$data[$ord] = $params['fval'];
 
-						array_push($templ['records'][$key], $tdvalue);
-					}
-				}
-			}
-
-			// копирование шаблона
-			if( isset($params['tmpl_id']) ) {
-
-					$template = $this->pixie->db->query('select','itbase')
-												->table('names')
-												->where('id',$params['tmpl_id'])
-												->execute()
-												->current();
-
-					$entry['templ'] = $template->templ;
-			}
-
-			// заполняем массив
-			if( isset($params['name']) )	$entry['name'] = $params['name'];
-			if( isset($params['pid']) )		$entry['pid']  = $params['pid'];
-			if( count($templ) )				$entry['templ'] = serialize($templ);
-
-			$entry['page'] = $this->request->param('controller');
-
-			if ( $params['id'] == 0 ) {
-			// Новая запись
-				$this->pixie->db->query('insert','itbase')
-								->table('names')
-								->data($entry)
-								->execute();
-
-				$params['id'] = $this->pixie->db->insert_id('itbase');
-
-			}
-			elseif ( $this->getVar($params['stat'],0) == 2)	{
-			// Удаляем запись
-				$this->pixie->db->query('delete','itbase')
-								->table('names')
-								->where('id', $params['id'])
-								->where('or',array('pid', $params['id']))
-								->execute();
-
+			if( $params['tab'] == 'rec' ) {
+				$records->entry = $data;
 			}
 			else {
-			// Редактирование
-				$this->pixie->db->query('update','itbase')
-								->table('names')
-								->data($entry)
-								->where('id', $params['id'])
-								->execute();
+				$records->records = $data;
 			}
 
-			$this->response->body = $params['id'];
-		}
+			$row->data = json_encode($records);
+			$row->save();
 
+			$returnData  = $this->DTPropAddToEntry($params['fval'], $params['tab'].'-'.$params['id'], 'gradeA');
+
+			$this->response->body = json_encode($returnData);
+		}
+		catch (\Exception $e) {
+
+			$this->response->body = $e->getMessage();
+			return;
+		}
+	}
+
+	public function action_addNewItem() {
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$returnData = array();
+
+			$records['entry'] = array_map(null, $params['fname'], $params['ftype'], $params['fval']);
+
+
+			if( $this->ctrl == 'bcont' ) {
+				$records['records'] = array();
+			}
+
+			$data = array('data' => json_encode($records),
+						  'pid' 	=> $params['pid'],
+						  'name' 	=> $params['fval'][0], //NAME
+						  'page' 	=> $this->ctrl);
+
+			$row = $this->pixie->orm->get('names')
+									 ->values($data)
+									 ->save();
+
+			$returnData	= array('title' => $data['name'],
+								'key' 	=> $row->id);
+
+			$this->response->body = json_encode($returnData);
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
+		}
 	}
 
 }

@@ -138,8 +138,7 @@ var DTOpts = {
 										node = $("#tree").dynatree("getActiveNode");
 										makeRowAttr(nRow,'pid',node.data.key);
 									},
-			"aoColumns" : [{'mData':'fname'},{'mData':'ftype'},{'mData':'fval'}],
-			"aoColumnDefs": [{ "sWidth": "10%", "aTargets": [ 0 ] },{ "bVisible": false, "aTargets": [ 1 ] }],
+			"aoColumnDefs": [{ "sWidth": "15%", "aTargets": [ 0 ] },{ "bVisible": false, "aTargets": [ 1 ] }],
 			"oTableTools": TTOpts,
 };
 
@@ -194,10 +193,15 @@ function getData(id) {
 				type: "GET",
 				dataType: "json",
 				success: function(response) {
+
 								$('#tab-rec').dataTable().fnClearTable();
+
+								if( $('#tab-cont').length ) {
+									$('#tab-cont').dataTable().fnClearTable();
+								}
+
 								$('#tab-rec').dataTable().fnAddData(response.aaData);
 								if(response.records) {
-									$('#tab-cont').dataTable().fnClearTable();
 									$('#tab-cont').dataTable().fnAddData(response.records);
 								}
 						},
@@ -278,6 +282,8 @@ var modNewTree = {
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>";
 
 			$(':text, select').addClass('ui-widget-content ui-corner-all');
+
+			$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
 
 			$('#sb').button({ label: '<a href=#>Send</a>'});
 

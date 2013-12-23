@@ -114,4 +114,6 @@ modWin.validate_rec = function () {
 		return modWin.message;
 }
 
-
+modWin.validate_cont = function () {
+							return false;
+}
