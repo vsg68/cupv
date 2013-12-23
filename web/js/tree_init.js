@@ -119,6 +119,37 @@ $(function(){
 		title = $('.pagetab-selected').closest('.theme').attr('title').toUpperCase();
 		$('#tab-tree_4 span').append(title);
 
+
+		TTOpts.aButtons.splice(3,2);
+		TTOpts.aButtons[3].sButtonText = 'ДАННЫЕ';
+		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
+		TTOpts.aButtons[0].fnClick = function( nButton, oConfig, oFlash ){
+												if( $(nButton).hasClass('DTTT_disabled') )
+													return false;
+
+												RowID = fnGetSelectedRowID(this);
+												pid = $('#'+RowID).attr('pid');
+												// добавляем tab-rec, чтобы передавался правильная таблица
+												fnEdit(RowID, 'tab-tree-' + pid );
+											};
+		TTOpts.aButtons[1].fnClick = function( nButton, oConfig, oFlash ){
+												if( $(nButton).hasClass('DTTT_disabled') )
+													return false;
+
+												RowID = fnGetSelectedRowID(this);
+												node = $("#tree").dynatree("getActiveNode");
+												// 00 - признак новой строки
+												fnEdit('tab-rec-_0', 'tab-tree-' + node.data.key );
+											};
+		TTOpts.aButtons[2].fnClick = function( nButton, oConfig, oFlash ){
+												if( $(nButton).hasClass('DTTT_disabled') )
+													return false;
+
+												RowID = fnGetSelectedRowID(this);
+												fnDelete( RowID );
+											};
+
+
 });
 
 	H 	= $(window).outerHeight();
@@ -142,6 +173,7 @@ var DTOpts = {
 			"oTableTools": TTOpts,
 };
 
+
 var treeOpts = {
 		//clickFolderMode: 2,
 		fx: { height: "toggle", duration: 200 },
@@ -161,7 +193,7 @@ var treeOpts = {
 			if( function_exists('blockButtons') ) {
 					blockButtons(node);
 			}
-			//node.expand(true);
+			node.expand(true);
 		},
 		debugLevel: 0,
 		dnd: {

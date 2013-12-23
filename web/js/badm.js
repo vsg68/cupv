@@ -9,36 +9,6 @@ $(function(){
 	// scroll контейнера
 	$('.dynatree-container').css('max-height', eH+'px');
 
-	TTOpts.aButtons.splice(3,2);
-	TTOpts.aButtons[3].sButtonText = 'ДАННЫЕ';
-	TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-	TTOpts.aButtons[0].fnClick = function( nButton, oConfig, oFlash ){
-											if( $(nButton).hasClass('DTTT_disabled') )
-												return false;
-
-											RowID = fnGetSelectedRowID(this);
-											pid = $('#'+RowID).attr('pid');
-											// добавляем tab-rec, чтобы передавался правильная таблица
-											fnEdit(RowID, 'tab-tree-' + pid );
-										};
-	TTOpts.aButtons[1].fnClick = function( nButton, oConfig, oFlash ){
-											if( $(nButton).hasClass('DTTT_disabled') )
-												return false;
-
-											RowID = fnGetSelectedRowID(this);
-											node = $("#tree").dynatree("getActiveNode");
-											// 00 - признак новой строки
-											fnEdit('tab-rec-_0', 'tab-tree-' + node.data.key );
-										};
-	TTOpts.aButtons[2].fnClick = function( nButton, oConfig, oFlash ){
-											if( $(nButton).hasClass('DTTT_disabled') )
-												return false;
-
-											RowID = fnGetSelectedRowID(this);
-											fnDelete( RowID );
-										};
-
-
 	$('#tab-rec').dataTable(DTOpts);
 
 });
@@ -46,7 +16,7 @@ $(function(){
 /*
  *  Работает при селекте табличного значения
  */
-function unblockNewButton(nodes) {
+function unblockNewButton(node) {
 
 		// Случай, когда выбран раздел и кликаю по строке
 		treeNode = $("#tree").dynatree("getActiveNode");
@@ -56,7 +26,7 @@ function unblockNewButton(nodes) {
 		$('.DTTT_button', '#tab-rec_wrapper').removeClass('DTTT_disabled');
 }
 
-function blockNewButton(nodes) {
+function blockNewButton(node) {
 
 		$('.DTTT_button', '#tab-rec_wrapper').addClass('DTTT_disabled');
 }

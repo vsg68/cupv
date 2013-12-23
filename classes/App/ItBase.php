@@ -124,7 +124,7 @@ class ItBase extends Page {
 		//~ exit;
 
 		//~ // новые веяния - делаем данные, как массив
-		//~ $entries = $this->pixie->orm->get('names')->where('id','>', 57)->where('id','<', 60)->find_all();
+		//~ $entries = $this->pixie->orm->get('names')->find_all();
 		//~ foreach($entries as $entry) {
 //~ //print_r($entry->data); continue;
 			//~ $row = json_decode($entry->data);
@@ -300,7 +300,7 @@ class ItBase extends Page {
 
 			$rows = json_decode($entry->data);
 
-			$data = ($params['tab'] == 'rec') : $rows->entry ? $rows->records;
+			$data = ($params['tab'] == 'rec') ? $rows->entry : $rows->records;
 
 			// delete item
 			unset($data[$params['id']]);
@@ -339,7 +339,6 @@ class ItBase extends Page {
 
 			$records = json_decode($row->data);
 
-
 			$data = ( $params['tab'] == 'rec' ) ? $records->entry : $records->records;
 
 			// Если новая запись - порядковый номер делаем руками
@@ -349,15 +348,17 @@ class ItBase extends Page {
 
 			if( $params['tab'] == 'rec' ) {
 				$records->entry = $data;
+				$class = 'gradeA';
 			}
 			else {
 				$records->records = $data;
+				$class = 'gradeB';
 			}
 
 			$row->data = json_encode($records);
 			$row->save();
 
-			$returnData  = $this->DTPropAddToEntry($params['fval'], $params['tab'].'-'.$params['id'], 'gradeA');
+			$returnData  = $this->DTPropAddToEntry($params['fval'], $params['tab'].'-'.$ord, $class);
 
 			$this->response->body = json_encode($returnData);
 		}

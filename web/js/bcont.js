@@ -9,36 +9,6 @@ $(function(){
 	// scroll контейнера
 	$('.dynatree-container').css('max-height', eH+'px');
 
-
-	TTOpts.aButtons.splice(3,2);
-	TTOpts.aButtons[3].sButtonText = 'ДАННЫЕ';
-	TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-	TTOpts.aButtons[0].fnClick = function( nButton, oConfig, oFlash ){
-											if( $(nButton).hasClass('DTTT_disabled') )
-												return false;
-
-											RowID = fnGetSelectedRowID(this);
-											pid = $('#'+RowID).attr('pid');
-											// добавляем tab-rec, чтобы передавался правильная таблица
-											fnEdit(RowID, 'tab-tree-' + pid );
-										};
-	TTOpts.aButtons[1].fnClick = function( nButton, oConfig, oFlash ){
-											if( $(nButton).hasClass('DTTT_disabled') )
-												return false;
-
-											RowID = fnGetSelectedRowID(this);
-											node = $("#tree").dynatree("getActiveNode");
-											// 00 - признак новой строки
-											fnEdit('tab-rec-_0', 'tab-tree-' + node.data.key );
-										};
-	TTOpts.aButtons[2].fnClick = function( nButton, oConfig, oFlash ){
-											if( $(nButton).hasClass('DTTT_disabled') )
-												return false;
-
-											RowID = fnGetSelectedRowID(this);
-											fnDelete( RowID );
-										};
-
 	$('#tab-rec').dataTable(DTOpts);
 
 	TTOpts.aButtons[3].sButtonText = 'КОНТАКТЫ';
@@ -53,21 +23,24 @@ $(function(){
 /*
  *  Работает при селекте табличного значения
  */
-function unblockNewButton(nodes) {
+function unblockNewButton(node) {
 
 		// Случай, когда выбран раздел и кликаю по строке
 		treeNode = $("#tree").dynatree("getActiveNode");
+
 		if( treeNode.data.isFolder )
 			return false;
 
-		$('.DTTT_button', '#tab-rec_wrapper').removeClass('DTTT_disabled');
-		$('.DTTT_button', '#tab-cont_wrapper').removeClass('DTTT_disabled');
+		tab = node[0].offsetParent.id;
+		$('.DTTT_button', '#'+ tab +'_wrapper').removeClass('DTTT_disabled');
 }
 
 function blockNewButton(nodes) {
 
-		$('.DTTT_button', '#tab-rec_wrapper').addClass('DTTT_disabled');
-		$('.DTTT_button', '#tab-cont_wrapper').addClass('DTTT_disabled');
+	if( nodes.length && (tab = nodes[0].offsetParent.id) ) {
+		tab = nodes[0].offsetParent.id;
+		$('.DTTT_button', '#'+ tab +'_wrapper').not('.DTTT_button_new').addClass('DTTT_disabled');
+	}
 }
 
 
@@ -76,6 +49,7 @@ function blockNewButton(nodes) {
  *  2) потомки - включаем редактирование потомков
  */
 function blockButtons(node) {
+
 
 		if( node.data.isFolder ) {
 			$('.DTTT_button', '#tab-rec_wrapper').addClass('DTTT_disabled');
