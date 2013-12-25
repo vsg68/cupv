@@ -105,49 +105,12 @@ class ItBase extends Page {
 
 		$entry = $this->pixie->orm->get('names')->where('id',$this->_id)->find();
 
-		// Начальный раздербан
-		//~ $entries = $this->pixie->orm->get('names')->find_all();
-		//~ foreach($entries as $entry) {
-			//~ $row = unserialize($entry->templ);
-			//~ $entry->templ = json_encode($row);
-			//~ $entry->save();
-		//~ }
-		//~ exit;
-
-		//~ // новые веяния - делаем данные, как массив
-		//~ $entries = $this->pixie->orm->get('names')->find_all();
-		//~ foreach($entries as $entry) {
-//~ //print_r($entry->data); continue;
-			//~ $row = json_decode($entry->data);
-//~ //print_r($entry->data); continue;
-			//~ $tmp = array();
-			//~ if( !isset($row->entry))
-				//~ continue;
-//~ //echo $entry->name;
-			//~ foreach($row->entry as $onerow) {
-//~
-				//~ if(is_array($onerow)) {
-					//~ $tmp[] = $onerow;
-				//~ }
-				//~ else {
-					//~ $tmp[] = array($onerow->fname,$onerow->ftype,$onerow->fval);
-				//~ }
-			//~ }
-			//~ $row->entry = $tmp;
-//~ //print_r($tmp);
-			//~ $entry->data = json_encode($row);
-			//~ $entry->save();
-		//~ }
-		//~ exit;
-
 		$returnData = array();
 		$rows = json_decode($entry->data);
 
 		$returnData['aaData'] = $this->DTPropAddToArray($rows->entry, 'rec', 'gradeA');
 
-
 		if( isset($rows->records) ) {
-
 			$returnData['records'] = $this->DTPropAddToArray($rows->records, 'cont', 'gradeB');
 		}
 
