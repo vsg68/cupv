@@ -134,6 +134,10 @@ class Roles extends \App\Page {
 									->values($params, $is_update)
 									->save();
 
+			$row->id = $params['id'];
+			unset($params['id']);
+			$entry = $params;
+
 			//Нужно отдать инфу в права в том же формате,
 			//в котором оно представлено
 			if( $tab == 'rights' ) {
