@@ -59,12 +59,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dracony/PHPixie-Core.git",
-                "reference": "0133c031b634d1ea5074e213f8bc5fab2e53a9f2"
+                "reference": "35320d3fff864ffec2ea439ed84171d4cb345f78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dracony/PHPixie-Core/zipball/0133c031b634d1ea5074e213f8bc5fab2e53a9f2",
-                "reference": "0133c031b634d1ea5074e213f8bc5fab2e53a9f2",
+                "url": "https://api.github.com/repos/dracony/PHPixie-Core/zipball/35320d3fff864ffec2ea439ed84171d4cb345f78",
+                "reference": "35320d3fff864ffec2ea439ed84171d4cb345f78",
                 "shasum": ""
             },
             "require": {
@@ -97,7 +97,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-08-27 16:03:04"
+            "time": "2013-12-17 15:12:15"
         },
         {
             "name": "phpixie/db",

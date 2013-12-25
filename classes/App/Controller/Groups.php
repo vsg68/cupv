@@ -50,7 +50,6 @@ class Groups extends \App\Page {
 												   ->order_by('name')
 												   ->find_all();
 
-
 		$data = array();
 		foreach($entries as $entry)
 			$data[] = array($entry->name,
@@ -148,7 +147,7 @@ class Groups extends \App\Page {
 
 			$this->pixie->orm->get($params['tab'])
 							 ->where('id',$params['id'])
-							 ->delete();
+							 ->delete_all();
 		}
 		catch (\Exception $e) {
 			$view = $this->pixie->view('form_alert');

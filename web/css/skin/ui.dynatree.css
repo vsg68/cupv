@@ -9,7 +9,10 @@ ul.dynatree-container
 	padding: 3px;
 	margin: 0; /* issue 201 */
 	background-color: white;
+/*
 	border: 1px dotted gray;
+*/
+	border: 0;
 	overflow: auto;
 	height: 100%; /* issue 263 */
 }
@@ -37,6 +40,7 @@ ul.dynatree-container li
 	margin:0;
 	padding:1px 0 0 0;
 }
+
 /* Suppress lines for last child node */
 ul.dynatree-container li.dynatree-lastsib
 {
@@ -256,7 +260,7 @@ span.dynatree-icon /* Default icon */
 
 .dynatree-ico-ef span.dynatree-icon  /* Expanded Folder */
 {
-	background-position: -64px -16px;
+	background-position: -16px -16px;
 }
 
 /* Status node icons */
@@ -403,8 +407,10 @@ div.dynatree-drop-reject span.dynatree-drag-helper-img
 #dynatree-drop-marker.dynatree-drop-after,
 #dynatree-drop-marker.dynatree-drop-before
 {
+/*
 	width:64px;
 	background-position: 0 -144px;
+*/
 }
 #dynatree-drop-marker.dynatree-drop-copy
 {
@@ -450,3 +456,14 @@ span.dynatree-drop-target.dynatree-drop-reject
 span.dynatree-drop-target.dynatree-drop-after a
 {
 }
+
+/**************    MY     *************/
+
+table.display td {
+	padding: 6px 10px;
+}
+
+.gorizont-50 .DTTT_container {
+	margin: 5px 0;
+}
+

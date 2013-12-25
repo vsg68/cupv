@@ -3,43 +3,63 @@ namespace App;
 
 class ItBase extends Page {
 
-	protected $view_tmpl;
+	/*
+	 * Функция добавляет элементы массива, для правильной передачи
+	 */
+	protected function DTPropAddToEntry($row,$tab,$class) {
 
-	public function before() {
+		if(! count($row)) {	return false;	}
 
-		$this->view = $this->pixie->view('main');
-		$this->auth = $this->pixie->auth;
+		$row['DT_RowClass'] = $class;
+		$row['DT_RowId'] = 'tab-'.$tab;
+		return array_map('nl2br', $row);
+	}
 
-		$this->view->subview = 'base_main';
+	/*
+	 * Функция добавляет элементы массива, для правильной передачи
+	 */
+	protected function DTPropAddToArray($row,$tab,$class) {
 
+		$arr = array();
 
-		$this->view->script_file = '<script type="text/javascript" src="/jquery.dynatree.js"></script>';
-		$this->view->script_file .= '<script type="text/javascript" src="/tree_init.js"></script>';
+		if( count($row) ) {
+			foreach( $row as $k => $val ) {
+					$val['DT_RowClass'] = $class;
+					$val['DT_RowId'] = 'tab-'.$tab.'-'.$k;
+					$arr[] = array_map('nl2br', $val);
+			}
+		}
 
-		$this->view->css_file = '<link rel="stylesheet" href="/skin/ui.dynatree.css" type="text/css" />';
-		$this->view->css_file .= '<link rel="stylesheet" href="/tree_init.css" type="text/css" />';
+		return $arr;
+	}
 
-
-		/* Определяем все контроллеры с одинаковыми ID */
-		$this->view->menuitems = $this->pixie->db
-										->query('select')
-										->fields('Y.*')
-										->table('controllers','X')
-										->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
-										->where('X.class',strtolower($this->request->param('controller')))
-										->where('Y.active',1)
-										->order_by('Y.arrange')
-										->execute();
+	public function action_view() {
 
 		// Проверка легитимности пользователя и его прав
-        if( $this->request->param('controller') != 'login' )
-			$this->permissions = $this->is_approve();
+        if( $this->permissions == $this::NONE_LEVEL )
+			return  $this->noperm();
 
-	}
+		$this->view->script_file = "<script type='text/javascript' src='/js/jquery.dynatree.min.js'></script>";
+		$this->view->script_file .= "<script type='text/javascript' src='/js/tree_init.js'></script>";
+		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js') ) {
+			$this->view->script_file .= '<script type="text/javascript" src="/js/'.$this->ctrl.'.js"></script>';
+		}
+
+		$this->view->css_file = '<link rel="stylesheet" href="/css/skin/ui.dynatree.css" type="text/css" />';
+		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') ) {
+			$this->view->css_file .= '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
+		}
+
+		// Подключаем файл, с названием равным контроллеру
+		$this->view->subview = 'badm';
+		$this->view->ctrl = $this->ctrl;
+
+		$this->response->body = $this->view->render();
+    }
 
 	protected function RecursiveTree(&$rs,$parent) {
 
-	    $out = '';
+	    $data = array();
 
 		if (!isset($rs[$parent])) return false;
 
@@ -47,186 +67,348 @@ class ItBase extends Page {
 
 				$chidls = $this->RecursiveTree($rs,$row->id);
 
-				//$prn_child = ($chidls) ? ', "isFolder":"true", "key":"folder2", "children": ['.$chidls.']' : '';
-				$prn_child = ($chidls) ? ', "children": ['.$chidls.']' : '';
+				$out = array("title"=>$row->name, "key" => $row->id);
+				// $row->records пусто для разделов
+				if( $chidls || !$row->data) {
+					 $out["isFolder"] = true;
+					 $out["children"] = $chidls;
+				}
 
-				$out .= '{"title":"'.$row->name. '", "key":"'.$row->id.'"' . $prn_child .'},';
+				array_push($data, $out);
 		}
 
-		return $out;
+		return $data;
 	}
 
 	protected function action_getTree() {
 
 		$tree = $rs = array();
 
-//		$typenow = $this->request->get('page');
-		$typenow = $this->request->param('controller');
-
-		$tree = $this->pixie->db->query('select','itbase')
-								->table('names')
-								->where('page', $this->getVar($typenow))
+		$tree = $this->pixie->orm->get('names')
+								->where('page', $this->ctrl)
 								->order_by('pid')
-								->order_by('name')
-								->execute()
-								->as_array();
+								->find_all();
 
 		foreach ($tree as $row)	{
-
 			$rs[$row->pid][] = $row;
 		}
 
-		$tree_struct = str_replace('},]', '}]', '['. $this->RecursiveTree($rs,0) .']') ;
-
-		$this->response->body =  $tree_struct;
-
-	}
-
-	public function action_add() {
-
-		if( $this->permissions != $this::WRITE_LEVEL ) {
-			$this->noperm();
-			return false;
-		}
-
-        if ($this->request->method == 'POST') {
-
-			$entry = $templ = array();
-			$params = $this->request->post();
-
-			if( isset($params['fname']) ) {
-				foreach($params['fname'] as $key=>$val) {
-
-					$templ['entry'][$key] = array('fname' => $params['fname'][$key],
-												  'ftype' => $params['ftype'][$key],
-												  'fval'  => $params['fval'][$key]
-												  );
-				}
-			}
-
-			if( isset($params['tdname']) ) {
-
-				foreach($params['tdname'] as $key=>$tdvalues) {
-
-					foreach($tdvalues as $tdvalue) {
-
-						if( !isset($templ['records'][$key]) )
-							$templ['records'][$key] = array();
-
-						array_push($templ['records'][$key], $tdvalue);
-					}
-				}
-			}
-
-			// копирование шаблона
-			if( isset($params['tmpl_id']) ) {
-
-					$template = $this->pixie->db->query('select','itbase')
-												->table('names')
-												->where('id',$params['tmpl_id'])
-												->execute()
-												->current();
-
-					$entry['templ'] = $template->templ;
-			}
-
-			// заполняем массив
-			if( isset($params['name']) )	$entry['name'] = $params['name'];
-			if( isset($params['pid']) )		$entry['pid']  = $params['pid'];
-			if( count($templ) )				$entry['templ'] = serialize($templ);
-
-			$entry['page'] = $this->request->param('controller');
-
-			if ( $params['id'] == 0 ) {
-			// Новая запись
-				$this->pixie->db->query('insert','itbase')
-								->table('names')
-								->data($entry)
-								->execute();
-
-				$params['id'] = $this->pixie->db->insert_id('itbase');
-
-			}
-			elseif ( $this->getVar($params['stat'],0) == 2)	{
-			// Удаляем запись
-				$this->pixie->db->query('delete','itbase')
-								->table('names')
-								->where('id', $params['id'])
-								->where('or',array('pid', $params['id']))
-								->execute();
-
-			}
-			else {
-			// Редактирование
-				$this->pixie->db->query('update','itbase')
-								->table('names')
-								->data($entry)
-								->where('id', $params['id'])
-								->execute();
-			}
-
-			$this->response->body = $params['id'];
-		}
+		$tree_struct = $this->RecursiveTree($rs,0);
+		$this->response->body =  json_encode($tree_struct);
 
 	}
 
-	protected function show_single($view) {
+	public function action_records() {
 
-		if( $this->permissions == $this::NONE_LEVEL ) {
-			$this->noperm();
-			return false;
+		if( ! $this->_id = $this->request->param('id') )
+			return;
+
+		$entry = $this->pixie->orm->get('names')->where('id',$this->_id)->find();
+
+		// Начальный раздербан
+		//~ $entries = $this->pixie->orm->get('names')->find_all();
+		//~ foreach($entries as $entry) {
+			//~ $row = unserialize($entry->templ);
+			//~ $entry->templ = json_encode($row);
+			//~ $entry->save();
+		//~ }
+		//~ exit;
+
+		//~ // новые веяния - делаем данные, как массив
+		//~ $entries = $this->pixie->orm->get('names')->find_all();
+		//~ foreach($entries as $entry) {
+//~ //print_r($entry->data); continue;
+			//~ $row = json_decode($entry->data);
+//~ //print_r($entry->data); continue;
+			//~ $tmp = array();
+			//~ if( !isset($row->entry))
+				//~ continue;
+//~ //echo $entry->name;
+			//~ foreach($row->entry as $onerow) {
+//~
+				//~ if(is_array($onerow)) {
+					//~ $tmp[] = $onerow;
+				//~ }
+				//~ else {
+					//~ $tmp[] = array($onerow->fname,$onerow->ftype,$onerow->fval);
+				//~ }
+			//~ }
+			//~ $row->entry = $tmp;
+//~ //print_r($tmp);
+			//~ $entry->data = json_encode($row);
+			//~ $entry->save();
+		//~ }
+		//~ exit;
+
+		$returnData = array();
+		$rows = json_decode($entry->data);
+
+		$returnData['aaData'] = $this->DTPropAddToArray($rows->entry, 'rec', 'gradeA');
+
+
+		if( isset($rows->records) ) {
+
+			$returnData['records'] = $this->DTPropAddToArray($rows->records, 'cont', 'gradeB');
 		}
-		//$view = $this->pixie->view( $this->request->param('controller').'_view' );
-		//$view = $view_tmpl;
 
-		// вывод лога
-		$view->log = $this->getVar($this->logmsg,'');
-
-		// если не редактирование,т.е. начальный вход
-		if( ! $this->request->param('id') )
-			return; // "<img class='lb' src='/Dns.png' />";
-
-		$this->_id = $this->getVar($this->_id, $this->request->param('id'));
+        $this->response->body = json_encode($returnData);
+    }
 
 
-		$view->entries = $this->pixie->db->query('select','itbase')
-										->table('names')
-										->where('id',$this->_id)
-										->execute()
-										->current();
+	public function action_showEditForm() {
 
-		$view->templ = ($view->entries->templ) ? unserialize($view->entries->templ) : array();
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
-		// Редактирование
-		if( ! $this->request->get('act') )
-			return $view->render();
+		if( ! $tab = $this->request->post('t') )
+			return;
+
+		// для правильного отображения меняем местами id и  pid
+		$this->_id 	= ($tab == 'tree') ? $this->request->param('id') : $this->request->post('init');
+		$view 		= ($tab == 'tree') ? $this->pixie->view('form_tree') : $this->pixie->view('form_rec');
+		$view->tab  = $tab;
+
+		$view->page	= $this->ctrl;
+		// Во втором случае пид - это ID записи
+		$view->pid	= ($tab == 'tree') ? $this->request->post('pid') : $this->_id;
+
+		$view->id = $this->request->param('id');
+
+		$entry = $this->pixie->orm->get('names')
+								 ->where('id',$this->_id)
+								 ->find();
+
+		if( $tab != 'tree' ) {
+			$entry = isset($entry->data) ? json_decode($entry->data) : '';
+		}
+
+		// Перед выводом - обрабатываем специальные символы
+		array_walk_recursive($entry->entry, array($this,'blockspechars'));
+
+		if( isset($entry->records) ) {
+			array_walk_recursive($entry->records, array($this,'blockspechars'));
+		}
+
+		$view->data = $entry;
 
         $this->response->body = $view->render();
     }
 
+	public function action_showNewForm() {
 
-	protected function getTemplItems() {
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
-		$menu_ul = '';
+		$view = $this->pixie->view('form_'.$this->ctrl);
 
-		$menu_block = $this->pixie->db->query('select','itbase')
-									 ->table('names')
-									 ->where('page','btmpl')
-									 ->execute()
-									 ->as_array();
+		if( ! $view->pid = $this->request->param('id') )
+			return;
 
+        $this->response->body = $view->render();
+    }
 
-		if( is_array($menu_block) )	{
+	public function action_editTree() {
 
-			$menu_ul .= '<ul>';
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
 
-			foreach($menu_block as $item)
-				$menu_ul .= '<li><span id="x-'. $item->id .'">'.$item->name.'</span></li>';
+		if( ! $params = $this->request->post() )
+			return;
 
-			$menu_ul .= '</ul>';
+		try {
+			$tab  = isset($params['tab']) ? $params['tab'] : '';
+
+			$params['pid']  = (isset($params['in_root']) && $params['in_root']) ? '0' : $params['pid'];
+			$params['page'] = $this->ctrl;
+			unset($params['tab'], $params['in_root']);
+
+			$is_update = $params['id'] ? true : false;
+
+			// сохраняем модель
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get('names')
+									->values($params, $is_update)
+									->save();
+
+			$id = $params['id'];
+			unset( $params['id'] );
+
+			// tab = '' - идет запрос на изменение принадлежности
+			if( $tab ) {
+				$returnData  = array('title' => $params['name'],
+									 'isFolder' => true,
+									 'key'   => ($id ? $id : $row->id));
+
+				$this->response->body = json_encode($returnData);
+			}
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
 		}
 
-		return $menu_ul;
 
 	}
+
+	public function action_delEntryTree() {
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		if( ! $params = $this->request->post() or
+			! $this->_id = $this->request->param('id') )
+			return;
+
+		try {
+
+			$entry = $this->pixie->orm->get($params['tab'])
+									 ->where('id', $this->_id)
+									 ->find();
+			// вынимаем данные
+			$rows = json_decode($entry->data);
+
+			if( count($rows->entry) ) {
+
+				$text = "Сначала нужно удалить все данные объекта, а потом удалить сам объект. Данные(кол-во записей):".count($rows->entry);
+
+				if ( isset($rows->records) && count($rows->records) ) {
+					$text .= ";  Контакты(кол-во записей); ".count($rows->records);
+				}
+				throw new \Exception( $text );
+			}
+			else {
+				$entry->delete();
+			}
+		}
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
+			$this->response->body = $view->render();
+		}
+
+    }
+
+    public function action_delEntry() {
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$entry = $this->pixie->orm->get('names')
+									->where('id', $params['pid'])
+									->find();
+
+			$rows = json_decode($entry->data);
+
+			$data = ($params['tab'] == 'rec') ? $rows->entry : $rows->records;
+
+			// delete item
+			unset($data[$params['id']]);
+			$data = array_values($data);  // Иначе будет ассоциированный массив
+
+			if($params['tab'] == 'rec') {
+				$rows->entry = $data;
+			}
+			else {
+				$rows->records = $data;
+			}
+
+			$entry->data = json_encode($rows);
+			$entry->save();
+		}
+		catch (\Exception $e) {
+			$view = $this->pixie->view('form_alert');
+			$view->errorMsg = $e->getMessage();
+			$this->response->body = $view->render();
+		}
+
+    }
+
+   	public function action_edit() {
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$row = $this->pixie->orm->get('names')
+									->where('id', $params['pid'])
+									->find();
+
+			$records = json_decode($row->data);
+
+			$data = ( $params['tab'] == 'rec' ) ? $records->entry : $records->records;
+
+			// Если новая запись - порядковый номер делаем руками
+			$ord = ($params['id'] != '_0') ? $params['id'] : count($data) ;
+
+			//$data[$ord] = array_map('htmlspecialchars', $params['fval']);
+			$data[$ord] = $params['fval'];
+
+			if( $params['tab'] == 'rec' ) {
+				$records->entry = $data;
+				$class = 'gradeA';
+			}
+			else {
+				$records->records = $data;
+				$class = 'gradeB';
+			}
+
+			$row->data = json_encode($records);
+			$row->save();
+
+			$returnData  = $this->DTPropAddToEntry($params['fval'], $params['tab'].'-'.$ord, $class);
+
+			$this->response->body = json_encode($returnData);
+		}
+		catch (\Exception $e) {
+
+			$this->response->body = $e->getMessage();
+			return;
+		}
+	}
+
+	public function action_addNewItem() {
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$returnData = array();
+
+			$records['entry'] = array_map(null, $params['fname'], $params['ftype'], $params['fval']);
+
+
+			if( $this->ctrl == 'bcont' ) {
+				$records['records'] = array();
+			}
+
+			$data = array('data' => json_encode($records),
+						  'pid' 	=> $params['pid'],
+						  'name' 	=> $params['fval'][0], //NAME
+						  'page' 	=> $this->ctrl);
+
+			$row = $this->pixie->orm->get('names')
+									 ->values($data)
+									 ->save();
+
+			$returnData	= array('title' => $data['name'],
+								'key' 	=> $row->id);
+
+			$this->response->body = json_encode($returnData);
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+			return;
+		}
+	}
+
 }

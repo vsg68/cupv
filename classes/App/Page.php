@@ -171,5 +171,11 @@ class Page extends \PHPixie\Controller {
 		return $file_arr;
 	}
 
+	/*
+	 * Блокировка специальных символов при вводе
+	 */
+	public function blockspechars(&$row) {
 
+		$row = htmlentities( $row, ENT_QUOTES);
+	}
 }

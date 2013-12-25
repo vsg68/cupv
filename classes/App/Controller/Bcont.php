@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-class Badm extends \App\ItBase {
+class Bcont extends \App\ItBase {
 
-}
+ }
 
 ?>
