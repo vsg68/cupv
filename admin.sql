@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Дек 04 2013 г., 18:30
--- Версия сервера: 5.1.70-log
+-- Время создания: Дек 24 2013 г., 17:53
+-- Версия сервера: 5.1.70
 -- Версия PHP: 5.4.20-pl0-gentoo
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -58,25 +58,26 @@ CREATE TABLE IF NOT EXISTS `controllers` (
   `order` int(11) NOT NULL,
   `active` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
 
 --
 -- Дамп данных таблицы `controllers`
 --
 
 INSERT INTO `controllers` (`id`, `name`, `class`, `section_id`, `order`, `active`) VALUES
-(8, 'Пользователи', 'users', '1', 4, 1),
-(9, 'Алиасы', 'aliases', '1', 3, 1),
-(10, 'Домены', 'domains', '1', 0, 1),
+(8, 'Пользователи', 'users', '1', 0, 1),
+(9, 'Алиасы', 'aliases', '1', 1, 1),
+(10, 'Домены', 'domains', '1', 3, 1),
 (13, 'Разделы сайта', 'admin', '4', 0, 1),
 (14, 'Роли', 'roles', '4', 1, 1),
 (15, 'Пользователи', 'auth', '4', 2, 1),
-(16, 'Контакты', 'badm', '7', 0, 1),
-(17, 'Шаблоны(ред.)', 'btmpl', '7', 1, 1),
-(30, 'Группы', 'groups', '1', 1, 1),
-(31, 'Логи', 'logs', '1', 2, 1),
-(32, 'R1', 'bserver', '8', 0, 1),
-(33, 'Бекап', 'backup', '9', 0, 1);
+(16, 'Сеть', 'badm', '7', 0, 1),
+(17, 'Шаблоны(ред.)', 'btmpl', '7', 2, 1),
+(30, 'Группы', 'groups', '1', 2, 1),
+(31, 'Логи', 'logs', '1', 4, 1),
+(34, 'Сервер имен', 'dns', '6', 0, 1),
+(36, 'Архивинование', 'backup', '10', 0, 1),
+(37, 'Контакты', 'bcont', '7', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -90,8 +91,9 @@ CREATE TABLE IF NOT EXISTS `rights` (
   `control_id` int(11) NOT NULL,
   `slevel_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `ctrlrole` (`role_id`,`control_id`),
   KEY `role_id` (`role_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=36 ;
 
 --
 -- Дамп данных таблицы `rights`
@@ -100,28 +102,31 @@ CREATE TABLE IF NOT EXISTS `rights` (
 INSERT INTO `rights` (`id`, `role_id`, `control_id`, `slevel_id`) VALUES
 (1, 15, 15, 3),
 (2, 15, 13, 3),
-(3, 15, 16, 2),
+(3, 15, 16, 3),
 (4, 15, 17, 3),
-(5, 15, 32, 3),
 (6, 15, 9, 3),
 (7, 15, 10, 3),
 (8, 15, 31, 3),
 (9, 15, 14, 3),
 (10, 15, 8, 3),
 (11, 14, 8, 2),
-(12, 14, 31, 2),
+(12, 14, 31, 3),
 (13, 14, 10, 2),
 (14, 14, 9, 2),
 (15, 14, 16, 2),
-(16, 14, 17, 2),
+(16, 14, 17, 3),
 (17, 17, 16, 3),
 (18, 17, 17, 3),
 (19, 17, 10, 2),
 (20, 17, 31, 2),
 (21, 17, 8, 2),
 (22, 17, 9, 2),
-(23, 14, 33, 3),
-(24, 15, 30, 3);
+(24, 15, 30, 3),
+(29, 15, 34, 3),
+(31, 16, 14, 3),
+(33, 15, 36, 2),
+(34, 18, 14, 2),
+(35, 15, 37, 3);
 
 -- --------------------------------------------------------
 
@@ -163,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `sections` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `control_name_UNIQUE` (`note`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
 -- Дамп данных таблицы `sections`
@@ -176,8 +181,7 @@ INSERT INTO `sections` (`id`, `name`, `slevel_id`, `note`, `active`) VALUES
 (5, 'RADIUS', 1, 'Пользователи WI-FI', 1),
 (6, 'DNS', 1, 'ДНС сервер', 1),
 (7, 'BASE', 0, 'Кой-чего', 1),
-(8, 'FAST', 0, 'test', 1),
-(9, 'RAZDEL', 0, 'раздел', 1);
+(10, 'BACKUP', 0, 'Сервер архивирования', 1);
 
 -- --------------------------------------------------------
 

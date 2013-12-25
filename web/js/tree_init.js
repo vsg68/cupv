@@ -152,6 +152,39 @@ $(function(){
 
 });
 
+/*
+ * Функция нужна для отключения функции из init.js
+ */
+function drawUnActiveRow(row) {};
+
+
+function fnDelete(uid) {
+
+		if( ! uid.length )
+			return false;
+
+		if( ! confirm('Уверены, что надо стирать?') )
+			return false;
+
+		tab = uid.split('-')[1];
+		id  = uid.split('-')[2];
+		pid = $('#' + uid).attr('pid');
+
+		params = {id:id,tab:tab,pid: pid};
+
+		$.post('/'+ ctrl +'/delEntry/', params, function(response){
+
+							if( !response ) {
+								getData(pid);
+							}
+							else {
+								if( $(response).find('.form-alert').length ) {
+									$(response).modal( modInfo );
+								}
+							}
+				});
+}
+
 	H 	= $(window).outerHeight();
 	rH	= 110;	// Скролл таблицы записей
 var	eH	= H-rH;	// Скролл главной таблицы
@@ -258,7 +291,7 @@ var modTree = {
 			ThisNode: null;
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>";
 
-			$(':text, select').addClass('ui-widget-content ui-corner-all');
+			$(':text, select, textarea').addClass('ui-widget-content ui-corner-all');
 
 			$('#sb').button({ label: '<a href=#>Send</a>'});
 
@@ -313,7 +346,7 @@ var modNewTree = {
 			PidNode: null;
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>";
 
-			$(':text, select').addClass('ui-widget-content ui-corner-all');
+			$(':text, select, textarea').addClass('ui-widget-content ui-corner-all');
 
 			$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
 

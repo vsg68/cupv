@@ -6,27 +6,18 @@ class ItBase extends Page {
 	/*
 	 * Функция добавляет элементы массива, для правильной передачи
 	 */
-
 	protected function DTPropAddToEntry($row,$tab,$class) {
 
 		if(! count($row)) {	return false;	}
 
 		$row['DT_RowClass'] = $class;
 		$row['DT_RowId'] = 'tab-'.$tab;
-		return $row;
+		return array_map('nl2br', $row);
 	}
 
 	/*
 	 * Функция добавляет элементы массива, для правильной передачи
 	 */
-	//~ protected function DTPropAddToArray($row) {
-		//~ static $i;
-		//~ $row['DT_RowClass'] = 'gradeB';
-		//~ $row['DT_RowId'] = 'tab-cont-'.(isset($i) ? $i : 0);
-		//~ $i++;
-		//~ return $row;
-	//~ }
-	 //~
 	protected function DTPropAddToArray($row,$tab,$class) {
 
 		$arr = array();
@@ -35,7 +26,7 @@ class ItBase extends Page {
 			foreach( $row as $k => $val ) {
 					$val['DT_RowClass'] = $class;
 					$val['DT_RowId'] = 'tab-'.$tab.'-'.$k;
-					$arr[] = $val;
+					$arr[] = array_map('nl2br', $val);
 			}
 		}
 
@@ -151,7 +142,7 @@ class ItBase extends Page {
 
 		$returnData = array();
 		$rows = json_decode($entry->data);
-//print_r($rows->entry); exit;
+
 		$returnData['aaData'] = $this->DTPropAddToArray($rows->entry, 'rec', 'gradeA');
 
 
@@ -189,6 +180,13 @@ class ItBase extends Page {
 
 		if( $tab != 'tree' ) {
 			$entry = isset($entry->data) ? json_decode($entry->data) : '';
+		}
+
+		// Перед выводом - обрабатываем специальные символы
+		array_walk_recursive($entry->entry, array($this,'blockspechars'));
+
+		if( isset($entry->records) ) {
+			array_walk_recursive($entry->records, array($this,'blockspechars'));
 		}
 
 		$view->data = $entry;
@@ -269,9 +267,14 @@ class ItBase extends Page {
 			// вынимаем данные
 			$rows = json_decode($entry->data);
 
-			if( count($rows->entry) && count($rows->records) ) {
-				throw new \Exception("Сначала нужно удалить все данные объекта, а потом удалить сам объект. Кол-во записей: ".
-										count($rows->entry)."; ".count($rows->records));
+			if( count($rows->entry) ) {
+
+				$text = "Сначала нужно удалить все данные объекта, а потом удалить сам объект. Данные(кол-во записей):".count($rows->entry);
+
+				if ( isset($rows->records) && count($rows->records) ) {
+					$text .= ";  Контакты(кол-во записей); ".count($rows->records);
+				}
+				throw new \Exception( $text );
 			}
 			else {
 				$entry->delete();
@@ -344,6 +347,7 @@ class ItBase extends Page {
 			// Если новая запись - порядковый номер делаем руками
 			$ord = ($params['id'] != '_0') ? $params['id'] : count($data) ;
 
+			//$data[$ord] = array_map('htmlspecialchars', $params['fval']);
 			$data[$ord] = $params['fval'];
 
 			if( $params['tab'] == 'rec' ) {
