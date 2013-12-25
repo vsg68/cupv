@@ -41,7 +41,7 @@
 				</tr>
 				 <tr>
 					<td class='formlabel'>Протокол IMAP:</td>
-					<td><input type='checkbox' class='formtext' name='imap' value='1' <?php isset($data->imap_enable) ? ($data->imap_enable & 1) && print('checked') : print('checked') ?> ></td>
+					<td><input type='checkbox' class='formtext' name='imap_enable' value='1' <?php isset($data->imap_enable) ? ($data->imap_enable & 1) && print('checked') : print('checked') ?> ></td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Активно:</td>

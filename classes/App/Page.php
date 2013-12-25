@@ -171,5 +171,26 @@ class Page extends \PHPixie\Controller {
 		return $file_arr;
 	}
 
+	/*
+	 * Функция добавляет элементы массива, для правильного отображения в таблице передачи
+	 */
+
+	protected function DTPropAddToObject($rows,$tab,$class) {
+
+		if(! count($rows)) {
+			return false;
+		}
+
+		$data = array();
+		foreach($rows as $row) {
+
+			$row->DT_RowId = 'tab-'.$tab.'-'.$row->id;
+			$row->DT_RowClass = $class;
+			unset($row->id);
+			$data[] = $row;
+//print_r($data);exit;
+		}
+		return $data;
+	}
 
 }
