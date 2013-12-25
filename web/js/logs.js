@@ -11,6 +11,7 @@ $(function(){
 							"sScrollY":  eH + "px",
 							"bPaginate": false,
 							"bSort": false,
+							"asStripeClasses": [], // убираем классы для четных/нечетных строк
 							"sDom": '<"H"T>t<"F"ip>',
 							"fnInitComplete": function () {
 													$(':text, select', '.editmenu').addClass('ui-widget-content ui-corner-all');
@@ -22,6 +23,7 @@ $(function(){
 							"fnCreatedRow": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 
 												nowMsgId = aData[2];
+												$('td:eq(3)', nRow).text(aData[3]); // как текст
 
 												if(nowMsgId != prevMsgId) {
 													changeClass = ! changeClass;
@@ -29,9 +31,9 @@ $(function(){
 												}
 
 												if (changeClass)
-													$(nRow).addClass('msgEven');
+													$(nRow).addClass('even gradeA');
 												else
-													$(nRow).addClass('msgOdd');
+													$(nRow).addClass('odd gradeA');
 
 											},
 							"oTableTools": {
@@ -118,12 +120,9 @@ function fnSearch() {
 var modloader = {
 			opacity: 0,
 			closeHTML: '',
+			escClose: true,
 			onShow: function(){
 					$('#ok').button({label: 'Send'});
 					$('#ok').click(function(){ $.modal.close() });
 				},
-			onClose: function() {
-					$('.DTTT_button_search').removeClass('DTTT_disabled');
-					xhr.abort();
-				}
 	};
