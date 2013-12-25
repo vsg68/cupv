@@ -139,7 +139,7 @@ $(function(){
 												RowID = fnGetSelectedRowID(this);
 												node = $("#tree").dynatree("getActiveNode");
 												// 00 - признак новой строки
-												fnEdit('tab-rec-_0', 'tab-tree-' + node.data.key );
+												fnEdit(this.s.dt.sTableId +'-_0', 'tab-tree-' + node.data.key );
 											};
 		TTOpts.aButtons[2].fnClick = function( nButton, oConfig, oFlash ){
 												if( $(nButton).hasClass('DTTT_disabled') )
