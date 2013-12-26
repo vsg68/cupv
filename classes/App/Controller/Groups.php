@@ -41,29 +41,30 @@ class Groups extends \App\Page {
 		}
 
 		$this->response->body = json_encode($data);
-    }
+        }
 
 	public function action_showTable() {
 		// поскольку нет возможности preload связь has_many, то делаем две связи has_one & belongs_to
 		$entries = $this->pixie->orm->get('groups')->with('lists') 			// has_one
-												   ->with('lists.users')	// belongs_to
-												   ->order_by('name')
-												   ->find_all();
-
+							   ->with('lists.users')	// belongs_to
+							   ->order_by('name')
+							   ->find_all()->as_array(true);
 		$data = array();
-		foreach($entries as $entry)
-			$data[] = array($entry->name,
-							$entry->lists->users->mailbox,
-							$entry->lists->users->username,
-							$entry->lists->users->active,
-							"DT_RowClass" => "gradeA"
-							);
 
+		foreach($entries as $entry) {
+			$data[] = array($entry->name,
+					$entry->lists->users->mailbox,
+					$entry->lists->users->username,
+					$entry->lists->users->active,
+					"DT_RowClass" => "gradeA"
+					);
+		}
+		
 		$retutnData = array("sEcho" => 1,
-							"iTotalRecords" => sizeof($data),
-							"iTotalDisplayRecords" => sizeof($data),
-							"aaData" => $data
-							);
+					"iTotalRecords" => sizeof($data),
+					"iTotalDisplayRecords" => sizeof($data),
+					"aaData" => $data
+				);
 
 		$this->response->body = json_encode($retutnData);
 	}

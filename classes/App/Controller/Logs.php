@@ -65,21 +65,21 @@ class Logs extends \App\Page {
 
 
 				$answer = $this->pixie->db->query('select','logs')
-											->fields($this->pixie->db->expr('DISTINCT
-																			A.ReceivedAt AS receivedat,
-																			REPLACE(A.SysLogTag,"postfix\/","") AS syslogtag,
-																			A.MSGID AS msgid,
-																			A.Message AS message'
-											))
-											->table('maillog','X')
-											->JOIN(array('maillog','Y'),array('X.MSGID','Y.MSGID'),'LEFT')
-											->JOIN(array('maillog','Z'),array('Y.message','Z.message'),'LEFT')
-											->JOIN(array('maillog','A'),array('A.MSGID','Z.MSGID'),'LEFT')
-											->where($query)
-											->order_by('receivedat')
-											->order_by('msgid')
-											->execute()
-											->as_array();
+							->fields($this->pixie->db->expr('DISTINCT
+											A.ReceivedAt AS receivedat,
+											REPLACE(A.SysLogTag,"postfix\/","") AS syslogtag,
+											A.MSGID AS msgid,
+											A.Message AS message'
+							))
+							->table('maillog','X')
+							->JOIN(array('maillog','Y'),array('X.MSGID','Y.MSGID'),'LEFT')
+							->JOIN(array('maillog','Z'),array('Y.message','Z.message'),'LEFT')
+							->JOIN(array('maillog','A'),array('A.MSGID','Z.MSGID'),'LEFT')
+							->where($query)
+							->order_by('receivedat')
+							->order_by('msgid')
+							->execute()
+							->as_array();
 
 				foreach($answer as $r) {
 					$values[] = array(
