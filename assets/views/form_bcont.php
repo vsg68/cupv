@@ -31,7 +31,7 @@
 					<tr>
 						<td class='formlabel'>№ Договора:</td>
 						<td>
-							<input type='hidden' name='fname[]' value='Логин'/>
+							<input type='hidden' name='fname[]' value='№ Договора'/>
 							<input type='hidden' name='ftype[]' value='text'/>
 							<input type='text' name='fval[]'/>
 						<td>
@@ -39,15 +39,15 @@
 					<tr>
 						<td class='formlabel'>Дата договора:</td>
 						<td>
-							<input type='hidden' name='fname[]' value='Пароль'/>
-							<input type='hidden' name='ftype[]' value='text'/>
+							<input type='hidden' name='fname[]' value='Дата договора'/>
+							<input type='hidden' name='ftype[]' value='date'/>
 							<input type='text' name='fval[]' class='date_field' />
 						<td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Реквизиты:</td>
 						<td>
-							<input type='hidden' name='fname[]' value='Enable'/>
+							<input type='hidden' name='fname[]' value='Реквизиты'/>
 							<input type='hidden' name='ftype[]' value='textarea'/>
 							<textarea name='fval[]'></textarea>
 						<td>
