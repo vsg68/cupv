@@ -22,7 +22,7 @@
 				<tr>
 					<td class='formlabel'>Тип:</td>
 					<td><select name='fval[]'>
-						<?php foreach( array('text', 'textarea') as $type): ?>
+						<?php foreach( array('text', 'textarea', 'date') as $type): ?>
 
 						<option value='<?= $type ?>' <?= (isset($data->entry[$id][1]) && $data->entry[$id][1] == $type )  ? 'selected' : '' ?> ><?= $type ?></option>
 
@@ -35,6 +35,8 @@
 					<td>
 					<?php if(isset($data->entry[$id][1]) && $data->entry[$id][1] == 'textarea'): ?>
 						<textarea name='fval[]'><?= isset($data->entry[$id][2]) ? $data->entry[$id][2] : '' ?></textarea>
+					<?php elseif(isset($data->entry[$id][1]) && $data->entry[$id][1] == 'date'): ?>
+						<input class='date_field' type='text' name='fval[]' value='<?= isset($data->entry[$id][2]) ? $data->entry[$id][2] : "" ?>' />
 					<?php elseif(!isset($data->entry[$id][1]) || $data->entry[$id][1] == 'text'): ?>
 						<input type='text' name='fval[]' value='<?= isset($data->entry[$id][2]) ? $data->entry[$id][2] : "" ?>' />
 					<?php endif; ?>
