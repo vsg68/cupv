@@ -50,12 +50,16 @@ $(document).ready(function() {
 														this.fnAdjustColumnSizing();
 														this.fnDraw();
 												},
-								"aoColumnDefs": [
-													{"bVisible":false,"aTargets": [3] },
-													{"bSortable":false, "aTargets": [3,4,5,6,7,8] },
-													{"sClass": "center", "aTargets": [7,8] },
-													{"sClass": "nowrap", "aTargets": [0] },
-												],
+								"aoColumns": [ {'mData':'username',"sClass": "nowrap"},
+											   {'mData':'mailbox'},
+											   {'mData':'mailbox', "bSortable":false, 'mRender' : function(data, type, full){ return data.split('@')[1]; }},
+											   {'mData':'password',"bVisible":false,"bSortable":false,},
+											   {'mData':'allow_nets',"bSortable":false,},
+											   {'mData':'path',"bSortable":false,},
+											   {'mData':'acl_groups',"bSortable":false,},
+											   {'mData':'imap_enable',"sClass": "center","bSortable":false,},
+											   {'mData':'active',"sClass": "center","bSortable":false,},
+											],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
 													addRowAttr(nRow,'mbox',1);
@@ -72,6 +76,7 @@ $(document).ready(function() {
 								"bJQueryUI": true,
 								"sDom": '<T>t',
 								"sScrollY": rH+"px",
+								"aoColumns": [{'mData':'alias_name'},{'mData':'delivery_to'},{'mData':'active'}],
 								"aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [2] }],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);

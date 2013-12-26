@@ -85,16 +85,8 @@ class Users extends \App\Page {
 										->where('or',array('U2.id',$this->_id))
 										->execute();
 
-		foreach($aliases as $alias)
-			$data[] = array( $alias->alias_name,
-							 $alias->delivery_to,
-							 $alias->active,
-							 'DT_RowId' => 'tab-aliases-'.$alias->id,
-							 'DT_RowClass' => 'gradeB'
-							);
 
-		$fulldata['aliases'] =  $data;
-
+		$fulldata['aliases'] =  $this->DTPropAddToObject($aliases, 'aliases', 'gradeB');
 
 		$data  = array();
 		$lists = $this->pixie->db->query('select')
@@ -128,104 +120,71 @@ class Users extends \App\Page {
 		if( ! $params = $this->request->post() )
 			return;
 
-		$returnData  = array();
+		//~ if( $params['tab'] == 'users') {
+			//~ // Массив, который будем возвращать
+			//~ $entry = array( 'username' 		=> $params['username'],
+							//~ 'mailbox'	 	=> $params['login'].'@'.$params['domain'],
+							//~ 'password' 		=> $params['password'],
+							//~ 'md5password' 	=> md5($params['password']),
+							//~ 'allow_nets' 	=> $this->getVar($params['allow_nets'],'192.168.0.0/24'),
+							//~ 'path'			=> $this->getVar($params['path']),
+							//~ 'acl_groups' 	=> $this->getVar($params['acl_groups']),
+							//~ 'imap_enable' 	=> $this->getVar($params['imap'],0),
+							//~ 'active'		=> $this->getVar($params['active'],0)
+							//~ );
+		//~ }
+		//~ else {
+			//~ $entry = array('alias_name' => $this->getVar($params['alias_name']),
+						   //~ 'delivery_to'=> $this->getVar($params['delivery_to']),
+						   //~ 'active'		=> $this->getVar($params['active'],0)
+						 //~ );
+		//~ }
+		$tab = $params['tab'];
+		if( $tab == 'users' ) {
+			$params['mailbox'] 		= $params['login'].'@'.$params['domain'];
+			$params['imap_enable'] 	= $this->getVar($params['imap_enable'],0);
+			$params['active']		= $this->getVar($params['active'],0);
 
-		if( $params['tab'] == 'users') {
-			// Массив, который будем возвращать
-			$entry = array( 'username' 		=> $params['username'],
-							'mailbox'	 	=> $params['login'].'@'.$params['domain'],
-							'password' 		=> $params['password'],
-							'md5password' 	=> md5($params['password']),
-							'allow_nets' 	=> $this->getVar($params['allow_nets'],'192.168.0.0/24'),
-							'path'			=> $this->getVar($params['path']),
-							'acl_groups' 	=> $this->getVar($params['acl_groups']),
-							'imap_enable' 	=> $this->getVar($params['imap'],0),
-							'active'		=> $this->getVar($params['active'],0)
-							);
+			if( isset($params['password']) ) {
+				$params['md5password'] 	= md5($params['password']);
+			}
+
 		}
-		else {
-			$entry = array('alias_name' => $this->getVar($params['alias_name']),
-						   'delivery_to'=> $this->getVar($params['delivery_to']),
-						   'active'		=> $this->getVar($params['active'],0)
-						 );
-		}
+
+		unset($params['tab'],$params['login']);
 
 		try {
-			if ( $params['id'] == 0 ) {
-				// новый пользователь
-				$this->pixie->db->query('insert')
-								->table( $params['tab'] )
-								->data($entry)
-								->execute();
 
-				$params['id'] = $this->pixie->db->insert_id();
+			$is_update = $params['id'] ? true : false;
 
-			}
-			else {
-			// Существующий пользователь
-				$this->pixie->db->query('update')
-								->table( $params['tab'] )
-								->data($entry)
-								->where('id',$params['id'])
-								->execute();
-			}
+			// Если в запрос поместить true -  предполагается UPDATE
+			$row = $this->pixie->orm->get($tab)
+									->values($params, $is_update)
+									->save();
+
+			$id = $params['id'];
+			unset( $params['id'] );
+
+			// Рисуем класс
+			if( $tab == 'aliases')
+				$params['DT_RowClass']	= 'gradeA';
+
+			$params['DT_RowId']	= 'tab-'.$tab.'-'. ($id ? $id : $row->id);
+
+			$this->response->body = json_encode($params);
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
 			return;
 		}
-
-
-		// для правильного отображения строки в таблице
-		if( $params['tab'] == 'users')
-			$entry['md5password'] = $params['domain'];
-
-		// Массив, который будем возвращать
-		$returnData = array_values($entry);
-
-		// Рисуем класс
-		if( $params['tab'] == 'aliases')
-			$returnData['DT_RowClass']	= 'gradeA';
-
-		$returnData['DT_RowId']	= 'tab-'.$params['tab'].'-'.$params['id'];
-
-
-		$this->response->body = json_encode($returnData);
 	}
 
 	public function action_showTable() {
 
-		$returnData["aaData"] = array();
-		$users = $this->pixie->db->query('select')
-								->fields($this->pixie->db->expr('
-												id,
-												username,
-												mailbox,
-												SUBSTRING_INDEX(mailbox, "@", -1) AS domain,
-												password,
-												allow_nets AS nets,
-												IFNULL(path,"") AS path,
-												IFNULL(acl_groups,"") AS groups,
-												IFNULL(imap_enable,0) AS imap,
-												active'))
-								->table('users')
-								->execute()
-								->as_array();
+		$returnData = array();
+		$users = $this->pixie->orm->get('users')->find_all()->as_array(true);
 
-		foreach($users as $user) {
-			$returnData["aaData"][] = array($user->username,
-											 $user->mailbox,
-											 $user->domain,
-											 $user->password,
-											 $user->nets,
-											 $user->path,
-											 $user->groups,
-											 $user->imap,
-											 $user->active,
-											 'DT_RowId'=>'tab-users-'.$user->id
-											);
-		}
-
+		$returnData["aaData"] = $this->DTPropAddToObject($users, 'users', '');
         $this->response->body = json_encode($returnData);
 	}
 
@@ -239,24 +198,20 @@ class Users extends \App\Page {
 			return;
 
 		try {
-			$this->pixie->db->query('delete')
-							->table($params['tab'])
+			$this->pixie->orm->get($params['tab'])
 							->where('id',$params['id'])
-							->execute();
+							->delete_all();
 
 			// Если удаляем из пользователей - удаляем все связнанные значения
 			// Но могут оставаться алиасы - тогда об этом предупреждаем
 			if( $params['tab'] == 'users' ) {
-				$this->pixie->db->query('delete')
-								->table('aliases')
+				$this->pixie->orm->get('aliases')
 								->where('delivery_to',$params['aname'])
-								->execute();
+								->delete_all();
 
-				$aliases = $this->pixie->db->query('select')
-								->table('aliases')
-								->where('alias_name',$params['aname'])
-								->execute()
-								->as_array();
+				$aliases = $this->pixie->orm->get('aliases')
+											->where('alias_name',$params['aname'])
+											->find_all();
 
 				// такие алиасы есть - предупреждаем
 				if( $aliases ) {
@@ -288,19 +243,18 @@ class Users extends \App\Page {
 		$entries = $data = array();
 		try {
 			// Первым делом - удаляем
-			$this->pixie->db->query('delete')
-							->table('lists')
+			$this->pixie->orm->get('lists')
 							->where('user_id',$this->_id)
-							->execute();
+							->delete_all();
 
 			$obj_ids = is_array($this->request->post('obj_id')) ? $this->request->post('obj_id') : array();
 
 			// вторым делом - вставляем
 			foreach ($obj_ids as $obj_id ) {
-				$this->pixie->db->query('insert')
-								->table('lists')
-								->data(array('user_id' => $this->_id,'group_id' => $obj_id))
-								->execute();
+
+				$this->pixie->orm->get('lists')
+								->values(array('user_id' => $this->_id,'group_id' => $obj_id))
+								->save();
 			}
 
 			// Последним делом - вынимаем
