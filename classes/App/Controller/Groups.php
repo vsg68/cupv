@@ -26,20 +26,13 @@ class Groups extends \App\Page {
 		if( ! $this->_id = $this->request->param('id'))
 			return;
 
-		$data 	 = array();
 		// подготовка запроса
-		$entries = $this->pixie->orm->get('users')->with('lists')
-												  ->where('lists.group_id', $this->_id)
-												  ->find_all();
-		foreach($entries as $entry)	{
+		$entries = $this->pixie->orm->get('lists')
+									->where('group_id', $this->_id)
+									->users
+									->find_all()->as_array(true);
 
-			$data[] = array($entry->mailbox,
-							$entry->username,
-							$entry->active,
-							'DT_RowId' => 'tab-lists-'.$entry->lists->id,
-							'DT_RowClass' => 'gradeB');
-		}
-
+		$data = $this->DTPropAddToObject($entries, 'lists', 'gradeB');
 		$this->response->body = json_encode($data);
     }
 
@@ -83,15 +76,29 @@ class Groups extends \App\Page {
 
 		if( $tab == 'groups' ) {
 
-			$entries = $this->pixie->orm->get($tab)->where('id',$this->_id)->find();
+			$entries = $this->pixie->orm->get($tab)
+										->where('id',$this->_id)
+										->find();
 		}
 		elseif( $tab == 'lists' ) {
 
-			$entries = $this->pixie->orm->get('users')->with('lists')->find_all()->as_array();
+			$entries = $this->pixie->db->query('select')
+									->fields(array('U.mailbox','name'),
+											 array('U.username', 'note'),
+											 array('U.id', 'id'),
+											 array('L.group_id', 'user_id'))  // ??? может и не надо
+									->table('users', 'U')
+									->join(array('lists','L'),
+										   array( array('L.user_id','U.id'),
+												  array('L.group_id',$this->pixie->db->expr($this->_id))
+												 ))
+									->execute()
+									->as_array();
+
 			$view->pid = $this->_id;
 		}
 
-		$view->entries = $entries;
+		$view->rows = $entries;
         $this->response->body = $view->render();
     }
 

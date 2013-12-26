@@ -183,18 +183,22 @@ class Page extends \PHPixie\Controller {
 	 */
 	protected function DTPropAddToObject($rows,$tab,$class) {
 
-		if(! count($rows)) {
-			return false;
-		}
-
 		$data = array();
-		foreach($rows as $row) {
 
-			$row->DT_RowId = 'tab-'.$tab.'-'.$row->id;
-			$row->DT_RowClass = $class;
-			unset($row->id);
-			$data[] = $row;
-//print_r($data);exit;
+		if( count($rows) ) {
+
+			foreach($rows as $row) {
+
+				if( $tab ) {
+					 $row->DT_RowId =  'tab-'.$tab.'-'.$row->id;
+				}
+				if( $class ) {
+					$row->DT_RowClass = $class;
+				}
+				unset($row->id);
+				$data[] = $row;
+	//print_r($data);exit;
+			}
 		}
 		return $data;
 	}

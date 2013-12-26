@@ -81,20 +81,7 @@ class Logs extends \App\Page {
 											->execute()
 											->as_array();
 
-				foreach($answer as $r) {
-					$values[] = array(
-									  $r->receivedat,
-									  $r->syslogtag,
-									  $r->msgid,
-									  $r->message
-									  );
-				}
-//~
-				//~ $returnData["aaData"] = $values ? $values : array('','','','');
-
-				if (! $values )
-					$values[] = array("-","-","-","-");
-
+				$values = count($answer) ? $this->DTPropAddToObject($answer, '', '') : array("receivedat"=>"-","syslogtag"=>"-","msgid"=>"-","message"=>"-");
 				$this->response->body = json_encode($values) ;
 			}
 			catch (\Exception $e) {

@@ -38,18 +38,15 @@ class Users extends \App\Page {
 		}
 		else {
 			if( $tab == 'users' ) {
-				$view->domains = $this->pixie->db->query('select')
-											->table('domains')
-											->group_by('domain_name')
-											->where('delivery_to','virtual')
-											->execute();
+				$view->domains = $this->pixie->orm->get('domains')
+												->group_by('domain_name')
+												->where('delivery_to','virtual')
+												->find_all();
 			}
 
-			$view->data = $this->pixie->db->query('select')
-											->table($tab)
+			$view->data = $this->pixie->orm->get($tab)
 											->where('id',$this->_id)
-											->execute()
-											->current();
+											->find();
 
 			// Для дефолтных значений таблицы алиасов
 			if( $init ) {
@@ -89,22 +86,13 @@ class Users extends \App\Page {
 		$fulldata['aliases'] =  $this->DTPropAddToObject($aliases, 'aliases', 'gradeB');
 
 		$data  = array();
-		$lists = $this->pixie->db->query('select')
-								->fields('U.id','G.id', 'G.name', 'G.note')
-								->table('lists','A')
-								->join(array('users','U'),array('U.id','A.user_id'))
-								->join(array('groups','G'),array('G.id','A.group_id'))
-								->where('U.id',$this->_id)
-								->execute();
 
-		foreach($lists as $list)
-			$data[] = array( $list->name,
-							 $list->note,
-							 'DT_RowId' => 'tab-lists-'.$list->id,
-							 'DT_RowClass' => 'gradeA'
-							);
+		$lists = $this->pixie->orm->get('users')
+								  ->where('id',$this->_id)
+								  ->groups
+								  ->find_all()->as_array(true);
 
-		$fulldata['lists'] 	 =  $data;
+		$fulldata['lists'] 	 =  $this->DTPropAddToObject($lists, 'lists', 'gradeA');
 
 
 		$this->response->body = json_encode($fulldata);
@@ -258,21 +246,14 @@ class Users extends \App\Page {
 			}
 
 			// Последним делом - вынимаем
-			$entries = $this->pixie->db->query('select')
-										->table('groups','G')
-										->join( array('lists','UL'), array('UL.group_id','G.id') )
-										->join( array('users','U'), array('UL.user_id','U.id') )
-										->where('U.id',$this->_id)
-										->execute()
-										->as_array();
+			$entries = $this->pixie->orm->get('users')
+										->where('id', $this->_id)
+										->groups
+										->find_all()->as_array(true);
 
-			foreach($entries as $entry) {
-				$data[] = array( $entry->name,
-								 $entry->note,
-								 'DT_RowClass' => 'gradeA'
-								);
-			}
+			$data = $this->DTPropAddToObject($entries, '', 'gradeA');
 
+//print_r($data);exit;
 			$this->response->body = json_encode($data);
 		}
 		catch (\Exception $e) {

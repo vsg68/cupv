@@ -20,14 +20,20 @@ $(function(){
 													$('#ToolTables_tab_0').after( filter );
 													$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
 											},
+							"aoColumns": [
+										   {'mData':'receivedat'},
+										   {'mData':'syslogtag'},
+										   {'mData':'msgid'},
+										   {'mData':'message'},
+										],
 							"fnCreatedRow": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 
-												nowMsgId = aData[2];
-												$('td:eq(3)', nRow).text(aData[3]); // как текст
+												nowMsgId = aData.msgid;
+												$('td:eq(3)', nRow).text(aData.message); // как текст
 
 												if(nowMsgId != prevMsgId) {
 													changeClass = ! changeClass;
-													prevMsgId = aData[2];
+													prevMsgId = aData.msgid;
 												}
 
 												if (changeClass)
@@ -74,53 +80,40 @@ function fnSearch() {
 		$('.DTTT_button_search').addClass('DTTT_disabled');
 		$('.loader').modal( modloader );
 
-		xhr = $.ajax({
-						type: "GET",
-						url: '/logs/show/',
-						data: $('form').serialize(),
-						success: function(response) {
-									$.modal.close();
-									//~ // Какую форму вернул запрос ?
-									jsonArr = /(\[(".+",){3}".+"\],?)+/;
+	$.ajax({
+			type: "GET",
+			url: '/logs/show/',
+			data: $('form').serialize(),
+			dataType: "json",
+			success: function(response) {
+						$.modal.close();
 
-									if( jsonArr.test(response) ) {
-										// Получаем объект из строки, если ответ содержит правильные данные
-										objJSON = $.parseJSON(response) ;
-
-										oTable.fnAddData(objJSON);
-									}
-									else {
-										if( $(response).find('.form-alert').length ) {
-											$(response).modal( modInfo );
-										}
-									}
-
-									oTable.fnAdjustColumnSizing();
-									oTable.fnDraw();
-									$('.DTTT_button_search').removeClass('DTTT_disabled');
-								},
-						error: function(response) {
-									$.modal.close();
-									mesg = response.statusText;
-									if( mesg == 'abort' ) {
-										$('.abort').fadeIn(1000, function(){
-																	$('.abort').fadeOut(1000);
-																	});
-									}
-									else {
-										$('.form-alert').text(mesg);
-										$('#errmsg').modal();
-									}
-									$('.DTTT_button_search').removeClass('DTTT_disabled');
-								},
-					});
+						oTable.fnAddData(response);
+						oTable.fnAdjustColumnSizing();
+						oTable.fnDraw();
+						$('.DTTT_button_search').removeClass('DTTT_disabled');
+					},
+			error: function(response) {
+						$.modal.close();
+						mesg = response.statusText;
+						if( mesg == 'abort' ) {
+							$('.abort').fadeIn(1000, function(){
+														$('.abort').fadeOut(1000);
+														});
+						}
+						else {
+							$('.form-alert').text(mesg);
+							$('#errmsg').modal();
+						}
+						$('.DTTT_button_search').removeClass('DTTT_disabled');
+					},
+		});
 
 }
 
 var modloader = {
 			opacity: 0,
 			closeHTML: '',
-			escClose: true,
 			onShow: function(){
 					$('#ok').button({label: 'Send'});
 					$('#ok').click(function(){ $.modal.close() });

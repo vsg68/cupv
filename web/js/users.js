@@ -11,11 +11,12 @@ $(document).ready(function() {
 		var lTable = $('#tab-lists').dataTable({
 								"bJQueryUI": true,
 								"sDom": '<T>t',
+								"bSort": false,
 								"sScrollY": rH+"px",
-								"aoColumnDefs": [
-													{"bSortable":false, "aTargets": [0] },
-													{"bSortable":false, "aTargets": [1] },
-												],
+								"aoColumns": [
+												{"mData": "name",},
+												{"mData": "note",},
+											],
 								"oTableTools": {
 									"aButtons":	[
 													{
