@@ -265,7 +265,9 @@ function getData(id) {
 									$('#tab-cont').dataTable().fnClearTable();
 								}
 
-								$('#tab-rec').dataTable().fnAddData(response.aaData);
+								if(response.aaData) {
+									$('#tab-rec').dataTable().fnAddData(response.aaData);
+								}
 								if(response.records) {
 									$('#tab-cont').dataTable().fnAddData(response.records);
 								}

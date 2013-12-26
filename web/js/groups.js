@@ -9,16 +9,15 @@ $(document).ready(function() {
 				//"sScrollY":  550 + "px",
 				"bPaginate": false,
 				"sDom": "<'H'T>t<'F'ip>",
-				//"sAjaxSource": "/"+ ctrl +"/showTable/groups",
 				"fnInitComplete": function () {
 										this.fnAdjustColumnSizing();
 										this.fnDraw();
 								},
-				"aoColumnDefs": [
-									{ bSortable: true, aTargets: [ 0 ] },
-									{ bSortable: false, aTargets: [ '_all' ] },
-									{ sClass: "center", aTargets: [ -1 ] },
-								],
+				"aoColumns": [
+								{"mData": "name", "bSortable": true,},
+								{"mData": "note","bSortable": false,},
+								{"mData": "active", "bSortable": false, "sClass": "center",},
+							],
 				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 									drawCheckBox(nRow);
 									addRowAttr(nRow,'group',0);
@@ -28,6 +27,7 @@ $(document).ready(function() {
 
 		TOptions.oTableTools.aButtons[3].sButtonText = 'СПИСКИ РАССЫЛКИ';
 		$('#tab-groups').dataTable(TOptions);
+
 
 		TOptions.oTableTools.aButtons[2] = {
 											"sExtends":    "text",
@@ -40,9 +40,21 @@ $(document).ready(function() {
 												}
 											}};
 		TOptions.oTableTools.aButtons[3].sButtonText = 'ЧЛЕНЫ СПИСКА';
+		TOptions.aoColumns = [
+								{"mData": "mailbox", "bSortable": true,},
+								{"mData": "username","bSortable": false,},
+								{"mData": "active", "bSortable": false, "sClass": "center",},
+							],
 		TTOpts.aButtons.splice(0,2);
 		$('#tab-lists').dataTable(TOptions)
 
+
+		TOptions.aoColumns = [
+								{"bSortable": true,},
+								{"bSortable": true,},
+								{"bSortable": false,},
+								{"bSortable": false, "sClass": "center",},
+							],
 		TOptions.sAjaxSource = "/"+ ctrl +"/showTable/";
 		TOptions.sDom = "<'H'Tf>t<'F'ip>",
 		TOptions.oTableTools.aButtons[1].sButtonText = 'ОБЩИЙ СПИСОК';

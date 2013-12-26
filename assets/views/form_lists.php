@@ -11,18 +11,10 @@
 		<td class='ui-widget-content ui-corner-all'>
 			<div class='ui-window'>
 			<ul id='grp-left' class='nest-grp'>
-			<?php // раздел users -> groups
-				 if(isset($entries) ) {
-					foreach( $entries as $entry) {
-
-						if( $entry->lists->group_id != $pid ) {
-							echo '<li id="gr-'. $entry->id .'"><span title="'. $entry->mailbox .'">'. $entry->username .'</span></li>';
-						}
-					}
-				 }
-				// раздел groups -> users
-				 elseif(isset($rows) ) {
+			<?php
+				 if(isset($rows) ) {
 					 foreach( $rows as $row) {
+						// Доступные
 						if( $row->user_id != $pid ) {
 							echo '<li id="gr-'. $row->id .'"><span title="'. $row->note  .'">'. $row->name .'</span></li>';
 						}
@@ -39,18 +31,10 @@
 		<td class='ui-window ui-widget-content ui-corner-all'>
 			<div class='ui-window'>
 			<ul id='grp-right' class='nest-grp'>
-			<?php // раздел users -> groups
-				 if(isset($entries) ) {
-					foreach( $entries as $entry) {
-
-						if( $entry->lists->group_id == $pid ) {
-							echo '<li id="gr-'. $entry->id .'"><span title="'. $entry->mailbox .'">'. $entry->username .'</span></li>';
-						}
-					}
-				 }
-				// раздел groups -> users
-				 elseif(isset($rows) ) {
+			<?php
+				 if(isset($rows) ) {
 					 foreach( $rows as $row) {
+						// Задействованные
 						if( $row->user_id == $pid ) {
 							echo '<li id="gr-'. $row->id .'"><span title="'. $row->note  .'">'. $row->name .'</span></li>';
 						}

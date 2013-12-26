@@ -175,7 +175,32 @@ class Page extends \PHPixie\Controller {
 	 * Блокировка специальных символов при вводе
 	 */
 	public function blockspechars(&$row) {
-
-		$row = htmlentities( $row, ENT_QUOTES);
+			$row = htmlentities( $row, ENT_QUOTES);
 	}
+
+	/*
+	 * Функция добавляет элементы массива, для правильного отображения в таблице передачи
+	 */
+	protected function DTPropAddToObject($rows,$tab,$class) {
+
+		$data = array();
+
+		if( count($rows) ) {
+
+			foreach($rows as $row) {
+
+				if( $tab ) {
+					 $row->DT_RowId =  'tab-'.$tab.'-'.$row->id;
+				}
+				if( $class ) {
+					$row->DT_RowClass = $class;
+				}
+				unset($row->id);
+				$data[] = $row;
+	//print_r($data);exit;
+			}
+		}
+		return $data;
+	}
+
 }

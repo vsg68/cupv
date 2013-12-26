@@ -25,4 +25,13 @@ class Users extends \PHPixie\ORM\Model{
 											'model'=>'lists',
 											'key'=>'user_id'));
 
+/*
+ *  !!!!!!!!!
+*/
+	public function get($column) {
+
+		if($column == 'active' || $column == 'imap_enable' ) {
+			return $this->name ? $this->name : 0;
+		}
+	}
 }
