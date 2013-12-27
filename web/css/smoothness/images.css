@@ -190,3 +190,10 @@ a.DTTT_button_foldernew.DTTT_disabled span {
 	background-position: -704px -64px;
 }
 
+#alarms {
+	background-position: -768px 0px;
+}
+#alarms.pagetab-selected,
+#alarms:hover {
+	background-position: -768px -64px;
+}
