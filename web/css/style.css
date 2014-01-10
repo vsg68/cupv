@@ -189,6 +189,10 @@ form#usersform {
 	resize: vertical;
 }
 
+#usersform td {
+	vertical-align: middle;
+}
+
 .submit {
 	text-align: center;
 	padding: 20px 0 10px 0;
@@ -212,6 +216,10 @@ form#usersform {
 /*
 	color: #1e8af8 !important;
 */
+}
+
+td.mcenter {
+	text-align: center;
 }
 
 /****** главная страница  ********/

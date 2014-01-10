@@ -11,7 +11,7 @@ $(function(){
 								"sScrollY":  eH + "px",
 								"bPaginate": false,
 								"sDom": '<"H"Tf>t<"F"ip>',
-								"aaSorting": [[1,"asc"]],
+								"aaSorting": [[3,"asc"]],
 								"sAjaxSource": "/" + ctrl + "/showTable/",
 								"bScrollCollapse": true,
 								"sServerMethod": "POST",
@@ -21,11 +21,12 @@ $(function(){
 												},
 								"aoColumns": [
 												{"mData":"act","bSortable":false,},
-												{"mData":"deadline", },
-												{"mData":"startalarm", },
-												{"mData":"email","bSortable":false, },
+												{"mData":"email","bSortable":false,"sWidth": "12%", },
 												{"mData":"message","bSortable":false,},
-												{"mData":"active", "sClass": "center","bSortable":false,},
+												{"mData":"nextlaunch","sClass": "center","sWidth": "10%", },
+												{"mData":"period","sClass": "mcenter","bSortable":false,"sWidth": "10%", },
+												{"mData":"alarmbefore","sClass": "mcenter","bSortable":false,"sWidth": "10%", },
+												{"mData":"active", "sClass": "center","bSortable":false,"sWidth": "5%",},
 											],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
@@ -65,7 +66,11 @@ function unblockNewButton(node) {
 modWin.validate_alarms = function () {
 
 			var msg = '';
-			email	= $('form :text[name="email"]').val();
+			email		= $('form :text[name="email"]').val();
+			period		= $('form :text[name="period"]').val();
+			nextlaunch	= $('form :text[name="nextlaunch"]').val();
+			alarmbefore	= $('form :text[name="alarmbefore"]').val();
+			id			= $(':hidden[name="id"]').val();
 
 			$('textarea,:text', '#usersform').each(function(){
 
@@ -74,9 +79,24 @@ modWin.validate_alarms = function () {
 													return true;
 												}
 											});
+			if( id == 0 && $(':checkbox[name="done"]').is(':checked') ) {
+				$(':checkbox[name="done"]').removeAttr('checked');
+			}
 
 			if ( ! fnTestByType( email, 'mail') ) {
-				msg += 'поле "Email" - должно содержать почтовый адрес.';
+				return 'поле "Email" - должно содержать почтовый адрес.';
+			}
+
+			if ( ! fnTestByType( period, 'int') ) {
+				return 'поле "Period launch" - должно содержать целое число.';
+			}
+
+			if ( ! fnTestByType( alarmbefore, 'int') ) {
+				return 'поле "Alarm Before" - должно содержать целое число.';
+			}
+
+			if ( ! fnTestByType( nextlaunch, 'date') ) {
+				return 'поле "Next launch" - должно содержать дату.';
 			}
 
 			return msg;

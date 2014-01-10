@@ -4,10 +4,11 @@
 				<thead>
 					<tr>
 						<th>Задача</th>
-						<th>Deadline</th>
-						<th>Alarm Start</th>
 						<th>Email</th>
 						<th>Meaasge</th>
+						<th>Следующий запуск</th>
+						<th>Период(days)</th>
+						<th>Alarm Before(days)</th>
 						<th>Active</th>
 					</tr>
 				</thead>

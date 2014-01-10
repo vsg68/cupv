@@ -15,23 +15,31 @@
 			   <table>
 					<tr>
 						<td class='formlabel noname'>Задача:</td>
-						<td><input class='ui-corner-all' type='text' name='act' value='<?= isset($data->act) ? $data->act : '' ?>' placeholder='Название задачи' /></td>
+						<td><input type='text' name='act' value='<?= isset($data->act) ? $data->act : '' ?>' placeholder='Название задачи' /></td>
 					</tr>
 					<tr>
-						<td class='formlabel noname'>Deadline:</td>
-						<td><input class='ui-corner-all date_field'  type='text' name='deadline' value='<?= isset($data->deadline) ? $data->deadline : '' ?>' /></td>
+						<td class='formlabel noname'>Выполнено:</td>
+						<td><input type='checkbox' class='formtext' name='done' value='1' <?php isset($data->done) ?  ($data->done & 1) && print('checked') : '' ?> ></td>
 					</tr>
 					<tr>
-						<td class='formlabel'>Alarm start:</td>
-						<td><input class='ui-widget-content ui-corner-all date_field' type='text' name='startalarm' value='<?= isset($data->startalarm) ? $data->startalarm : '' ?>' /></td>
+						<td class='formlabel noname'>Следующий запуск:</td>
+						<td><input class='date_field'  type='text' name='nextlaunch' value='<?= isset($data->nextlaunch) ? $data->nextlaunch : '' ?>' /></td>
+					</tr>
+					<tr>
+						<td class='formlabel'>Период:</td>
+						<td><input class='spin_field' type='text' name='period' value='<?= isset($data->period) ? $data->period : '30' ?>' />&nbsp;дней</td>
+					</tr>
+					<tr>
+						<td class='formlabel'>Alarm Before:</td>
+						<td><input class='spin_field' type='text' name='alarmbefore' value='<?= isset($data->alarmbefore) ? $data->alarmbefore : '7' ?>' />&nbsp;дней</td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Email:</td>
-						<td><input class='ui-widget-content ui-corner-all' type='text' name='email' value='<?= isset($data->email) ? $data->email : '' ?>' placeholder='email ответственного за задачу' /></td>
+						<td><input type='text' name='email' value='<?= isset($data->email) ? $data->email : '' ?>' placeholder='email ответственного за задачу' /></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Сообщение:</td>
-						<td><textarea class='ui-widget-content ui-corner-all' name='message' placeholder='Текст сообщения'><?= isset($data->message) ? $data->message : '' ?></textarea></td>
+						<td><textarea name='message' placeholder='Текст сообщения'><?= isset($data->message) ? $data->message : '' ?></textarea></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Активно:</td>

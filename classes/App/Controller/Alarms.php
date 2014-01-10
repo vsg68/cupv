@@ -41,6 +41,12 @@ class Alarms extends \App\Page {
 
 			$params['active'] = $this->getVar($params['active'],0);
 
+			// Задача в этот период решена - Изменяем дату следющего запуска
+			if( isset($params['done']) ) {
+				$params['nextlaunch'] = date('Y-m-d', strtotime($params['nextlaunch']) + $params['period']*86400 );
+				unset($params['done']);
+			}
+
 			$is_update = $params['id'] ? true : false;
 
 			// сохраняем модель

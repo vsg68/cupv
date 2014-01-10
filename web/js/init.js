@@ -195,6 +195,8 @@ function fnTestByType(str, type){
 	word_tmpl = "^[\\w\\.]+$";
 	transp_tmpl	= "^\\w+:\\[(\\d{1,3}\\.){3}\\d{1,3}\\]$";
 	domain_tmpl	= "^(\\w+\\.)+\\w+$";
+	date_tmpl	= "^\\d{4}-\\d{2}-\\d{2}$";
+	int_tmpl	= "^\\d+$";
 
 	switch (type ) {
 		case 'mail':
@@ -208,6 +210,12 @@ function fnTestByType(str, type){
 			break
 		case 'transport':
 			reg = new RegExp(transp_tmpl,'i')
+			break
+		case 'int':
+			reg = new RegExp(int_tmpl,'i')
+			break
+		case 'date':
+			reg = new RegExp(date_tmpl,'i')
 			break
 		default:
 			if( str )
@@ -303,10 +311,13 @@ var modWin = {
 			RowNode: null;
 			closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>";
 
-			$(':text, select, textarea').addClass('ui-widget-content ui-corner-all');
+			$(':text, select, textarea').not('.spin_field').addClass('ui-widget-content ui-corner-all');
 
 			$('.autocomp').autocomplete({source: '/' + ctrl +'/searchMailbox/'});
 			$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
+
+			$('.spin_field').spinner({ min: 0 });
+
 			$('#sb').button({ label: '<a href=#>Send</a>'});
 
 			// Показе документа инициализирую функции

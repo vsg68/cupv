@@ -1,0 +1,1 @@
+SELECT act, email, message FROM `alarms` where `active`=1 AND DATEDIFF(`nextlaunch`, CURDATE() ) <= `alarmbefore`
