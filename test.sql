@@ -1,0 +1,1 @@
+SELECT act, email, message FROM `alarms` where curdate() between '2014-01-01' and `deadline` and `active`=1

@@ -13,6 +13,7 @@ $(function(){
 								"sDom": '<"H"Tf>t<"F"ip>',
 								"aaSorting": [[1,"asc"]],
 								"sAjaxSource": "/" + ctrl + "/showTable/",
+								"bScrollCollapse": true,
 								"sServerMethod": "POST",
 								"fnInitComplete": function () {
 														this.fnAdjustColumnSizing();
@@ -63,39 +64,20 @@ function unblockNewButton(node) {
 
 modWin.validate_alarms = function () {
 
-			return false;
+			var msg = '';
+			email	= $('form :text[name="email"]').val();
 
-			alias_name	= $('form :text[name="alias_name"]').val();
-			delivery_to	= $('form :text[name="delivery_to"]').val();
-			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
+			$('textarea,:text', '#usersform').each(function(){
 
-			if ( ! (alias_name && delivery_to) ) {
-				modWin.message += 'Поля адресов должны быть заполнены. ';
+												if( ! $(this).val() ) {
+													msg = 'Все поля должны быть заполнены. \n';
+													return true;
+												}
+											});
+
+			if ( ! fnTestByType( email, 'mail') ) {
+				msg += 'поле "Email" - должно содержать почтовый адрес.';
 			}
 
-			if ( ! fnTestByType( alias_name, 'mail') ) {
-				modWin.message += 'поле должно содержать почтовый адрес';
-			}
-
-			if ( ! fnTestByType( delivery_to, 'mail') ) {
-				modWin.message += 'поле должно содержать почтовый адрес';
-			}
-
-			existNameID = 	$('tr')
-									.filter('[aname="'+ alias_name + '"]')
-									.filter('[fname="'+ delivery_to + '"]')
-									.filter( id )
-									.length;
-			existName = 	$('tr')
-									.filter('[aname="'+ alias_name + '"]')
-									.filter('[fname="'+ delivery_to + '"]')
-									.length;
-
-			if( ! existNameID && existName ) {
-					modWin.message += "Такие сочетания алиасов уже присутствуют";
-					$('form :text[name="delivery_to"]').val('');
-
-			}
-
-			return modWin.message;
+			return msg;
 }

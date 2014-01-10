@@ -15,23 +15,23 @@
 			   <table>
 					<tr>
 						<td class='formlabel noname'>Задача:</td>
-						<td><input class='ui-corner-all' type='text' name='alias_name' value='<?= isset($data->act) ? $data->act : '' ?>'  /></td>
+						<td><input class='ui-corner-all' type='text' name='act' value='<?= isset($data->act) ? $data->act : '' ?>' placeholder='Название задачи' /></td>
 					</tr>
 					<tr>
 						<td class='formlabel noname'>Deadline:</td>
-						<td><input class='ui-corner-all date_field'  type='text' name='delivery_to' value='<?= isset($data->deadline) ? $data->deadline : '' ?>' /></td>
+						<td><input class='ui-corner-all date_field'  type='text' name='deadline' value='<?= isset($data->deadline) ? $data->deadline : '' ?>' /></td>
 					</tr>
 					<tr>
-						<td class='formlabel'>Начало алармов:</td>
-						<td><input class='ui-widget-content ui-corner-all date_field' type='text' name='alias_notes' value='<?= isset($data->startalarm) ? $data->startalarm : '' ?>' /></td>
+						<td class='formlabel'>Alarm start:</td>
+						<td><input class='ui-widget-content ui-corner-all date_field' type='text' name='startalarm' value='<?= isset($data->startalarm) ? $data->startalarm : '' ?>' /></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Email:</td>
-						<td><input class='ui-widget-content ui-corner-all' type='text' name='alias_notes' value='<?= isset($data->email) ? $data->email : '' ?>' /></td>
+						<td><input class='ui-widget-content ui-corner-all' type='text' name='email' value='<?= isset($data->email) ? $data->email : '' ?>' placeholder='email ответственного за задачу' /></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Сообщение:</td>
-						<td><textarea class='ui-widget-content ui-corner-all' name='alias_notes'><?= isset($data->message) ? $data->message : '' ?></textarea></td>
+						<td><textarea class='ui-widget-content ui-corner-all' name='message' placeholder='Текст сообщения'><?= isset($data->message) ? $data->message : '' ?></textarea></td>
 					</tr>
 					<tr>
 						<td class='formlabel'>Активно:</td>
