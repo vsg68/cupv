@@ -119,7 +119,7 @@ class Roles extends \App\Page {
 			}
 			elseif($tab == 'rights' ) {
 
-				if( preg_match('/^0\d*_(\d+)$/', $params['id'], $match) ) {
+				if( preg_match('/^0_(\d+)$/', $params['id'], $match) ) {
 				// 	новая запись !
 					$params['id'] 		 = 0;
 					$params['control_id'] = $match[1];
@@ -134,7 +134,8 @@ class Roles extends \App\Page {
 									->values($params, $is_update)
 									->save();
 
-			$row->id = $params['id'];
+			$id = $params['id'] ? $params['id'] : $row->id;
+
 			unset($params['id']);
 			$entry = $params;
 
@@ -153,7 +154,7 @@ class Roles extends \App\Page {
 									->join(array('sections','S'),array('S.id','C.section_id'),'LEFT')
 									->join(array('rights','P'),array('P.control_id','C.id'))
 									->join(array('slevels','L'),array('L.id','P.slevel_id'),'LEFT')
-									->where('P.id', $row->id)
+									->where('P.id', $id)
 									->execute()
 									->current();
 
@@ -163,11 +164,11 @@ class Roles extends \App\Page {
 								$req->slevel,
 								$req->active);
 
-				$row->id = $req->control_id;
+				$id = $req->control_id;
 			}
 
 			$returnData 				= array_values($entry);
-			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.$row->id;
+			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.$id;
 
 			$this->response->body = json_encode($returnData);
 		}
