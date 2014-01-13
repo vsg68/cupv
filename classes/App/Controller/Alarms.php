@@ -58,7 +58,6 @@ class Alarms extends \App\Page {
 			$id = $params['id'];
 			unset( $params['id'] );
 
-			$params['DT_RowClass']  = 'gradeA';
 			$params['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
 
 			$this->response->body = json_encode($params);
@@ -74,7 +73,7 @@ class Alarms extends \App\Page {
 		$returnData = array();
 		$alarms = $this->pixie->orm->get('alarms')->find_all()->as_array(true);
 
-		$returnData["aaData"] = count($alarms) ? $this->DTPropAddToObject($alarms, 'alarms', 'gradeA'): array();
+		$returnData["aaData"] = count($alarms) ? $this->DTPropAddToObject($alarms, 'alarms', ''): array();
 
         $this->response->body = json_encode($returnData);
 	}

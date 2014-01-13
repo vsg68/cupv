@@ -30,6 +30,7 @@ $(function(){
 											],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
+													deadLinePeriod(nRow, aData);
 												},
 								"oTableTools": TTOpts
 
@@ -62,6 +63,44 @@ function unblockNewButton(node) {
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
 }
 
+function deadLinePeriod(nRow, aData) {
+
+	var days = daysBetween(aData.nextlaunch);
+
+	$(nRow).removeClass('gradeX gradeA');
+
+	if( days < aData.alarmbefore) {
+		$(nRow).addClass('gradeX');
+	}
+	else {
+		$(nRow).addClass('gradeA');
+	}
+
+}
+
+function dateParse(stringDate) {
+	dt = stringDate.split('-');
+	dt[1] = (dt[1] * 1 - 1 < 0) ? 11 : (dt[1] * 1 - 1);
+
+	return (x = new Date(dt[0], dt[1], dt[2]));
+}
+
+
+function daysBetween(stringDate) {
+
+    // Copy date parts of the timestamps, discarding the time parts.
+    deadLineDay = dateParse(stringDate);
+    cDate    = new Date();
+    currDate = new Date(cDate.getFullYear(), cDate.getMonth(), cDate.getDate());
+
+    // Do the math.
+    var millisecondsPerDay = 1000 * 60 * 60 * 24;
+    var millisBetween = deadLineDay.getTime() - currDate.getTime();
+    var days = millisBetween / millisecondsPerDay;
+
+    // Round down.
+    return Math.floor(days);
+}
 
 modWin.validate_alarms = function () {
 
