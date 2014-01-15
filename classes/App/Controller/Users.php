@@ -131,12 +131,14 @@ class Users extends \App\Page {
 		if( $tab == 'users' ) {
 			$params['mailbox'] 		= $params['login'].'@'.$params['domain'];
 			$params['imap_enable'] 	= $this->getVar($params['imap_enable'],0);
-			$params['active']		= $this->getVar($params['active'],0);
 
 			if( isset($params['password']) ) {
 				$params['md5password'] 	= md5($params['password']);
 			}
+		}
 
+		if( $tab != 'lists' ) {
+			$params['active']		= $this->getVar($params['active'],0);
 		}
 
 		unset($params['tab'],$params['login']);
