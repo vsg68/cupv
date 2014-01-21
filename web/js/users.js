@@ -57,7 +57,7 @@ $(document).ready(function() {
 											   {'mData':'password',"bVisible":false,"bSortable":false,},
 											   {'mData':'allow_nets',"bSortable":false,},
 											   {'mData':'path',"bSortable":false,},
-											   {'mData':'acl_groups',"bSortable":false,},
+											   {'mData':'acl_groups',"bSortable":false, },
 											   {'mData':'imap_enable',"sClass": "center","bSortable":false,},
 											   {'mData':'active',"sClass": "center","bSortable":false,},
 											],

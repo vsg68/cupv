@@ -109,29 +109,11 @@ class Users extends \App\Page {
 		if( ! $params = $this->request->post() )
 			return;
 
-		//~ if( $params['tab'] == 'users') {
-			//~ // Массив, который будем возвращать
-			//~ $entry = array( 'username' 		=> $params['username'],
-							//~ 'mailbox'	 	=> $params['login'].'@'.$params['domain'],
-							//~ 'password' 		=> $params['password'],
-							//~ 'md5password' 	=> md5($params['password']),
-							//~ 'allow_nets' 	=> $this->getVar($params['allow_nets'],'192.168.0.0/24'),
-							//~ 'path'			=> $this->getVar($params['path']),
-							//~ 'acl_groups' 	=> $this->getVar($params['acl_groups']),
-							//~ 'imap_enable' 	=> $this->getVar($params['imap'],0),
-							//~ 'active'		=> $this->getVar($params['active'],0)
-							//~ );
-		//~ }
-		//~ else {
-			//~ $entry = array('alias_name' => $this->getVar($params['alias_name']),
-						   //~ 'delivery_to'=> $this->getVar($params['delivery_to']),
-						   //~ 'active'		=> $this->getVar($params['active'],0)
-						 //~ );
-		//~ }
 		$tab = $params['tab'];
 		if( $tab == 'users' ) {
 			$params['mailbox'] 		= $params['login'].'@'.$params['domain'];
 			$params['imap_enable'] 	= $this->getVar($params['imap_enable'],0);
+			$params['acl_groups'] 	= '';
 
 			if( isset($params['password']) ) {
 				$params['md5password'] 	= md5($params['password']);
@@ -142,7 +124,7 @@ class Users extends \App\Page {
 			$params['active']		= $this->getVar($params['active'],0);
 		}
 
-		unset($params['tab'],$params['login']);
+		unset($params['tab'],$params['login'],$params['domain']);
 
 		try {
 
