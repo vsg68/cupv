@@ -17,7 +17,7 @@ $(function(){
 													$(':text, select', '.editmenu').addClass('ui-widget-content ui-corner-all');
 													var filter = $('.editmenu').clone();
 													$('.editmenu').remove();
-													$('#ToolTables_tab_0').after( filter );
+													$('#ToolTables_tab_1').after( filter );
 													$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
 											},
 							"aoColumns": [
@@ -45,6 +45,16 @@ $(function(){
 							"oTableTools": {
 										"sRowSelect": "single",
 										"aButtons":[
+													{
+														"sExtends": "text",
+														"sButtonText": ".",
+														"sButtonClass": 'DTTT_button_vis',
+														"fnClick": function( nButton, oConfig ) {
+																		if( ! $(nButton).hasClass('DTTT_disabled') ) {
+																			fnTail();
+																		}
+																	}
+													},
 													{
 														"sExtends": "text",
 														"sButtonText": "ПОИСК В ПОЧТОВЫХ ЛОГАХ",
@@ -91,6 +101,47 @@ function fnSearch() {
 					},
 			error: function(response) {
 						$.modal.close();
+						mesg = response.statusText;
+						if( mesg == 'abort' ) {
+							$('.abort').fadeIn(1000, function(){
+														$('.abort').fadeOut(1000);
+														});
+						}
+						else {
+							$('.form-alert').text(mesg);
+							$('#errmsg').modal();
+						}
+						$('.DTTT_button_search').removeClass('DTTT_disabled');
+					},
+		});
+
+}
+
+var timeOut;
+/*
+ *  Замена значений чекбоксов на картинку
+ */
+function fnTail() {
+
+		var oTable = $('#tab').dataTable();
+		oTable.fnClearTable();
+
+		$('.DTTT_button_search').addClass('DTTT_disabled');
+
+		//~ $.getJSON('/logs/tail/', function(response) {
+									//~ oTable.fnAddData(response);
+								//~ });
+		$.ajax({
+			type: "GET",
+			url: '/logs/tail/',
+			dataType: "json",
+			success: function(response) {
+						$.modal.close();
+
+						oTable.fnAddData(response);
+//						$('.DTTT_button_search').removeClass('DTTT_disabled');
+					},
+			error: function(response) {
 						mesg = response.statusText;
 						if( mesg == 'abort' ) {
 							$('.abort').fadeIn(1000, function(){

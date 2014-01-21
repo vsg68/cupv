@@ -23,7 +23,7 @@ long_line_behaviour=1
 long_line_column=80
 
 [files]
-current_page=51
+current_page=7
 FILE_NAME_0=5900;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fclasses%2FApp%2FPage.php;0;4
 FILE_NAME_1=1878;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fassets%2Fviews%2Fmain.php;0;4
 FILE_NAME_2=3268;CSS;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fcss%2Fstyle.css;0;4
@@ -31,7 +31,7 @@ FILE_NAME_3=2738;Javascript;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fjs%2Finit
 FILE_NAME_4=1165;Javascript;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fjs%2Flogin.js;0;4
 FILE_NAME_5=682;CSS;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fcss%2Fusers.css;0;4
 FILE_NAME_6=2357;Javascript;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fjs%2Fusers.js;0;4
-FILE_NAME_7=5004;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fclasses%2FApp%2FController%2FUsers.php;0;4
+FILE_NAME_7=4085;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fclasses%2FApp%2FController%2FUsers.php;0;4
 FILE_NAME_8=1078;Javascript;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fjs%2Fadmin.js;0;4
 FILE_NAME_9=2265;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fclasses%2FApp%2FController%2FAdmin.php;0;4
 FILE_NAME_10=2638;Javascript;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fjs%2Flogs.js;0;4
@@ -77,6 +77,7 @@ FILE_NAME_49=1006;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fclasses%2FApp%2FContr
 FILE_NAME_50=258;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fassets%2Fviews%2Falarms.php;0;4
 FILE_NAME_51=778;Javascript;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fjs%2Falarms.js;0;4
 FILE_NAME_52=1423;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fassets%2Fviews%2Fform_alarms.php;0;4
+FILE_NAME_53=0;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fassets%2Fviews%2Fusers.php;0;4
 
 [VTE]
 last_dir=/home/vsg

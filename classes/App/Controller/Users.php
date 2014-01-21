@@ -38,11 +38,10 @@ class Users extends \App\Page {
 		}
 		else {
 			if( $tab == 'users' ) {
-				$view->domains = $this->pixie->db->query('select')
-												->table('domains')
-												->group_by('domain_name')
+				$view->domains = $this->pixie->orm->get('domains')
 												->where('delivery_to','virtual')
-												->execute();
+												->order_by('domain_name')
+												->find_all();
 			}
 
 			$view->data = $this->pixie->orm->get($tab)
