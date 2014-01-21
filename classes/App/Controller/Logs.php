@@ -105,10 +105,9 @@ class Logs extends \App\Page {
 
 			try {
 				$values = $this->pixie->orm->get('maillog')->order_by('id', 'desc')->limit(1)->find();
-				$id = $values->id;
+				$id = $values->ID;
 
-				while( $answer = $this->pixie->orm->get('maillog')->where('id','>', $id)->find_all() ) {
-
+				while( $answer = $this->pixie->orm->get('maillog')->where('id','>', $id)->find_all()->as_array() ) {
 					$this->response->body = json_encode($answer) ;
 				}
 

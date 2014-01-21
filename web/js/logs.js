@@ -149,8 +149,7 @@ function fnTail() {
 														});
 						}
 						else {
-							$('.form-alert').text(mesg);
-							$('#errmsg').modal();
+							$(response.responseText).modal();
 						}
 						$('.DTTT_button_search').removeClass('DTTT_disabled');
 					},
