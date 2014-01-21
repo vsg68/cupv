@@ -93,6 +93,32 @@ class Logs extends \App\Page {
 
 	}
 
+	public function action_tail() {
+			if( $this->permissions == $this::NONE_LEVEL )
+				return $this->noperm();
 
+			$query = $values = array();
+			$returnData = array();
+
+			//~ if( !$id = $this->request->get('tail') )
+				//~ return false;
+
+			try {
+				$values = $this->pixie->orm->get('maillog')->order_by('id', 'desc')->limit(1)->find();
+				$id = $values->id;
+
+				while( $answer = $this->pixie->orm->get('maillog')->where('id','>', $id)->find_all() ) {
+
+					$this->response->body = json_encode($answer) ;
+				}
+
+			}
+			catch (\Exception $e) {
+				$view = $this->pixie->view('form_alert');
+				$view->errorMsg = $e->getMessage();
+				$this->response->body = $view->render();
+				return;
+			}
+	}
 }
 ?>
