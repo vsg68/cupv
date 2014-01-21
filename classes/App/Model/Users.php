@@ -30,8 +30,9 @@ class Users extends \PHPixie\ORM\Model{
 */
 	public function get($column) {
 
-		if($column == 'active' || $column == 'imap_enable' ) {
-			return $this->name ? $this->name : 0;
-		}
+		//~ if($column == 'active' || $column == 'imap_enable' ) {
+			//~ return isset($this->name)  ? $this->name : 0;
+//~
+		//~ }
 	}
 }
