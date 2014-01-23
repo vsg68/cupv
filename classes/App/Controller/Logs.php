@@ -81,8 +81,9 @@ class Logs extends \App\Page {
 											->execute()
 											->as_array();
 
-				$values = count($answer) ? $this->DTPropAddToObject($answer, '', '') : array("receivedat"=>"-","syslogtag"=>"-","msgid"=>"-","message"=>"-");
+				$values = count($answer) ? $this->DTPropAddToObject($answer, '', '') : array("ReceivedAt"=>"-","SysLogTag"=>"-","MSGID"=>"-","Message"=>"-");
 				$this->response->body = json_encode($values) ;
+
 			}
 			catch (\Exception $e) {
 				$view = $this->pixie->view('form_alert');
@@ -97,19 +98,20 @@ class Logs extends \App\Page {
 			if( $this->permissions == $this::NONE_LEVEL )
 				return $this->noperm();
 
-			$query = $values = array();
-			$returnData = array();
-
-			//~ if( !$id = $this->request->get('tail') )
+			//~ if( ! isset( $this->request->get('id')) )
 				//~ return false;
 
-			try {
-				$values = $this->pixie->orm->get('maillog')->order_by('id', 'desc')->limit(1)->find();
-				$id = $values->ID;
+			$id = $this->request->get('id');
 
-				while( $answer = $this->pixie->orm->get('maillog')->where('id','>', $id)->find_all()->as_array() ) {
-					$this->response->body = json_encode($answer) ;
+			try {
+				if( $id == '0') {
+					$values = $this->pixie->orm->get('maillog')->order_by('id', 'desc')->limit(1)->find();
+					$id = $values->ID;
 				}
+
+				$answer = $this->pixie->orm->get('maillog')->where('id','>=', $id)->find_all()->as_array(true);
+
+				$this->response->body = json_encode($answer) ;
 
 			}
 			catch (\Exception $e) {

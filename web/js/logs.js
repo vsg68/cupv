@@ -21,10 +21,10 @@ $(function(){
 													$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
 											},
 							"aoColumns": [
-										   {'mData':'receivedat'},
-										   {'mData':'syslogtag'},
-										   {'mData':'msgid'},
-										   {'mData':'message'},
+										   {'mData':'ReceivedAt',"sWidth": "10%",},
+										   {'mData':'SysLogTag',"sWidth": "12%",},
+										   {'mData':'MSGID',"sWidth": "12%",},
+										   {'mData':'Message'},
 										],
 							"fnCreatedRow": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 
@@ -117,43 +117,65 @@ function fnSearch() {
 
 }
 
-var timeOut;
 /*
- *  Замена значений чекбоксов на картинку
+ *  Функция получения логов онлайн
  */
+var xhr;
+
 function fnTail() {
 
-		var oTable = $('#tab').dataTable();
-		oTable.fnClearTable();
 
-		$('.DTTT_button_search').addClass('DTTT_disabled');
+		if(xhr && xhr.readystate != 4){
+				xhr.abort();
+				$('.DTTT_button_search').removeClass('DTTT_disabled');
+				//$('.DTTT_button_vis').removeClass('DTTT_disabled');
+				xhr = null;
+		}
+		else {
+			$('#tab').dataTable().fnClearTable();
+			$('.DTTT_button_search').addClass('DTTT_disabled');
+			//$('.DTTT_button_vis').removeClass('DTTT_disabled');
 
-		//~ $.getJSON('/logs/tail/', function(response) {
-									//~ oTable.fnAddData(response);
-								//~ });
-		$.ajax({
-			type: "GET",
-			url: '/logs/tail/',
-			dataType: "json",
-			success: function(response) {
-						$.modal.close();
+			setTimeout(getLogData(0), 5000);
+		}
+}
 
-						oTable.fnAddData(response);
-//						$('.DTTT_button_search').removeClass('DTTT_disabled');
-					},
-			error: function(response) {
-						mesg = response.statusText;
-						if( mesg == 'abort' ) {
-							$('.abort').fadeIn(1000, function(){
-														$('.abort').fadeOut(1000);
-														});
-						}
-						else {
-							$(response.responseText).modal();
-						}
-						$('.DTTT_button_search').removeClass('DTTT_disabled');
-					},
-		});
+/*
+ *  беру логи в цикле
+ */
+function getLogData(newID) {
+
+		var oTable	= $('#tab').dataTable();
+		var id 		= newID ? newID : 0;
+
+
+
+		xhr = $.ajax({
+				type: "GET",
+				url: '/logs/tail/',
+				data: {'id': id},
+				dataType: "json",
+				success: function(response) {
+							len = response.length;
+							if(len) {
+								newID = response[(len-1)].ID;
+							}
+							oTable.fnAddData(response);
+							//setTimeout(getLogData(newID), 5000);
+						},
+
+				error: function(response) {
+							mesg = response.statusText;
+							//~ if( mesg == 'abort' ) {
+								//~ $('.abort').fadeIn(1000, function(){
+															//~ $('.abort').fadeOut(1000);
+															//~ });
+							//~ }
+							//~ else {
+							//~ //	setTimeout(getLogData(id), 5500);
+							//~ }
+						},
+			});
 
 }
 
