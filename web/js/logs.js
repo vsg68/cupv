@@ -131,11 +131,13 @@ function fnTail() {
 				xhr.abort();
 				xhr = null;
 				$('.DTTT_button_search').removeClass('DTTT_disabled');
+				$('.DTTT_button_vis').removeClass('search');
 
 		}
 		else {
 			$('#tab').dataTable().fnClearTable();
 			$('.DTTT_button_search').addClass('DTTT_disabled');
+			$('.DTTT_button_vis').addClass('search');
 
 			setTimeout(getLogData, 3000);
 		}

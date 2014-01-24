@@ -72,6 +72,9 @@ a.DTTT_button_vis.DTTT_unvis span {
 a.DTTT_button_vis:hover span {
 	background-position: -105px -21px;
 }
+a.search span {
+	background-position: -105px -21px !important;
+}
 
 a.DTTT_button_vis span {
 	background-position: -105px -42px;
