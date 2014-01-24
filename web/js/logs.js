@@ -121,30 +121,25 @@ function fnSearch() {
  *  Функция получения логов онлайн
  */
 var xhr;
+var stop = 1;
 
 function fnTail() {
 
+		stop = !stop;  // Переключатель, нужен для выключения цикла
 
 		if(xhr && xhr.readystate != 4){
 				xhr.abort();
-				$('.DTTT_button_search').removeClass('DTTT_disabled');
-				//$('.DTTT_button_vis').removeClass('DTTT_disabled');
 				xhr = null;
+				$('.DTTT_button_search').removeClass('DTTT_disabled');
+
 		}
 		else {
 			$('#tab').dataTable().fnClearTable();
 			$('.DTTT_button_search').addClass('DTTT_disabled');
-			//$('.DTTT_button_vis').removeClass('DTTT_disabled');
 
-			setTimeout(getLogData, 5000);
-//			setTimeout('alert("прошла секунда")', 1000)
-//			setTimeout(second_passed, 1000)
+			setTimeout(getLogData, 1000);
 		}
 }
-
-function second_passed() {
-			  alert("прошла секунда")
-			}
 
 /*
  *  беру логи в цикле
@@ -153,36 +148,19 @@ function getLogData(newID) {
 
 		var oTable	= $('#tab').dataTable();
 		var id 		= newID ? newID : 0;
-alert("прошла секунда");
-return 0;
 
+		if( stop ) {
+			return false;
+		}
 
-		xhr = $.ajax({
-				type: "GET",
-				url: '/logs/tail/',
-				data: {'id': id},
-				dataType: "json",
-				success: function(response) {
-							len = response.length;
-							if(len) {
-								newID = response[(len-1)].ID;
-							}
-							oTable.fnAddData(response);
-							setTimeout(getLogData(newID), 5000);
-						},
-
-				error: function(response) {
-							mesg = response.statusText;
-							//~ if( mesg == 'abort' ) {
-								//~ $('.abort').fadeIn(1000, function(){
-															//~ $('.abort').fadeOut(1000);
-															//~ });
-							//~ }
-							//~ else {
-							//~ //	setTimeout(getLogData(id), 5500);
-							//~ }
-						},
-			});
+		xhr = $.getJSON('/logs/tail/',{'id': id},function(response) {
+														len = response.length;
+														if(len) {
+															newID = response[(len-1)].ID;
+														}
+														oTable.fnAddData(response);
+														setTimeout("getLogData("+ newID +")", 1000);
+												});
 
 }
 
