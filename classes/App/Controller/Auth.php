@@ -58,7 +58,7 @@ class Auth extends \App\Page {
 
 		// хешируем пароль средством модуля
 		if( isset( $params['passwd']) && $params['passwd'] ) {
-			$passwd['passwd']  = $this->auth->provider('password')->hash_password($params['passwd']);
+			$params['passwd']  = $this->auth->provider('password')->hash_password($params['passwd']);
 		}
 
 		$params['active'] = $this->getVar($params['active'],0);
