@@ -137,7 +137,7 @@ function fnTail() {
 			$('#tab').dataTable().fnClearTable();
 			$('.DTTT_button_search').addClass('DTTT_disabled');
 
-			setTimeout(getLogData, 1000);
+			setTimeout(getLogData, 3000);
 		}
 }
 
@@ -159,7 +159,7 @@ function getLogData(newID) {
 															newID = response[(len-1)].ID;
 														}
 														oTable.fnAddData(response);
-														setTimeout("getLogData("+ newID +")", 1000);
+														setTimeout("getLogData("+ newID +")", 3000);
 												});
 
 }
