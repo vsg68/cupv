@@ -159,7 +159,7 @@ function getLogData(newID) {
 															newID = response[(len-1)].ID;
 														}
 														oTable.fnAddData(response);
-														oTable.fnDraw();
+														oTable.parent().scrollTop(9999);
 														setTimeout("getLogData("+ newID +")", 3000);
 												});
 
