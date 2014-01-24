@@ -136,9 +136,15 @@ function fnTail() {
 			$('.DTTT_button_search').addClass('DTTT_disabled');
 			//$('.DTTT_button_vis').removeClass('DTTT_disabled');
 
-			setTimeout(getLogData(0), 5000);
+			setTimeout(getLogData, 5000);
+//			setTimeout('alert("прошла секунда")', 1000)
+//			setTimeout(second_passed, 1000)
 		}
 }
+
+function second_passed() {
+			  alert("прошла секунда")
+			}
 
 /*
  *  беру логи в цикле
@@ -147,7 +153,8 @@ function getLogData(newID) {
 
 		var oTable	= $('#tab').dataTable();
 		var id 		= newID ? newID : 0;
-
+alert("прошла секунда");
+return 0;
 
 
 		xhr = $.ajax({
@@ -161,7 +168,7 @@ function getLogData(newID) {
 								newID = response[(len-1)].ID;
 							}
 							oTable.fnAddData(response);
-							//setTimeout(getLogData(newID), 5000);
+							setTimeout(getLogData(newID), 5000);
 						},
 
 				error: function(response) {
