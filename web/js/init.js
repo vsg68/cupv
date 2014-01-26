@@ -7,6 +7,14 @@ ctrl = ( ctrl ) ? ctrl : 'users';
 $(document).ready(function() {
 
 		$('#'+ctrl+'.pagetab').addClass('pagetab-selected');
+		$('#menu_'+ctrl+' .pagetabmenu').addClass('pagetabmenu-selected');
+
+		$('.pagetabmenu').hover(function(){
+					$(this).css('background-position', '0 -26px');
+				},
+				function(){
+					$(this).css('background-position', '0 0');
+				})
 
 } );
 

@@ -28,6 +28,30 @@ class Page extends \PHPixie\Controller {
 	    $this->view->script_file = '';
 		$this->view->css_file 	 = '';
 
+		//~ if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
+
+			$name = $this->auth->user()->login ;
+
+			$this->view->pages = $this->pixie->db->query('select','admin')
+											->fields($this->pixie->db->expr('S.name, S.note, COALESCE(C.class,"#") AS link'))
+											->table('sections','S')
+											->join(array('controllers','C'),array('S.id','C.section_id'),'LEFT')
+											->join(array('rights','P'),array('C.id','P.control_id'),'LEFT')
+											->join(array('roles','R'),array('R.id','P.role_id'),'LEFT')
+											->join(array('slevels','SL'),array('SL.id','P.slevel_id'),'LEFT')
+											->join(array('auth','A'),array('A.role_id','P.role_id'),'LEFT')
+											->where('A.login',$name)
+											->where('S.active',1)
+											->where('R.active',1)
+											->where('C.active',1)
+											->where('A.active',1)
+											->where('C.order',0)
+											->where('SL.slevel','>',0)
+											->group_by('S.name')
+											->execute();
+
+		//~ }
+
 		/* Определяем все контроллеры с одинаковыми ID */
 		$this->view->menuitems = $this->pixie->db
 										->query('select','admin')

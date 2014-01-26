@@ -25,10 +25,35 @@
         <div class="container">
 			<table class='container-inner'>
 				<tr>
+					<td class="content-top" colspan=2>
+
+					<?php
+						if(isset($pages) ) {
+							foreach($pages as $page):
+					?>
+
+					<div class='ui-widget ui-corner-all pagemenu'>
+						<a href='<?= $page->link ?>'>
+							<div id='menu_<?= strtolower($page->link) ?>'class='pagetabmenu' title='<?= $page->name ?>'
+							<?php
+								$filename = $_SERVER['DOCUMENT_ROOT'].'/images/'.strtolower($page->name).'_small.png';
+								//echo $filename;
+								if( file_exists($filename))
+								 echo " style='background: url(/images/".basename($filename).")'";
+							?>>
+							</div>
+						</a>
+					</div>
+
+					<?php
+							endforeach;
+						}
+					?>
+		</div>
+					</td>
+				</tr>
+				<tr>
 					<td class="content-left">
-						<div class='theme homepage ui-corner-all box-shadow'>
-							<a href="/"  title='На главную'><div id='home-page' class='pagetab'></div></a>
-						</div>
 					<?php foreach( $menuitems as $item ): ?>
 						<div class='theme box-shadow ui-corner-all' title='<?= $item->name ?>'>
 							<a href="/<?= $item->class ?>/"><div  id='<?= $item->class ?>'  class='pagetab'></div></a>
