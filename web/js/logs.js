@@ -21,10 +21,14 @@ $(function(){
 													$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
 											},
 							"aoColumns": [
-										   {'mData':'ReceivedAt',"sWidth": "10%",},
-										   {'mData':'SysLogTag',"sWidth": "12%",},
-										   {'mData':'MSGID',"sWidth": "12%",},
-										   {'mData':'Message'},
+										   //~ {'mData':'ReceivedAt',"sWidth": "10%",},
+										   //~ {'mData':'SysLogTag',"sWidth": "12%",},
+										   //~ {'mData':'MSGID',"sWidth": "12%",},
+										   //~ {'mData':'Message'},
+										   {'mData':'receivedat',"sWidth": "10%",},
+										   {'mData':'syslogtag',"sWidth": "12%",},
+										   {'mData':'msgid',"sWidth": "12%",},
+										   {'mData':'message'},
 										],
 							"fnCreatedRow": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 
