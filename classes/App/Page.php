@@ -33,7 +33,7 @@ class Page extends \PHPixie\Controller {
 			$name = $this->auth->user()->login ;
 
 			$this->view->pages = $this->pixie->db->query('select','admin')
-											->fields($this->pixie->db->expr('S.name, S.note, COALESCE(C.class,"#") AS link'))
+											->fields($this->pixie->db->expr('S.id, S.name, S.note, COALESCE(C.class,"#") AS link'))
 											->table('sections','S')
 											->join(array('controllers','C'),array('S.id','C.section_id'),'LEFT')
 											->join(array('rights','P'),array('C.id','P.control_id'),'LEFT')
@@ -61,7 +61,7 @@ class Page extends \PHPixie\Controller {
 										->where('X.class',strtolower($this->request->param('controller')))
 										->where('Y.active',1)
 										->order_by('Y.order')
-										->execute();
+										->execute()->as_array();
 
 		// Проверка легитимности пользователя и его прав
         if( $this->ctrl != 'login' )

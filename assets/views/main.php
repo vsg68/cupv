@@ -34,7 +34,7 @@
 
 					<div class='ui-widget ui-corner-all pagemenu'>
 						<a href='<?= $page->link ?>'>
-							<div id='menu_<?= strtolower($page->link) ?>'class='pagetabmenu' title='<?= $page->name ?>'
+							<div id='menu_<?= strtolower($page->link) ?>'class='pagetabmenu <?= ($menuitems[0]->section_id == $page->id) ? 'pagetabmenu-selected ' : '' ?>' title='<?= $page->name ?>'
 							<?php
 								$filename = $_SERVER['DOCUMENT_ROOT'].'/images/'.strtolower($page->name).'_small.png';
 								//echo $filename;
