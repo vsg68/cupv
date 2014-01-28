@@ -21,19 +21,19 @@ $(function(){
 													$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
 											},
 							"aoColumns": [
-										   {'mData':'receivedat',"sWidth": "10%",},
-										   {'mData':'syslogtag',"sWidth": "12%",},
-										   {'mData':'msgid',"sWidth": "12%",},
-										   {'mData':'message'},
+										   {'mData':'ReceivedAt',"sWidth": "10%",},
+										   {'mData':'SysLogTag',"sWidth": "12%",},
+										   {'mData':'MSGID',"sWidth": "12%",},
+										   {'mData':'Message'},
 										],
 							"fnCreatedRow": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 
-												nowMsgId = aData.msgid;
-												$('td:eq(3)', nRow).text(aData.message); // как текст
+												nowMsgId = aData.MSGID;
+												$('td:eq(3)', nRow).text(aData.Message); // как текст
 
 												if(nowMsgId != prevMsgId) {
 													changeClass = ! changeClass;
-													prevMsgId = aData.msgid;
+													prevMsgId = aData.MSGID;
 												}
 
 												if (changeClass)
