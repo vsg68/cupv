@@ -21,11 +21,6 @@ table.container-inner {
 td {
 	vertical-align: top;
 }
-/*
-td.content {
-	width:125px;
-}
-*/
 
 td.content-left {
 	width:125px;
@@ -168,13 +163,17 @@ a.modalCloseImg {
 }
 
 .logout {
-	float: none;
-	margin: 0 auto;
+	margin: 2px 45px;
 }
 
 .content-top {
-	padding: 0 0 2px 120px;
+	background-color: tan;
+	height: 38px;
+	padding: 1px 0;
+	margin: 0 0 2px 0;
+	border: 1px solid rgb(167, 115, 67);
 }
+
 
 #usersform table {
 	border-collapse:collapse;
