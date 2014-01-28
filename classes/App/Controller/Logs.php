@@ -81,7 +81,7 @@ class Logs extends \App\Page {
 							->execute()
 							->as_array();
 
-				$values = count($answer) ? $this->DTPropAddToObject($answer, '', '') : array("receivedat"=>"-","syslogtag"=>"-","msgid"=>"-","message"=>"-");
+				$values = count($answer) ? $this->DTPropAddToObject($answer, '', '') : array("ReceivedAt"=>"-","SysLogTag"=>"-","MSGID"=>"-","Message"=>"-");
 				$this->response->body = json_encode($values) ;
 
 			}
