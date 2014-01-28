@@ -54,6 +54,10 @@
 				</tr>
 				<tr>
 					<td class="content-left">
+						<div class='ui-widget ui-corner-all pagemenu logout'>
+							<a href='/login/logout'><div id='_exit' class='pagetabmenu ' title='Logout' style='background: url(/images/exit.png)'></div></a>
+						</div>
+
 					<?php foreach( $menuitems as $item ): ?>
 						<div class='theme box-shadow ui-corner-all' title='<?= $item->name ?>'>
 							<a href="/<?= $item->class ?>/"><div  id='<?= $item->class ?>'  class='pagetab'></div></a>

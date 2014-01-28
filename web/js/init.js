@@ -9,6 +9,8 @@ $(document).ready(function() {
 		$('#'+ctrl+'.pagetab').addClass('pagetab-selected');
 		$('#menu_'+ctrl+' .pagetabmenu').addClass('pagetabmenu-selected');
 
+		$('#logout').click(function(){ window.location = '/login/logout';});
+
 		$('.pagetabmenu').hover(function(){
 					$(this).css('background-position', '0 -26px');
 				},

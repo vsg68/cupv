@@ -167,6 +167,11 @@ a.modalCloseImg {
 	background-position: 0 -26px !important;
 }
 
+.logout {
+	float: none;
+	margin: 0 auto;
+}
+
 .content-top {
 	padding: 0 0 2px 120px;
 }
