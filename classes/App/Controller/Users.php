@@ -114,6 +114,10 @@ class Users extends \App\Page {
 			$params['imap_enable'] 	= $this->getVar($params['imap_enable'],0);
 			$params['acl_groups'] 	= '';
 
+			if( ! $params['path'] )	{
+				unset($params['path']);
+			}
+
 			if( isset($params['password']) ) {
 				$params['md5password'] 	= md5($params['password']);
 			}

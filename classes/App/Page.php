@@ -28,7 +28,7 @@ class Page extends \PHPixie\Controller {
 	    $this->view->script_file = '';
 		$this->view->css_file 	 = '';
 
-		//~ if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
+		 if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
 
 			$name = $this->auth->user()->login ;
 
@@ -50,7 +50,7 @@ class Page extends \PHPixie\Controller {
 											->group_by('S.name')
 											->execute();
 
-		//~ }
+		 }
 
 		/* Определяем все контроллеры с одинаковыми ID */
 		$this->view->menuitems = $this->pixie->db
