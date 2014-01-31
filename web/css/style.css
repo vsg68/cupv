@@ -21,11 +21,6 @@ table.container-inner {
 td {
 	vertical-align: top;
 }
-/*
-td.content {
-	width:125px;
-}
-*/
 
 td.content-left {
 	width:125px;
@@ -146,6 +141,39 @@ a.modalCloseImg {
 	top: -10px;
 	right: -10px;
 }
+
+.pagemenu {
+	width: 32px;
+	height: 32px;
+	margin: 2px 10px;
+	float:left;
+	border: 1px solid #ddd;
+	position:relative;
+}
+.pagetabmenu {
+	width: 26px;
+	height: 26px;
+	position:absolute;
+	top: 3px;
+	left:3px;
+}
+
+.pagetabmenu-selected {
+	background-position: 0 -26px !important;
+}
+
+.logout {
+	margin: 2px 45px;
+}
+
+.content-top {
+	background-color: tan;
+	height: 38px;
+	padding: 1px 0;
+	margin: 0 0 2px 0;
+	border: 1px solid rgb(167, 115, 67);
+}
+
 
 #usersform table {
 	border-collapse:collapse;
