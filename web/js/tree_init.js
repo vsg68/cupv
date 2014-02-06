@@ -16,10 +16,10 @@ $(function(){
 				// если выделеный узел не фолдер - то беру фолдер выделенного узла
 				var node = $("#tree").dynatree("getActiveNode");
 
-				if( node.data.isFolder != true ) {
-					alert('Выделите раздел');
-					return false;
-				}
+				//~ if( node.data.isFolder != true ) {
+					//~ alert('Выделите раздел');
+					//~ return false;
+				//~ }
 
 
 				$.post('/'+ ctrl +'/showEditForm/'+node.data.key, {t:'tree'}, function(response){

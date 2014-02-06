@@ -23,9 +23,9 @@ long_line_behaviour=1
 long_line_column=80
 
 [files]
-current_page=38
+current_page=1
 FILE_NAME_0=5900;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fclasses%2FApp%2FPage.php;0;4
-FILE_NAME_1=1878;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fassets%2Fviews%2Fmain.php;0;4
+FILE_NAME_1=879;PHP;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fassets%2Fviews%2Fmain.php;0;4
 FILE_NAME_2=3268;CSS;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fcss%2Fstyle.css;0;4
 FILE_NAME_3=2738;Javascript;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fjs%2Finit.js;0;4
 FILE_NAME_4=1165;Javascript;0;EUTF-8;1;1;0;%2Fvar%2Fwww%2Fcupv%2Fweb%2Fjs%2Flogin.js;0;4
