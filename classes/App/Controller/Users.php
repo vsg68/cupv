@@ -112,10 +112,11 @@ class Users extends \App\Page {
 		if( $tab == 'users' ) {
 			$params['mailbox'] 		= $params['login'].'@'.$params['domain'];
 			$params['imap_enable'] 	= $this->getVar($params['imap_enable'],0);
+			// принудительно
 			$params['acl_groups'] 	= '';
-
+			
 			if( ! $params['path'] )	{
-				unset($params['path']);
+				$params['path'] = NULL;
 			}
 
 			if( isset($params['password']) ) {

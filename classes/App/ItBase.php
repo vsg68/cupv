@@ -141,12 +141,15 @@ class ItBase extends Page {
 								 ->where('id',$this->_id)
 								 ->find();
 
+		// при редактировании данных записи в дереве подменяем массивы
 		if( $tab != 'tree' ) {
 			$entry = isset($entry->data) ? json_decode($entry->data) : '';
 		}
 
 		// Перед выводом - обрабатываем специальные символы
-		array_walk_recursive($entry->entry, array($this,'blockspechars'));
+		if( isset($entry->entry) ) {
+			array_walk_recursive($entry->entry, array($this,'blockspechars'));
+		}
 
 		if( isset($entry->records) ) {
 			array_walk_recursive($entry->records, array($this,'blockspechars'));
