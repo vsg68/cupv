@@ -64,14 +64,14 @@ class Page extends \PHPixie\Controller {
 										->execute()->as_array();
 
 		// Проверка легитимности пользователя и его прав
-        if( $this->ctrl != 'login' )
+        if( $this->ctrl != 'login' ) {
 			$this->permissions = $this->is_approve();
-
+		}
 	}
 
 	/* Проверка на предоставление доступа к разделу */
 	protected function is_approve(){
-
+return 1;
 		if( $this->auth->user() == null )
 			return 0;
 

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+l$(document).ready(function() {
 
 /*
  * Общая для всех часть
