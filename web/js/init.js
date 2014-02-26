@@ -492,7 +492,8 @@ var TTOpts = {
 							"sButtonClass": "DTTT_button_edit DTTT_disabled",
 							"fnClick": function( nButton, oConfig, oFlash ){
 											RowID = fnGetSelectedRowID(this);
-											fnEdit( RowID , 0);
+											pid = function_exists('usersRowID') ? usersRowID(this) : '';
+											fnEdit( RowID , pid);
 										},
 						},
 						{
@@ -501,8 +502,10 @@ var TTOpts = {
 							"sButtonClass": "DTTT_button_new",
 							"fnClick": function( nButton, oConfig, oFlash ){
 											if( ! $(nButton).hasClass('DTTT_disabled') ) {
-												pid = function_exists('usersRowID') ? usersRowID(this) : 0;
-												fnEdit( this.s.dt.sTableId +'-0', pid);
+												pid = function_exists('usersRowID') ? usersRowID(this) : '';
+												//pid = function_exists('usersRowID') ? usersRowID(this) : 0;
+												//fnEdit( this.s.dt.sTableId +'-0', pid);
+												fnEdit( this.s.dt.sTableId +'-00', pid);
 											}
 
 										},

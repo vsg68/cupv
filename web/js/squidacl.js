@@ -19,7 +19,7 @@ $(document).ready(function() {
 							   {"mData":"type"},
 							   {"mData":"comment","bSortable":false,},
 							   {"mData":"data","bVisible":false,"bSortable":false,},
-							   {'mData':'active',"sClass": "center","bSortable":false,},
+							   {"mData":"active","sClass": "center","bSortable":false,},
 							],
 				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 									drawCheckBox(nRow);
@@ -44,7 +44,6 @@ $(document).ready(function() {
 		TTOpts.aButtons[4].sButtonText = 'DATA';
 		TTOpts.aButtons.splice(3,1);
 		TOptions.aoColumns = [null]; 
-		TOptions.asStripeClasses = ["gradeA odd","gradeA even"]; 
 		delete TOptions.sAjaxSource;
 		$('#tab-squidacl_data').dataTable(TOptions);
 		
@@ -63,8 +62,8 @@ function blockNewButton(nodes) {
 			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
 		}
 
-		if( nodes.length && nodes[0].offsetParent.id == 'tab-acl') {
-			$('#ToolTables_tab-data_1').addClass('DTTT_disabled');
+		if( nodes.length && nodes[0].offsetParent.id == 'tab-squidacl') {
+			$('#ToolTables_tab-squidacl_data_1').addClass('DTTT_disabled');
 		}
 }
 
@@ -78,9 +77,19 @@ function unblockNewButton(node) {
 		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
 		
-		if( node[0].offsetParent.id == 'tab-acl') {
-			$('#ToolTables_tab-data_1').removeClass('DTTT_disabled');
+		if( node[0].offsetParent.id == 'tab-squidacl') {
+			$('#ToolTables_tab-squidacl_data_1').removeClass('DTTT_disabled');
 		}
+}
+
+/*
+ *  Получаю выделенную строку в таблице squidacl
+ */
+function usersRowID(objTT) {
+
+		if( objTT.s.dt.sTableId != 'tab-squidacl' )
+			return fnGetRowID("tab-squidacl");
+		return 0;
 }
 
 /*
@@ -88,17 +97,18 @@ function unblockNewButton(node) {
  */
 function showMapsTable(node) {
 
-		if(node[0].offsetParent.id != 'tab-acl')
+		if(node[0].offsetParent.id != 'tab-squidacl')
 			return false;
-		//Берем скрытое поле и парсим его в таблицу. Данные в поле разделяются пробелами!!!
-		aTR = $('#tab-acl').dataTable().fnGetData( node[0].sectionRowIndex );
-
-		$('#tab-data').dataTable().fnClearTable();
-
-		cells = aTR.data.split(/\s/);
-		for (i = 0; i < cells.length; i++) {
-			$('#tab-data').dataTable().fnAddData([cells[i]]);
-		}	
+		
+		// при выборе ACL редактирование данных блокируются (ибо фокус со строки уходит)
+		$('#ToolTables_tab-squidacl_data_0').addClass('DTTT_disabled');
+		$('#ToolTables_tab-squidacl_data_2').addClass('DTTT_disabled');
+		
+		id = node[0].id.split('-')[2];
+		$.getJSON( '/'+ ctrl +'/records/' + id, function(response) {
+							$('#tab-squidacl_data').dataTable().fnClearTable();
+							$('#tab-squidacl_data').dataTable().fnAddData(response);
+					});
 }
 
 /*
@@ -106,12 +116,12 @@ function showMapsTable(node) {
 */
 function clearChildTable(uids) {
 
-	if(tab == 'domains') {
-		for(i=0; i < uids.length; i++) {
-			id = '#tab-aliases-'+uids[i].id;
-			$('#tab-aliases').dataTable().fnDeleteRow( $(id).get(0) );
+		if(tab == 'domains') {
+			for(i=0; i < uids.length; i++) {
+				id = '#tab-aliases-'+uids[i].id;
+				$('#tab-aliases').dataTable().fnDeleteRow( $(id).get(0) );
+			}
 		}
-	}
 }
 
 /*
