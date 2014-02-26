@@ -19,31 +19,34 @@ $(document).ready(function() {
 							   {"mData":"type"},
 							   {"mData":"comment","bSortable":false,},
 							   {"mData":"data","bVisible":false,"bSortable":false,},
-							   //{'mData':'active',"sClass": "center","bSortable":false,},
+							   {'mData':'active',"sClass": "center","bSortable":false,},
 							],
-				//~ "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-									//~ drawCheckBox(nRow);
-								//~ },
+				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+									drawCheckBox(nRow);
+								},
 				"oTableTools": TTOpts
 		};
 
-		TTOpts.aButtons[4] = {
-							"sExtends":"save",
+		TTOpts.aButtons[3] = {
+							"sExtends":"text",
 							"sButtonText": ".",
+							"sButtonClass": "DTTT_button_save DTTT_disabled",
 							"fnClick": function( nButton, oConfig ) {
-											$(nButton).hasClass('DTTT_disabled') ? this.fnPrint( false, oConfig ) : this.fnPrint( true, oConfig );
+											//$(nButton).hasClass('DTTT_disabled') ? this.fnPrint( false, oConfig ) : this.fnPrint( true, oConfig );
 										}
 							};
+
 		TTOpts.aButtons[5].sButtonText = 'ACL';
 		TTOpts.aButtons.splice(4,1);
-		$('#tab-acl').dataTable(TOptions);
+		$('#tab-squidacl').dataTable(TOptions);
 		
 		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
 		TTOpts.aButtons[4].sButtonText = 'DATA';
 		TTOpts.aButtons.splice(3,1);
 		TOptions.aoColumns = [null]; 
+		TOptions.asStripeClasses = ["gradeA odd","gradeA even"]; 
 		delete TOptions.sAjaxSource;
-		$('#tab-data').dataTable(TOptions);
+		$('#tab-squidacl_data').dataTable(TOptions);
 		
 
 });
@@ -60,9 +63,8 @@ function blockNewButton(nodes) {
 			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
 		}
 
-		if( nodes.length && nodes[0].offsetParent.id == 'tab-users') {
-			$('#ToolTables_tab-aliases_1').addClass('DTTT_disabled');
-			$('#ToolTables_tab-lists_0').addClass('DTTT_disabled');
+		if( nodes.length && nodes[0].offsetParent.id == 'tab-acl') {
+			$('#ToolTables_tab-data_1').addClass('DTTT_disabled');
 		}
 }
 
@@ -75,34 +77,25 @@ function unblockNewButton(node) {
 		tab = node[0].offsetParent.id;
 		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
 		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
+		
+		if( node[0].offsetParent.id == 'tab-acl') {
+			$('#ToolTables_tab-data_1').removeClass('DTTT_disabled');
+		}
 }
 
 /*
- * Если хотим добавить в запрос на удаление какие-нить параметры -
- * то это делается тут
- */
-function deleteWithParams(uid, tab, init) {
-	if(tab == 'domains') {
-		val = $('#'+uid).attr('domain');
-		init['aname'] = val;
-	}
-
-	return init;
-}
-
-/*
- *  Если выделена строка в таблице sections - показываем связанные с ней controllers
+ *  Если выделена строка в таблице acl - показываем связанные с ней data
  */
 function showMapsTable(node) {
 
 		if(node[0].offsetParent.id != 'tab-acl')
 			return false;
-		//Берем скрытое поле и парсим его в таблицу
+		//Берем скрытое поле и парсим его в таблицу. Данные в поле разделяются пробелами!!!
 		aTR = $('#tab-acl').dataTable().fnGetData( node[0].sectionRowIndex );
 
 		$('#tab-data').dataTable().fnClearTable();
+
 		cells = aTR.data.split(/\s/);
-		
 		for (i = 0; i < cells.length; i++) {
 			$('#tab-data').dataTable().fnAddData([cells[i]]);
 		}	
