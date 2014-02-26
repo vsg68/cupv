@@ -18,12 +18,8 @@ class Page extends \PHPixie\Controller {
 
 	public function before() {
 
-		 $this->auth = $this->pixie->auth;
-		 $this->ctrl = $this->request->param('controller');
-
-		if( $this->ctrl == 'login' )
-			return false;
-
+		$this->auth = $this->pixie->auth;
+		$this->ctrl = $this->request->param('controller');
 		$this->view = $this->pixie->view('main');
 	    $this->view->script_file = '';
 		$this->view->css_file 	 = '';
@@ -64,9 +60,7 @@ class Page extends \PHPixie\Controller {
 										->execute()->as_array();
 
 		// Проверка легитимности пользователя и его прав
-        if( $this->ctrl != 'login' ) {
-			$this->permissions = $this->is_approve();
-		}
+		$this->permissions = $this->is_approve();
 	}
 
 	/* Проверка на предоставление доступа к разделу */

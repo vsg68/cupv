@@ -6,6 +6,10 @@ namespace App\Controller;
 
 class Login extends \App\Page {
 
+     public function before() {
+		 $this->auth = $this->pixie->auth;
+	 }
+     
      public function action_view() {
 
 		$this->view = $this->pixie->view('login');
