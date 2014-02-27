@@ -14,11 +14,10 @@ $(document).ready(function() {
 										this.fnAdjustColumnSizing();
 										this.fnDraw();
 								},
-				"aoColumns": [ {"mData":"acl","bVisible":false,"bSortable":false,},
+				"aoColumns": [
 							   {"mData":"name"},
 							   {"mData":"type"},
 							   {"mData":"comment","bSortable":false,},
-							   {"mData":"data","bVisible":false,"bSortable":false,},
 							   {"mData":"active","sClass": "center","bSortable":false,},
 							],
 				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {

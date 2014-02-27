@@ -16,11 +16,9 @@
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-squidacl">
 				<thead>
 					<tr>
-						<th></th>
 						<th>Name</th>
 						<th>Type</th>
 						<th>Comment</th>
-						<th></th>
 						<th>Active</th>
 					</tr>
 				</thead>

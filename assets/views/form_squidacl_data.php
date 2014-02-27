@@ -16,7 +16,7 @@
 		   <table>
 				<tr>
 					<td class='formlabel'>Значение:</td>
-					<td><input type='text' name='name' value='<?= isset($data) ? $data : '' ?>'  /></td>
+					<td><input type='text' name='data' value='<?= isset($data) ? $data : '' ?>'  /></td>
 				</tr>
 			</table>
 			<div class='submit'><div id='sb'></div></div>
