@@ -15,25 +15,25 @@
 		   <table>
 				<tr>
 					<td class='formlabel'>Название:</td>
-					<td><input type='text' name='name' value='<?= isset($data['name']) ? $data['name'] : '' ?>'  /></td>
+					<td><input type='text' name='name' value='<?= isset($data[1]) ? $data[1] : '' ?>'  /></td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Тип ACL:</td>
 					<td>
 						<select name='type'>
 							<?php foreach( array('domain','dst','src','port','proto','urlpath_regex','method') as $sometype): ?>
-							<option value='<?= $sometype ?>' <?= ( $sometype == ( isset($data['type']) ? $data['type'] : 'src') ? 'selected': '') ?> > <?= $sometype ?> </option>
+							<option value='<?= $sometype ?>' <?= ( $sometype == ( isset($data[2]) ? $data[2] : 'src') ? 'selected': '') ?> > <?= $sometype ?> </option>
 							<?php endforeach; ?>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Описание:</td>
-					<td><input type='text' name='comment' value='<?= isset($data['comment']) ? $data['comment'] : '' ?>'></td>
+					<td><input type='text' name='comment' value='<?= isset($data[4]) ? $data[4] : '' ?>'></td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Активно:</td>
-					<td><input type='checkbox' class='formtext' name='active' value='1' <?= (isset($data['active']) && $data['active']) ? 'checked' : '' ?> ></td>
+					<td><input type='checkbox' class='formtext' name='active' value='1' <?= (isset($data[3]) && $data[3]) ? 'checked' : '' ?> ></td>
 				</tr>
 			</table>
 			<div class='submit'><div id='sb'></div></div>

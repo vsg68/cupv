@@ -21,9 +21,9 @@ $(function(){
 													$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
 											},
 							"aoColumns": [
-										   {'mData':'ReceivedAt',"sWidth": "10%",},
+										   {'mData':'ReceivedAt',"sWidth": "12%",},
 										   {'mData':'SysLogTag',"sWidth": "12%",},
-										   {'mData':'MSGID',"sWidth": "12%",},
+										   {'mData':'MSGID',"sWidth": "10%",},
 										   {'mData':'Message'},
 										],
 							"fnCreatedRow": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {

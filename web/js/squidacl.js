@@ -88,7 +88,7 @@ function usersRowID(objTT) {
 
 		if( objTT.s.dt.sTableId != 'tab-squidacl' )
 			return fnGetRowID("tab-squidacl");
-		return 0;
+		return ;
 }
 
 /*
@@ -115,20 +115,21 @@ function showMapsTable(node) {
 */
 function clearChildTable(uids) {
 
-		if(tab == 'domains') {
-			for(i=0; i < uids.length; i++) {
-				id = '#tab-aliases-'+uids[i].id;
-				$('#tab-aliases').dataTable().fnDeleteRow( $(id).get(0) );
-			}
-		}
+		//~ if(tab == 'domains') {
+			//~ for(i=0; i < uids.length; i++) {
+				//~ id = '#tab-aliases-'+uids[i].id;
+				//~ $('#tab-aliases').dataTable().fnDeleteRow( $(id).get(0) );
+			//~ }
+		//~ }
 }
 
 /*
  * Функции проверок при редактировании записей в таблицах.
  * Проверка на совпадения доменов, алиасов - не производится !!
  */
-modWin.validate_domains = function () {
-
+modWin.validate_squidacl = function () {
+			
+			return false;
 			all_enable		= $('form :checkbox[name="all_enable"]').filter(':checked').length;
 			all_email		= $('form :text[name="all_email"]').val();
 			domain_name 	= $('form :text[name="domain_name"]').val();
