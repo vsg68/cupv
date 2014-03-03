@@ -57,7 +57,7 @@ class SquidACL extends \App\Page {
 		}
 
 		$line = $this->getArrayOfItems($this->_id, $pid);
-
+		
 		// вставляем активность вместо данных
 		if( $tab == 'squidacl') {
 			$line[3] = preg_match('/^#/', $line[0]) ? 0 : 1;
