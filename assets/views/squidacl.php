@@ -1,6 +1,6 @@
-<div class="content-center">
+<div class="content-center-35">
 
-		<div class='vertical-80'>
+		<div class='vertical-35'>
 			<div class='gorizont-50'>
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-squidacl_data">
 					<thead>
@@ -12,7 +12,7 @@
 			</div>
 		</div>
 </div>
-		<div class='vertical-20 '>
+		<div class='vertical-65 '>
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="tab-squidacl">
 				<thead>
 					<tr>

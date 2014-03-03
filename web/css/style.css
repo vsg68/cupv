@@ -26,6 +26,7 @@ td.content-left {
 	width:125px;
 }
 
+.content-center-35,
 .content-center {
 	 margin-left: -25.5%;
 	 width: 100%;
@@ -251,6 +252,7 @@ td.mcenter {
 }
 
 /****** главная страница  ********/
+.vertical-65,
 .vertical-20,
 .vertical-50
 {
@@ -262,21 +264,19 @@ td.mcenter {
 
 .vertical-20 {
 	width: 25%;
-	float:left;
-/*
- 	background-color: silver;
-*/
 }
-
+.vertical-65 {
+	width: 65%;
+}
 .vertical-80 {
 	margin-left: 25.5%;
-/*
-	border: 1px solid green;
-	background-color: yellow;
-*/
-
 }
-
+.vertical-35{
+	margin-left: 65.5%;
+}
+.content-center-35{
+	margin-left: -65.5%;
+}
 .gorizont-50  {
 	width: 100%;
 	min-height: 100px;
