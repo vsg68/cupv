@@ -111,17 +111,23 @@ function showMapsTable(node) {
 					});
 }
 
+function deleteWithParams(uid, tab, init) {
+	if(tab == 'squidacl_data') {
+		val = fnGetParentSelectedRowID("#tab-squidacl").split('-')[2];
+		init["pid"] = val;
+	}
+
+	return init;
+}
+
 /*
  * Стираем значения в "подчиненных" таблицах
 */
 function clearChildTable(uids) {
 
-		//~ if(tab == 'domains') {
-			//~ for(i=0; i < uids.length; i++) {
-				//~ id = '#tab-aliases-'+uids[i].id;
-				//~ $('#tab-aliases').dataTable().fnDeleteRow( $(id).get(0) );
-			//~ }
-		//~ }
+		if(tab == 'squidacl') {
+			$('#tab-squidacl_data').dataTable().fnClearTable();
+		}
 }
 
 /*

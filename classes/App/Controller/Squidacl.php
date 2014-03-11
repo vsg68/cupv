@@ -5,7 +5,6 @@ namespace App\Controller;
 class SquidACL extends \App\Page {
 
 	protected $squidacl_fname;
-	protected $data_fname;
 
 	public function before() {
 		$this->squidacl_fname = '/home/vsg/squid.acl.tmp';
@@ -84,9 +83,9 @@ class SquidACL extends \App\Page {
 
 		if( ! $params = $this->request->post() )
 			return;
-//~
-		//~ if( $this->permissions != $this::WRITE_LEVEL )
-			//~ return $this->noperm();
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
 
 		try {
 			$pid 	= $this->getVar($params['pid']);
@@ -134,6 +133,48 @@ class SquidACL extends \App\Page {
 		}
 	}
 
+
+    public function action_delEntry() {
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+		try {
+			$pid 	= $this->getVar($params['pid']);
+			$id  	= $params['id'];
+			$tab 	= $params['tab'];
+
+			// Работаем с массивом
+			$fileArr = $this->file2Array($pid);
+			
+			if( isset($pid) ) { // работаем с данными строки
+				$str 			= $this->file2Array()[$pid];
+				$fname 			= $this->split_str($str)[3];
+			}
+			else {
+				$data_fname = $this->split_str($fileArr[$id])[3];
+				$fname		= $this->squidacl_fname;
+				if( ! unlink($data_fname) ) {
+					throw new \Exception("Невозможно удалить файл {$data_fname}.");
+				}
+			}
+			unset($fileArr[$id]);		
+				
+			// Пишем в файл
+			if( ! file_put_contents( $fname, implode("\n", $fileArr), LOCK_EX) ) {
+				throw new \Exception("Ошибка при записи в файл {$fname}.");
+			}	
+
+			return;
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+		}
+	}
+
 	// Функция фильтрации файла ACL
 	// реакция только на строки начинающиеся с #acl | acl
 	protected function acl_str($var) {
@@ -164,18 +205,6 @@ class SquidACL extends \App\Page {
 		return implode("\t", $arr);  
 	}
 
-	// Сохранение массива в файл
-	protected function setACL($acls, $fname) {
-		try {
-
-		}
-		catch (\Exception $e) {
-			$view = $this->pixie->view('form_alert');
-			$view->errorMsg = $e->getMessage();
-			$this->response->body = $view->render();
-			return;
-		}
-	}
  }
 
 ?>
