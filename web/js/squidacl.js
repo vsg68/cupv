@@ -22,6 +22,7 @@ $(document).ready(function() {
 							],
 				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 									drawCheckBox(nRow);
+									addRowAttr( nRow, 'sid', 0 );
 								},
 				"oTableTools": TTOpts
 		};
@@ -132,66 +133,22 @@ function clearChildTable(uids) {
 
 /*
  * Функции проверок при редактировании записей в таблицах.
- * Проверка на совпадения доменов, алиасов - не производится !!
  */
-modWin.validate_squidacl = function () {
+
+function validate() {
+			tab		= $('form :hidden[name="tab"]').val();
+			id		= '#tab-' + tab + '-' + $(':hidden[name="id"]').val();
+			name	= $('form :text[name="name"]').val();
 			
-			return false;
-			all_enable		= $('form :checkbox[name="all_enable"]').filter(':checked').length;
-			all_email		= $('form :text[name="all_email"]').val();
-			domain_name 	= $('form :text[name="domain_name"]').val();
+			existSidID = $('tr', '#tab-' + tab).filter('[sid="' + name + '"]').filter(id).length;
+			existSid   = $('tr', '#tab-' + tab).filter('[sid="' + name + '"]').length;
 
-			if ( all_enable) {
-				if (! all_email ) {
-					modWin.message += 'Если разрешена рассылка,то необходимо указать адрес. ';
-				}
-				// Нет проверки на существующие почтовые ящики
-			}
-			if ( ! domain_name ) {
-				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
-			}
-			else {
-				if ( ! fnTestByType(domain_name,'domain')) {
-					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
-				}
+			if( ! existSidID && existSid ) {
+				modWin.message += 'В данном наборе значение '+ name +' уже существует!'
 			}
 
 			return modWin.message;
 }
 
-modWin.validate_squidacl_data = function () {
-return false;
-			address			= $('form :text[name="delivery_to"]').val();
-			domain_name 	= $('form :text[name="domain_name"]').val();
-
-			if ( ! domain_name ) {
-				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
-			}
-			else {
-				if ( ! fnTestByType(domain_name,'domain')) {
-					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
-				}
-			}
-
-			if ( ! fnTestByType(address,'transport')) {
-				modWin.message += 'Поле "протокол:[адрес]" должно иметь правильный формат.';
-			}
-
-			return modWin.message;
-}
-
-modWin.validate_aliases = function () {
-
-			domain_name	= $('form :text[name="domain_name"]').val();
-
-			if ( ! domain_name ) {
-				modWin.message += 'Поля алиаса и домена должны быть заполнены. ';
-			}
-			else {
-				if ( ! fnTestByType(domain_name,'domain')) {
-					modWin.message += 'Поле "Название домена" должно иметь правильный формат.';
-				}
-			}
-
-			return modWin.message;
-}
+modWin.validate_squidacl = validate;
+modWin.validate_squidacl_data = validate;
