@@ -5,37 +5,32 @@ namespace App\Controller;
 class SquidACL extends \App\Page {
 
 	protected $squidacl_fname;
+	protected $data_fname;
 
 	public function before() {
 		$this->squidacl_fname = '/home/vsg/squid.acl.tmp';
+		
 		if(! file_exists($this->squidacl_fname) ) {
 			throw new \Exception("Файл {$this->squidacl_fname} не найден");
 		}
+		$this->data_dir = dirname($this->squidacl_fname).'/acl';
+		
 		\App\Page::before();
 	}
 
 	public function action_showTable() {
-		try{
-			$lines = $this->fileACL2Array( $this->squidacl_fname );
 
-			foreach( $lines  as $key => $line ) {
-				$matches = preg_split('/\\t/', $line);
-				$acls['aaData'][$key] = array('name'	=> $matches[1],
-											'type'		=> $matches[2],
-											'comment'	=> ltrim($this->getVar($matches[4]), '#'),
-											'active'	=> ( preg_match('/^#/', $matches[0]) ? 0 : 1 ),
-											'DT_RowId'	=> 'tab-'.$this->ctrl.'-'.$key
-											);
-			}
-
-			$this->response->body = json_encode($acls);
+		$lines = $this->file2Array();
+		foreach( $lines  as $key => $line ) {
+			$matches = $this->split_str($line);
+			$acls['aaData'][$key] = array('name'	=> $matches[1],
+										'type'		=> $matches[2],
+										'comment'	=> ltrim($this->getVar($matches[4]), '#'),
+										'active'	=> ( preg_match('/^#/', $matches[0]) ? 0 : 1 ),
+										'DT_RowId'	=> 'tab-'.$this->ctrl.'-'.$key
+										);
 		}
-		catch (\Exception $e) {
-			$view = $this->pixie->view('form_alert');
-			$view->errorMsg = $e->getMessage();
-			$this->response->body = $view->render();
-			return;
-		}
+		$this->response->body = json_encode($acls);
 	}
 
 	public function action_showEditForm() {
@@ -45,25 +40,24 @@ class SquidACL extends \App\Page {
 
 		if( ! $tab = $this->request->post('t') )
 			return;
-
+		
+		$this->_id = $this->request->param('id');
+		
+		if( ! isset($this->_id) )  // если никаких значений
+			return;
+		
 		$view 		= $this->pixie->view('form_'.$tab);
 		$view->tab  = $tab;
-		$this->_id 	= $this->request->param('id');
 		$view->id 	= $this->_id;
 		$pid 		= $this->request->post('init');
-
+		
 		if ($tab != 'squidacl') {
 			$view->pid	= $pid;
 		}
 
-		$line = $this->getArrayOfItems($this->_id, $pid);
+		$lines = $this->file2Array($pid);  // Массив из нужного файла
 		
-		// вставляем активность вместо данных
-		if( $tab == 'squidacl') {
-			$line[3] = preg_match('/^#/', $line[0]) ? 0 : 1;
-		}
-		$view->data = ($tab == 'squidacl') ? $line : (count($line) ? $line[$this->_id] : '');
-
+		$view->data = preg_match('/00$/', $this->_id) ?  array() : $this->split_str($lines[$this->_id]);
 		$this->response->body = $view->render();
     }
 
@@ -72,16 +66,18 @@ class SquidACL extends \App\Page {
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
 
-		$this->_id = $this->request->param('id');
-
-		if( ! isset($this->_id) ) return;
-
-		$data  		= $this->getArrayOfItems($this->_id); // строка в файле
-		$items		= explode(' ',$data[3]);
-		$returnData = $this->DTPropAddToArray($items,'squidacl_data','gradeA');
-
+		$lines = $this->file2Array( $this->request->param('id') ); // строка в файле
+		$returnData = array();
+		foreach( $lines  as $key => $line ) {
+			$matches = $this->split_str($line);
+			$returnData[$key] = array('name'	=> ltrim($matches[0],'#'),
+									'comment'	=> ltrim($this->getVar($matches[1]), '#'),
+									'active'	=> ( preg_match('/^#/', $matches[0]) ? 0 : 1 ),
+									'DT_RowClass' => 'gradeA',
+									'DT_RowId'	=> 'tab-squidacl_data-'.$key
+									);
+		}
 		$this->response->body = json_encode($returnData);
-
     }
 
     public function action_edit() {
@@ -96,43 +92,39 @@ class SquidACL extends \App\Page {
 			$pid 	= $this->getVar($params['pid']);
 			$id  	= $params['id'];
 			$tab 	= $params['tab'];
-			$i  	= isset($pid) ? $pid : $id;
 
 			$params['active'] = $this->getVar($params['active'],0);
-
-			if( $pid ) {
-				 unset($params['active'], $params['pid']);
-			}
+			
 			unset($params['tab'],$params['id']);
 
 			// Работаем с массивом
-			$fileArr = $this->fileACL2Array($this->squidacl_fname);
-
-			if( is_numeric($pid) ) { // работаем с данными строки
-				preg_split('/\\t/', $fileArr[$pid], $lines);
-				$data 	= explode(' ', $lines[3]);
-				$id 	= preg_match('/00$/', $id) ? count($data) : $id;
-				$data[$id]	= $params; //['data'];
-				$lines[3] 	= implode(" ", $data);
+			$fileArr = $this->file2Array($pid);
+			$id = preg_match('/00$/', $id) ? count($fileArr) : $id;
+			
+			if( isset($pid) ) { // работаем с данными строки
+				$str 			= $this->file2Array()[$pid];
+				$fname 			= $this->split_str($str)[3];
+				$fileArr[$id] 	= $this->join_arr( array( 
+														($params['active'] ? '' : '#').$params['name'],
+														'#'.$params['comment'],
+														));
 			}
 			else {
-				$id = preg_match('/00$/', $id) ? count($fileArr) : $id;
-				$lines = array(	($params['active'] ? '#acl' : 'acl'),
-								 $params['name'],
-								 $params['type'],
-								 null,
-								 $params['comment']
-								 );
-				$i = $id;
+				$fname 			= $this->squidacl_fname;
+				$fileArr[$id] 	= $this->join_arr( array($params['active'] ? 'acl' : '#acl',
+														$params['name'],
+														$params['type'],
+														$this->data_dir.'/'.strtolower($params['name']).'.acl',
+														'#'.$params['comment'],
+														));
 			}
-
-			$fileArr[$i] = implode("\t", $lines);	// Это уже можно сохранять
-			// Сохранение
-			// ,,,,.....
-
+			// Пишем в файл
+			if( ! file_put_contents( $fname, implode("\n", $fileArr), LOCK_EX) ) {
+				throw new \Exception("Ошибка при записи в файл {$fname}.");
+			}	
 
 			$returnData 				= $params;
-			$returnData['DT_RowClass']	= $pid ? 'gradeA' : '';
+			$returnData['DT_RowClass']	= isset($pid) ? 'gradeA' : '';
 			$returnData['DT_RowId'] 	= 'tab-'.$tab.'-'.$id;
 
 			$this->response->body = json_encode($returnData);
@@ -148,42 +140,28 @@ class SquidACL extends \App\Page {
 		return preg_match('/^#?acl\s+/', $var);
 	}
 
-	protected function fileACL2Array($fname) {
+	protected function file2Array($pid='') {
 
-		$lines = file($fname, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-		return array_values(array_filter( $lines, array($this,'acl_str')));
+		$lines 	 = file($this->squidacl_fname, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+		$fileArr = array_values(array_filter( $lines, array($this,'acl_str')));
+		
+		if( is_numeric($pid) ) {
+
+			$this->data_fname = $this->split_str($fileArr[$pid])[3];
+			$fileArr = file_exists( $this->data_fname ) ? file($this->data_fname, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : array();
+		}
+
+		return $fileArr;
 	}
 
-	// Нахождение элемента массива, в который засунули файл
-	public function getArrayOfItems($id, $pid='') {
-
-		$i	= is_numeric($pid) ? $pid : $id;
-		$data = array();
-
-		// Если новая запись не новая
-		if( ! preg_match('/00$/', $id) ) {
-			$item 	 = $this->fileACL2Array($this->squidacl_fname)[$i]; // строка в файле
-			$data = preg_split('/\\t/', $item);  // данные
-
-			if( $pid ) {   // работаем с набором значений ACL
-				$data = explode(' ' ,$data[3]);	 	   // массив данных
-			}
-		}
-		return $data;
+	// Делаем из строки массив
+	public function split_str($str) {
+		return preg_split('/\\t+/', $str); 
     }
 
-    protected function DTPropAddToArray($row,$tab,$class) {
-
-		$returnData = array();
-		if(! count($row)) {	return $returnData;	}
-
-		foreach($row as $k => $item) {
-			$returnData[] = array( $item,
-								'DT_RowClass' => $class,
-								'DT_RowId'    => 'tab-'.$tab.'-'.$k
-								);
-		}
-		return $returnData;
+	// Делаем из массива строку
+	public function join_arr($arr) {
+		return implode("\t", $arr);  
 	}
 
 	// Сохранение массива в файл

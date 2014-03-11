@@ -26,14 +26,14 @@ $(document).ready(function() {
 				"oTableTools": TTOpts
 		};
 
-		TTOpts.aButtons[3] = {
-							"sExtends":"text",
-							"sButtonText": ".",
-							"sButtonClass": "DTTT_button_save DTTT_disabled",
-							"fnClick": function( nButton, oConfig ) {
-											//$(nButton).hasClass('DTTT_disabled') ? this.fnPrint( false, oConfig ) : this.fnPrint( true, oConfig );
-										}
-							};
+		//~ TTOpts.aButtons[3] = {
+							//~ "sExtends":"text",
+							//~ "sButtonText": ".",
+							//~ "sButtonClass": "DTTT_button_save DTTT_disabled",
+							//~ "fnClick": function( nButton, oConfig ) {
+											//~ //$(nButton).hasClass('DTTT_disabled') ? this.fnPrint( false, oConfig ) : this.fnPrint( true, oConfig );
+										//~ }
+							//~ };
 
 		TTOpts.aButtons[5].sButtonText = 'ACL';
 		TTOpts.aButtons.splice(4,1);
@@ -41,9 +41,10 @@ $(document).ready(function() {
 		
 		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
 		TTOpts.aButtons[4].sButtonText = 'DATA';
-		TTOpts.aButtons.splice(3,1);
-		TOptions.aoColumns = [null]; 
+		//~ TTOpts.aButtons.splice(3,1);
+		TOptions.aoColumns.splice(1,1);
 		delete TOptions.sAjaxSource;
+
 		$('#tab-squidacl_data').dataTable(TOptions);
 		
 
@@ -152,8 +153,8 @@ modWin.validate_squidacl = function () {
 			return modWin.message;
 }
 
-modWin.validate_transport = function () {
-
+modWin.validate_squidacl_data = function () {
+return false;
 			address			= $('form :text[name="delivery_to"]').val();
 			domain_name 	= $('form :text[name="domain_name"]').val();
 

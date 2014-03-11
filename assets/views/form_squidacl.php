@@ -33,7 +33,7 @@
 				</tr>
 				<tr>
 					<td class='formlabel'>Активно:</td>
-					<td><input type='checkbox' class='formtext' name='active' value='1' <?= (isset($data[3]) && $data[3]) ? 'checked' : '' ?> ></td>
+					<td><input type='checkbox' class='formtext' name='active' value='1' <?= isset($data[0]) ? (preg_match('/^#/', $data[0]) ? '' : 'checked') : 'checked' ?> ></td>
 				</tr>
 			</table>
 			<div class='submit'><div id='sb'></div></div>
