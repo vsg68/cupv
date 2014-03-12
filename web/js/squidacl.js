@@ -27,22 +27,12 @@ $(document).ready(function() {
 				"oTableTools": TTOpts
 		};
 
-		//~ TTOpts.aButtons[3] = {
-							//~ "sExtends":"text",
-							//~ "sButtonText": ".",
-							//~ "sButtonClass": "DTTT_button_save DTTT_disabled",
-							//~ "fnClick": function( nButton, oConfig ) {
-											//~ //$(nButton).hasClass('DTTT_disabled') ? this.fnPrint( false, oConfig ) : this.fnPrint( true, oConfig );
-										//~ }
-							//~ };
-
 		TTOpts.aButtons[5].sButtonText = 'ACL';
-		TTOpts.aButtons.splice(4,1);
+		TTOpts.aButtons.splice(3,2);
 		$('#tab-squidacl').dataTable(TOptions);
 		
 		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-		TTOpts.aButtons[4].sButtonText = 'DATA';
-		//~ TTOpts.aButtons.splice(3,1);
+		TTOpts.aButtons[3].sButtonText = 'DATA';
 		TOptions.aoColumns.splice(1,1);
 		delete TOptions.sAjaxSource;
 

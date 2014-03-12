@@ -211,3 +211,11 @@ a.DTTT_button_save.DTTT_disabled span {
 #alarms:hover {
 	background-position: -768px -64px;
 }
+
+#squidacl {
+	background-position: -832px 0px;
+}
+#squidacl.pagetab-selected,
+#squidacl:hover {
+	background-position: -832px -64px;
+}
