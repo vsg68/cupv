@@ -306,7 +306,9 @@ var modWin = {
 			$(':text, select, textarea').addClass('ui-widget-content ui-corner-all');
 
 			$('.autocomp').autocomplete({source: '/' + ctrl +'/searchMailbox/'});
-
+			
+			$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
+			
 			$('#sb').button({ label: '<a href=#>Send</a>'});
 
 			// Показе документа инициализирую функции
