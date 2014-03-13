@@ -68,7 +68,7 @@ class Logs extends \App\Page {
 							->fields($this->pixie->db->expr('DISTINCT
 											A.ReceivedAt AS ReceivedAt,
 											REPLACE(A.SysLogTag,"postfix\/","") AS SysLogTag,
-											A.MSGID AS msgid,
+											A.MSGID AS MSGID,
 											A.Message AS Message'
 							))
 							->table('maillog','X')
