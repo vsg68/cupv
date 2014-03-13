@@ -3,6 +3,13 @@ $(function(){
 
 	$('#logout').click(function(){ window.location = '/login/logout';});
 
+	$('#usersform').bind('keyup', function(e) {
+			var code = e.keyCode || e.which;
+			if(code == 13) { //Enter keycode
+			   $('#sb').click();
+			}
+	});
+
 	$('.theme').click(function(){ window.location = $(this).find('a').attr('href') });
 
 	$(':text, :password, select').addClass('ui-widget-content ui-corner-all');
