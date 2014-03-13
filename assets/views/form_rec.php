@@ -17,13 +17,12 @@
 		   <table>
 				<tr>
 					<td class='formlabel'>Название:</td>
-					<td><input type='text' name='fval[]' value='<?= isset($data->entry[$id][0]) ? $data->entry[$id][0] : '' ?>'  /></td>
+					<td><input type='text' name='fval[]' value='<?= isset($data->entry[$id][0]) ? $data->entry[$id][0] : "" ?>'  /></td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Тип:</td>
 					<td><select name='fval[]'>
-						<?php foreach( array('text', 'textarea', 'date') as $type): ?>
-
+						<?php foreach( array('text', 'data') as $type): ?>
 						<option value='<?= $type ?>' <?= (isset($data->entry[$id][1]) && $data->entry[$id][1] == $type )  ? 'selected' : '' ?> ><?= $type ?></option>
 
 						<?php endforeach; ?>
@@ -33,13 +32,12 @@
 				<tr>
 					<td class='formlabel'>Данные:</td>
 					<td>
-					<?php if(isset($data->entry[$id][1]) && $data->entry[$id][1] == 'textarea'): ?>
-						<textarea name='fval[]'><?= isset($data->entry[$id][2]) ? $data->entry[$id][2] : '' ?></textarea>
-					<?php elseif(isset($data->entry[$id][1]) && $data->entry[$id][1] == 'date'): ?>
-						<input class='date_field' type='text' name='fval[]' value='<?= isset($data->entry[$id][2]) ? $data->entry[$id][2] : "" ?>' />
-					<?php elseif(!isset($data->entry[$id][1]) || $data->entry[$id][1] == 'text'): ?>
-						<input type='text' name='fval[]' value='<?= isset($data->entry[$id][2]) ? $data->entry[$id][2] : "" ?>' />
-					<?php endif; ?>
+					<?php 
+							$value = isset($data->entry[$id][2]) ? $data->entry[$id][2] : '';
+							$type =  isset($data->entry[$id][1]) ? $data->entry[$id][1] : '';
+					?>		
+						<input type='text' name='fval[]' value='<?= $value ?>' class='<?= $type == 'data' ? 'date_field': ''; ?>'/>
+					
 					</td>
 				</tr>
 			</table>

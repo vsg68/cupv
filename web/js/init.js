@@ -325,9 +325,7 @@ var modWin = {
 
 			$('.autocomp').autocomplete({source: '/' + ctrl +'/searchMailbox/'});
 			$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
-
 			$('.spin_field').spinner({ min: 0 });
-
 			$('#sb').button({ label: '<a href=#>Send</a>'});
 
 			// Показе документа инициализирую функции
