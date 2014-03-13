@@ -17,7 +17,7 @@
 		   <table>
 				<tr>
 					<td class='formlabel'>Название:</td>
-					<td><input type='text' name='fval[]' value='<?= isset($data->entry[$id][0]) ? $data->entry[$id][0] : '' ?>'  /></td>
+					<td><input type='text' name='fval[]' value='<?= isset($data->entry[$id][0]) ? $data->entry[$id][0] : "" ?>'  /></td>
 				</tr>
 				<tr>
 					<td class='formlabel'>Тип:</td>
