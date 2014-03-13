@@ -324,7 +324,7 @@ var modWin = {
 			$(':text, select, textarea').not('.spin_field').addClass('ui-widget-content ui-corner-all');
 
 			$('.autocomp').autocomplete({source: '/' + ctrl +'/searchMailbox/'});
-			$('.date_field').datepicker({dateFormat:"yy-mm-dd"});
+			$('.date_field').datepicker({dateFormat:"dd.mm.yy"});
 			$('.spin_field').spinner({ min: 0 });
 			$('#sb').button({ label: '<a href=#>Send</a>'});
 
