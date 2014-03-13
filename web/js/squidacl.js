@@ -18,7 +18,7 @@ $(document).ready(function() {
 							   {"mData":"name"},
 							   {"mData":"type"},
 							   {"mData":"comment","bSortable":false,},
-							   {"mData":"active","sClass": "center","bSortable":false,},
+							   {"mData":"active","sClass": "center","bSortable":false,"sWidth":"5%"},
 							],
 				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 									drawCheckBox(nRow);
@@ -38,6 +38,11 @@ $(document).ready(function() {
 
 		$('#tab-squidacl_data').dataTable(TOptions);
 		
+		//~ TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
+		TTOpts.aButtons[3].sButtonText = 'ACCESS';
+		TOptions.aoColumns = [null,null,null];
+		$('#tab-squidaccess').dataTable(TOptions);
+
 
 });
 

@@ -4,6 +4,7 @@ body {
 	font-family: Tahoma, Verdana, Sans;
 	font-size: 12px;
 	position:relative;
+	height:100%;
 }
 
 .container {
@@ -11,6 +12,7 @@ body {
 	min-width:1000px;
 	width: 95%;
 	overflow: hidden;
+	height:100%;
 }
 
 table.container-inner {
@@ -282,7 +284,6 @@ td.mcenter {
 	min-height: 100px;
 	margin: 0 0 40px 0;
 }
-
 .right-side {
 	float: right;
 }
@@ -292,6 +293,26 @@ td.mcenter {
 	margin-right: -50.5%;
 	float: right;
 }
+/*******/
+.content-layout{
+	position: relative;
+}
+.content-layout  div.gorizont-30{
+	position: absolute;
+}
+.col1{
+	left:0;
+	width: 35%;
+}
+.col2{
+	left:35%;
+	width: 30%;
+}
+.col3 {
+	right:0;
+	width: 35%;
+}
+
 /**** картинки ***/
 #squidacl,
 #alarms,
