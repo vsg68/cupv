@@ -52,12 +52,12 @@ class Logs extends \App\Page {
 				if( $filter ) {
 
 					if( $direction ) { // From
-						array_push($query,array( $this->pixie->db->expr('LOCATE("qmgr",X.SysLogTag)'),'>', 0));
-						array_push($query,array( $this->pixie->db->expr('X.Message REGEXP "'.$filter.'"'),'=', 1));
+#						array_push($query,array( $this->pixie->db->expr('LOCATE("qmgr",X.SysLogTag)'),'>', 0));
+						array_push($query,array( $this->pixie->db->expr('X.Message REGEXP "^from=<.*'.$filter.'"'),'=', 1));
 					}
 					else {
-						array_push($query,array( $this->pixie->db->expr('LOCATE("pipe",X.SysLogTag)'),'>', 0));
-						array_push($query,array( $this->pixie->db->expr('X.Message REGEXP "'.$filter.'"'),'=', 1));
+#						array_push($query,array( $this->pixie->db->expr('LOCATE("pipe",X.SysLogTag)'),'>', 0));
+						array_push($query,array( $this->pixie->db->expr('X.Message REGEXP "^to=<.*'.$filter.'"'),'=', 1));
 					}
 				}
 				else // С этим запросом отрабатывает быстрее
