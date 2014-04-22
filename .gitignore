@@ -1,1 +1,3 @@
-assets/config/db.php
+/assets/config/db.php
+/nbproject/private/
+/tmp

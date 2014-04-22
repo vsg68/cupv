@@ -60,7 +60,6 @@
 				<thead>
 					<tr>
 						<th>ACLs</th>
-						<th>Comment</th>
 						<th>Active</th>
 					</tr>
 				</thead>

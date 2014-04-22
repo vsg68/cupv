@@ -34,13 +34,16 @@ $(document).ready(function() {
 		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
 		TTOpts.aButtons[3].sButtonText = 'DATA';
 		TOptions.aoColumns.splice(1,1);
+		TOptions.sDom = '<T>t';
 		delete TOptions.sAjaxSource;
 
 		$('#tab-squidacl_data').dataTable(TOptions);
 		
 		//~ TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
+		TOptions.sDom = "<'H'T>t<'F'>";
 		TTOpts.aButtons[3].sButtonText = 'ACCESS';
-		TOptions.aoColumns = [null,null,null];
+		TOptions.aoColumns.splice(1,1);
+		//TOptions.aoColumns = [null,null];
 		$('#tab-squidaccess').dataTable(TOptions);
 
 
