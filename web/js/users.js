@@ -59,9 +59,9 @@ $(document).ready(function() {
 											   {'mData':'path',"bSortable":false,},
 											   {'mData':'acl_groups',"bSortable":false, },
 											   {'mData':'imap_enable',"sClass": "center","bSortable":false,},
-                                               {'mData':'last_login',"bVisible":false,"bSortable":false,},
-                                               {'mData':'last_ip',"bVisible":false,"bSortable":false,},
-                                               {'mData':'last_prot',"bVisible":false,"bSortable":false,},
+                                               {'mData':'last_login',"bSortable":false,},
+                                               {'mData':'last_ip',"bSortable":false,},
+                                               {'mData':'last_prot',"bSortable":false,},
 											   {'mData':'active',"sClass": "center","bSortable":false,},
 											],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
@@ -197,16 +197,13 @@ function clearChildTable(info_data) {
  */
 function fnShowHide(nButton) {
 
-	iCol = [3,8,9,10];
+	iCol = 3;
 	tab = 'tab-users';
 
 	var oTable = $('#'+tab).dataTable();
-//	var bVis = oTable.fnSettings().aoColumns[3].bVisible;
-	var bVis = oTable.fnSettings().aoColumns[3].bVisible;
-    var change = bVis ? false : true;
-    for(i=0; i < iCol.length; i++) {
-	    oTable.fnSetColumnVis( iCol[i], change );
-    }
+	var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+
+	oTable.fnSetColumnVis( iCol, bVis ? false : true );
 
 	// В зависимости от показа - включаем или выключаем возможность печати
 	$(nButton).toggleClass('DTTT_unvis');
