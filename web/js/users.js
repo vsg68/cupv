@@ -59,6 +59,8 @@ $(document).ready(function() {
 											   {'mData':'path',"bSortable":false,},
 											   {'mData':'acl_groups',"bSortable":false, },
 											   {'mData':'imap_enable',"sClass": "center","bSortable":false,},
+                                                {'mData':'master_admin',"sClass": "center","bSortable":false,},
+                                                {'mData':'master_domain',"sClass": "center","bSortable":false,},
                                                {'mData':'last_login',"bSortable":false,},
                                                {'mData':'last_ip',"bSortable":false,},
                                                {'mData':'last_prot',"bSortable":false,},
@@ -66,6 +68,8 @@ $(document).ready(function() {
 											],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 													drawCheckBox(nRow);
+                                                    if(aData.master_admin == 1 || aData.master_domain == 1)
+                                                        $(nRow).addClass('boldText');
 													addRowAttr(nRow,'mbox',1);
 												},
 								"oTableTools": TTOpts

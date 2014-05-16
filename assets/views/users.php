@@ -11,6 +11,8 @@
 						<th>Path</th>
 						<th>ACL_groups</th>
 						<th>Imap</th>
+                        <th>master_a</th>
+                        <th>master_d</th>
                         <th>Last Login</th>
                         <th>Last IP</th>
                         <th>proto</th>
