@@ -2,21 +2,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Users</title>
+        <link rel="stylesheet" href="/codebase/webix.css" type="text/css" media="screen" charset="utf-8">
+        <script src="/codebase/webix.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/js/lib.js" type="text/javascript" charset="utf-8"></script>
 
-		<link rel="stylesheet" href="../css/smoothness/jquery-ui.min.css" type="text/css" />
-		<link rel="stylesheet" href="../css/demo_table_jui.css" type="text/css" />
-		<link rel="stylesheet" href="../css/TableTools_JUI.css" type="text/css" />
-		<link rel="stylesheet" href="../css/style.css" type="text/css" />
-		<link rel="stylesheet" href="../css/smoothness/images.css" type="text/css" />
-
-		<script type="text/javascript" language="javascript" src="../js/jquery.min.js"></script>
-		<script type="text/javascript" language="javascript" src="../js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" language="javascript" src="../js/jquery-ui.min.js"></script>
-		<script type="text/javascript" language="javascript" src="../js/TableTools.min.js"></script>
-		<script type="text/javascript" language="javascript" src="../js/TableTools.plugins.js"></script>
-		<script type="text/javascript" language="javascript" src="../js/jquery.simplemodal.js"></script>
-		<script type="text/javascript" language="javascript" src="../js/init.js"></script>
 
 			<?= $css_file; ?>
 			<?= $script_file; ?>
@@ -66,7 +55,8 @@
 					</td>
 					<td class="content">
 						<?php include($subview.'.php'); ?>
-					</td>
+
+                    </td>
 				</tr>
 			</table>
 		</div>

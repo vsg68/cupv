@@ -1,305 +1,147 @@
-$(document).ready(function() {
 
-		H 	= $(window).outerHeight();
-		rH	= 100;	// Скролл таблицы записей
-		d_min = rH + 110;  // Расстояние от главной таблицы до дна
-		eH	= 550;	// Скролл главной таблицы
-		// Настройка скроллинга большой таблицы
-		if( eH + d_min > H )
-			eH = H - d_min;
+/**************  Users ******************/
+var usrToolBar = new ToolBar("Пользователи","user");
+usrToolBar.cols.unshift({ id: 'filter_mbox', view: 'text', placeholder: 'Filter..', width: 200});
+//  Вывод пользователей
+var lusers = {
+    id: 'list_user',
+    view: "list",
+    template: function (obj) {
+        var tmpl = "<div class='fleft mailbox " + (obj.active == "0" ? "inactive" : "") + "'>" + obj.mailbox + "</div>";
+        tmpl += "<div class='fleft username' title='username'>" + obj.username + "</div>";
+        if (obj.imap_enable == "1")
+            tmpl += "<div class='fleft fa-envelope webix_icon' title='imap_enable'></div>";
+        else
+            tmpl += "<div class='fleft fa-envelope-o webix_icon' title='imap_disable'></div>";
+        if (obj.master_admin == "1")  tmpl += "<div class='fleft fa-male webix_icon' title='master_admin'></div>";
+        if (obj.master_domain == "1") tmpl += "<div class='fleft fa-users webix_icon' title='master_domain'></div>";
+        if (obj.allow_nets) {
+            net = obj.allow_nets.split(';');
+            for (i = 0; i < net.length; i++) {
+                if (/127.0.0.1*/.test(net[i]))
+                    colorclass = 'localnet';
+                else if (/10.0.0.0*/.test(net[i]))
+                    colorclass = 'net10';
+                else
+                    colorclass = 'net-' + (net[i].split('.'))[2];
 
-		var lTable = $('#tab-lists').dataTable({
-								"bJQueryUI": true,
-								"sDom": '<T>t',
-								"bSort": false,
-								"sScrollY": rH+"px",
-								"aoColumns": [
-												{"mData": "name",},
-												{"mData": "note",},
-											],
-								"oTableTools": {
-									"aButtons":	[
-													{
-														"sExtends":    "text",
-														"sButtonText": ".",
-														"sButtonClass": 'DTTT_button_group  DTTT_disabled',
-														"fnClick": function( nButton, oConfig, oFlash ){
-															//предотвращаем новое, если в основной таблице ничего не выбрано
-															if( ! $(nButton).hasClass('DTTT_disabled') ) {
-																fnGroupEdit( fnGetParentSelectedRowID('#tab-users'), 'lists' );
-															}
-														},
-													},
-													{
-														"sExtends":    "text",
-														"sButtonText": "СПИСКИ РАССЫЛКИ",
-														"sButtonClass": 'DTTT_label  DTTT_disabled',
-													}
-												]
-									},
-								});
+                tmpl += "<div class='fleft fa-sitemap webix_icon " + colorclass + "' title='" + net[i] + "'></div>";
+            }
+        }
+        if (obj.lastlog)    tmpl += "<div class='fleft last_login' title='last_login'>" + obj.lastlog + "</div>";
+        return tmpl;
+    },
+    type: { height: 40 },
+    select: true,
+    css: "ftab",
+    on: {
+        "onAfterSelect": function () {
+            item = $$('list_user').getSelectedItem();
+            $$('list_aliases').clearAll();
+            $$('list_aliases').load("/aliases/select/?q=alias&mbox=" + item.mailbox);
+            $$('list_fwd').clearAll();
+            $$('list_fwd').load("/aliases/select/?q=fwd&mbox=" + item.mailbox);
+        },
+        "onKeyPress": function (key) {
+            keyPressAction(this, key);
+        }
+    },
+    url: "/users/showTable/?q=mbox"
+};
+
+//  Форма редактирования пользователя
+var dform = {
+    id: "form_user",
+    view: "form",
+    elementsConfig: {labelWidth: 150},
+    elements: [
+        {view: "text", label: "mailbox", name: "mailbox"},
+        {view: "text", label: "username", name: "username"},
+        {view: "text", label: "password", name: "password"},
+        {view: "text", label: "path", name: "path"},
+        {view: "checkbox", label: "imap_enable", name: "imap_enable"},
+        {view: "text", label: "allow_nets", name: "allow_nets"},
+        {view: "text", label: "acl_groups", name: "acl_groups"},
+        {view: "checkbox", label: "master_admin", name: "master_admin"},
+        {view: "checkbox", label: "master_domain", name: "master_domain"},
+        {view: "text", label: "lastlog", name: "lastlog", disabled: true},
+        {view: "text", label: "last_ip", name: "last_ip", disabled: true},
+        {view: "text", label: "last_prog", name: "last_prog", disabled: true},
+        {view: "checkbox", label: "active", name: "active"},
+        { margin: 15, cols: [
+            {},
+            { view: "button", value: "Cancel", width: 100, click: "cancel()" },
+            { view: "button", value: "Save", width: 100, type: "form", click: "save()" },
+            {}
+
+        ]},
+        {}  // spacer
+    ],
+    rules:{
+        mailbox: function(){ return checkEmail();},
+        username:  webix.rules.isNotEmpty,
+        password:  webix.rules.isNotEmpty
+    }
+};
+
+//  Форма для вывода пользователей и формы редактирования
+var usersForm = {
+//    id: "usersView",
+    view: "multiview",
+    minWidth: 800,
+    newID:"",
+    abbreviate:"user",
+    cells: [ lusers, dform ] };
+
+/*********   Aliases  ********/
+var aliasToolBar = new ToolBar("Алиас","aliases");
+var aliasForm = new mView("aliases_mv");
+aliasForm.cells[0].linkfield = "delivery_to";
+// set defaults
+
+/*********   Forward  ********/
+var fwdToolBar = new ToolBar("Форвард","fwd");
+var fwdForm = new mView("fwd_mv");
+fwdForm.cells[1].elements[2].hidden = false;
+fwdForm.cells[1].elements[1].hidden = true;
+fwdForm.cells[0].template = "<div class='isactive_#active#'>#delivery_to#</div>";
+fwdForm.cells[0].linkfield = "alias_name";
+
+/*********   Groups  ********/
+var groupToolBar = new ToolBar("Группы","group");
+var groupForm = new mView("group_mv");
 
 
-		var oTable = $('#tab-users').dataTable({
-								"bJQueryUI": true,
-								"sScrollY":  eH + "px",
-								"bPaginate": false,
-								"sDom": "<'H'Tf>t<'F'ip>",
-								"sAjaxSource": "/users/showTable/",
-								"sServerMethod": "POST",
-								"fnInitComplete": function () {
-														this.fnAdjustColumnSizing();
-														this.fnDraw();
-												},
-								"aoColumns": [ {'mData':'username',"sClass": "nowrap"},
-											   {'mData':'mailbox'},
-											   {'mData':'mailbox', "bSortable":false, 'mRender' : function(data, type, full){ return data.split('@')[1]; }},
-											   {'mData':'password',"bVisible":false,"bSortable":false,},
-											   {'mData':'allow_nets',"bSortable":false,},
-											   {'mData':'path',"bSortable":false,},
-											   {'mData':'acl_groups',"bSortable":false, },
-											   {'mData':'imap_enable',"sClass": "center","bSortable":false,},
-                                                {'mData':'master_admin',"sClass": "center","bSortable":false,},
-                                                {'mData':'master_domain',"sClass": "center","bSortable":false,},
-                                               {'mData':'last_login',"bSortable":false,},
-                                               {'mData':'last_ip',"bSortable":false,},
-                                               {'mData':'last_prot',"bSortable":false,},
-											   {'mData':'active',"sClass": "center","bSortable":false,},
-											],
-								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-													drawCheckBox(nRow);
-                                                    if(aData.master_admin == 1 || aData.master_domain == 1)
-                                                        $(nRow).addClass('boldText');
-													addRowAttr(nRow,'mbox',1);
-												},
-								"oTableTools": TTOpts
-							});
+webix.ready(function () {
+    // Вывод основного представления
+    webix.ui({
+        container: "layout_div",
+        cols: [
+            {rows: [ usrToolBar, usersForm ]},
+            {rows: [ aliasToolBar, aliasForm ]},
+            {rows: [ fwdToolBar, fwdForm ]},
+            {rows: [ groupToolBar, groupForm ]}
+        ]
+    });
 
 
-		TTOpts.aButtons[1].sButtonClass = 'DTTT_button_new DTTT_disabled';
-		TTOpts.aButtons[5].sButtonText = 'АЛИАСЫ';
-		TTOpts.aButtons.splice(3,2);
+    // Связка формы и представления
+    $$('form_user').bind($$('list_user'));
+    $$('form_aliases').bind($$('list_aliases'));
+    $$('form_fwd').bind($$('list_fwd'));
 
-		var aTable = $('#tab-aliases').dataTable({
-								"bJQueryUI": true,
-								"sDom": '<T>t',
-								"sScrollY": rH+"px",
-								"aoColumns": [{'mData':'alias_name'},{'mData':'delivery_to'},{'mData':'active'}],
-								"aoColumnDefs": [{"sClass": "center","bSortable":false, "aTargets": [2] }],
-								"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-													drawCheckBox(nRow);
-													// добавляем аттриут data для валидации
-													addRowAttr(nRow,'aname',0); // alias_name
-													addRowAttr(nRow,'fname',1); // delivery_to
-												},
-								"oTableTools": TTOpts,
-								});
+    // Фильтрация по текстовым полям
+    $$("filter_mbox").attachEvent("onTimedKeyPress", function () {
+        //get user input value
+        var value = this.getValue().toLowerCase();
 
+        $$('list_user').filter(function (obj) {
 
-		$('body').on('click','.mkpwd', function(){
+            if (obj.mailbox.toLowerCase().indexOf(value) >= 0 || obj.username.toLowerCase().indexOf(value) >= 0)
+                return 1;
+        })
+    });
 
-			$(this).closest('tr').find(':text[name="password"]').val(mkpasswd());
-		});
 
 
 });
-
-
-var url = 'url(/css/smoothness/images/groups.png)';
-
-/*
- *  Если выделена строка в таблице users - показываем связанные с ней алиасы
- */
-function showMapsTable(node) {
-
-		if(node[0].offsetParent.id != 'tab-users')
-			return false;
-
-		id = node[0].id.split('-')[2];
-		$.ajax({
-				type: "GET",
-				url: '/'+ ctrl +'/records/' + id,
-				dataType: "json",
-				success: function(response) {
-										$('#tab-aliases').dataTable().fnClearTable();
-										$('#tab-aliases').dataTable().fnAddData(response['aliases']);
-										$('#tab-lists').dataTable().fnClearTable();
-										$('#tab-lists').dataTable().fnAddData(response['lists']);
-
-										},
-				error: function() {
-									$('#tab-aliases').dataTable().fnClearTable();
-									$('#tab-lists').dataTable().fnClearTable();
-									}
-		});
-}
-
-/*
- *  Если НЕ выделена строка в таблице users - создавать для нее алиасы запрещаем
- *  Запещаем редактировать и удалять, если не выделено
- */
-function blockNewButton(nodes) {
-
-		if( nodes.length && (tab = nodes[0].offsetParent.id) ) {
-			$('#ToolTables_'+tab+'_0').addClass('DTTT_disabled');
-			$('#ToolTables_'+tab+'_2').addClass('DTTT_disabled');
-		}
-
-		if( nodes.length && nodes[0].offsetParent.id == 'tab-users') {
-			$('#ToolTables_tab-aliases_1').addClass('DTTT_disabled');
-			$('#ToolTables_tab-lists_0').addClass('DTTT_disabled');
-		}
-}
-
-/*
- *  Если выделена строка в таблице users - разрешаем создавать для нее алиасы
- *  Разрешаем редактировать и удалять, если выделено
- */
-function unblockNewButton(node) {
-
-		tab = node[0].offsetParent.id;
-
-		$('#ToolTables_'+tab+'_0').removeClass('DTTT_disabled');
-		$('#ToolTables_'+tab+'_2').removeClass('DTTT_disabled');
-
-		if( node[0].offsetParent.id == 'tab-users') {
-			$('#ToolTables_tab-aliases_1').removeClass('DTTT_disabled');
-			$('#ToolTables_tab-lists_0').removeClass('DTTT_disabled');
-		}
-}
-
-/*
- *  Получаю выделенную строку в таблице users
- */
-function usersRowID(objTT) {
-
-		if( objTT.s.dt.sTableId != 'tab-users' )
-			return fnGetRowID("tab-users");
-		return 0;
-}
-
-/*
- * Стираем значения "подчиненных" таблиц
-*/
-function clearChildTable(info_data) {
-
-	if(tab != 'users')
-		return false;
-
-	$('#tab-aliases').dataTable().fnClearTable();
-	$('#tab-lists').dataTable().fnClearTable();
-
-	if(info_data) {
-		$(info_data).modal(modInfo);
-	}
-
-}
-
-
-/*
- * Скрываем колонку паролей
- */
-function fnShowHide(nButton) {
-
-	iCol = 3;
-	tab = 'tab-users';
-
-	var oTable = $('#'+tab).dataTable();
-	var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
-
-	oTable.fnSetColumnVis( iCol, bVis ? false : true );
-
-	// В зависимости от показа - включаем или выключаем возможность печати
-	$(nButton).toggleClass('DTTT_unvis');
-	$('.DTTT_button_print').toggleClass('DTTT_disabled');
-}
-
-/*
- * Если хотим добавить в запрос на удаление какие-нить параметры -
- * то это делается тут
- */
-function deleteWithParams(uid, tab, init) {
-	if(tab == 'users') {
-		val = $('#'+uid).attr('mbox');
-		init["aname"] = val;
-	}
-
-	return init;
-}
-
-
-modWin.validate_users = function () {
-
-			login 			= $('form :text[name="login"]').val();
-			mailbox 		=  login + '@' +  $('form option:selected').val();
-			allow_nets 		= $('form :text[name="allow_nets"]').val();
-			id				= '#tab-users-' + $(':hidden[name="id"]').val();
-
-			if ( ! login ) {
-				modWin.message += 'Login is required. ';
-			}
-			else{
-				existMboxID = $('tr').filter('[mbox="' + mailbox + '"]').filter(id).length;
-				existMbox   = $('tr').filter('[mbox="' + mailbox + '"]').length;
-
-				if( ! existMboxID && existMbox ) {
-					modWin.message += 'П/я '+ mailbox +' уже существует!'
-				}
-			}
-
-			if ( ! $('form :text[name="username"]').val()) {
-				modWin.message += 'Name is required. ';
-			}
-
-			if ( ! $('form :text[name="password"]').val()) {
-				modWin.message += 'Message is required.';
-			}
-
-			if ( ! $('form :text[name="password"]').val()) {
-				modWin.message += 'Message is required.';
-			}
-
-			if ( ! fnTestByType(allow_nets,'nets')) {
-				modWin.message += 'Поле "разрешенные сети" должно содержать правильную маску сети.\n';
-			}
-
-			return modWin.message;
-}
-
-modWin.validate_aliases = function () {
-
-			alias_name	= $('form :text[name="alias_name"]').val();
-			delivery_to	= $('form :text[name="delivery_to"]').val();
-			id			= '#tab-aliases-' + $(':hidden[name="id"]').val();
-
-
-			if ( ! (alias_name || delivery_to) ) {
-				modWin.message += 'Хотя бы одно поле должно быть заполнено. ';
-			}
-
-			if ( !(fnTestByType( alias_name, 'mail') && alias_name) ) {
-				modWin.message += 'поле должно содержать почтовый адрес';
-			}
-
-			if ( !(fnTestByType( delivery_to, 'mail') && delivery_to) ) {
-				modWin.message += 'поле должно содержать почтовый адрес';
-			}
-
-			existNameID = 	$('tr')
-									.filter('[aname="'+ alias_name + '"]')
-									.filter('[fname="'+ delivery_to + '"]')
-									.filter( id )
-									.length;
-			existName = 	$('tr')
-									.filter('[aname="'+ alias_name + '"]')
-									.filter('[fname="'+ delivery_to + '"]')
-									.length;
-
-			if( ! existNameID && existName ) {
-					modWin.message += "Такие сочетания алиасов уже присутствуют";
-					$('form :text[name="delivery_to"]').val('');
-
-			}
-
-			return modWin.message;
-}

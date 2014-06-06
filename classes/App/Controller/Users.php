@@ -112,8 +112,10 @@ class Users extends \App\Page {
 		if( $tab == 'users' ) {
 			$params['mailbox'] 		= $params['login'].'@'.$params['domain'];
 			$params['imap_enable'] 	= $this->getVar($params['imap_enable'],0);
+            $params['master_admin'] 	= $this->getVar($params['master_admin'],0);
+            $params['master_domain'] 	= $this->getVar($params['master_domain'],0);
 			// принудительно
-			$params['acl_groups'] 	= '';
+			$params['acl_groups'] 	= $this->getVar($params['acl_groups']);
 			
 			if( ! $params['path'] )	{
 				$params['path'] = NULL;
@@ -156,14 +158,15 @@ class Users extends \App\Page {
 		}
 	}
 
-	public function action_showTable() {
-
-		$returnData = array();
-		$users = $this->pixie->orm->get('users')->find_all()->as_array(true);
-
-		$returnData["aaData"] = $this->DTPropAddToObject($users, 'users', '');
-        $this->response->body = json_encode($returnData);
-	}
+//	public function action_showTable() {
+//
+//
+//		$returnData = array();
+//		$users = $this->pixie->orm->get('users')->find_all()->as_array(true);
+//
+//		$returnData["aaData"] = $this->DTPropAddToObject($users, 'users', '');
+//        $this->response->body = json_encode($returnData);
+//	}
 
 	public function action_delEntry() {
 
@@ -253,6 +256,52 @@ class Users extends \App\Page {
 
 	}
 
-}
+    public function action_showTable(){
 
+        extract($this->request->get(), EXTR_OVERWRITE);
+        $result = "";
+
+        if($q  == "list" ){
+            $result = $this->pixie->db->query('select')
+                                ->fields($this->pixie->db->expr("CONCAT('users_',id) as id, active, mailbox, username "))
+                                ->table('users')
+                                ->execute()->as_array();
+
+        }
+//        if($q == "mbox" ){
+        elseif($q == "mbox" ){
+            $result = $this->pixie->db->query('select')
+                                ->fields($this->pixie->db->expr("*, DATE_FORMAT(`last_login`, '%d-%m-%Y') as lastlog"))
+                                ->table('users')
+                                ->order_by('mailbox')
+                                ->execute()->as_array();
+
+        }
+        elseif($q == "valid" ){
+            // запрос
+            $sql = $this->pixie->db->query('select')
+                        ->table('domains')
+                        ->where(array('delivery_to','virtual'))
+                        ->where(array('domain_name', $this->pixie->db->expr("SUBSTRING_INDEX('".$mbox."', '@', -1)")));
+
+            $result = $this->pixie->db->query('select')
+                            ->fields($this->pixie->db->expr("1"))
+                            ->table('users')
+                            ->where(array(
+                                            array('id','!=', $id),
+                                            array("mailbox", $mbox),
+                                        ))
+                            ->where(array('or',array(
+                                            array('id', $id),
+                                            array("mailbox", '!=', $mbox),
+                                        )))
+                            ->where(array('or',array( $sql, 'NOT EXISTS', 1)))
+                            ->execute()->as_array();
+
+
+        }
+
+        $this->response->body = json_encode($result);
+    }
+}
 ?>

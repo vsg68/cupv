@@ -166,6 +166,23 @@ class Aliases extends \App\Page {
 		}
     }
 
+    public function action_select(){
 
+        extract($this->request->get(), EXTR_OVERWRITE);
+
+        if( $q == "alias" ){
+            $result = $this->pixie->db->query('select')->table('aliases')
+                                ->where(array("delivery_to",$mbox))
+                                ->where(array("alias_name","!=", $mbox))
+                                ->execute()->as_array();
+        }
+        elseif( $q == "fwd" ){
+            $result = $this->pixie->db->query('select')->table('aliases')
+                    ->where(array("alias_name", $mbox))
+                    ->execute()->as_array();
+        }
+
+        $this->response->body = json_encode($result);
+    }
 }
 ?>

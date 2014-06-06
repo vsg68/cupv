@@ -168,7 +168,7 @@ class Page extends \PHPixie\Controller {
 			return  $this->noperm();
 
 		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js') ) {
-			$this->view->script_file = '<script type="text/javascript" src="../js/'.$this->ctrl.'.js"></script>';
+			$this->view->script_file = '<script type="text/javascript" src="/js/'.$this->ctrl.'.js"></script>';
 		}
 
 		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') ) {
