@@ -72,8 +72,8 @@ class Page extends \PHPixie\Controller {
 	/* Проверка на предоставление доступа к разделу */
 	protected function is_approve(){
 
-		if( $this->auth->user() == null )
-			return 0;
+//		if( $this->auth->user() == null )
+//			return 0;
 
 		$name = $this->auth->user()->login;
 		$ctrl = $this->request->param('controller');

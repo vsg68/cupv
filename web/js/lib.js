@@ -40,7 +40,8 @@ function mView(id){
     this.abbreviate = id.split("_")[0];
     this.newID;
     this.fitBiggest = true;
-    this.minWidth = 250;
+    //this.minWidth = 200;
+    this.maxWidth = 300;
     this.cells = [
         { id: "list_" + this.abbreviate, view: "list",
             linkfield:"", // поле привязки к пользовательскому ящику
@@ -104,22 +105,22 @@ function keyPressAction(list, key) {
     }
     // Сохранение формы
     function save() {
-//    валидация!! {}
-    mForm = this.getFormView();
-    abrv = (mForm.config.id.split("_"))[1];
-    if( mForm.validate() ) {
-        webix.ajax().post("/users/" + abrv+ "_save", mForm.getValues(), function(text){ //TODO  подумать, как будут приниматься данные
-            if( text )
-                webix.message("Request: \n" + text); // server side response
-        });
-    mForm.save();
-    var mView = mForm.getParentView();
-    mView.config.newID = "";
-    mView.back();
-    }
-    else {
-        webix.message({ type:"error", text:"Что-то в форме не так.." });
-    }
+    //    валидация!! {}
+        mForm = this.getFormView();
+        abrv = (mForm.config.id.split("_"))[1];
+        if( mForm.validate() ) {
+            webix.ajax().post("/users/" + abrv+ "_save", mForm.getValues(), function(text){ //TODO  подумать, как будут приниматься данные
+                if( text )
+                    webix.message("Request: \n" + text); // server side response
+            });
+        mForm.save();
+        var mView = mForm.getParentView();
+        mView.config.newID = "";
+        mView.back();
+        }
+        else {
+            webix.message({ type:"error", text:"Что-то в форме не так.." });
+        }
     }
 
     // Отмена изменений
@@ -127,9 +128,9 @@ function keyPressAction(list, key) {
         var mView = this.getFormView().getParentView();
         var newID = mView.config.newID;
         if( newID ){
-        $$("list_" + mView.config.abbreviate).remove(newID);
+            $$("list_" + mView.config.abbreviate).remove(newID);
         }
-    mView.back();
+        mView.back();
     }
     // Проверка на существования адреса и id, а так же правильность домена
     function checkEmail(){
@@ -139,8 +140,8 @@ function keyPressAction(list, key) {
         webix.ajax().sync().get("/users/showTable", { q:"valid", mbox: mForm.mailbox, id: mForm.id }, function(text){
         valid = (text == 'null') ? true : false;  // responce
         });
-    if(! valid )
-    webix.message({type:"error", expire:3000, text:"Проверьте адрес и домен"});
-    }
-    return valid;
+        if(! valid )
+          webix.message({type:"error", expire:3000, text:"Проверьте адрес и домен"});
+        }
+        return valid;
     }

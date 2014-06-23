@@ -39,6 +39,14 @@
 					<td class='formlabel'>Путь к п/я</td>
 					<td><input type='text' name='path' value='<?= isset($data->path) ? $data->path : '' ?>'  /></td>
 				</tr>
+               <tr>
+                   <td class='formlabel'>Админ п/я (локал)</td>
+                   <td><input type='checkbox' class='formtext' name='master_admin' value='1' <?php isset($data->master_admin) ? ($data->master_admin & 1) && print('checked') : print('checked') ?> ></td>
+               </tr>
+               <tr>
+                   <td class='formlabel'>Админ п/я (домен)</td>
+                   <td><input type='checkbox' class='formtext' name='master_domain' value='1' <?php isset($data->master_domain) ? ($data->master_domain & 1) && print('checked') : print('checked') ?> ></td>
+               </tr>
 				 <tr>
 					<td class='formlabel'>Протокол IMAP:</td>
 					<td><input type='checkbox' class='formtext' name='imap_enable' value='1' <?php isset($data->imap_enable) ? ($data->imap_enable & 1) && print('checked') : print('checked') ?> ></td>

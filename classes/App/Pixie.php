@@ -18,7 +18,7 @@ class Pixie extends \PHPixie\Pixie {
 
 	protected function after_bootstrap(){
 		//Whatever code you want to run after bootstrap is done.
-        //$this->debug->display_errors = false;
+        $this->debug->display_errors = true;
 
 	}
 }
