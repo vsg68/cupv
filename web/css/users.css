@@ -1,11 +1,10 @@
-html,
-body,
-.container-inner {
-    height: 100%;
+.menuitem {
+    height: 120px !important;
+    border: none !important;
+    list-style: none;
 }
-body > table.container-inner {
-    min-height: 100%;
-    height: auto !important;
+.menulist {
+    overflow: auto !important;
 }
 .isactive_0 {
     color: #c2d0d4;

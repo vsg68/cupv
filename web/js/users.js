@@ -44,6 +44,10 @@ var lusers = {
         },
         "onKeyPress": function (key) {
             keyPressAction(this, key);
+        },
+        "onAfterLoad": function(){
+            this.config.height = (window.innerHeight - 80);
+            this.resize();
         }
     },
     url: "/users/showTable/?q=mbox"
@@ -89,6 +93,7 @@ var usersForm = {
 //    id: "usersView",
     view: "multiview",
     minWidth: 800,
+//    autoheight:"true",
     newID:"",
     abbreviate:"user",
     cells: [ lusers, dform ] };
@@ -120,7 +125,7 @@ webix.ready(function () {
             {rows: [ usrToolBar, usersForm ]},
             {rows: [ aliasToolBar, aliasForm ]},
             {rows: [ fwdToolBar, fwdForm ]},
-            {rows: [ groupToolBar, groupForm ]}
+            {rows: [ groupToolBar, groupForm ]},
         ]
     });
 
