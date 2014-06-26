@@ -116,36 +116,43 @@ fwdForm.cells[0].linkfield = "alias_name";
 var groupToolBar = new ToolBar("Группы","group");
 var groupForm = new mView("group_mv");
 
-
+maintable = {
+    cols: [
+        {rows: [ usrToolBar, usersForm ]},
+        {rows: [ aliasToolBar, aliasForm ]},
+        {rows: [ fwdToolBar, fwdForm ]},
+        {rows: [ groupToolBar, groupForm ]},
+    ]
+};
 webix.ready(function () {
     // Вывод основного представления
-    webix.ui({
-        container: "layout_div",
-        cols: [
-            {rows: [ usrToolBar, usersForm ]},
-            {rows: [ aliasToolBar, aliasForm ]},
-            {rows: [ fwdToolBar, fwdForm ]},
-            {rows: [ groupToolBar, groupForm ]},
-        ]
-    });
+//    webix.ui({
+//        container: "layout_div",
+//        cols: [
+//            {rows: [ usrToolBar, usersForm ]},
+//            {rows: [ aliasToolBar, aliasForm ]},
+//            {rows: [ fwdToolBar, fwdForm ]},
+//            {rows: [ groupToolBar, groupForm ]},
+//        ]
+//    });
 
 
     // Связка формы и представления
-    $$('form_user').bind($$('list_user'));
-    $$('form_aliases').bind($$('list_aliases'));
-    $$('form_fwd').bind($$('list_fwd'));
-
-    // Фильтрация по текстовым полям
-    $$("filter_mbox").attachEvent("onTimedKeyPress", function () {
-        //get user input value
-        var value = this.getValue().toLowerCase();
-
-        $$('list_user').filter(function (obj) {
-
-            if (obj.mailbox.toLowerCase().indexOf(value) >= 0 || obj.username.toLowerCase().indexOf(value) >= 0)
-                return 1;
-        })
-    });
+//    $$('form_user').bind($$('list_user'));
+//    $$('form_aliases').bind($$('list_aliases'));
+//    $$('form_fwd').bind($$('list_fwd'));
+//
+//    // Фильтрация по текстовым полям
+//    $$("filter_mbox").attachEvent("onTimedKeyPress", function () {
+//        //get user input value
+//        var value = this.getValue().toLowerCase();
+//
+//        $$('list_user').filter(function (obj) {
+//
+//            if (obj.mailbox.toLowerCase().indexOf(value) >= 0 || obj.username.toLowerCase().indexOf(value) >= 0)
+//                return 1;
+//        })
+//    });
 
 
 

@@ -19,7 +19,7 @@ class Page extends \PHPixie\Controller {
 	public function before() {
 
 		 $this->auth = $this->pixie->auth;
-		 $this->ctrl = $this->request->param('controller');
+		 $this->ctrl = strtolower($this->request->param('controller'));
 
 		if( $this->ctrl == 'login' )
 			return false;
@@ -27,6 +27,7 @@ class Page extends \PHPixie\Controller {
 		$this->view = $this->pixie->view('main');
 	    $this->view->script_file = '';
 		$this->view->css_file 	 = '';
+        $this->view->ctrl 	 = $this->ctrl;
 
 //		 if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
 
@@ -58,7 +59,7 @@ $name = "vsg";
 										->fields('Y.*')
 										->table('controllers','X')
 										->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
-										->where('X.class',strtolower($this->request->param('controller')))
+										->where('X.class',$this->ctrl)
 										->where('Y.active',1)
 										->order_by('Y.order')
 										->execute()->as_array();
@@ -169,7 +170,8 @@ $name = "vsg";
 			return  $this->noperm();
 
 		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js') ) {
-			$this->view->script_file = '<script type="text/javascript" src="/js/'.$this->ctrl.'.js"></script>';
+			$this->view->script_file = $_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js';
+//			$this->view->script_file = '<script type="text/javascript" src="/js/'.$this->ctrl.'.js"></script>';
 		}
 
 		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') ) {
@@ -228,4 +230,23 @@ $name = "vsg";
 		return $data;
 	}
 
+    public function action_get_menulist() {
+
+        $menuitems = array();
+        $items = $this->pixie->db
+                                ->query('select','admin')
+                                ->fields('Y.name')
+                                ->table('controllers','X')
+                                ->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
+                                ->where('X.class',$this->ctrl)
+                                ->where('Y.active',1)
+                                ->order_by('Y.order')
+                                ->execute()->as_array();
+        foreach( $items as $i) {
+            $menuitems['submenu'][] = $i->name;
+        }
+        $menuitems['name'] = "Меню";
+
+        echo json_encode($menuitems);
+    }
 }

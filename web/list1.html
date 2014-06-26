@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <META http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="/codebase/webix.css" type="text/css" media="screen" charset="utf-8">
+    <script src="/codebase/webix_debug.js" type="text/javascript" charset="utf-8"></script>
+    <title>Something</title>
+</head>
+
+
+<body>
+
+<div data-view="menu">
+    <div data-view="data">
+        <ul>
+            <li data-id="X1">Translate.. </li>
+            <li data-id="X2">Post</li>
+        </ul>
+
+        <div data-view="submenu">
+            <ul>
+                <li>English</li>
+                <li>German </li>
+                <li>Belarus</li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+webix.ready(function () {
+    // Вывод основного представления
+    webix.markup.init();
+    });
+
+
+</script>
+</body>
+</html>
