@@ -1,5 +1,5 @@
 
-function ToolBar(label, abr){
+function ToolBarAdm(label, abr){
     this.view = "toolbar";
     this.height = 30;
     this.cols = [
@@ -35,12 +35,20 @@ function ToolBar(label, abr){
     ]
 }
 
-function mView(id){
+function ToolBar(label, abr){
+    this.view = "toolbar";
+    this.height = 30;
+    this.cols = [
+        {view: "label", label: label},
+    ]
+}
+
+function mViewAdm(id){
     this.view = "multiview";
     this.abbreviate = id.split("_")[0];
     this.newID;
     this.fitBiggest = true;
-    //this.minWidth = 200;
+    this.minWidth = 250;
     this.maxWidth = 300;
     this.cells = [
         { id: "list_" + this.abbreviate, view: "list",
@@ -69,7 +77,22 @@ function mView(id){
             }
         }
     ]
-};
+}
+
+function mView(id){
+    this.abbreviate = id.split("_")[0];
+    this.maxWidth = 300;
+    this.cells = [
+        { id: "list_" + this.abbreviate, view: "list",
+            linkfield:"", // поле привязки к пользовательскому ящику
+            scroll: false, select: true,
+            template: "<div class='isactive_#active#'>#alias_name#</div>",
+            on: { "onKeyPress": function (key) {
+                keyPressAction(this, key);
+            }}
+        },
+    ]
+}
 
 // Реакция на клавиши списка пользователей
 function keyPressAction(list, key) {

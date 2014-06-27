@@ -25,7 +25,8 @@ class Page extends \PHPixie\Controller {
 			return false;
 
 		$this->view = $this->pixie->view('main');
-	    $this->view->script_file = '';
+	    $this->view->permission = '';
+        $this->view->script_file = '';
 		$this->view->css_file 	 = '';
         $this->view->ctrl 	 = $this->ctrl;
 
@@ -169,10 +170,16 @@ $name = "vsg";
         if( $this->permissions == $this::NONE_LEVEL )
 			return  $this->noperm();
 
-		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js') ) {
-			$this->view->script_file = $_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js';
-//			$this->view->script_file = '<script type="text/javascript" src="/js/'.$this->ctrl.'.js"></script>';
-		}
+        $this->view->permissions  = $this->permissions;
+        $this->view->WRITE_LEVEL = $this::WRITE_LEVEL;
+        $this->view->NONE_LEVEL  = $this::NONE_LEVEL;
+//		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/include/'.$this->ctrl.'.js.php') ) {
+//			$this->view->script_file = $this->pixie->root_dir.'include/'.$this->ctrl.'.js.php';
+//		}
+//
+//        if( file_exists($this->pixie->root_dir.'/include/'.$this->ctrl.'_ready.js.php') ) {
+//            $this->view->script_file_ready = $this->pixie->root_dir.'include/'.$this->ctrl.'_ready.js.php';
+//        }
 
 		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') ) {
 			$this->view->css_file = '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
@@ -235,16 +242,15 @@ $name = "vsg";
         $menuitems = array();
         $items = $this->pixie->db
                                 ->query('select','admin')
-                                ->fields('Y.name')
+                                ->fields($this->pixie->db->expr('Y.name AS value'))
                                 ->table('controllers','X')
                                 ->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
                                 ->where('X.class',$this->ctrl)
                                 ->where('Y.active',1)
                                 ->order_by('Y.order')
                                 ->execute()->as_array();
-        foreach( $items as $i) {
-            $menuitems['submenu'][] = $i->name;
-        }
+
+        $menuitems['submenu'] = $items;
         $menuitems['name'] = "Меню";
 
         echo json_encode($menuitems);
