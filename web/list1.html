@@ -10,31 +10,28 @@
 
 <body>
 
-<div data-view="menu">
-    <div data-view="data">
-        <ul>
-            <li data-id="X1">Translate.. </li>
-            <li data-id="X2">Post</li>
-        </ul>
-
-        <div data-view="submenu">
-            <ul>
-                <li>English</li>
-                <li>German </li>
-                <li>Belarus</li>
-            </ul>
-        </div>
-
-    </div>
-
-</div>
 
 <script type="text/javascript" charset="utf-8">
+    var form = {
+        id: "form_",
+        view:"form",
+        elements: [
+            {view:"checkbox", id:"1", label:"group 1", name:"name[]"},
+            {view:"checkbox", id:"2", label:"group 2", name:"name[]"},
+            {view:"checkbox", id:"3", label:"group 3", name:"name[]"},
+        ]
+    };
+
+//    webix.ajax().get("/groups/select/",{},function(text){
+//        form.elements = text;
+//    });
 
 webix.ready(function () {
     // Вывод основного представления
-    webix.markup.init();
-    });
+
+    webix.ui(form);
+
+});
 
 
 </script>

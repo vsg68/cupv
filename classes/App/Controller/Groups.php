@@ -211,5 +211,28 @@ class Groups extends \App\Page {
 		}
 
 	}
+
+    public function action_select(){
+
+        extract($this->request->get(), EXTR_OVERWRITE);
+
+        if( isset($user_id) ) {
+            $result = $this->pixie->db->query('select')
+                                    ->table('lists',"L")
+                                    ->fields($this->pixie->db->expr("L.id, G.name, G.active"))
+                                    ->join(array("groups","G"),array("G.id","L.group_id"),"LEFT")
+                                    ->where('L.user_id', $user_id)
+                                    ->execute()->as_array();
+        }
+        else {
+            $result = $this->pixie->db->query('select')
+                                        ->table('groups')
+                                        ->fields($this->pixie->db->expr("name as id, name as value"))
+                                        ->where("active",1)
+                                        ->execute()->as_array();
+        }
+
+        $this->response->body = json_encode($result);
+    }
 }
 ?>

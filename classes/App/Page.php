@@ -247,12 +247,12 @@ $name = "vsg";
                                 ->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
                                 ->where('X.class',$this->ctrl)
                                 ->where('Y.active',1)
+                                ->where('Y.class','!=',$this->ctrl)
                                 ->order_by('Y.order')
                                 ->execute()->as_array();
 
-        $menuitems['submenu'] = $items;
         $menuitems['name'] = "Меню";
-
+        $menuitems['submenu'] = $items;
         echo json_encode($menuitems);
     }
 }

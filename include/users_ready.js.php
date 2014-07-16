@@ -4,6 +4,9 @@
     $$('form_user').bind($$('list_user'));
     $$('form_aliases').bind($$('list_aliases'));
     $$('form_fwd').bind($$('list_fwd'));
+
+    $$('form_group').bind($$('list_group'));
+
 <?php endif; ?>
 
     // Фильтрация по текстовым полям

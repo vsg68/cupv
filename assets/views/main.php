@@ -15,16 +15,9 @@
                 view: "menu",
                 template: "#name#",
                 openAction: "click",
-                config: {
-                    template: function(obj){
-                        if( obj.name == "Логи" )
-                            return "<i>" + obj.name + "</i>";
-                        return obj.name;
-                    }
-                },
                 type: { subsign : true},
                 url: "get_menulist/"
-            }
+            };
 
             var maintable;   //  в подключенном скрипте ему присваивается значение
 

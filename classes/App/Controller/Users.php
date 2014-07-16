@@ -303,5 +303,19 @@ class Users extends \App\Page {
 
         $this->response->body = json_encode($result);
     }
+
+//    public function action_select(){
+//
+//        extract($this->request->get(), EXTR_OVERWRITE);
+//        $entries = $this->pixie->orm->get('users')
+////            ->where('user_id', $mbox)
+////                        ->groups
+//            ->find_all()->as_array(true);
+//
+//        echo "___";
+//        print_r($entries);
+////        $this->response->body = json_encode($result);
+////        $this->response->body = json_encode($result);
+//    }
 }
 ?>

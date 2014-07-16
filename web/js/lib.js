@@ -1,43 +1,8 @@
 
-function ToolBarAdm(label, abr){
-    this.view = "toolbar";
-    this.height = 30;
-    this.cols = [
-        {view: "label", label: label},
-        {view: "button", type:"iconButton", icon:"plus", label:"New", click: function(){
-            // Если не выбран пользователь - выходим
-            if( abr != "user" && $$("list_user").getSelectedId() == false ) return 1;
-
-            // заполняю дефолтными значениями
-            defaults = {"active":1};
-            defaults[ $$("list_"+ abr).config.linkfield ] = $$("list_user").getSelectedItem().mailbox;
-
-            newID = $$("list_"+ abr).add(defaults);     // создаем новую запись
-            // заносим новый ид в переменную.
-            $$("list_"+ abr).getParentView().config.newID = newID;
-            // Переход к редактированию
-            $$("form_"+ abr).show();  $$("list_"+ abr).select(newID);
-        }, width:70},
-        {view: "button", type:"iconButton", icon:"minus", label:"Del",click: function(){
-            id = $$("list_"+ abr).getSelectedId();
-            webix.confirm({text:"Уверены, что надо удалять?", callback: function(result){
-//                        тут надо отослать данные на сервер
-                if(result) {
-                    webix.ajax().post("../" + abr+ "_post.php", {id:id, type:"del"}, function(text){
-                        if(text)
-                            $$("list_"+ abr).remove();
-                        else
-                            webix.messages({type:"error", text:"Что-то пошло не так"});
-                    })
-                }
-            }})
-        }, width:70}
-    ]
-}
-
 function ToolBar(label, abr){
     this.view = "toolbar";
     this.height = 30;
+    this.abr = abr;
     this.cols = [
         {view: "label", label: label},
     ]
@@ -116,7 +81,7 @@ function keyPressAction(list, key) {
     else if (key == 38) {  // up arrow
         Ind = list.getIndexById(list.getPrevId(currID));
         }
-    else if (key == 113 && form) { // edit
+    else if (key == 113 && form && currID) { // edit
         form.show();
         }
     else if (key == 27 && multiview) { //cancel edit
@@ -127,22 +92,27 @@ function keyPressAction(list, key) {
         }
     }
     // Сохранение формы
-    function save() {
+function save() {
     //    валидация!! {}
         mForm = this.getFormView();
         abrv = (mForm.config.id.split("_"))[1];
         if( mForm.validate() ) {
-            webix.ajax().post("/users/" + abrv+ "_save", mForm.getValues(), function(text){ //TODO  подумать, как будут приниматься данные
+            webix.ajax().post("/users/" + abrv+ "_save", mForm.getValues(), function(text){
                 if( text )
                     webix.message("Request: \n" + text); // server side response
             });
-        mForm.save();
-        var mView = mForm.getParentView();
-        mView.config.newID = "";
-        mView.back();
+            mForm.save();
+            var mView = mForm.getParentView();
+            mView.config.newID = "";
+            mView.back();
         }
         else {
-            webix.message({ type:"error", text:"Что-то в форме не так.." });
+            if(abrv == "group")
+                msg = "Пользователь в данной группе уже присутствует";
+            else
+                msg = "Что-то в форме не так..";
+
+            webix.message({ type:"error", text: msg });
         }
     }
 

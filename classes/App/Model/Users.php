@@ -14,7 +14,7 @@ class Users extends \PHPixie\ORM\Model{
 						'groups'=> array(
 									'model'		 =>'groups',
 									'through'	 =>'lists',
-									'key'		 =>'user_id',
+									'key'		 =>'mailbox',
 									'foreign_key'=>'group_id'
 									));
 /*
