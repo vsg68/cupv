@@ -166,23 +166,25 @@ class Aliases extends \App\Page {
 		}
     }
 
-    public function action_select(){
+    public function action_save() {
 
-        extract($this->request->get(), EXTR_OVERWRITE);
+//		if( $this->permissions != $this::WRITE_LEVEL )
+//			return $this->noperm();
 
-        if( $q == "alias" ){
-            $result = $this->pixie->db->query('select')->table('aliases')
-                                ->where(array("delivery_to",$mbox))
-                                ->where(array("alias_name","!=", $mbox))
-                                ->execute()->as_array();
+        if( ! $params = $this->request->post() )
+            return false;
+
+        try {
+            $is_update = isset($params['is_new']) ? false : true;
+            unset( $params['is_new'] );
+
+            // Если в запрос поместить true -  предполагается UPDATE
+            $this->pixie->orm->get("aliases")->values($params, $is_update)->save();
         }
-        elseif( $q == "fwd" ){
-            $result = $this->pixie->db->query('select')->table('aliases')
-                    ->where(array("alias_name", $mbox))
-                    ->execute()->as_array();
+        catch (\Exception $e) {
+            $this->response->body = $e->getMessage();
         }
-
-        $this->response->body = json_encode($result);
     }
+
 }
 ?>

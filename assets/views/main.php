@@ -16,7 +16,7 @@
                 template: "#name#",
                 openAction: "click",
                 type: { subsign : true},
-                url: "get_menulist/"
+               url: "/<?= $ctrl ?>/get_menulist/"
             };
 
             var maintable;   //  в подключенном скрипте ему присваивается значение

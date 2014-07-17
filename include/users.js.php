@@ -1,12 +1,12 @@
-var usrToolBar   = new ToolBar("Пользователи","user");
-    usrToolBar.cols.push({ id: 'filter_mbox', view: 'text', placeholder: 'Filter..', width: 200},{});
-var aliasToolBar = new ToolBar("Алиас","aliases");
-var fwdToolBar   = new ToolBar("Форвард","fwd");
-var groupToolBar = new ToolBar("Группы","group");
+var usrToolBar = new ToolBar("Пользователи", "users");
+usrToolBar.cols.push({ id: 'filter_mbox', view: 'text', placeholder: 'Filter..', width: 200}, {});
+var aliasToolBar = new ToolBar("Алиас", "aliases");
+var fwdToolBar = new ToolBar("Форвард", "fwd");
+var groupToolBar = new ToolBar("Группы", "groups");
 
 //  Вывод пользователей
 var lusers = {
-    id: 'list_user',
+    id: 'list_users',
     view: "list",
     template: function (obj) {
         var tmpl = "<div class='fleft mailbox " + (obj.active == "0" ? "inactive" : "") + "'>" + obj.mailbox + "</div>";
@@ -30,7 +30,7 @@ var lusers = {
                 tmpl += "<div class='fleft fa-sitemap webix_icon " + colorclass + "' title='" + net[i] + "'></div>";
             }
         }
-        if (obj.lastlog)    tmpl += "<div class='fleft last_login' title='last_login'>" + obj.lastlog + "</div>";
+        if (obj.last_login)    tmpl += "<div class='fleft last_login' title='last_login'>" + obj.last_login + "</div>";
 
         return tmpl;
     },
@@ -39,64 +39,88 @@ var lusers = {
     css: "ftab",
     on: {
         "onAfterSelect": function () {
-                item = $$('list_user').getSelectedItem();
-                $$('list_aliases').clearAll();
-                $$('list_aliases').load("/aliases/select/?q=alias&mbox=" + item.mailbox);
-                $$('list_fwd').clearAll();
-                $$('list_fwd').load("/aliases/select/?q=fwd&mbox=" + item.mailbox);
-                $$('list_group').clearAll();
-                $$('list_group').load("/groups/select/?user_id=" + item.id);
+            item = $$('list_users').getSelectedItem();
+            $$('list_aliases').clearAll();
+            $$('list_aliases').load("/users/select/?q=alias&mbox=" + item.mailbox);
+            $$('list_fwd').clearAll();
+            $$('list_fwd').load("/users/select/?q=fwd&mbox=" + item.mailbox);
+            $$('list_groups').clearAll();
+            $$('list_groups').load("/users/select/?q=group&user_id=" + item.id);
         },
         "onKeyPress": function (key) {
-                keyPressAction(this, key);
+            keyPressAction(this, key);
         },
-        "onAfterLoad": function(){
-                this.config.height = (window.innerHeight - 140);
-                if( window.innerWidth < 1500)  // 8-) minWidth
-                    this.config.width = 800;
-                this.resize();
+        "onAfterLoad": function () {
+            this.config.height = (window.innerHeight - 140);
+            if (window.innerWidth < 1500)  // 8-) minWidth
+                this.config.width = 800;
+            this.resize();
         }
     },
-    url: "/users/showTable/?q=mbox"
+    url: "/users/showTable/"
 };
 
 <?php if( $permissions == $WRITE_LEVEL ): ?>
 var buttonPlus = {
-    view: "button", type:"iconButton", icon:"plus", label:"New", width:70,
-    click: function(){
+    view: "button", type: "iconButton", icon: "plus", label: "New", width: 70,
+    click: function () {
         // Если не выбран пользователь - выходим
         abr = this.getParentView().config.abr;
-        if( abr != "user" && $$("list_user").getSelectedId() == false ) return 1;
-
-        // заполняю дефолтными значениями
-        defaults = {"active":1};
-        // Если это мультиформа для групп - то нас будет интересовать user_id для передачи на сервер
-        // Если она пользовательская, то пропускаем дальнейшее
-        if(abr != "user") {
-            selected_User = $$("list_user").getSelectedItem()
-            defaults[ $$("list_"+ abr).config.linkfield ] = (abr == "group") ? selected_User.id : selected_User.mailbox;
+        // Если кнопка нажата не на списке  - выходим
+        if (!isActiveCell_List(abr)) {
+            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+            return false;
         }
 
-        newID = $$("list_"+ abr).add(defaults);     // создаем новую запись
+        if (abr != "users" && $$("list_users").getSelectedId() == false) return 1;
+
+        // заполняю дефолтными значениями
+        // is_new - вспомогательное поле, которое проверяется на стороне сервера
+        defaults = {"active":1, "is_new":1};
+        if (abr == "users") {
+            defaults["allow_nets"] = "192.168.0.0/24";
+        }
+        // Если это мультиформа для групп - то нас будет интересовать user_id для передачи на сервер
+        // Если она пользовательская, то пропускаем дальнейшее
+        else {
+            selected_User = $$("list_users").getSelectedItem()
+            defaults[ $$("list_" + abr).config.linkfield ] = (abr == "groups") ? selected_User.id : selected_User.mailbox;
+        }
+        if (abr == "aliases"){
+            defaults["alias_name"] = selected_User.mailbox;
+        }
+        else if ( abr == "fwd") {
+            defaults["delivery_to"] = selected_User.mailbox;
+        }
+
+        newID = $$("list_" + abr).add(defaults);     // создаем новую запись
         // заносим новый ид в переменную.
-        $$("list_"+ abr).getParentView().config.newID = newID;
+        $$("list_" + abr).getParentView().config.newID = newID;
         // Переход к редактированию
-        $$("form_"+ abr).show();  $$("list_"+ abr).select(newID);
+        $$("form_" + abr).show();
+        $$("list_" + abr).select(newID);
     }
 };
 var buttonMinus = {
-    view: "button", type:"iconButton", icon:"minus", label:"Del", width:70,
-    click: function(){
+    view: "button", type: "iconButton", icon: "minus", label: "Del", width: 70,
+    click: function () {
+
         abr = this.getParentView().config.abr;
-        id = $$("list_"+ abr).getSelectedId();
-        webix.confirm({text:"Уверены, что надо удалять?", callback: function(result){
+        // Если кнопка нажата не на списке - выходим
+        if (!isActiveCell_List(abr)) {
+            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+            return false;
+        }
+
+        id = $$("list_" + abr).getSelectedId();
+        webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
             //  тут надо отослать данные на сервер
-            if(result) {
-                webix.ajax().post("/users/" + abr+ "_post.php", {id:id, type:"del"}, function(text){
-                    if(text)
-                        $$("list_"+ abr).remove();
+            if (result) {
+                webix.ajax().post("/" + abr + "/post.php", {id: id, type: "del"}, function (text) {
+                    if (text)
+                        $$("list_" + abr).remove();
                     else
-                        webix.messages({type:"error", text:"Что-то пошло не так"});
+                        webix.message({type: "error", text: "Что-то пошло не так"});
                 })
             }
         }})
@@ -104,10 +128,10 @@ var buttonMinus = {
 };
 
 /*********   Users  ********/
-    usrToolBar.cols.push( buttonPlus, buttonMinus );
+usrToolBar.cols.push(buttonPlus, buttonMinus);
 //  Форма редактирования пользователя
 var dform = {
-    id: "form_user",
+    id: "form_users",
     view: "form",
     elementsConfig: {labelWidth: 150},
     elements: [
@@ -120,67 +144,62 @@ var dform = {
         {view: "text", label: "acl_groups", name: "acl_groups"},
         {view: "checkbox", label: "master_admin", name: "master_admin"},
         {view: "checkbox", label: "master_domain", name: "master_domain"},
-        {view: "text", label: "lastlog", name: "lastlog", disabled: true},
+        {view: "text", label: "last_login", name: "last_login", disabled: true},
         {view: "text", label: "last_ip", name: "last_ip", disabled: true},
-        {view: "text", label: "last_prog", name: "last_prog", disabled: true},
+        {view: "text", label: "last_prot", name: "last_prot", disabled: true},
         {view: "checkbox", label: "active", name: "active"},
         { margin: 15, cols: [
             {},
             { view: "button", value: "Cancel", width: 100, click: "cancel()" },
-            { view: "button", value: "Save", width: 100, type: "form", click: "save()" },
+            { view: "button", value: "Save", width: 100, type: "form", click: "save_form()" },
             {}
 
         ]},
         {}  // spacer
     ],
-    rules:{
-        mailbox: function(){ return checkEmail();},
-        username:  webix.rules.isNotEmpty,
-        password:  webix.rules.isNotEmpty
+    rules: {
+        mailbox: function (value) {
+            return  checkEmail(value);
+        },
+        allow_nets: function (value) {
+            return fnTestByType("nets", value);
+        },
+        username: webix.rules.isNotEmpty,
+        password: webix.rules.isNotEmpty
     }
 };
 //  Форма для вывода пользователей и формы редактирования
 var usersForm = {
     view: "multiview",
-    newID:"",
-    abbreviate:"user",
+    newID: "",
+    abbreviate: "users",
     cells: [ lusers, dform ] };
 
 /*********   Aliases  ********/
-    aliasToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus) );
+aliasToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var aliasForm = new mViewAdm("aliases_mv");
 
 /*********   Forward  ********/
-    fwdToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus) );
+fwdToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var fwdForm = new mViewAdm("fwd_mv");
-    fwdForm.cells[1].elements[2].hidden = false;
-    fwdForm.cells[1].elements[1].hidden = true;
+fwdForm.cells[1].elements[2].hidden = false;
+fwdForm.cells[1].elements[1].hidden = true;
 
 /*********   Groups  ********/
-    groupToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus) );
-var groupForm = new mViewAdm("group_mv");
-    groupForm.cells[1].elements[1] = {view: "richselect", label: "Группа", name: "name", options: "/groups/select/" };
-    groupForm.cells[1].elements.splice(2,2);
-    groupForm.cells[1].rules = {
-                         name: function(value){
-                                lastid = $$('list_group').getLastId();
-                                currid = $$('list_group').getFirstId();
-                                while(1) {
-                                     item = $$('list_group').getItem(currid);
-                                     if(item.name == value)
-                                        return false;
-                                     if(currid == lastid)
-                                        return true;
-                                     currid = $$('list_group').getNextId(currid);
-                                }
-                            }
-    };
-
+groupToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
+var groupForm = new mViewAdm("groups_mv");
+groupForm.cells[1].elements[1] = {view: "richselect", label: "Группа", name: "name", options: "/groups/select/" };
+groupForm.cells[1].elements.splice(2, 2);
+groupForm.cells[1].rules = {
+                        name: function (value) {
+                                checkGroups(value);
+                        }
+};
 <?php else: ?>
 /*********   Users  ********/
 var usersForm = {
     minWidth: 800,
-    abbreviate:"user",
+    abbreviate: "users",
     cells: [ lusers ] };
 
 /*********   Aliases  ********/

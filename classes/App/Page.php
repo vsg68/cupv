@@ -253,6 +253,34 @@ $name = "vsg";
 
         $menuitems['name'] = "Меню";
         $menuitems['submenu'] = $items;
-        echo json_encode($menuitems);
+
+        $this->response->body = json_encode($menuitems);
+    }
+
+    public function action_select(){
+
+        extract($this->request->get(), EXTR_OVERWRITE);
+
+        if( $q == "alias" ){
+            $result = $this->pixie->db->query('select')->table('aliases')
+                ->where(array("delivery_to",$mbox))
+                ->where(array("alias_name","!=", $mbox))
+                ->execute()->as_array();
+        }
+        elseif( $q == "fwd" ){
+            $result = $this->pixie->db->query('select')->table('aliases')
+                ->where(array("alias_name", $mbox))
+                ->execute()->as_array();
+        }
+        elseif( $q == "group" ){
+            $result = $this->pixie->db->query('select')
+                    ->table('lists',"L")
+                    ->fields($this->pixie->db->expr("L.id, G.name, G.active"))
+                    ->join(array("groups","G"),array("G.id","L.group_id"),"LEFT")
+                    ->where('L.user_id', $user_id)
+                    ->execute()->as_array();
+        }
+
+        $this->response->body = json_encode($result);
     }
 }

@@ -1,11 +1,10 @@
 
 // Связка формы и представления
 <?php if( $permissions == $WRITE_LEVEL ): ?>
-    $$('form_user').bind($$('list_user'));
+    $$('form_users').bind($$('list_users'));
     $$('form_aliases').bind($$('list_aliases'));
     $$('form_fwd').bind($$('list_fwd'));
-
-    $$('form_group').bind($$('list_group'));
+    $$('form_groups').bind($$('list_groups'));
 
 <?php endif; ?>
 
@@ -14,7 +13,7 @@
         //get user input value
         var value = this.getValue().toLowerCase();
 
-        $$('list_user').filter(function (obj) {
+        $$('list_users').filter(function (obj) {
 
             if (obj.mailbox.toLowerCase().indexOf(value) >= 0 || obj.username.toLowerCase().indexOf(value) >= 0)
                 return 1;
