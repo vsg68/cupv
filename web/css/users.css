@@ -17,7 +17,8 @@
     /*border: 1px solid #8e8e8e;*/
 /*}*/
 .isactive_0 {
-    color: #c2d0d4;
+    color: #ff6653;
+    text-decoration: line-through;
 }
 .localnet {
     color: #000000;

@@ -146,23 +146,17 @@ class Aliases extends \App\Page {
 
 	public function action_delEntry() {
 
-		if( $this->permissions == $this::NONE_LEVEL )
-			return $this->noperm();
-
+//		if( $this->permissions == $this::NONE_LEVEL )
+//			return $this->noperm();
 
 		if( ! $params = $this->request->post() )
 			return;
 
 		try {
-			$this->pixie->db->query('delete')
-							->table($params['tab'] )
-							->where('id',$params['id'])
-							->execute();
+			$this->pixie->orm->get("aliases")->where('id',$params['id'])->delete_all();
 		}
 		catch (\Exception $e) {
-			$view = $this->pixie->view('form_alert');
-			$view->errorMsg = $e->getMessage();
-			$this->response->body = $view->render();
+			$this->response->body = $e->getMessage();
 		}
     }
 

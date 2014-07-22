@@ -143,27 +143,27 @@ class Groups extends \App\Page {
 
 	}
 
-	public function action_delEntry() {
-
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
-		if( ! $params = $this->request->post() )
-			return;
-
-		try {
-
-			$this->pixie->orm->get($params['tab'])
-							 ->where('id',$params['id'])
-							 ->delete_all();
-		}
-		catch (\Exception $e) {
-			$view = $this->pixie->view('form_alert');
-			$view->errorMsg = $e->getMessage();
-			$this->response->body = $view->render();
-		}
-
-    }
+//	public function action_delEntry() {
+//
+//		if( $this->permissions != $this::WRITE_LEVEL )
+//			return $this->noperm();
+//
+//		if( ! $params = $this->request->post() )
+//			return;
+//
+//		try {
+//
+//			$this->pixie->orm->get($params['tab'])
+//							 ->where('id',$params['id'])
+//							 ->delete_all();
+//		}
+//		catch (\Exception $e) {
+//			$view = $this->pixie->view('form_alert');
+//			$view->errorMsg = $e->getMessage();
+//			$this->response->body = $view->render();
+//		}
+//
+//    }
 
     public function action_edGroup() {
 
@@ -212,11 +212,11 @@ class Groups extends \App\Page {
 
 	}
 
-    public function action_select(){
+    public function action_getGroupsList(){
 
-        extract($this->request->get(), EXTR_OVERWRITE);
+        $user_id = $this->request->get("user_id");
 
-        if( isset($user_id) ) {
+        if( $user_id ) {
             $result = $this->pixie->db->query('select')
                                     ->table('lists',"L")
                                     ->fields($this->pixie->db->expr("L.id, G.name, G.active"))
@@ -227,12 +227,50 @@ class Groups extends \App\Page {
         else {
             $result = $this->pixie->db->query('select')
                                         ->table('groups')
-                                        ->fields($this->pixie->db->expr("name as id, name as value"))
+                                        ->fields($this->pixie->db->expr("name AS id, name AS value"))
                                         ->where("active",1)
                                         ->execute()->as_array();
         }
 
         $this->response->body = json_encode($result);
+    }
+
+    public function action_save(){
+        if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+        if( ! $params = $this->request->post() )
+            return false;
+
+        try {
+            $is_update = isset($params['is_new']) ? false : true;
+//            Заполняем недостающий параметр
+            $group = $this->pixie->orm->get("groups")->where("name",$params["name"])->find();
+            $params["group_id"] = $group->id;
+
+            unset( $params['is_new'],$params['active'], $params["name"] );
+
+            // Если в запрос поместить true -  предполагается UPDATE
+            $this->pixie->orm->get("lists")->values($params, $is_update)->save();
+        }
+        catch (\Exception $e) {
+            $this->response->body = $e->getMessage();
+        }
+    }
+
+    public function action_delEntry(){
+        if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
+
+        if( ! $params = $this->request->post() )
+            return false;
+
+        try {
+            $this->pixie->orm->get("lists")->where("id", $params["id"])->delete_all();
+        }
+        catch (\Exception $e) {
+            $this->response->body = $e->getMessage();
+        }
     }
 }
 ?>

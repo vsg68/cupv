@@ -259,7 +259,9 @@ $name = "vsg";
 
     public function action_select(){
 
-        extract($this->request->get(), EXTR_OVERWRITE);
+        $mbox = $this->request->get("mbox");
+        $user_id = $this->request->get("user_id");
+        $q = $this->request->get("q");
 
         if( $q == "alias" ){
             $result = $this->pixie->db->query('select')->table('aliases')

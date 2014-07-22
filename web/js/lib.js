@@ -3,7 +3,7 @@ function ToolBar(label, abr) {
     this.height = 30;
     this.abr = abr;
     this.cols = [
-        {view: "label", label: label},
+        {view: "label", label: label}
     ]
 }
 
@@ -46,6 +46,7 @@ function mViewAdm(id) {
 
 function mView(id) {
     this.maxWidth = 300;
+    this.abbreviate = id.split("_")[0];
     this.cells = [
         { id: "list_" + this.abbreviate, view: "list",
             linkfield: "", // поле привязки к пользовательскому ящику
@@ -54,7 +55,7 @@ function mView(id) {
             on: { "onKeyPress": function (key) {
                 keyPressAction(this, key);
             }}
-        },
+        }
     ]
 }
 
@@ -109,6 +110,7 @@ function save_form(){
                 var mView = mForm.getParentView();
                 mView.config.newID = "";
                 mView.back();
+                // TODO после удачного добавления нужно удалить поле is_new
             }
         })
 }
@@ -139,17 +141,17 @@ function checkEmail(value) {
 
 // проверка наличия одинаковых групп у пользователя
 function checkGroups(value){
-    lastid = $$('list_group').getLastId();
-    currid = $$('list_group').getFirstId();
+    lastid = $$('list_groups').getLastId();
+    currid = $$('list_groups').getFirstId();
     while (1) {
-        item = $$('list_group').getItem(currid);
+        item = $$('list_groups').getItem(currid);
         if (item.name == value) {
             webix.message({ type: "error", text: "Пользователь в данной группе уже присутствует" });
             return false;
         }
         if (currid == lastid)
             return true;
-        currid = $$('list_group').getNextId(currid);
+        currid = $$('list_groups').getNextId(currid);
     }
 }
 
@@ -162,10 +164,7 @@ function isActiveCell_List(abr) {
 
     activeID = multiview.getActiveId();
 
-    if (activeID != "list_" + abr)
-        return false;
-    else
-        return true;
+    return activeID == "list_" + abr;
 }
 
 // Функция проверки правильности значения поля формы
@@ -182,29 +181,27 @@ function fnTestByType(type, str) {
 
     switch (type) {
         case 'mail':
-            reg = new RegExp(mail_tmpl, 'i')
-            break
+            reg = new RegExp(mail_tmpl, 'i');
+            break;
         case 'nets':
-            reg = new RegExp(net_tmpl, 'i')
-            break
+            reg = new RegExp(net_tmpl, 'i');
+            break;
         case 'domain':
-            reg = new RegExp(domain_tmpl, 'i')
-            break
+            reg = new RegExp(domain_tmpl, 'i');
+            break;
         case 'transport':
-            reg = new RegExp(transp_tmpl, 'i')
-            break
+            reg = new RegExp(transp_tmpl, 'i');
+            break;
         case 'int':
-            reg = new RegExp(int_tmpl, 'i')
+            reg = new RegExp(int_tmpl, 'i');
             break
         case 'date':
-            reg = new RegExp(date_tmpl, 'i')
-            break
+            reg = new RegExp(date_tmpl, 'i');
+            break;
         default:
-            return false
+            return false;
     }
 
-    if (reg.test(str))
-        return true;
+    return (reg.test(str));
 
-    return false;
 }

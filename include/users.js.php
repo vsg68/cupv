@@ -9,8 +9,8 @@ var lusers = {
     id: 'list_users',
     view: "list",
     template: function (obj) {
-        var tmpl = "<div class='fleft mailbox " + (obj.active == "0" ? "inactive" : "") + "'>" + obj.mailbox + "</div>";
-        tmpl += "<div class='fleft username' title='username'>" + obj.username + "</div>";
+        var tmpl = "<div class='fleft mailbox isactive_" + obj.active + "'>" + obj.mailbox + "</div>";
+        tmpl += "<div class='fleft username isactive_" + obj.active + "' title='username'>" + obj.username + "</div>";
         if (obj.imap_enable == "1")
             tmpl += "<div class='fleft fa-envelope webix_icon' title='imap_enable'></div>";
         else
@@ -40,11 +40,12 @@ var lusers = {
     on: {
         "onAfterSelect": function () {
             item = $$('list_users').getSelectedItem();
-            $$('list_aliases').clearAll();
+            // Закрываем все открытые формы редактирования
+            $$('list_aliases').getParentView().back(); $$('form_fwd').getParentView().back(); $$('form_groups').getParentView().back();
+            $$('list_aliases').clearAll(); $$('list_fwd').clearAll(); $$('list_groups').clearAll();
+
             $$('list_aliases').load("/users/select/?q=alias&mbox=" + item.mailbox);
-            $$('list_fwd').clearAll();
             $$('list_fwd').load("/users/select/?q=fwd&mbox=" + item.mailbox);
-            $$('list_groups').clearAll();
             $$('list_groups').load("/users/select/?q=group&user_id=" + item.id);
         },
         "onKeyPress": function (key) {
@@ -112,15 +113,15 @@ var buttonMinus = {
             return false;
         }
 
-        id = $$("list_" + abr).getSelectedId();
+        var selected_id = $$("list_" + abr).getSelectedId();
         webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
             //  тут надо отослать данные на сервер
             if (result) {
-                webix.ajax().post("/" + abr + "/post.php", {id: id, type: "del"}, function (text) {
-                    if (text)
-                        $$("list_" + abr).remove();
+                webix.ajax().post("/" + abr + "/delEntry/", {id: selected_id}, function (text, xml, xhr) {
+                    if (!text)
+                        $$("list_" + abr).remove(selected_id);
                     else
-                        webix.message({type: "error", text: "Что-то пошло не так"});
+                        webix.message({type: "error", text: text});
                 })
             }
         }})
@@ -128,7 +129,7 @@ var buttonMinus = {
 };
 
 /*********   Users  ********/
-usrToolBar.cols.push(buttonPlus, buttonMinus);
+usrToolBar.cols.push(buttonPlus);
 //  Форма редактирования пользователя
 var dform = {
     id: "form_users",
@@ -176,6 +177,7 @@ var usersForm = {
     cells: [ lusers, dform ] };
 
 /*********   Aliases  ********/
+// добавляем "свободное место" и кнопки на тулбар
 aliasToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var aliasForm = new mViewAdm("aliases_mv");
 
@@ -188,11 +190,11 @@ fwdForm.cells[1].elements[1].hidden = true;
 /*********   Groups  ********/
 groupToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var groupForm = new mViewAdm("groups_mv");
-groupForm.cells[1].elements[1] = {view: "richselect", label: "Группа", name: "name", options: "/groups/select/" };
-groupForm.cells[1].elements.splice(2, 2);
+groupForm.cells[1].elements[1] = {view: "combo", label: "Группа", name: "name", options: "/groups/getGroupsList/" };
+groupForm.cells[1].elements.splice(2,2);
 groupForm.cells[1].rules = {
                         name: function (value) {
-                                checkGroups(value);
+                                return checkGroups(value);
                         }
 };
 <?php else: ?>
@@ -209,7 +211,7 @@ var aliasForm = new mView("aliases_mv");
 var fwdForm = new mView("fwd_mv");
 
 /*********   Groups  ********/
-var groupForm = new mView("group_mv");
+var groupForm = new mView("groups_mv");
 <?php endif; ?>
 
 /******************************************** For ALL ***********************************************/
@@ -231,3 +233,8 @@ maintable = {
         {rows: [ groupToolBar, groupForm ]},
     ]
 };
+
+
+//TODO   1) при создании пользователя - по окончании, переход на него
+// 2) заполнение строки "пароль" - по клику на иконку
+// 3) заполниние строки "сети" -  по клику на иконку (?)
