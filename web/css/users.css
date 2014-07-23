@@ -8,14 +8,14 @@
     /*border-radius: 2px;*/
     /*padding: 5px;*/
 /*}*/
-/*.tb-color,*/
-/*.tb-color .webix_list_item,*/
-/*.tb-color .webix_menu-x {*/
-    /*background-color: #BDBDBD !important;*/
-/*}*/
-/*.tb-color.webix_layout_toolbar  {*/
-    /*border: 1px solid #8e8e8e;*/
-/*}*/
+.tb-color .webix_list_item,
+.tb-color .webix_menu-x,
+.tb-color.webix_layout_toolbar.webix_toolbar {
+    background: #E97E29;
+}
+.tb-color .webix_list_item:hover {
+    background: #C76103;
+}
 .isactive_0 {
     color: #ff6653;
     text-decoration: line-through;

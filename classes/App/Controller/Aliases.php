@@ -146,8 +146,8 @@ class Aliases extends \App\Page {
 
 	public function action_delEntry() {
 
-//		if( $this->permissions == $this::NONE_LEVEL )
-//			return $this->noperm();
+		if( $this->permissions == $this::NONE_LEVEL )
+			return $this->noperm();
 
 		if( ! $params = $this->request->post() )
 			return;
@@ -162,8 +162,8 @@ class Aliases extends \App\Page {
 
     public function action_save() {
 
-//		if( $this->permissions != $this::WRITE_LEVEL )
-//			return $this->noperm();
+		if( $this->permissions != $this::WRITE_LEVEL )
+			return $this->noperm();
 
         if( ! $params = $this->request->post() )
             return false;

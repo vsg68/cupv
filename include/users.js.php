@@ -1,14 +1,15 @@
 var usrToolBar = new ToolBar("Пользователи", "users");
 usrToolBar.cols.push({ id: 'filter_mbox', view: 'text', placeholder: 'Filter..', width: 200}, {});
-var aliasToolBar = new ToolBar("Алиас", "aliases");
-var fwdToolBar = new ToolBar("Форвард", "fwd");
-var groupToolBar = new ToolBar("Группы", "groups");
+var aliasToolBar = new ToolBar("Alias", "aliases");
+var fwdToolBar = new ToolBar("Fwd", "fwd");
+var groupToolBar = new ToolBar("Lists", "groups");
 
 //  Вывод пользователей
 var lusers = {
     id: 'list_users',
     view: "list",
     template: function (obj) {
+        x = obj;
         var tmpl = "<div class='fleft mailbox isactive_" + obj.active + "'>" + obj.mailbox + "</div>";
         tmpl += "<div class='fleft username isactive_" + obj.active + "' title='username'>" + obj.username + "</div>";
         if (obj.imap_enable == "1")
@@ -77,16 +78,21 @@ var buttonPlus = {
 
         // заполняю дефолтными значениями
         // is_new - вспомогательное поле, которое проверяется на стороне сервера
-        defaults = {"active":1, "is_new":1};
+        defaults      = {"active":1, "is_new":1};
+        selected_User = $$("list_users").getSelectedItem();
+
         if (abr == "users") {
             defaults["allow_nets"] = "192.168.0.0/24";
         }
         // Если это мультиформа для групп - то нас будет интересовать user_id для передачи на сервер
         // Если она пользовательская, то пропускаем дальнейшее
-        else {
-            selected_User = $$("list_users").getSelectedItem()
-            defaults[ $$("list_" + abr).config.linkfield ] = (abr == "groups") ? selected_User.id : selected_User.mailbox;
+        else if (abr == "groups") {
+            defaults[ $$("list_" + abr).config.linkfield ] =  selected_User.id;
         }
+        else {
+            defaults[ $$("list_" + abr).config.linkfield ] = selected_User.mailbox;
+        }
+
         if (abr == "aliases"){
             defaults["alias_name"] = selected_User.mailbox;
         }
@@ -97,6 +103,7 @@ var buttonPlus = {
         newID = $$("list_" + abr).add(defaults);     // создаем новую запись
         // заносим новый ид в переменную.
         $$("list_" + abr).getParentView().config.newID = newID;
+
         // Переход к редактированию
         $$("form_" + abr).show();
         $$("list_" + abr).select(newID);
@@ -184,14 +191,27 @@ var aliasForm = new mViewAdm("aliases_mv");
 /*********   Forward  ********/
 fwdToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var fwdForm = new mViewAdm("fwd_mv");
-fwdForm.cells[1].elements[2].hidden = false;
-fwdForm.cells[1].elements[1].hidden = true;
+fwdForm.cells[1].elements[1] = {view: "text", label: "forward", name: "delivery_to"},
+//fwdForm.cells[1].elements[1].hidden = true;
 
 /*********   Groups  ********/
 groupToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var groupForm = new mViewAdm("groups_mv");
-groupForm.cells[1].elements[1] = {view: "combo", label: "Группа", name: "name", options: "/groups/getGroupsList/" };
-groupForm.cells[1].elements.splice(2,2);
+groupForm.cells[1].elements[1] = {view: "richselect", label: "Группа", name: "name",
+    options: "/groups/getGroupsList/",
+    on: {
+        "onChange": function(){
+            optId = $$(this.data.suggest).getMasterValue();
+            Form = this.getFormView();
+            // поле optId - ID выбранной опции
+            if( ! optId ) return false;
+            // заполняем поле guid_id при изменении select
+            Form.setValues({ group_id: $$(this.data.suggest).getList().getItem(optId).group_id},true);
+        }
+    }
+};
+// group_id и user_id передаются как скрытые поля. для их "получения" нужно применять form.getValues()
+groupForm.cells[1].elements.splice(2,1);
 groupForm.cells[1].rules = {
                         name: function (value) {
                                 return checkGroups(value);
@@ -235,6 +255,8 @@ maintable = {
 };
 
 
-//TODO   1) при создании пользователя - по окончании, переход на него
+//TODO
+// 1) при создании пользователя - по окончании, переход на него
 // 2) заполнение строки "пароль" - по клику на иконку
 // 3) заполниние строки "сети" -  по клику на иконку (?)
+// 4) экспорт в файл ....

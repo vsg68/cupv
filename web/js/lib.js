@@ -26,7 +26,6 @@ function mViewAdm(id) {
         { id: "form_" + this.abbreviate, view: "form", elementsConfig: {labelWidth: 70}, elements: [
             {view: "text", label: "id", name: "id", hidden: true },
             {view: "text", label: "alias", name: "alias_name" },
-            {view: "text", label: "forward", name: "delivery_to", hidden: true },
             {view: "checkbox", label: "active", name: "active"},
             { margin: 5, cols: [
                 {},
@@ -63,6 +62,7 @@ function mView(id) {
 function keyPressAction(list, key) {
 
     multiview = list.getParentView();
+x = list.getSelectedItem();
     if (multiview.config.view == "multiview") {
 
         children = multiview.getChildViews();
@@ -91,11 +91,17 @@ function keyPressAction(list, key) {
         list.select(list.getIdByIndex(Ind));
     }
 }
+
 // Сохранение формы
 function save_form(){
     //    валидация!! {}
-    mForm = this.getFormView();
+    var mForm = this.getFormView();
     abrv = (mForm.config.id.split("_"))[1];
+
+    // Если не новая запись - убираем признак новой записи
+    if( $$('list_'+ abrv).getItem( mForm.getValues().id ).group_id )
+        mForm.setValues({is_new:0},true);
+
 
     if ( mForm.save() === false)  return false;
     // Исключение для форварда
@@ -110,7 +116,6 @@ function save_form(){
                 var mView = mForm.getParentView();
                 mView.config.newID = "";
                 mView.back();
-                // TODO после удачного добавления нужно удалить поле is_new
             }
         })
 }

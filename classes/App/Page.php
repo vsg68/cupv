@@ -277,7 +277,7 @@ $name = "vsg";
         elseif( $q == "group" ){
             $result = $this->pixie->db->query('select')
                     ->table('lists',"L")
-                    ->fields($this->pixie->db->expr("L.id, G.name, G.active"))
+                    ->fields($this->pixie->db->expr("L.id, G.id as group_id, G.name, G.active"))
                     ->join(array("groups","G"),array("G.id","L.group_id"),"LEFT")
                     ->where('L.user_id', $user_id)
                     ->execute()->as_array();

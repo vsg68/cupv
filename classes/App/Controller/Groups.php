@@ -214,23 +214,11 @@ class Groups extends \App\Page {
 
     public function action_getGroupsList(){
 
-        $user_id = $this->request->get("user_id");
-
-        if( $user_id ) {
-            $result = $this->pixie->db->query('select')
-                                    ->table('lists',"L")
-                                    ->fields($this->pixie->db->expr("L.id, G.name, G.active"))
-                                    ->join(array("groups","G"),array("G.id","L.group_id"),"LEFT")
-                                    ->where('L.user_id', $user_id)
+        $result = $this->pixie->db->query('select')
+                                    ->table('groups')
+                                    ->fields($this->pixie->db->expr("name AS id, id AS group_id, name AS value"))
+                                    ->where("active",1)
                                     ->execute()->as_array();
-        }
-        else {
-            $result = $this->pixie->db->query('select')
-                                        ->table('groups')
-                                        ->fields($this->pixie->db->expr("name AS id, name AS value"))
-                                        ->where("active",1)
-                                        ->execute()->as_array();
-        }
 
         $this->response->body = json_encode($result);
     }
@@ -243,11 +231,7 @@ class Groups extends \App\Page {
             return false;
 
         try {
-            $is_update = isset($params['is_new']) ? false : true;
-//            Заполняем недостающий параметр
-            $group = $this->pixie->orm->get("groups")->where("name",$params["name"])->find();
-            $params["group_id"] = $group->id;
-
+            $is_update =  $params['is_new'] ? false : true;
             unset( $params['is_new'],$params['active'], $params["name"] );
 
             // Если в запрос поместить true -  предполагается UPDATE
