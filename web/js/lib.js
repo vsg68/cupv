@@ -11,9 +11,7 @@ function mViewAdm(id) {
     this.view = "multiview";
     this.abbreviate = id.split("_")[0];
     this.newID;
-    this.fitBiggest = true;
-    this.minWidth = 250;
-    this.maxWidth = 300;
+//    this.fitBiggest = true;
     this.cells = [
         { id: "list_" + this.abbreviate, view: "list",
             linkfield: "", // поле привязки к пользовательскому ящику
@@ -44,7 +42,6 @@ function mViewAdm(id) {
 }
 
 function mView(id) {
-    this.maxWidth = 300;
     this.abbreviate = id.split("_")[0];
     this.cells = [
         { id: "list_" + this.abbreviate, view: "list",

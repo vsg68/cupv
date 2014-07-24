@@ -1,8 +1,8 @@
 var usrToolBar = new ToolBar("Пользователи", "users");
-usrToolBar.cols.push({ id: 'filter_mbox', view: 'text', placeholder: 'Filter..', width: 200}, {});
-var aliasToolBar = new ToolBar("Alias", "aliases");
-var fwdToolBar = new ToolBar("Fwd", "fwd");
-var groupToolBar = new ToolBar("Lists", "groups");
+usrToolBar.cols.push({ id: 'filter_mbox', view: 'text', css:"filter", placeholder: 'Filter..', width: 200});
+var aliasToolBar = new ToolBar("Псевдонимы", "aliases");
+var fwdToolBar = new ToolBar("Пересылка", "fwd");
+var groupToolBar = new ToolBar("Списки рассылки", "groups");
 
 //  Вывод пользователей
 var lusers = {
@@ -16,8 +16,6 @@ var lusers = {
             tmpl += "<div class='fleft fa-envelope webix_icon' title='imap_enable'></div>";
         else
             tmpl += "<div class='fleft fa-envelope-o webix_icon' title='imap_disable'></div>";
-        if (obj.master_admin == "1")  tmpl += "<div class='fleft fa-male webix_icon' title='master_admin'></div>";
-        if (obj.master_domain == "1") tmpl += "<div class='fleft fa-users webix_icon' title='master_domain'></div>";
         if (obj.allow_nets) {
             net = obj.allow_nets.split(';');
             for (i = 0; i < net.length; i++) {
@@ -31,6 +29,8 @@ var lusers = {
                 tmpl += "<div class='fleft fa-sitemap webix_icon " + colorclass + "' title='" + net[i] + "'></div>";
             }
         }
+        if (obj.master_admin == "1")  tmpl += "<div class='fleft fa-male webix_icon' title='master_admin'></div>";
+        if (obj.master_domain == "1") tmpl += "<div class='fleft fa-users webix_icon' title='master_domain'></div>";
         if (obj.last_login)    tmpl += "<div class='fleft last_login' title='last_login'>" + obj.last_login + "</div>";
 
         return tmpl;
@@ -247,10 +247,12 @@ groupForm.cells[0].linkfield = "user_id";
 
 maintable = {
     cols: [
-        {rows: [ usrToolBar, usersForm ]},
-        {rows: [ aliasToolBar, aliasForm ]},
-        {rows: [ fwdToolBar, fwdForm ]},
-        {rows: [ groupToolBar, groupForm ]},
+        {rows: [ usrToolBar, usersForm ],gravity:3},
+        {rows:[
+            {rows: [ aliasToolBar, aliasForm ]},
+            {rows: [ fwdToolBar, fwdForm ]},
+            {rows: [ groupToolBar, groupForm ]}
+            ], gravity:1},
     ]
 };
 

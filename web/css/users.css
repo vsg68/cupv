@@ -49,10 +49,15 @@
     float: left;
     margin: 4px;
 }
-.fleft.mailbox {
+.fleft.mailbox,
+.fleft.username {
     width: 200px;
     border-right: 1px solid #ddd;
 }
+.fleft.username {
+    width: 300px;
+}
+
 .fleft.fa-envelope {
     color: green;
 }
@@ -77,6 +82,9 @@
     font-size: 11px;
 }
 
+.filter {
+    float: left;
+}
 /*.users_form .webix_inp_label{*/
 /*width: 130px !important;*/
 /*}*/
