@@ -13,10 +13,12 @@
 
             var menuitem = {
                 view: "menu",
-                template: "#name#",
+                template: function(obj){
+                     return (obj.name) ? obj.name : '<a href=' + obj.href +'>' + obj.name + '</a>';
+                },
                 openAction: "click",
                 type: { subsign : true},
-               url: "/<?= $ctrl ?>/get_menulist/"
+                url: "/<?= $ctrl ?>/get_menulist/"
             };
 
             var maintable;   //  в подключенном скрипте ему присваивается значение

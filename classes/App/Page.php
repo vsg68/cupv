@@ -242,7 +242,7 @@ $name = "vsg";
         $menuitems = array();
         $items = $this->pixie->db
                                 ->query('select','admin')
-                                ->fields($this->pixie->db->expr('Y.name AS value'))
+                                ->fields($this->pixie->db->expr('CONCAT("/",Y.class) AS href, Y.name AS value'))
                                 ->table('controllers','X')
                                 ->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
                                 ->where('X.class',$this->ctrl)
@@ -251,6 +251,7 @@ $name = "vsg";
                                 ->order_by('Y.order')
                                 ->execute()->as_array();
 
+//        $menuitems['name'] = array("href"=>"#","name"=>"Меню");
         $menuitems['name'] = "Меню";
         $menuitems['submenu'] = $items;
 
