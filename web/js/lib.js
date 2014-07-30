@@ -7,6 +7,7 @@ function ToolBar(label, abr) {
     ]
 }
 
+
 function mViewAdm(id) {
     this.view = "multiview";
     this.abbreviate = id.split("_")[0];
@@ -21,10 +22,11 @@ function mViewAdm(id) {
                 keyPressAction(this, key);
             }
             }},
-        { id: "form_" + this.abbreviate, view: "form", elementsConfig: {labelWidth: 70}, elements: [
-            {view: "text", label: "id", name: "id", hidden: true },
-            {view: "text", label: "alias", name: "alias_name" },
-            {view: "checkbox", label: "active", name: "active"},
+        { id: "form_" + this.abbreviate, view: "form", elementsConfig: {labelWidth: 110}, elements: [
+//            {view: "text", label: "id", name: "id", hidden: true },
+            {view: "text", label: "Псевдоним", name: "alias_name" },
+            {view: "text", label: "Пересылка", name: "delivery_to" },
+            {view: "checkbox", label: "Активно", name: "active"},
             { margin: 5, cols: [
                 {},
                 { view: "button", value: "Cancel", width: 70, click: "cancel()" },
@@ -56,17 +58,29 @@ function mView(id) {
 }
 
 // Реакция на клавиши списка пользователей
-function keyPressAction(list, key) {
+function keyPressAction(list, key, formId) {
 
     multiview = list.getParentView();
-x = list.getSelectedItem();
+
     if (multiview.config.view == "multiview") {
 
         children = multiview.getChildViews();
 
         for (i = 0; i < children.length; i++) {
-            if (children[i].config.view == "form")
-                form = children[i];
+            // Если указывается ID формы - ищем ее
+            if ( formId != undefined ) {
+                if ( children[i].config.id == formId) {
+                    form = children[i];
+                    break;
+                }
+            }
+            // Если не указывается - берем первую форму
+            else{
+                if (children[i].config.view == "form") {
+                    form = children[i];
+                    break;
+                }
+            }
         }
     }
 
@@ -117,6 +131,32 @@ function save_form(){
         })
 }
 
+function save_form_group(){
+
+    var mForm = this.getFormView();
+//x =  mForm.getValues().id;
+//y = $$('list_groups').getItem( x );
+
+    // Если не новая запись - убираем признак новой записи
+    if( $$('list_groups').getItem( mForm.getValues().id ).value )
+        mForm.setValues({is_new:0},true);
+
+
+    if ( mForm.save() === false)  return false;
+
+    webix.ajax().post("/groups/savegroup", mForm.getValues(),
+        function(responce){
+            if(responce)
+                webix.message({type:"error", expire: 3000, text: responce}); // server side response
+            else {
+                webix.message("ОK"); // server side response
+                var mView = mForm.getParentView();
+                mView.config.newID = "";
+                $$('list_groups').openAll();
+                mView.back();
+            }
+        })
+}
 // Отмена изменений
 function cancel() {
     var mView = this.getFormView().getParentView();

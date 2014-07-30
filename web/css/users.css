@@ -49,6 +49,7 @@
     float: left;
     margin: 4px;
 }
+
 .fleft.mailbox,
 .fleft.username {
     width: 200px;
@@ -85,6 +86,23 @@
 .filter {
     float: left;
 }
-/*.users_form .webix_inp_label{*/
-/*width: 130px !important;*/
-/*}*/
+.arrow {
+    margin: 0;
+    width: 150px;
+}
+.fleft.alias_name {
+    width: 200px;
+}
+.noborder {
+    border: none !important;
+}
+/****   alias| groups ****/
+.groups .webix_tree_folder_open,
+.groups .webix_tree_folder{
+    background-image: url(/images/groups.png);
+    background-position: 0px 4px;
+}
+.groups .webix_tree_file{
+    background-image: url(/images/usr.png);
+    background-position: 0px 4px;
+}

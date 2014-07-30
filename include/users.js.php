@@ -17,7 +17,7 @@ var lusers = {
         else
             tmpl += "<div class='fleft fa-envelope-o webix_icon' title='imap_disable'></div>";
         if (obj.allow_nets) {
-            net = obj.allow_nets.split(';');
+            net = obj.allow_nets.split(',');
             for (i = 0; i < net.length; i++) {
                 if (/127.0.0.1*/.test(net[i]))
                     colorclass = 'localnet';
@@ -187,17 +187,18 @@ var usersForm = {
 // добавляем "свободное место" и кнопки на тулбар
 aliasToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var aliasForm = new mViewAdm("aliases_mv");
+aliasForm.cells[1].elements.splice(1,1);  // pop  "delivery_to"
 
 /*********   Forward  ********/
 fwdToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var fwdForm = new mViewAdm("fwd_mv");
-fwdForm.cells[1].elements[1] = {view: "text", label: "forward", name: "delivery_to"},
-//fwdForm.cells[1].elements[1].hidden = true;
+//fwdForm.cells[1].elements[0] = {view: "text", label: "forward", name: "delivery_to"},
+fwdForm.cells[1].elements.splice(0,1);  // pop  "alias_name"
 
 /*********   Groups  ********/
 groupToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var groupForm = new mViewAdm("groups_mv");
-groupForm.cells[1].elements[1] = {view: "richselect", label: "Группа", name: "name",
+groupForm.cells[1].elements[0] = {view: "richselect", label: "Группа", name: "name",
     options: "/groups/getGroupsList/",
     on: {
         "onChange": function(){
@@ -211,7 +212,7 @@ groupForm.cells[1].elements[1] = {view: "richselect", label: "Группа", nam
     }
 };
 // group_id и user_id передаются как скрытые поля. для их "получения" нужно применять form.getValues()
-groupForm.cells[1].elements.splice(2,1);
+groupForm.cells[1].elements.splice(1,1);
 groupForm.cells[1].rules = {
                         name: function (value) {
                                 return checkGroups(value);
@@ -247,12 +248,12 @@ groupForm.cells[0].linkfield = "user_id";
 
 maintable = {
     cols: [
-        {rows: [ usrToolBar, usersForm ],gravity:3},
+        {rows: [ usrToolBar, usersForm ], minWidth: 800, gravity:5},
         {rows:[
             {rows: [ aliasToolBar, aliasForm ]},
             {rows: [ fwdToolBar, fwdForm ]},
             {rows: [ groupToolBar, groupForm ]}
-            ], gravity:1},
+            ], minWidth: 300, gravity:3},
     ]
 };
 
@@ -262,3 +263,4 @@ maintable = {
 // 2) заполнение строки "пароль" - по клику на иконку
 // 3) заполниние строки "сети" -  по клику на иконку (?)
 // 4) экспорт в файл ....
+// 5) При клике на почтовую иконку - переход на почту(www) в транскрипции user@domain*i_am@gmpro.ru

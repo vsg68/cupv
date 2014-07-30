@@ -6,30 +6,132 @@
     <script src="/codebase/webix_debug.js" type="text/javascript" charset="utf-8"></script>
     <title>Something</title>
 </head>
-
+<style>
+    /*.folder_grp*/
+   /*.groups .webix_tree_folder_open,*/
+   /*.groups .webix_tree_folder*/
+    /*{*/
+        /*background-image: url(images/groups.png);*/
+        /*background-position: 0px 4px;*/
+    /*}*/
+   /*.groups .webix_tree_file{*/
+        /*background-image: url(images/usr1.png);*/
+        /*background-position: 0px 4px;*/
+    /*}*/
+    /*.my_style{*/
+        /*background-color:#FFAAAA;*/
+    /*}*/
+</style>
 
 <body>
 
 
 <script type="text/javascript" charset="utf-8">
-    var form = {
-        id: "form_",
-        view:"form",
-        elements: [
-            {view:"checkbox", id:"1", label:"group 1", name:"name[]"},
-            {view:"checkbox", id:"2", label:"group 2", name:"name[]"},
-            {view:"checkbox", id:"3", label:"group 3", name:"name[]"},
-        ]
-    };
+        //plain json data, based on objects
+var treea = {
+            view:"tree", select:true, type:"lineTree",
+            on:{
+                "onAfterSelect": function(){
+                    webix.message(this.getSelectedId());
+                },
+                "onAfterLoad": function(){
+                    this.openAll();
+//                    this.select(this.getFirstId())
+                },
+            },
+    data:  [
+                { "id":"1", "value":"The Shawshank Redemption", "data":[
+                    { "id":"1.1", "value":"Part 1" },
+                    { "id":"1.2", "value":"Part 2", "data":[
+                        "page 1", "page 2"
+                    ]},
+                    { "id":"1.3", "value":"Part 3" }
+                ]},
+                { "id":"2", "value":"The Godfather", "data":[
+                    { "id":"2.1", "value":"Part 1" },
+                    { "id":"2.2", "value":"Part 2" }
+                ]}
+            ],
+    template: function(obj, common){
+        if (obj.$parent == 0) {
+            return common.icon(obj,common)+common.folder(obj,common)+"<i>"+obj.value+"</i>";
+//            return common.icon(obj,common)+common.folder(obj,common)+"<i>"+obj.value+"</i>";
+        } else {
+            return  common.icon(obj,common)+common.folder(obj,common)+obj.value;
+        }
+    }
+//            url: "/groups/showTree/"
+        };
+var addUsr = {
+    view: "button", type: "iconButton", icon: "user", label: "New", width: 70,
+};
+var buttonMinus = {
+    view: "button", type: "iconButton", icon: "minus", label: "Del", width: 70,
+}
+var addGrp = {
+    view: "button", type: "iconButton", icon: "group", label: "New", width: 70,
+//            click: function () {
+//                // Если не выбран пользователь - выходим
+//                abr = this.getParentView().config.abr;
+//                // Если кнопка нажата не на списке  - выходим
+//                if (!isActiveCell_List(abr)) {
+//                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+//                    return false;
+//                }
+//
+//                // заполняю дефолтными значениями
+//                // is_new - вспомогательное поле, которое проверяется на стороне сервера
+//                defaults      = {"active":1, "is_new":1};
+//
+//                newID = $$("list_" + abr).add(defaults);     // создаем новую запись
+//                // заносим новый ид в переменную.
+//                $$("list_" + abr).getParentView().config.newID = newID;
+//
+//                // Переход к редактированию
+//                $$("form_" + abr).show();
+//                $$("list_" + abr).select(newID);
+//            }
+};
+tb = {
+        view: "toolbar",
+        height: 30,
+        cols: [{view: "label", label: "Groups"}, addGrp,addUsr,buttonMinus]
+     };
 
-//    webix.ajax().get("/groups/select/",{},function(text){
-//        form.elements = text;
-//    });
+var mf = {
+     view: "multiview",
+     newID: "",
+    css: "win",
+     cells: [ treea ,
+                { id: "form_tree", view: "form", elementsConfig: {labelWidth: 110}, elements: [
+//            {view: "text", label: "id", name: "id", hidden: true },
+                    {view: "text", label: "Группа", name: "value" },
+//                    {view: "richselect", label: "Пользователь", name: "name" },
+                    {view: "checkbox", label: "Активно", name: "active"},
+                    { margin: 5, cols: [
+                        {},
+                        { view: "button", value: "Cancel", width: 70, click: "cancel()" },
+                        { view: "button", value: "Save", width: 70, type: "form", click: "save_form" },
+                        {}
+                    ]},
+                    {}
+                ],
+                    rules: {
+                        alias_name: webix.rules.isEmail,
+                        delivery_to: webix.rules.isEmail
+                    }
+                }
+            ]
+        }
+
+// TODO таббар с кнопками добавления 1) групп 2) ползователей 3) удаления
+//        форма добавления групп - текст, проверка на существование
+//        пользователей - список почтовых ящиков
 
 webix.ready(function () {
     // Вывод основного представления
 
-    webix.ui(form);
+    webix.ui({rows:[tb,mf],width: 400});
 
 });
 

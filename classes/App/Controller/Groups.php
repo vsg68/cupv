@@ -103,45 +103,45 @@ class Groups extends \App\Page {
         $this->response->body = $view->render();
     }
 
-	public function action_edit() {
-
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
-		if( ! $params = $this->request->post() )
-			return;
-
-		if($params['tab'] != 'groups' )
-			return;
-		try {
-			$tab  = $params['tab'];
-			unset($params['tab']);
-
-			$params['active'] = $this->getVar($params['active'],0);
-
-			$is_update = $params['id'] ? true : false;
-
-			// сохраняем модель
-			// Если в запрос поместить true -  предполагается UPDATE
-			$row = $this->pixie->orm->get($tab)
-									->values($params, $is_update)
-									->save();
-
-			$id = $params['id'];
-			unset( $params['id'] );
-
-			$returnData  = array_values($params);
-			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
-
-			$this->response->body = json_encode($returnData);
-		}
-		catch (\Exception $e) {
-			$this->response->body = $e->getMessage();
-			return;
-		}
-
-
-	}
+//	public function action_edit() {
+//
+//		if( $this->permissions != $this::WRITE_LEVEL )
+//			return $this->noperm();
+//
+//		if( ! $params = $this->request->post() )
+//			return;
+//
+//		if($params['tab'] != 'groups' )
+//			return;
+//		try {
+//			$tab  = $params['tab'];
+//			unset($params['tab']);
+//
+//			$params['active'] = $this->getVar($params['active'],0);
+//
+//			$is_update = $params['id'] ? true : false;
+//
+//			// сохраняем модель
+//			// Если в запрос поместить true -  предполагается UPDATE
+//			$row = $this->pixie->orm->get($tab)
+//									->values($params, $is_update)
+//									->save();
+//
+//			$id = $params['id'];
+//			unset( $params['id'] );
+//
+//			$returnData  = array_values($params);
+//			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
+//
+//			$this->response->body = json_encode($returnData);
+//		}
+//		catch (\Exception $e) {
+//			$this->response->body = $e->getMessage();
+//			return;
+//		}
+//
+//
+//	}
 
 //	public function action_delEntry() {
 //
@@ -165,52 +165,52 @@ class Groups extends \App\Page {
 //
 //    }
 
-    public function action_edGroup() {
-
-		if( $this->permissions == $this::NONE_LEVEL )
-				return $this->noperm();
-
-		// Родительский ID
-		if( ! $this->_id = $this->request->param('id'))
-			return;
-
-		$entries = $data = array();
-		try {
-			// Первым делом - удаляем
-			$this->pixie->orm->get('lists')->where('group_id',$this->_id)->delete_all();
-
-			$obj_ids = is_array($this->request->post('obj_id')) ? $this->request->post('obj_id') : array();
-
-			// вторым делом - вставляем
-			foreach ($obj_ids as $obj_id ) {
-				$this->pixie->orm->get('lists')
-								 ->values(array('group_id' => $this->_id,'user_id' => $obj_id))
-								 ->save();
-			}
-
-			// Последним делом - вынимаем
-			$entries = $this->pixie->orm->get('groups')
-										->where('id',$this->_id)
-									    ->users
-									    ->find_all();
-
-			foreach($entries as $entry) {
-				$data[] = array( $entry->username,
-								 $entry->mailbox,
-								 $entry->active,
-								 'DT_RowClass' => 'gradeB'
-								);
-			}
-
-			$this->response->body = json_encode($data);
-		}
-		catch (\Exception $e) {
-			$view = $this->pixie->view('form_alert');
-			$view->errorMsg = $e->getMessage();
-			$this->response->body = $view->render();
-		}
-
-	}
+//    public function action_edGroup() {
+//
+//		if( $this->permissions == $this::NONE_LEVEL )
+//				return $this->noperm();
+//
+//		// Родительский ID
+//		if( ! $this->_id = $this->request->param('id'))
+//			return;
+//
+//		$entries = $data = array();
+//		try {
+//			// Первым делом - удаляем
+//			$this->pixie->orm->get('lists')->where('group_id',$this->_id)->delete_all();
+//
+//			$obj_ids = is_array($this->request->post('obj_id')) ? $this->request->post('obj_id') : array();
+//
+//			// вторым делом - вставляем
+//			foreach ($obj_ids as $obj_id ) {
+//				$this->pixie->orm->get('lists')
+//								 ->values(array('group_id' => $this->_id,'user_id' => $obj_id))
+//								 ->save();
+//			}
+//
+//			// Последним делом - вынимаем
+//			$entries = $this->pixie->orm->get('groups')
+//										->where('id',$this->_id)
+//									    ->users
+//									    ->find_all();
+//
+//			foreach($entries as $entry) {
+//				$data[] = array( $entry->username,
+//								 $entry->mailbox,
+//								 $entry->active,
+//								 'DT_RowClass' => 'gradeB'
+//								);
+//			}
+//
+//			$this->response->body = json_encode($data);
+//		}
+//		catch (\Exception $e) {
+//			$view = $this->pixie->view('form_alert');
+//			$view->errorMsg = $e->getMessage();
+//			$this->response->body = $view->render();
+//		}
+//
+//	}
 
     public function action_getGroupsList(){
 
@@ -221,6 +221,48 @@ class Groups extends \App\Page {
                                     ->execute()->as_array();
 
         $this->response->body = json_encode($result);
+    }
+//    public function action_showTree(){
+//
+//        $entries = $this->pixie->db->query('select')
+//                                    ->fields($this->pixie->db->expr("G.id, G.name, G.active, concat(G.id ,U.id) AS uid, U.mailbox AS value"))
+//                                    ->table('groups', 'G')
+//                                    ->join(array('lists','L'),array('L.group_id','G.id'))
+//                                    ->join(array('users','U'),array('L.user_id','U.id'))
+//                                    ->order_by("G.id")
+//                                    ->execute()->as_array();
+//
+//        $this->response->body = json_encode($entries);
+//
+//    }
+    public function action_showTree(){
+
+        $entries = $this->pixie->db->query('select')
+                                    ->fields($this->pixie->db->expr("G.id AS id, G.name AS value, G.active, U.id AS uid, U.mailbox as mailbox, 1 AS open"))
+                                    ->table('groups', 'G')
+                                    ->join(array('lists','L'),array('L.group_id','G.id'))
+                                    ->join(array('users','U'),array('L.user_id','U.id'))
+                                    ->order_by("G.id")
+                                    ->execute()->as_array();
+
+        $result = array();
+        foreach( $entries as $entry) {
+
+            $data = array("id" => $entry->uid, "value" => $entry->mailbox, "user_id" => $entry->uid,);
+            $uid = $entry->uid;
+
+            unset($entry->uid, $entry->mailbox);
+
+            if( ! isset( $result[ $entry->id ]->data ) ) {
+                $result[ $entry->id ] = $entry;
+                if( isset($uid) )
+                    $result[ $entry->id ]->data = array();
+            }
+            if( isset($uid) )
+                array_push( $result[ $entry->id ]->data, $data );
+        }
+
+        $this->response->body = json_encode(array_values($result));
     }
 
     public function action_save(){
@@ -242,7 +284,7 @@ class Groups extends \App\Page {
         }
     }
 
-    public function action_delEntry(){
+    public function action_savegroup(){
         if( $this->permissions != $this::WRITE_LEVEL )
 			return $this->noperm();
 
@@ -250,9 +292,56 @@ class Groups extends \App\Page {
             return false;
 
         try {
-            $this->pixie->orm->get("lists")->where("id", $params["id"])->delete_all();
+            // Если в запрос поместить true -  предполагается UPDATE
+            $is_update =  (isset($params['is_new']) && $params['is_new'] )? false : true;
+
+            if( $params['$parent'] )
+                $this->pixie->orm->get("lists")->values(array('id'       => $params['id'],
+                                                              'group_id' => $params['$parent'],
+                                                              'user_id'  => $params['user_id'],
+                                                            ),$is_update)->save();
+            else
+                $this->pixie->orm->get("groups")->values(array('id'     => $params['id'],
+                                                               'name'   => $params['value'],
+                                                               'active' => $params['active']
+                                                            ),$is_update)->save();
         }
         catch (\Exception $e) {
+            $this->response->body = $e->getMessage();
+        }
+    }
+
+    public function action_delEntry()
+    {
+        if ($this->permissions != $this::WRITE_LEVEL)
+            return $this->noperm();
+
+        if (!$params = $this->request->post())
+            return false;
+
+        try {
+
+            if ( $params['$parent'] == 0 ) { // удаление группы
+                // запрос на удаление группы
+                $this->pixie->orm->get("lists")
+                    ->where("group_id", $params["id"])
+                    ->delete_all();
+
+                $this->pixie->orm->get("groups")
+                    ->where("id", $params["id"])
+                    ->delete_all();
+            }
+            elseif( $this->getVar($params['$parent']) > 0 ) {  // удаление пользователя
+                $this->pixie->orm->get("lists")->where("group_id", $params['$parent'])
+                    ->where("user_id", $params["id"])
+                    ->delete_all();
+            }
+            else {
+                $this->pixie->orm->get("lists")->where("id", $params["id"])   // сюда приходит запрос из раздела пользователей
+                    ->delete_all();
+            }
+
+        } catch (\Exception $e) {
             $this->response->body = $e->getMessage();
         }
     }
