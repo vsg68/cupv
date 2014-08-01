@@ -141,7 +141,6 @@ function save_form_group(){
     if( $$('list_groups').getItem( mForm.getValues().id ).value )
         mForm.setValues({is_new:0},true);
 
-
     if ( mForm.save() === false)  return false;
 
     webix.ajax().post("/groups/savegroup", mForm.getValues(),
@@ -182,19 +181,31 @@ function checkEmail(value) {
 }
 
 // проверка наличия одинаковых групп у пользователя
-function checkGroups(value){
-    lastid = $$('list_groups').getLastId();
-    currid = $$('list_groups').getFirstId();
-    while (1) {
-        item = $$('list_groups').getItem(currid);
-        if (item.name == value) {
+function checkGroups(value) {
+    var ok = true;
+    $$('list_groups').data.each( function(obj){
+        if (obj.name == value) {
             webix.message({ type: "error", text: "Пользователь в данной группе уже присутствует" });
-            return false;
+            ok = false;
         }
-        if (currid == lastid)
-            return true;
-        currid = $$('list_groups').getNextId(currid);
-    }
+    });
+    return ok;
+}
+
+// проверка наличия одинаковых пользователей в группе
+function chkUserInGroup(pid, name){
+    var ok = true;
+    var msg = pid ? "Пользователь в данной группе уже присутствует" : "Такая группа уже существует";
+
+    $$('list_groups').data.eachChild(pid, function(obj){
+
+        if (obj.value == name) {
+            webix.message({ type: "error", text: msg });
+            ok = false;
+        }
+    });
+
+    return ok;
 }
 
 // Проверка открытой ячейки в мультивью

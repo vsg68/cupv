@@ -49,12 +49,49 @@ var grptree = { id:"list_groups", view:"tree", css:"groups", select:true, scroll
                         formId = ( this.getSelectedItem()['$parent'] ) ? "form_groups_RS" : "form_groups_Txt";
                         keyPressAction(this, key, formId);
                     }
-                },
-                rules: {
-                    
                 }
-
 };
+
+// Домены
+var domainToolBar = new ToolBar("Домены", 'domains');
+var tabdomains =  { view:"segmented", gravity:2,
+    options:[
+        {id:0, value:"Основные"},
+        {id: 1, value: "Псевдонимы"},
+        {id:2, value: "Транспорт"},
+    ],
+    click: function(obj){
+        $$("list_domains").filter( function(data){
+            return data.domain_type == $$(obj).getValue();
+        });
+    }
+};
+domainToolBar.cols.push(tabdomains);
+
+var ldomains = {id: "list_domains", view:"list", select:true, scroll: false, type: { height: 40 },
+                url: "/domains/showTable/",
+                on: {
+                    onAfterLoad: function(){
+                        this.filter( function(data){ return data.domain_type == "0"})
+                    },
+                    "onKeyPress": function (key) {
+            //                        formId = ( this.getSelectedItem()['$parent'] ) ? "form_groups_RS" : "form_groups_Txt";
+                        keyPressAction(this, key);
+//                        keyPressAction(this, key, formId);
+                    }
+                },
+                template: function(obj){
+                                        var tmpl = "<div class='fleft domain_name isactive_" + obj.active + "'  title='" + (obj.domain_notes ? obj.domain_notes : "") + "'>" + obj.domain_name + "</div>";
+
+                                        if (obj.domain_type)                tmpl += "<div class='fleft fa-exchange webix_icon domain_type_" + obj.domain_type + "' title='" + obj.delivery_to+ "'></div>";
+                                        if (obj.all_enable == "1")          tmpl += "<div class='fleft fa-envelope webix_icon' title='рассылка: " + obj.all_email + "'></div>";
+                                        if (obj.relay_domain == "1")        tmpl += "<div class='fleft fa-share webix_icon' title='relay: " + obj.relay_address + "'></div>";
+                                        if (obj.relay_notcheckusers == "1") tmpl += "<div class='fleft fa-check webix_icon' title='check users'></div>";
+
+                                        return tmpl;
+                }
+};
+
 
 <?php //if( $permissions == $WRITE_LEVEL ): ?>
 var buttonPlus = {
@@ -82,7 +119,7 @@ var buttonPlus = {
     }
 };
 var buttonMinus = {
-    view: "button", type: "iconButton", icon: "minus", label: "Del", width: 70,
+    view: "button", type: "iconButton", icon: "trash-o", label: "Del", width: 70,
     click: function () {
 
         abr = this.getParentView().config.abr;
@@ -107,7 +144,7 @@ var buttonMinus = {
     }
 };
 var delGrp = {
-    view: "button", type: "iconButton", icon: "minus", label: "Del", width: 70,
+    view: "button", type: "iconButton", icon: "trash-o", label: "Del", width: 70,
     click: function () {
 
         // Если кнопка нажата не на списке - выходим
@@ -123,8 +160,10 @@ var delGrp = {
             if (result) {
 
                 webix.ajax().post("/groups/delEntry/", {id: selected_item['id'], group_id: selected_item['$parent']}, function (text, xml, xhr) {
-                    if (!text)
-                        $$("list_groups").remove(selected_id);
+                    if (!text) {
+                        webix.message("ОK"); // server side response
+                        $$("list_groups").remove(selected_item['id']);
+                    }
                     else
                         webix.message({type: "error", text: text});
                 })
@@ -184,6 +223,7 @@ var save_cancel_button = { margin: 5, cols: [{},
                                             { view: "button", value: "Cancel", width: 70, click: "cancel()" },
                                             { view: "button", value: "Save", width: 70, type: "form", click: "save_form_group" },
                                             {}]};
+
 /*********   Aliases  ********/
 // добавляем "свободное место" и кнопки на тулбар
 aliasToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
@@ -210,19 +250,106 @@ var dformRS = {id: "form_groups_RS", view: "form", elementsConfig: {labelWidth: 
                 },
                 webix.copy(save_cancel_button),
                 {}
-            ]};
+                ],
+                rules: {
+                    $obj: function(data){
+                        return chkUserInGroup(data['$parent'], data['value']);
+                    }
+                }};
 var dformTxt = {id: "form_groups_Txt", view: "form", elementsConfig: {labelWidth: 110}, elements: [
                 {view: "text", label: "Группы", name: "value" },
                 {view: "checkbox", label: "Активно", name: "active"},
                 webix.copy(save_cancel_button),
                 {}
-            ]};
+                ],
+                rules: {
+                    $obj: function(data){
+                        return chkUserInGroup(data['$parent'], data['value']);
+                    }
+                }};
 
 var groupsForm = {
     view: "multiview",
     newID: "",
     abbreviate: "groups",
     cells: [ grptree, dformRS, dformTxt ] };
+
+/*******  Domains ********/
+var dformVirtual = { id: "form_domains_Virt", view: "form", elementsConfig: {labelWidth: 150}, elements: [
+                    {view: "text", label: "Название", name: "domain_name" },
+                    {view: "text", label: "Описание", name: "domain_notes" },
+                    {view: "fieldset", label:"Рассылка", body: {
+                        rows:[
+                            {view: "checkbox", label: "Рассылка.Вкл", name: "all_enable" },
+                            {view: "text", label: "Рассылка", name: "all_email" },
+                        ]
+                    }},
+                    {view: "fieldset", label:"Relay", body: {
+                        rows: [
+                            {view: "checkbox", label: "Вкл.Пересылку", name: "relay_enable" },
+                            {view: "text", label: "Пересылка", name: "relay_address" },
+                            {view: "checkbox", label: "Проверка польз.", name: "relay_notcheckusers"},
+                        ]
+                    }},
+                    {view: "checkbox", label: "Активно", name: "active"},
+                    { margin: 5, cols: [
+                        {},
+                        { view: "button", value: "Cancel", width: 70, click: "cancel()" },
+                        { view: "button", value: "Save", width: 70, type: "form", click: "save_form" },
+                        {}
+                    ]},
+                    {}
+};
+var dformAlias = { id: "form_domains_Alias", view: "form", elementsConfig: {labelWidth: 150}, elements: [
+                    {view: "text", label: "Название", name: "domain_name" },
+                    {view: "text", label: "Описание", name: "domain_notes" },
+                    {view: "richselect", label:"Псевдоним", name: "delivery_to", options: "/domain/getDomains/?q=virt"},
+                    {view: "checkbox", label: "Активно", name: "active"},
+                    { margin: 5, cols: [
+                        {},
+                        { view: "button", value: "Cancel", width: 70, click: "cancel()" },
+                        { view: "button", value: "Save", width: 70, type: "form", click: "save_form" },
+                        {}
+                    ]},
+                    {}
+};
+var dformTrans = { id: "form_domains_Trans", view: "form", elementsConfig: {labelWidth: 150}, elements: [
+                    {view: "text", label: "Название", name: "domain_name" },
+                    {view: "text", label: "Описание", name: "domain_notes" },
+                    {view: "text", label:"Транспорт", name: "delivery_to"},
+                    {view: "fieldset", label:"Relay", body: {
+                        rows: [
+                            {view: "checkbox", label: "Вкл.Пересылку", name: "relay_enable" },
+                            {view: "text", label: "Пересылка", name: "relay_address" },
+                            {view: "checkbox", label: "Проверка польз.", name: "relay_notcheckusers"},
+                        ]
+                    }}
+                    {view: "checkbox", label: "Активно", name: "active"},
+                    { margin: 5, cols: [
+                        {},
+                        { view: "button", value: "Cancel", width: 70, click: "cancel()" },
+                        { view: "button", value: "Save", width: 70, type: "form", click: "save_form" },
+                        {}
+                    ]},
+                    {}
+};
+
+// TODO не понятно, какие поля за что отвечают - узнать, Сделать переключение биндов
+
+domainToolBar.cols.push(buttonPlus, buttonMinus);
+var domainForm = {
+    view: "multiview",
+    newID: "",
+    cells: [ ldomains ,
+
+        ]},
+//            rules: {
+//                alias_name: webix.rules.isEmail,
+//                delivery_to: webix.rules.isEmail
+//            }
+//        }
+    ]
+}
 
 <?php //else: ?>
 
@@ -238,7 +365,7 @@ maintable = {
     cols: [
         {rows: [ aliasToolBar, aliasForm ], minWidth:550},
         {rows: [ groupsToolBar, groupsForm]},
-        {}
+        {rows: [ domainToolBar, domainForm]},
     ]
 };
 

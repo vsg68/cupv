@@ -173,18 +173,9 @@ $name = "vsg";
         $this->view->permissions  = $this->permissions;
         $this->view->WRITE_LEVEL = $this::WRITE_LEVEL;
         $this->view->NONE_LEVEL  = $this::NONE_LEVEL;
-//		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/include/'.$this->ctrl.'.js.php') ) {
-//			$this->view->script_file = $this->pixie->root_dir.'include/'.$this->ctrl.'.js.php';
-//		}
-//
-//        if( file_exists($this->pixie->root_dir.'/include/'.$this->ctrl.'_ready.js.php') ) {
-//            $this->view->script_file_ready = $this->pixie->root_dir.'include/'.$this->ctrl.'_ready.js.php';
-//        }
 
 		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') )
 			$this->view->css_file = '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
-        else
-            $this->view->css_file = '<link rel="stylesheet" type="text/css" href="/css/users.css" />';
 
 		// Подключаем файл, с названием равным контроллеру
 		$this->view->subview = $this->ctrl;

@@ -9,7 +9,6 @@ var lusers = {
     id: 'list_users',
     view: "list",
     template: function (obj) {
-        x = obj;
         var tmpl = "<div class='fleft mailbox isactive_" + obj.active + "'>" + obj.mailbox + "</div>";
         tmpl += "<div class='fleft username isactive_" + obj.active + "' title='username'>" + obj.username + "</div>";
         if (obj.imap_enable == "1")
@@ -110,10 +109,11 @@ var buttonPlus = {
     }
 };
 var buttonMinus = {
-    view: "button", type: "iconButton", icon: "minus", label: "Del", width: 70,
+    view: "button", type: "iconButton", icon: "trash-o", label: "Del", width: 70,
     click: function () {
 
         abr = this.getParentView().config.abr;
+
         // Если кнопка нажата не на списке - выходим
         if (!isActiveCell_List(abr)) {
             webix.message({ type: "error", text: "Кнопки в этой области не работают" });
@@ -121,10 +121,11 @@ var buttonMinus = {
         }
 
         var selected_id = $$("list_" + abr).getSelectedId();
+
         webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
             //  тут надо отослать данные на сервер
             if (result) {
-                webix.ajax().post("/" + abr + "/delEntry/", {id: selected_id}, function (text, xml, xhr) {
+                webix.ajax().post("/" + (abr == "fwd" ? "aliases" : abr ) + "/delEntry/", {id: selected_id}, function (text, xml, xhr) {
                     if (!text)
                         $$("list_" + abr).remove(selected_id);
                     else
@@ -192,7 +193,6 @@ aliasForm.cells[1].elements.splice(1,1);  // pop  "delivery_to"
 /*********   Forward  ********/
 fwdToolBar.cols.push({}, webix.copy(buttonPlus), webix.copy(buttonMinus));
 var fwdForm = new mViewAdm("fwd_mv");
-//fwdForm.cells[1].elements[0] = {view: "text", label: "forward", name: "delivery_to"},
 fwdForm.cells[1].elements.splice(0,1);  // pop  "alias_name"
 
 /*********   Groups  ********/
@@ -264,3 +264,7 @@ maintable = {
 // 3) заполниние строки "сети" -  по клику на иконку (?)
 // 4) экспорт в файл ....
 // 5) При клике на почтовую иконку - переход на почту(www) в транскрипции user@domain*i_am@gmpro.ru
+/*
+При подключении:
+id - min 14 знаков (bigint) такое же выставляется для всех id  в lists
+ */

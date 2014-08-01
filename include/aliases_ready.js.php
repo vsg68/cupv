@@ -2,8 +2,9 @@
 // Связка формы и представления
 <?php //if( $permissions == $WRITE_LEVEL ): ?>
     $$('form_aliases').bind('list_aliases');
-$$('form_groups_RS').bind('list_groups');
-$$('form_groups_Txt').bind('list_groups');
+    $$('form_groups_RS').bind('list_groups');
+    $$('form_groups_Txt').bind('list_groups');
+    $$('form_domains').bind('list_domains');
 
 <?php //endif; ?>
 

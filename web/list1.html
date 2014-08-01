@@ -3,6 +3,7 @@
 <head>
     <META http-equiv="content-type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="/codebase/webix.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="/css/main.css" type="text/css" media="screen" charset="utf-8">
     <script src="/codebase/webix_debug.js" type="text/javascript" charset="utf-8"></script>
     <title>Something</title>
 </head>
@@ -25,88 +26,79 @@
 
 <body>
 
-
 <script type="text/javascript" charset="utf-8">
         //plain json data, based on objects
-var treea = {
-            view:"tree", select:true, type:"lineTree",
-            on:{
-                "onAfterSelect": function(){
-                    webix.message(this.getSelectedId());
-                },
-                "onAfterLoad": function(){
-                    this.openAll();
-//                    this.select(this.getFirstId())
-                },
-            },
-    data:  [
-                { "id":"1", "value":"The Shawshank Redemption", "data":[
-                    { "id":"1.1", "value":"Part 1" },
-                    { "id":"1.2", "value":"Part 2", "data":[
-                        "page 1", "page 2"
-                    ]},
-                    { "id":"1.3", "value":"Part 3" }
-                ]},
-                { "id":"2", "value":"The Godfather", "data":[
-                    { "id":"2.1", "value":"Part 1" },
-                    { "id":"2.2", "value":"Part 2" }
-                ]}
-            ],
-    template: function(obj, common){
-        if (obj.$parent == 0) {
-            return common.icon(obj,common)+common.folder(obj,common)+"<i>"+obj.value+"</i>";
-//            return common.icon(obj,common)+common.folder(obj,common)+"<i>"+obj.value+"</i>";
-        } else {
-            return  common.icon(obj,common)+common.folder(obj,common)+obj.value;
-        }
-    }
-//            url: "/groups/showTree/"
-        };
 var addUsr = {
     view: "button", type: "iconButton", icon: "user", label: "New", width: 70,
 };
 var buttonMinus = {
     view: "button", type: "iconButton", icon: "minus", label: "Del", width: 70,
 }
-var addGrp = {
-    view: "button", type: "iconButton", icon: "group", label: "New", width: 70,
-//            click: function () {
-//                // Если не выбран пользователь - выходим
-//                abr = this.getParentView().config.abr;
-//                // Если кнопка нажата не на списке  - выходим
-//                if (!isActiveCell_List(abr)) {
-//                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-//                    return false;
-//                }
-//
-//                // заполняю дефолтными значениями
-//                // is_new - вспомогательное поле, которое проверяется на стороне сервера
-//                defaults      = {"active":1, "is_new":1};
-//
-//                newID = $$("list_" + abr).add(defaults);     // создаем новую запись
-//                // заносим новый ид в переменную.
-//                $$("list_" + abr).getParentView().config.newID = newID;
-//
-//                // Переход к редактированию
-//                $$("form_" + abr).show();
-//                $$("list_" + abr).select(newID);
-//            }
-};
-tb = {
-        view: "toolbar",
-        height: 30,
-        cols: [{view: "label", label: "Groups"}, addGrp,addUsr,buttonMinus]
-     };
 
+var treea = {
+            id: "list_domains",
+            view:"list", select:true,
+            url: "/domains/showTable/",
+            type: { height: 40 },
+            on: {
+                onAfterLoad: function(){
+                    this.filter( function(data){ return data.domain_type == "0"})
+                },
+                "onKeyPress": function (key) {
+//                        formId = ( this.getSelectedItem()['$parent'] ) ? "form_groups_RS" : "form_groups_Txt";
+                    keyPressAction(this, key, formId);
+                }
+            },
+            template: function(obj){
+                var tmpl = "<div class='fleft domain_name isactive_" + obj.active + "'  title='" + (obj.domain_notes ? obj.domain_notes : "") + "'>" + obj.domain_name + "</div>";
+
+                if (obj.domain_type)                tmpl += "<div class='fleft fa-exchange webix_icon domain_type_" + obj.domain_type + "' title='" + obj.delivery_to+ "'></div>";
+                if (obj.all_enable == "1")          tmpl += "<div class='fleft fa-envelope webix_icon' title='рассылка: " + obj.all_email + "'></div>";
+                if (obj.relay_domain == "1")        tmpl += "<div class='fleft fa-share webix_icon' title='relay: " + obj.relay_address + "'></div>";
+                if (obj.relay_notcheckusers == "1") tmpl += "<div class='fleft fa-check webix_icon' title='check users'></div>";
+
+                return tmpl;
+            }
+        };
+var tabb =  { view:"segmented",
+//              css: "tabbar",
+              options:[
+                {id:0, value:"Основные"},
+                {id: 1, value: "Алиасы"},
+                {id:2, value: "Транспорт"},
+              ],
+              click: function(obj){
+                        $$("list_domains").filter( function(data){
+                            return data.domain_type == $$(obj).getValue();
+                        });
+            }
+        };
+var tb = {
+    view: "toolbar",
+    height: 30,
+    cols: [tabb, {view: "label", label: "Groups"}, addUsr,buttonMinus]
+};
 var mf = {
      view: "multiview",
      newID: "",
-    css: "win",
+     css: "win",
      cells: [ treea ,
                 { id: "form_tree", view: "form", elementsConfig: {labelWidth: 110}, elements: [
-//            {view: "text", label: "id", name: "id", hidden: true },
-                    {view: "text", label: "Группа", name: "value" },
-//                    {view: "richselect", label: "Пользователь", name: "name" },
+                    {view: "text", label: "Название", name: "domain_name" },
+                    {view: "text", label: "Описание", name: "domain_notes" },
+                    {view: "fieldset", label:"Рассылка", body: {
+                        rows:[
+                                {view: "checkbox", label: "Рассылка.Вкл", name: "all_enable" },
+                                {view: "text", label: "Рассылка", name: "all_email" },
+                              ]
+                    }},
+                    {view: "fieldset", label:"Relay", body: {
+                        rows: [
+                                {view: "checkbox", label: "Вкл.Пересылку", name: "relay_enable" },
+                                {view: "text", label: "Пересылка", name: "relay_address" },
+                                {view: "checkbox", label: "Проверка польз.", name: "relay_notcheckusers"},
+                                ]
+                    }},
                     {view: "checkbox", label: "Активно", name: "active"},
                     { margin: 5, cols: [
                         {},
@@ -131,8 +123,8 @@ var mf = {
 webix.ready(function () {
     // Вывод основного представления
 
-    webix.ui({rows:[tb,mf],width: 400});
-
+    webix.ui({rows:[tb, mf] , width: 600});
+    $$('form_tree').bind('list_tree');
 });
 
 
