@@ -1,4 +1,5 @@
-var aliasToolBar = new ToolBar("Пересылка/Псевдонимы", "aliases");
+var aliasToolBar = new ToolBar("", "aliases");
+//var aliasToolBar = new ToolBar("Пересылка/Псевдонимы", "aliases");
 aliasToolBar.cols.push({ id: 'filter_mbox', view: 'text', css:"filter", placeholder: 'Filter..', width: 200});
 
 //  Вывод пользователей
@@ -37,7 +38,8 @@ var laliases = {
 };
 
 // Группы
-var groupsToolBar = new ToolBar("Группы/Пользователи", "aliases");
+var groupsToolBar = new ToolBar("", "aliases");
+//var groupsToolBar = new ToolBar("Группы/Пользователи", "aliases");
 var grptree = { id:"list_groups", view:"tree", css:"groups", select:true, scroll:false,
                 url: "/groups/showTree/",
                 template: function(obj, com){   // Подставляем свою иконку для группы
@@ -53,7 +55,8 @@ var grptree = { id:"list_groups", view:"tree", css:"groups", select:true, scroll
 };
 
 // Домены
-var domainToolBar = new ToolBar("Домены", 'domains');
+var domainToolBar = new ToolBar("", 'domains');
+//var domainToolBar = new ToolBar("Домены", 'domains');
 
 var ldomains = {id: "list_domains", view:"list", select:true, scroll: false, type: { height: 40 },
                 url: "/domains/showTable/",
@@ -353,24 +356,21 @@ aliasForm.cells[0] = laliases;
 
 domainForm.cells[0] = ldomains;
 
-maintable = {
-            cols: [
-                    {rows: [ aliasToolBar, aliasForm ], minWidth:650},
-                    {rows: [ groupsToolBar, groupsForm], minWidth:350},
-                    {rows: [ domainToolBar, domainForm], minWidth:400},
-                  ]
-};
+//maintable = {
+//            cols: [
+//                    {rows: [ aliasToolBar, aliasForm ], minWidth:650},
+//                    {rows: [ groupsToolBar, groupsForm], minWidth:350},
+//                    {rows: [ domainToolBar, domainForm], minWidth:400},
+//                  ]
+//};
 //    rows: [
 
-//         {view:"tabview", id:'tabbar', value: 'domains_mv',
-//          cells: [
-//                    {header:"alias",  body: { rows: [ aliasToolBar, aliasForm ]}},
-//                    {header:"groups", body: { rows: [ groupsToolBar, groupsForm]}},
-//                    {header:"doamins", body: { rows: [ domainToolBar, domainForm]}},
-//
-//                ]
+maintable = {css:"accord",
+             cols: [
+                    {header:"Пересылка / Псевдонимы", body: { rows: [ aliasToolBar, aliasForm ]}},
+                    {header:"Группы / Пользователи", body: { rows: [ groupsToolBar, groupsForm]}},
+                    {header:"Домены", body: { rows: [ domainToolBar, domainForm]}},
+             ]};
 
 
 
-
-//TODO

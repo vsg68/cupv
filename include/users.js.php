@@ -1,4 +1,4 @@
-var usrToolBar = new ToolBar("Пользователи", "users");
+var usrToolBar = new ToolBar("", "users");
 usrToolBar.cols.push({ id: 'filter_mbox', view: 'text', css:"filter", placeholder: 'Filter..', width: 200});
 var aliasToolBar = new ToolBar("Псевдонимы", "aliases");
 var fwdToolBar = new ToolBar("Пересылка", "fwd");
@@ -246,15 +246,15 @@ fwdForm.cells[0].linkfield = "alias_name";
 groupForm.cells[0].template = "<div class='isactive_#active#'>#name#</div>";
 groupForm.cells[0].linkfield = "user_id";
 
-maintable = {
-    cols: [
-        {rows: [ usrToolBar, usersForm ], minWidth: 800, gravity:5},
-        {rows:[
-            {rows: [ aliasToolBar, aliasForm ]},
-            {rows: [ fwdToolBar, fwdForm ]},
-            {rows: [ groupToolBar, groupForm ]}
-            ], minWidth: 300, gravity:3},
-    ]
+maintable = {css:"accord",
+            cols: [
+                {header:"Пользователи", body: { rows: [ usrToolBar, usersForm ] }, gravity:5},
+                {header:"Списки рассылки / Псевдонимы / Пересылка", body: { rows:[
+                                        {rows: [ aliasToolBar, aliasForm ]},
+                                        {rows: [ fwdToolBar, fwdForm ]},
+                                        {rows: [ groupToolBar, groupForm ]}
+                                        ]}, gravity:3},
+            ]
 };
 
 

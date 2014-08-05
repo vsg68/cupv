@@ -113,6 +113,6 @@
 .tabbar {
     padding-top: 10px;
 }
-.er input{
-    background: #ffe1e1;
+.accord .webix_accordionitem_header{
+    background: #949f15;
 }
