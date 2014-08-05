@@ -67,6 +67,7 @@ class Users extends \App\Page {
 
         $this->response->body = json_encode($result);
     }
+
     public function action_getMailboxes(){
 
         $result = $this->pixie->db->query('select')
@@ -78,7 +79,5 @@ class Users extends \App\Page {
 
         $this->response->body = json_encode($result);
     }
-
-
 }
 ?>

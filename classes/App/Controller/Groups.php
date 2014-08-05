@@ -14,19 +14,6 @@ class Groups extends \App\Page {
 
         $this->response->body = json_encode($result);
     }
-//    public function action_showTree(){
-//
-//        $entries = $this->pixie->db->query('select')
-//                                    ->fields($this->pixie->db->expr("G.id, G.name, G.active, concat(G.id ,U.id) AS uid, U.mailbox AS value"))
-//                                    ->table('groups', 'G')
-//                                    ->join(array('lists','L'),array('L.group_id','G.id'))
-//                                    ->join(array('users','U'),array('L.user_id','U.id'))
-//                                    ->order_by("G.id")
-//                                    ->execute()->as_array();
-//
-//        $this->response->body = json_encode($entries);
-//
-//    }
     public function action_showTree(){
 
         $entries = $this->pixie->db->query('select')

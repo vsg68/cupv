@@ -9,6 +9,7 @@ function ToolBar(label, abr) {
 
 
 function mViewAdm(id) {
+    this.id = id;
     this.view = "multiview";
     this.abbreviate = id.split("_")[0];
     this.newID;
@@ -180,7 +181,20 @@ function checkEmail(value) {
     return valid;
 }
 
-// проверка наличия одинаковых групп у пользователя
+// проверка наличия основного домена у домена - псевдонима
+function chkDomainAlias(value) {
+    var ok = false;
+    $$('list_domains').data.each( function(obj){
+        if (obj.domain_name == value && obj.domain_type == "0" ) {
+            ok = true;
+        }
+    });
+    if (! ok)
+        webix.message({ type: "error", text: "Основных доменов с таким названием не существует" });
+
+    return ok;
+}
+
 function checkGroups(value) {
     var ok = true;
     $$('list_groups').data.each( function(obj){
@@ -231,6 +245,7 @@ function fnTestByType(type, str) {
     domain_tmpl = "^(\\w+\\.)+\\w+$";
     date_tmpl = "^\\d{4}-\\d{2}-\\d{2}$";
     int_tmpl = "^\\d+$";
+    ip_tmpl = "(\\d{1,3}\\.){3}\\d{1,3}";
 
     switch (type) {
         case 'mail':
@@ -250,6 +265,9 @@ function fnTestByType(type, str) {
             break
         case 'date':
             reg = new RegExp(date_tmpl, 'i');
+            break;
+         case 'ip':
+            reg = new RegExp(ip_tmpl, 'i');
             break;
         default:
             return false;

@@ -32,7 +32,7 @@ class Aliases extends \App\Page {
 			return;
 
 		try {
-			$this->pixie->orm->get("aliases")->where('id',$params['id'])->delete_all();
+			$this->pixie->orm->get($params['tab'])->where('id',$params['id'])->delete_all();
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();

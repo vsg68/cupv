@@ -99,50 +99,86 @@ class Domains extends \App\Page {
 //
 //	}
 
-	public function action_delEntry() {
+//	public function action_delEntry() {
+//
+//
+////		if( $this->permissions != $this::WRITE_LEVEL )
+////			return $this->noperm();
+//
+//		if( ! $params = $this->request->post() )
+//			return;
+//
+//		try {
+//			$delivery_to = $this->getVar($params['aname'],0);
+//
+//
+//			$aliases = $this->pixie->orm->get('domains')
+//										->where('delivery_to',$delivery_to)
+//										->find_all();
+//
+//			$this->pixie->orm->get('domains')
+//								->where('id',$params['id'])
+//								->where('or',array('delivery_to',$delivery_to))   // и алиасы
+//								->delete_all();
+//
+//			if( $params['tab'] == 'domains' ) {
+//
+//				$val = array();
+//				foreach($aliases as $alias) {
+//					array_push($val, array('id' => $alias->id) );
+//				}
+//
+//				$this->response->body = $val ? json_encode( $val ) : '';
+//			}
+//		}
+//		catch (\Exception $e) {
+//			$view = $this->pixie->view('form_alert');
+//			$view->errorMsg = $e->getMessage();
+//			$this->response->body = $view->render();
+//		}
+//
+//    }
+    public function action_delEntry() {
 
+//        if( $this->permissions == $this::NONE_LEVEL )
+//            return $this->noperm();
 
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
+        if( ! $params = $this->request->post() )
+            return;
 
-		if( ! $params = $this->request->post() )
-			return;
-
-		try {
-			$delivery_to = $this->getVar($params['aname'],0);
-
-
-			$aliases = $this->pixie->orm->get('domains')
-										->where('delivery_to',$delivery_to)
-										->find_all();
-
-			$this->pixie->orm->get('domains')
-								->where('id',$params['id'])
-								->where('or',array('delivery_to',$delivery_to))   // и алиасы
-								->delete_all();
-
-			if( $params['tab'] == 'domains' ) {
-
-				$val = array();
-				foreach($aliases as $alias) {
-					array_push($val, array('id' => $alias->id) );
-				}
-
-				$this->response->body = $val ? json_encode( $val ) : '';
-			}
-		}
-		catch (\Exception $e) {
-			$view = $this->pixie->view('form_alert');
-			$view->errorMsg = $e->getMessage();
-			$this->response->body = $view->render();
-		}
-
+        try {
+            $this->pixie->orm->get("domains")->where('id',$params['id'])->delete_all();
+        }
+        catch (\Exception $e) {
+            $this->response->body = $e->getMessage();
+        }
     }
 
     public function action_showTable(){
 
         $result = $this->pixie->orm->get('domains')->find_all()->as_array(true);
         $this->response->body = json_encode($result);
+    }
+
+
+    public function action_save() {
+
+//        if( $this->permissions != $this::WRITE_LEVEL )
+//            return $this->noperm();
+
+        if( ! $params = $this->request->post() )
+            return false;
+
+        try {
+            $is_update = isset($params['is_new']) ? false : true;
+            unset( $params['is_new']);
+
+            // Если в запрос поместить true -  предполагается UPDATE
+            $this->pixie->orm->get("domains")->values($params, $is_update)->save();
+        }
+        catch (\Exception $e) {
+            $this->response->body = $e->getMessage();
+        }
     }
 }
 ?>

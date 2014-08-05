@@ -20,13 +20,15 @@
 .net10 {
     color: #8bccac;
 }
-.domain_type_1,
+.domain_type_0,
 .net-0 {
     color: #cc5000;
 }
+.domain_type_1,
 .net-4 {
     color: #0000ff;
 }
+.domain_type_2,
 .net-5 {
     color: #1bcc05;
 }
@@ -110,4 +112,7 @@
 }
 .tabbar {
     padding-top: 10px;
+}
+.er input{
+    background: #ffe1e1;
 }
