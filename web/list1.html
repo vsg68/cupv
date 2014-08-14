@@ -35,6 +35,14 @@ var buttonMinus = {
     view: "button", type: "iconButton", icon: "minus", label: "Del", width: 70,
 }
 
+function testFunc(setup) {
+    var opt1 = setup.opt1 || 14;
+    var opt2 = setup.opt2 || 15;
+    alert(opt1 +"," +opt2);
+}
+
+        testFunc(13,15);
+
 var treea = {
             id: "list_domains",
             view:"list", select:true,

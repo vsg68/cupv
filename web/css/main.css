@@ -1,5 +1,7 @@
 @import "ubuntu.css";
-
+body {
+    margin: 0;
+}
 .tb-color .webix_list_item,
 .tb-color .webix_menu-x,
 .tb-color.webix_layout_toolbar.webix_toolbar {

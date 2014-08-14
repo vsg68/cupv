@@ -170,7 +170,7 @@ class Domains extends \App\Page {
             return false;
 
         try {
-            $is_update = isset($params['is_new']) ? false : true;
+            $is_update = $params['is_new'] ? false : true;
             unset( $params['is_new']);
 
             // Если в запрос поместить true -  предполагается UPDATE

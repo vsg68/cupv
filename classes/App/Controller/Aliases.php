@@ -32,7 +32,7 @@ class Aliases extends \App\Page {
 			return;
 
 		try {
-			$this->pixie->orm->get($params['tab'])->where('id',$params['id'])->delete_all();
+			$this->pixie->orm->get("aliases")->where('id',$params['id'])->delete_all();
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
@@ -48,7 +48,7 @@ class Aliases extends \App\Page {
             return false;
 
         try {
-            $is_update = isset($params['is_new']) ? false : true;
+            $is_update = $params['is_new'] ? false : true;
             unset( $params['is_new'], $params['from_username'], $params['to_username']);
 
             // Если в запрос поместить true -  предполагается UPDATE

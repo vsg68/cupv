@@ -12,15 +12,15 @@
 
         <script type="text/javascript" charset="utf-8">
 
-            var menuitem = {
-                view: "menu",
-                template: function(obj){
-                     return (obj.name) ? obj.name : '<a href=' + obj.href +'>' + obj.name + '</a>';
-                },
-                openAction: "click",
-                type: { subsign : true},
-                url: "/<?= $ctrl ?>/get_menulist/"
-            };
+//            var menuitem = {
+//                view: "menu",
+//                template: function(obj){
+//                     return (obj.name) ? obj.name : '<a href=' + obj.href +'>' + obj.name + '</a>';
+//                },
+//                openAction: "click",
+//                type: { subsign : true},
+//                url: "/<?= $ctrl ?>/get_menulist/"
+//            };
 
             var maintable;   //  в подключенном скрипте ему присваивается значение
 
@@ -38,7 +38,8 @@
                     rows: [{
                             view: "toolbar",
                             css: "tb-color",
-                            elements:[ menuitem ]
+                            elements:[]
+//                            elements:[ menuitem ]
                             },
                             maintable
                     ]

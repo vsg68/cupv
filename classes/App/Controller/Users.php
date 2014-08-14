@@ -18,7 +18,7 @@ class Users extends \App\Page {
             $params['path'] = NULL;
 
 		try {
-			$is_update = isset($params['is_new']) ? false : true;
+			$is_update = $params['is_new'] ? false : true;
             unset( $params['is_new'] );
 
 			// Если в запрос поместить true -  предполагается UPDATE

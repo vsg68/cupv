@@ -29,8 +29,6 @@ var laliases = {
         },
         "onAfterLoad": function () {
             this.config.height = (window.innerHeight - 140);
-//            if (window.innerWidth < 1500)  // 8-) minWidth
-//                this.config.width = 800;
             this.resize();
         }
     },

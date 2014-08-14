@@ -1,19 +1,27 @@
 
 // Связка формы и представления
 <?php if( $permissions == $WRITE_LEVEL ): ?>
-    $$('form_users').bind($$('list_users'));
-    $$('form_aliases').bind($$('list_aliases'));
-    $$('form_fwd').bind($$('list_fwd'));
-    $$('form_groups').bind($$('list_groups'));
+//
+    Users_UserPage.list_bind();
+    Aliases_UserPage.list_bind();
+    Fwd_UserPage.list_bind();
+    Group_UserPage.list_bind();
+
+    Aliases_AliasPage.list_bind();
+    Domains_AliasPage.list_bind();
+    Groups_AliasPage.list_bind("form_groups_Txt");
+    Groups_AliasPage.list_bind("form_groups_RS");
+
 
 <?php endif; ?>
 
     // Фильтрация по текстовым полям
-    $$("filter_mbox").attachEvent("onTimedKeyPress", function () {
-        //get user input value
-        var value = this.getValue().toLowerCase();
+//    $$("filter_users").attachEvent("onTimedKeyPress", function () {
+//        //get user input value
+//        var value = this.getValue().toLowerCase();
+//
+//        $$('list_users').filter(function (obj) {
+//            return (obj.mailbox.toLowerCase().indexOf(value) >= 0 || obj.username.toLowerCase().indexOf(value) >= 0);
+//        })
+//    });
 
-        $$('list_users').filter(function (obj) {
-            return (obj.mailbox.toLowerCase().indexOf(value) >= 0 || obj.username.toLowerCase().indexOf(value) >= 0);
-        })
-    });

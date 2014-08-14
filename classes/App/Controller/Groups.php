@@ -72,7 +72,7 @@ class Groups extends \App\Page {
 
         try {
             // Если в запрос поместить true -  предполагается UPDATE
-            $is_update =  (isset($params['is_new']) && $params['is_new'] )? false : true;
+            $is_update =   $params['is_new'] ? false : true;
 
             if( $params['$parent'] )
                 $this->pixie->orm->get("lists")->values(array('id'       => $params['id'],
