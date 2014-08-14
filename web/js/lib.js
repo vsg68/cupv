@@ -7,15 +7,6 @@ function extend(Child, Parent) {
     Child.superclass = Parent.prototype
 }
 
-function ToolBar(label, abr) {
-    this.view = "toolbar";
-    this.height = 30;
-    this.abr = abr;
-    this.cols = [
-        {view: "label", label: label}
-    ]
-}
-
 var save_cancel_button = {
     margin: 5,
     cols: [
@@ -26,86 +17,10 @@ var save_cancel_button = {
     ]
 };
 
-function mViewAdm(id) {
-    this.id = id;
-    this.view = "multiview";
-    this.objID = id.split("_")[0];
-    this.newID;
-//    this.fitBiggest = true;
-    this.cells = [
-        { id: "list_" + this.objID, view: "list",
-            linkfield: "", // поле привязки к пользовательскому ящику
-            scroll: false, select: true,
-            template: "<div class='isactive_#active#'>#alias_name#</div>",
-            on: { "onKeyPress": function (key) {
-                keyPressAction(this, key);
-            }
-            }},
-        { id: "form_" + this.objID, view: "form", elementsConfig: {labelWidth: 110}, elements: [
-                {view: "text", label: "Псевдоним", name: "alias_name" },
-                {view: "text", label: "Пересылка", name: "delivery_to" },
-                {view: "checkbox", label: "Активно", name: "active"},
-                webix.copy(save_cancel_button),
-                {}
-            ],
-            rules: {
-                alias_name: webix.rules.isEmail,
-                delivery_to: webix.rules.isEmail
-            }
-        }
-    ]
-
-}
-
-function mView(id) {
-    this.objID = id.split("_")[0];
-    this.cells = [
-        { id: "list_" + this.objID, view: "list",
-            linkfield: "", // поле привязки к пользовательскому ящику
-            scroll: false, select: true,
-            template: "<div class='isactive_#active#'>#alias_name#</div>",
-            on: { "onKeyPress": function (key) {
-                keyPressAction(this, key);
-            }}
-        }
-    ]
-}
-
-
-function getObjID(id){
-    chunks = id.split("_");
-    return (chunks[1] + "_" + chunks[2]);
-}
-
-function save_form_group(){
-
-    var mForm = this.getFormView();
-    objID = getObjID(mForm.config.id);
-    hreflink = (objID.split("_"))[0];
-
-    // Если не новая запись - убираем признак новой записи
-    if( $$('list_'+ objID).getItem( mForm.getValues().id ).value )
-        mForm.setValues({is_new:0},true);
-
-    if ( mForm.save() === false)  return false;
-
-    webix.ajax().post("/" + hreflink + "/savegroup", mForm.getValues(),
-        function(responce){
-            if(responce)
-                webix.message({type:"error", expire: 3000, text: responce}); // server side response
-            else {
-                webix.message("ОK"); // server side response
-                var mView = mForm.getParentView();
-                mView.config.newID = "";
-                $$('list_' + objID).openAll();
-                mView.back();
-            }
-        })
-}
 // Проверка на существования адреса и id, а так же правильность домена
-function checkEmail(value) {
+function checkEmail(ID, value) {
     var valid = false;
-    var mForm = $$('form_users_first').getValues();
+    var mForm = $$(ID).getValues();
     if (webix.rules.isEmail(value)) {
         webix.ajax().sync().get("/users/validateEmail/", { mbox: mForm.mailbox, id: mForm.id }, function (responce) {
             valid = responce;  // responce
@@ -117,10 +32,10 @@ function checkEmail(value) {
 }
 
 // проверка наличия основного домена у домена - псевдонима
-function chkDomainAlias(value) {
+function chkDomainAlias(ID, value) {
     var ok = false;
-    $$('list_domains_second').data.each( function(obj){
-        if (obj.domain_name == value && obj.domain_type == "0" ) {
+    $$("list_" + ID).data.each( function(obj){
+        if (obj.domain_name == value && obj.domain_type == 0 ) {
             ok = true;
         }
     });
@@ -130,9 +45,9 @@ function chkDomainAlias(value) {
     return ok;
 }
 
-function checkGroups(value) {
+function checkGroups(ID, value) {
     var ok = true;
-    $$('list_groups_first').data.each( function(obj){
+    $$("list_" + ID).data.each( function(obj){
         if (obj.name == value) {
             webix.message({ type: "error", text: "Пользователь в данной группе уже присутствует" });
             ok = false;
@@ -142,11 +57,11 @@ function checkGroups(value) {
 }
 
 // проверка наличия одинаковых пользователей в группе
-function chkUserInGroup(pid, name){
+function chkUserInGroup(ID, pid, name){
     var ok = true;
     var msg = pid ? "Пользователь в данной группе уже присутствует" : "Такая группа уже существует";
 
-    $$('list_groups_second').data.eachChild(pid, function(obj){
+    $$("list_" + ID).data.eachChild(pid, function(obj){
 
         if (obj.value == name) {
             webix.message({ type: "error", text: msg });
@@ -212,12 +127,13 @@ function fnTestByType(type, str) {
  */
 
 function MView(setup) {
-    var objID = setup.id;  // Общее название
-    var hreflink = objID.split("_")[0];  // Общее название
+    var self = this;
+    this.objID = setup.id;  // Общее название
+    this.hreflink = setup.id.split("_")[0];  // Общее название
     this.isScroll = setup.isListScroll;
     this.toolbarlabel = setup.toolbarlabel || "";
     this.hideSearchField = ! setup.showSearchField;
-    var filterRule = setup.filterRule || "";
+    this.filterRule = setup.filterRule || "";
     this.list_view = setup.list_view || "list";
     this.list_css  = setup.list_css || "ftab";
     this.list_url  = setup.list_url || "";
@@ -285,8 +201,8 @@ function MView(setup) {
                     on: {
                         "onTimedKeyPress": function() {
                             var value = this.getValue().toLowerCase();
-                            $$('list_' + objID).filter( function(obj) {
-                                return filterRule(obj, value);
+                            $$('list_' + self.objID).filter( function(obj) {
+                                return self.filterRule(obj, value);
                             } );
                         }
                     }
@@ -298,7 +214,7 @@ function MView(setup) {
             view: "multiview",
             cells: [
                 {
-                    id: "list_" + objID,
+                    id: "list_" + self.objID,
                     view: this.list_view,
                     scheme: this.list_scheme,
                     scroll: this.isScroll,
@@ -315,16 +231,13 @@ function MView(setup) {
 };
 
 function MAdmView(setup) {
-
+    var self            = this;
     extend(MAdmView, MView);    // Наследуем
     MView.apply(this, arguments);  // Запускаем родительский конструктор
 
-    var objID           = setup.id;  // Общее название
-    this.ID             = setup.id;  // Для доступа снаружи
-    var hreflink        = setup.id.split("_")[0];  // Общее название
     this.hideAddButton  = setup.hideAddButton;
     this.hideDelButton  = setup.hideDelButton;
-    this.formID         = setup.formID || "form_" + objID;
+    this.formID         = setup.formID || "form_" + this.objID;
     this.formElements   = setup.formElements || [
                                         {view: "text", label: "Псевдоним", name: "alias_name" },
                                         {view: "text", label: "Пересылка", name: "delivery_to" },
@@ -332,25 +245,31 @@ function MAdmView(setup) {
                                         webix.copy(save_cancel_button),
                                         {}];
     this.formRules      = setup.formRules || {};
+    this.addButtonClick = setup.addButtonClick || function(){return {}};
 
-    var __addButtonClick = setup.addButtonClick || function(){return {}};
-    this.list_bind      = function(id){
-        id = ( id == undefined) ? this.formID : id;
-        $$(id).bind('list_' + objID);
+    this.list_bind      = function(){
+        for(i=0; i < self.rows[1].cells.length; i++) {
+            if( self.rows[1].cells[i].view == "form" )
+                $$(self.rows[1].cells[i].id).bind('list_' + self.objID);
+        }
     };
 
-
-    function isActiveCell_List() {
-
-        var multiview = $$("list_" + objID).getParentView(); // multiview
+    this.isActiveCell_List = function(ID) {
+        var multiview = $$("list_" + ID).getParentView(); // multiview
 
         if (multiview.config.view != "multiview")
             return false;
 
         activeID = multiview.getActiveId();
 
-        return activeID == "list_" + objID;
+        return activeID == "list_" + ID;
     };
+ };
+
+function PageAdm(setup) {
+    var self = this;
+    extend(PageAdm,MAdmView);    // Наследуем
+    MAdmView.apply(this, arguments);  // Запускаем родительский конструктор
 
     this.rows[0].cols.push(
         {
@@ -362,20 +281,20 @@ function MAdmView(setup) {
             hidden: this.hideAddButton,
             click:  function(){
                 // Если кнопка нажата не на списке  - выходим
-                if (!isActiveCell_List()) {
+                if (! self.isActiveCell_List(self.objID)) {
                     webix.message({ type: "error", text: "Кнопки в этой области не работают" });
                     return false;
                 }
-                defaults = __addButtonClick();
+                defaults = self.addButtonClick();
 
                 if( defaults == false )   return false;
 
                 defaults["is_new"] = 1;
                 defaults["active"] = 1;
                 // Переход к редактированию
-                $$("form_" + objID).show();
+                $$("form_" + self.objID).show();
                 // создаем новую запись
-                $$("list_" + objID).select( $$("list_" + objID).add(defaults) );
+                $$("list_" + self.objID).select( $$("list_" + self.objID).add(defaults) );
             }
         },
         {
@@ -388,19 +307,19 @@ function MAdmView(setup) {
             click: function(){
 
                 // Если кнопка нажата не на списке - выходим
-                if (! isActiveCell_List()) {
+                if (! self.isActiveCell_List(self.objID)) {
                     webix.message({ type: "error", text: "Кнопки в этой области не работают" });
                     return false;
                 }
 
-                var selected_id = $$("list_" + objID).getSelectedId();
+                var selected_id = $$("list_" + self.objID).getSelectedId();
 
                 webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
                     //  тут надо отослать данные на сервер
                     if (result) {
-                        webix.ajax().post("/" + (hreflink == "fwd" ? "aliases" : hreflink ) + "/delEntry/", {id: selected_id}, function (text, xml, xhr) {
+                        webix.ajax().post("/" + (self.hreflink == "fwd" ? "aliases" : self.hreflink ) + "/delEntry/", {id: selected_id}, function (text, xml, xhr) {
                             if (!text)
-                                $$("list_" + objID).remove(selected_id);
+                                $$("list_" + self.objID).remove(selected_id);
                             else
                                 webix.message({type: "error", text: text});
                         })
@@ -410,187 +329,230 @@ function MAdmView(setup) {
         }
     );
 
-    this.rows[1].cells.push({
-        id: this.formID,
-        view: "form",
-        elementsConfig: {labelWidth: 110},
-        elements: this.formElements,
-        rules: this.formRules,
-        save_form: function(){
-            var mForm = $$(this.id);
+    this.rows[1].cells.push(
+        {
+            id: this.formID,
+            view: "form",
+            elementsConfig: {labelWidth: 110},
+            elements: this.formElements,
+            rules: this.formRules,
+            save_form: function(){
+                var mForm = $$(this.id);
 
-            var values =  mForm.getValues();
+                var values =  mForm.getValues();
 
-            if(values.is_new == undefined)
-                values.is_new = 0;
-            // Если не новая запись - убираем признак новой записи
-            mForm.setValues({is_new:0},true);
+                if(values.is_new == undefined)
+                    values.is_new = 0;
+                // Если не новая запись - убираем признак новой записи
+                mForm.setValues({is_new:0},true);
 
-            if ( mForm.save() === false)  return false;
-            // Исключение для форварда
-            hreflink = (hreflink == "fwd" ) ? "aliases" : hreflink;
+                if ( mForm.save() === false)  return false;
+                // Исключение для форварда
+                self.hreflink = (self.hreflink == "fwd" ) ? "aliases" : self.hreflink;
 
-            webix.ajax().post("/" + hreflink + "/save", values,
-                function(responce){
-                    if(responce)
-                        webix.message({type:"error", expire: 3000, text: responce}); // server side response
-                    else {
-                        webix.message("ОK"); // server side response
-                        mForm.getParentView().back();
+                webix.ajax().post("/" + self.hreflink + "/save", values,
+                    function(responce){
+                        if(responce)
+                            webix.message({type:"error", expire: 3000, text: responce}); // server side response
+                        else {
+                            webix.message("ОK"); // server side response
+                            mForm.getParentView().back();
+                        }
                     }
+                );
+            },
+            cancel: function() {
+                mView = $$(this.id).getParentView();
+                values = $$(this.id).getValues();
+                if (values.is_new) {
+                    $$("list_" + self.objID).remove( values.id );
                 }
-            );
-        },
-        cancel: function () {
-            mView = $$(this.id).getParentView();
-            values = $$(this.id).getValues();
-            if (values.is_new) {
-                $$("list_" + objID).remove( values.id );
+                mView.back();
             }
-            mView.back();
-    }
-
-});
-
-
+        }
+    );
 };
-//function MAdmView(setup) {
-//
-//    extend(MAdmView, MView);    // Наследуем
-//    MView.apply(this, arguments);  // Запускаем родительский конструктор
-//
-//    var objID           = setup.id;  // Общее название
-//    this.ID             = setup.id;  // Для доступа снаружи
-//    var hreflink        = setup.id.split("_")[0];  // Общее название
-//    this.hideAddButton  = setup.hideAddButton;
-//    this.hideDelButton  = setup.hideDelButton;
-//    this.formID         = setup.formID || "form_" + objID;
-//    this.formElements   = setup.formElements || [
-//                                        {view: "text", label: "Псевдоним", name: "alias_name" },
-//                                        {view: "text", label: "Пересылка", name: "delivery_to" },
-//                                        {view: "checkbox", label: "Активно", name: "active"},
-//                                        webix.copy(save_cancel_button),
-//                                        {}];
-//    this.formRules      = setup.formRules || {};
-//
-//    var __addButtonClick = setup.addButtonClick || function(){return {}};
-//    this.list_bind      = function(id){
-//        id = ( id == undefined) ? this.formID : id;
-//        $$(id).bind('list_' + objID);
-//    };
-//
-//
-//    function isActiveCell_List() {
-//
-//        var multiview = $$("list_" + objID).getParentView(); // multiview
-//
-//        if (multiview.config.view != "multiview")
-//            return false;
-//
-//        activeID = multiview.getActiveId();
-//
-//        return activeID == "list_" + objID;
-//    };
-//
-//    this.rows[0].cols.push(
-//        {
-//            view: "button",
-//            type: "iconButton",
-//            icon: "plus",
-//            label: "New",
-//            width: 70,
-//            hidden: this.hideAddButton,
-//            click:  function(){
-//                // Если кнопка нажата не на списке  - выходим
-//                if (!isActiveCell_List()) {
-//                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-//                    return false;
-//                }
-//                defaults = __addButtonClick();
-//
-//                if( defaults == false )   return false;
-//
-//                defaults["is_new"] = 1;
-//                defaults["active"] = 1;
-//                // Переход к редактированию
-//                $$("form_" + objID).show();
-//                // создаем новую запись
-//                $$("list_" + objID).select( $$("list_" + objID).add(defaults) );
-//            }
-//        },
-//        {
-//            view: "button",
-//            type: "iconButton",
-//            icon: "trash-o",
-//            label: "Del",
-//            width: 70,
-//            hidden: this.hideDelButton,
-//            click: function(){
-//
-//                // Если кнопка нажата не на списке - выходим
-//                if (! isActiveCell_List()) {
-//                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-//                    return false;
-//                }
-//
-//                var selected_id = $$("list_" + objID).getSelectedId();
-//
-//                webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
-//                    //  тут надо отослать данные на сервер
-//                    if (result) {
-//                        webix.ajax().post("/" + (hreflink == "fwd" ? "aliases" : hreflink ) + "/delEntry/", {id: selected_id}, function (text, xml, xhr) {
-//                            if (!text)
-//                                $$("list_" + objID).remove(selected_id);
-//                            else
-//                                webix.message({type: "error", text: text});
-//                        })
-//                    }
-//                }})
-//            }
-//        }
-//    );
-//
-//    this.rows[1].cells.push({
-//        id: this.formID,
-//        view: "form",
-//        elementsConfig: {labelWidth: 110},
-//        elements: this.formElements,
-//        rules: this.formRules,
-//        save_form: function(){
-//            var mForm = $$(this.id);
-//
-//            var values =  mForm.getValues();
-//
-//            if(values.is_new == undefined)
-//                values.is_new = 0;
-//            // Если не новая запись - убираем признак новой записи
-//            mForm.setValues({is_new:0},true);
-//
-//            if ( mForm.save() === false)  return false;
-//            // Исключение для форварда
-//            hreflink = (hreflink == "fwd" ) ? "aliases" : hreflink;
-//
-//            webix.ajax().post("/" + hreflink + "/save", values,
-//                function(responce){
-//                    if(responce)
-//                        webix.message({type:"error", expire: 3000, text: responce}); // server side response
-//                    else {
-//                        webix.message("ОK"); // server side response
-//                        mForm.getParentView().back();
-//                    }
-//                }
-//            );
-//        },
-//        cancel: function () {
-//            mView = $$(this.id).getParentView();
-//            values = $$(this.id).getValues();
-//            if (values.is_new) {
-//                $$("list_" + objID).remove( values.id );
-//            }
-//            mView.back();
-//    }
-//
-//});
-//
-//
-//};
+
+function PageTreeAdm(setup) {
+
+    var self = this;
+    extend(PageTreeAdm,MAdmView);    // Наследуем
+    MAdmView.apply(this, arguments);  // Запускаем родительский конструктор
+
+    this.formElements_rs = setup.formElements_rs;
+    this.formRules_rs    = setup.formRules_rs;
+
+
+
+    this.rows[0].cols.push(
+        {
+            view: "button",
+            type: "iconButton",
+            icon: "user",
+            label: "New",
+            width: 70,
+            click: function () {
+                var selected_item = $$("list_" + self.objID).getSelectedItem();
+
+                // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
+                if (! self.isActiveCell_List(self.objID) || selected_item == undefined) {
+                    webix.message({ type: "error", text: "Выделите группу, в которую будем добавлять пользователя" });
+                    return false;
+                }
+
+                selected_id = selected_item.id;
+                // если узел не является корнем, то ищем ID его корня
+                if( $$('list_'+ self.objID).getParentId(selected_id) )
+                    selected_id = $$('list_'+ self.objID).getParentId( selected_id );
+
+                defaults = {"value":"", "is_new":1};    // Дефолтные значения
+//                newID = $$("list_"+ objID).add(defaults, 0, selected_id);     // создаем новую запись
+//                // заносим новый ид в переменную.
+//                $$("list_"+ objID).getParentView().config.newID = newID;
+
+                // Переход к редактированию
+                $$(self.formID + "__rs").show();
+                $$("list_" + self.objID).select( $$("list_"+ self.objID).add(defaults, 0, selected_id) );
+            }
+        },
+        {
+            view: "button",
+            type: "iconButton",
+            icon: "group",
+            label: "New",
+            width: 70,
+            click: function () {
+                // Если кнопка нажата не на списке  - выходим
+                if (! self.isActiveCell_List(self.objID)) {
+                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+                    return false;
+                }
+
+                defaults = self.addButtonClick();
+
+                if( defaults == false )   return false;
+
+                defaults["is_new"] = 1;
+                defaults["active"] = 1;
+
+//                newID = $$("list_groups_second").add(defaults);     // создаем новую запись
+//                // заносим новый ид в переменную.
+//                $$("list_groups_second").getParentView().config.newID = newID;
+
+                // Переход к редактированию
+                $$(self.formID + "__txt").show();
+                $$("list_" + self.objID).select( $$("list_"+ self.objID).add(defaults) );
+            }
+        },
+        {
+            view: "button",
+            type: "iconButton",
+            icon: "trash-o",
+            label: "Del",
+            width: 70,
+            click: function () {
+                // Если кнопка нажата не на списке - выходим
+                if (! self.isActiveCell_List(self.objID)) {
+                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+                    return false;
+                }
+
+                var selected_item = $$("list_" + self.objID).getSelectedItem();
+
+                webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                    //  тут надо отослать данные на сервер
+                    if (result) {
+
+                        webix.ajax().post("/"+ self.hreflink +"/delEntry/", {id: selected_item['id'], group_id: selected_item['$parent']}, function (text, xml, xhr) {
+                            if (!text) {
+                                webix.message("ОK"); // server side response
+                                $$("list_"+ self.objID).remove(selected_item['id']);
+                            }
+                            else
+                                webix.message({type: "error", text: text});
+                        })
+                    }
+                }})
+            }
+        }
+    );
+
+    this.rows[1].cells.push(
+        {
+            id: this.formID +"__txt",
+            view: "form",
+            elementsConfig: {labelWidth: 110},
+            elements: this.formElements,
+            rules: this.formRules,
+            save_form: function(){
+                var mForm = $$(this.id);
+
+                var values =  mForm.getValues();
+
+                if(values.is_new == undefined)
+                    values.is_new = 0;
+                // Если не новая запись - убираем признак новой записи
+                mForm.setValues({is_new:0},true);
+
+                if ( mForm.save() === false)  return false;
+
+                webix.ajax().post("/" + self.hreflink + "/savegroup", values,
+                    function(responce){
+                        if(responce)
+                            webix.message({type:"error", expire: 3000, text: responce}); // server side response
+                        else {
+                            webix.message("ОK"); // server side response
+                            mForm.getParentView().back();
+                        }
+                    }
+                );
+            },
+            cancel: function() {
+                mView = $$(this.id).getParentView();
+                values = $$(this.id).getValues();
+                if (values.is_new) {
+                    $$("list_" + self.objID).remove( values.id );
+                }
+                mView.back();
+            }
+        },
+        {
+            id: this.formID +"__rs",
+            view: "form",
+            elementsConfig: {labelWidth: 110},
+            elements: this.formElements_rs,
+            rules: this.formRules_rs,
+            save_form: function(){
+                var mForm = $$(this.id);
+
+                var values =  mForm.getValues();
+
+                if(values.is_new == undefined)
+                    values.is_new = 0;
+                // Если не новая запись - убираем признак новой записи
+                mForm.setValues({is_new:0},true);
+
+                if ( mForm.save() === false)  return false;
+
+                webix.ajax().post("/" + self.hreflink + "/savegroup", values,
+                    function(responce){
+                        if(responce)
+                            webix.message({type:"error", expire: 3000, text: responce}); // server side response
+                        else {
+                            webix.message("ОK"); // server side response
+                            mForm.getParentView().back();
+                        }
+                    }
+                );
+            },
+            cancel: function() {
+                mView = $$(this.id).getParentView();
+                values = $$(this.id).getValues();
+                if (values.is_new) {
+                    $$("list_" + self.objID).remove( values.id );
+                }
+                mView.back();
+            }
+        }
+    );
+};

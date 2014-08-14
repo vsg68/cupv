@@ -4,7 +4,7 @@
 /*********   USER PAGE  ********/
 
 /*********   Users  ********/
-var Users_UserPage = new MAdmView({
+var Users_UserPage = new PageAdm({
     id: "users_first",
     toolbarlabel: "Пользователи",
     hideDelButton: true,
@@ -67,7 +67,7 @@ var Users_UserPage = new MAdmView({
     ],
     formRules: {
         mailbox: function (value) {
-            return  checkEmail(value);
+            return  checkEmail("users_first", value);
         },
         allow_nets: function (value) {
             return fnTestByType("nets", value);
@@ -100,7 +100,7 @@ var Users_UserPage = new MAdmView({
 });
 
 /*********   Aliases - UserPage ********/
-var Aliases_UserPage = new MAdmView({
+var Aliases_UserPage = new PageAdm({
     id: "aliases_first",
     toolbarlabel: "Псевдонимы",
 //    bindfield: "delivery_to",
@@ -128,7 +128,7 @@ var Aliases_UserPage = new MAdmView({
 });
 
 /*********   Forward  ********/
-var Fwd_UserPage = new MAdmView({
+var Fwd_UserPage = new PageAdm({
     id: "fwd_first",
     toolbarlabel: "Пересылка",
 //    bindfield: "alias_name",
@@ -155,7 +155,7 @@ var Fwd_UserPage = new MAdmView({
 });
 
 /*********   Groups  ********/
-var Group_UserPage = new MAdmView({
+var Group_UserPage = new PageAdm({
     id: "groups_first",
     toolbarlabel: "Группы",
 //    bindfield: "user_id",
@@ -179,7 +179,7 @@ var Group_UserPage = new MAdmView({
     ],
     formRules: {
         name: function (value) {
-            return checkGroups(value);
+            return checkGroups("groups_first", value);
         }
     },
     list_on: { "onKeyPress": function (key) {
@@ -197,7 +197,7 @@ var Group_UserPage = new MAdmView({
 
 /*********   ALIAS PAGE  ********/
 
-var Aliases_AliasPage = new MAdmView({
+var Aliases_AliasPage = new PageAdm({
     id: "aliases_second",
 //    toolbarlabel: "Пересылка",
     isListScroll: true,
@@ -243,9 +243,8 @@ var Aliases_AliasPage = new MAdmView({
     list_url: "/aliases/showTable/"
 });
 
-var Domains_AliasPage = new MAdmView({
+var Domains_AliasPage = new PageAdm({
     id: "domains_second",
-//    toolbarlabel: "Домены",
     list_template: function (obj) {
         var tmpl = "<div class='fleft domain_name isactive_" + obj.active + "'  title='" + (obj.domain_notes ? obj.domain_notes : "") + "'>" + obj.domain_name + "</div>";
         tmpl += "<div class='fleft fa-exchange webix_icon domain_type_" + obj.domain_type + "' title='delivery_to: " + obj.delivery_to+ "'></div>";
@@ -302,7 +301,7 @@ var Domains_AliasPage = new MAdmView({
                 this.elements['delivery_to'].define('css',"webix_invalid");
                 return false;
             }
-            else if( data.domain_type == 1 && ! chkDomainAlias(data.delivery_to) ) {
+            else if( data.domain_type == 1 && ! chkDomainAlias("domains_second",data.delivery_to) ) {
                 this.elements['delivery_to'].define('css',"webix_invalid");
                 return false;
             }
@@ -336,89 +335,88 @@ var Domains_AliasPage = new MAdmView({
 
 /************ groups */
 
-var delGrp = {
-    view: "button", type: "iconButton", icon: "trash-o", label: "Del", width: 70,
-    click: function () {
-
-        // Если кнопка нажата не на списке - выходим
-        if (!isActiveCell_List("groups")) {
-            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-            return false;
-        }
-
-        var selected_item = $$("list_groups").getSelectedItem();
-
-        webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
-            //  тут надо отослать данные на сервер
-            if (result) {
-
-                webix.ajax().post("/groups/delEntry/", {id: selected_item['id'], group_id: selected_item['$parent']}, function (text, xml, xhr) {
-                    if (!text) {
-                        webix.message("ОK"); // server side response
-                        $$("list_groups").remove(selected_item['id']);
-                    }
-                    else
-                        webix.message({type: "error", text: text});
-                })
-            }
-        }})
-    }
-};
-
-var addUsr = {
-    view: "button", type: "iconButton", icon: "user", label: "New", width: 70,
-    click: function () {
-        var selected_item = $$("list_groups").getSelectedItem();
-
-        // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
-        if (!isActiveCell_List("groups") || selected_item == undefined) {
-            webix.message({ type: "error", text: "Выделите группу, в которую будем добавлять пользователя" });
+//var delGrp = {
+//    view: "button", type: "iconButton", icon: "trash-o", label: "Del", width: 70,
+//    click: function () {
+//
+//        // Если кнопка нажата не на списке - выходим
+//        if (!isActiveCell_List("groups")) {
 //            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-            return false;
-        }
+//            return false;
+//        }
+//
+//        var selected_item = $$("list_groups").getSelectedItem();
+//
+//        webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+//            //  тут надо отослать данные на сервер
+//            if (result) {
+//
+//                webix.ajax().post("/groups/delEntry/", {id: selected_item['id'], group_id: selected_item['$parent']}, function (text, xml, xhr) {
+//                    if (!text) {
+//                        webix.message("ОK"); // server side response
+//                        $$("list_groups").remove(selected_item['id']);
+//                    }
+//                    else
+//                        webix.message({type: "error", text: text});
+//                })
+//            }
+//        }})
+//    }
+//};
+//
+//var addUsr = {
+//    view: "button", type: "iconButton", icon: "user", label: "New", width: 70,
+//    click: function () {
+//        var selected_item = $$("list_groups").getSelectedItem();
+//
+//        // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
+//        if (!isActiveCell_List("groups") || selected_item == undefined) {
+//            webix.message({ type: "error", text: "Выделите группу, в которую будем добавлять пользователя" });
+////            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+//            return false;
+//        }
+//
+//        selected_id = selected_item.id;
+//        // если узел не является корнем, то ищем ID его корня
+//        if( $$('list_groups').getParentId(selected_id) )
+//            selected_id = $$('list_groups').getParentId( selected_id );
+//
+//        defaults = {"value":"", "is_new":1};    // Дефолтные значения
+//        newID = $$("list_groups").add(defaults, 0, selected_id);     // создаем новую запись
+//        // заносим новый ид в переменную.
+//        $$("list_groups").getParentView().config.newID = newID;
+//
+//        // Переход к редактированию
+//        $$("form_groups_RS").show();
+//        $$("list_groups").select(newID);
+//    }
+//};
+//
+//var addGrp = {
+//    view: "button", type: "iconButton", icon: "group", label: "New", width: 70,
+//    click: function () {
+//        // Если кнопка нажата не на списке  - выходим
+//        if (!Groups_AliasPage.isActiveCell_List("groups")) {
+//            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+//            return false;
+//        }
+//        // заполняю дефолтными значениями
+//        // is_new - вспомогательное поле, которое проверяется на стороне сервера
+//        defaults      = {"active":1, "is_new":1};
+//
+//        newID = $$("list_groups_second").add(defaults);     // создаем новую запись
+//        // заносим новый ид в переменную.
+//        $$("list_groups_second").getParentView().config.newID = newID;
+//
+//        // Переход к редактированию
+//        $$("form_groups_Txt").show();
+//        $$("list_groups").select(newID);
+//    }
+//};
 
-        selected_id = selected_item.id;
-        // если узел не является корнем, то ищем ID его корня
-        if( $$('list_groups').getParentId(selected_id) )
-            selected_id = $$('list_groups').getParentId( selected_id );
 
-        defaults = {"value":"", "is_new":1};    // Дефолтные значения
-        newID = $$("list_groups").add(defaults, 0, selected_id);     // создаем новую запись
-        // заносим новый ид в переменную.
-        $$("list_groups").getParentView().config.newID = newID;
-
-        // Переход к редактированию
-        $$("form_groups_RS").show();
-        $$("list_groups").select(newID);
-    }
-};
-
-var addGrp = {
-    view: "button", type: "iconButton", icon: "group", label: "New", width: 70,
-    click: function () {
-        // Если кнопка нажата не на списке  - выходим
-        if (!Groups_AliasPage.isActiveCell_List("groups")) {
-            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-            return false;
-        }
-        // заполняю дефолтными значениями
-        // is_new - вспомогательное поле, которое проверяется на стороне сервера
-        defaults      = {"active":1, "is_new":1};
-
-        newID = $$("list_groups_second").add(defaults);     // создаем новую запись
-        // заносим новый ид в переменную.
-        $$("list_groups_second").getParentView().config.newID = newID;
-
-        // Переход к редактированию
-        $$("form_groups_Txt").show();
-        $$("list_groups").select(newID);
-    }
-};
-
-
-var Groups_AliasPage = new MAdmView({
+var Groups_AliasPage = new PageTreeAdm({
     id: "groups_second",
-//    toolbarlabel: "Списки рассылки",
     list_view: "tree",
     list_css: "groups",
     list_template: function(obj, com){
@@ -426,7 +424,6 @@ var Groups_AliasPage = new MAdmView({
         var icon = obj.$parent ? com.folder(obj, com) : "<div class='webix_tree_folder'></div>";
         return com.icon(obj, com) + icon + '<span>'+ obj.value + '</span>';
     },
-    formID: "form_groups_Txt",
     formElements: [
         {view: "text", label: "Группы", name: "value" },
         {view: "checkbox", label: "Активно", name: "active"},
@@ -435,28 +432,10 @@ var Groups_AliasPage = new MAdmView({
     ],
     formRules: {
         $obj: function(data){
-            return chkUserInGroup(data['$parent'], data['value']);
+            return chkUserInGroup("groups_second", data['$parent'], data['value']);
         }
     },
-    list_on: {
-        "onKeyPress": function (key) {
-            x = this;
-            formId = ( this.getSelectedItem()['$parent'] ) ? "form_groups_RS" : "form_groups_Txt";
-            Domains_AliasPage.keyPressAction(this, key, formId);
-        }
-    },
-    list_url: "/groups/showTree/"
-});
-
-Groups_AliasPage.rows[0].cols.splice(2,2);
-Groups_AliasPage.rows[0].cols.push(addUsr, addGrp, delGrp);
-
-// добавим еще форму
-Groups_AliasPage.rows[1].cells.push({
-    id: "form_groups_RS",
-    view: "form",
-    elementsConfig: {labelWidth: 110},
-    elements: [
+    formElements_rs: [
         {
             view: "richselect",
             label: "Пользователи",
@@ -476,41 +455,18 @@ Groups_AliasPage.rows[1].cells.push({
         },
         webix.copy(save_cancel_button),{}
     ],
-    rules: {
+    formRules_rs: {
         $obj: function(data){
-            return chkUserInGroup(data['$parent'], data['value']);
+            return chkUserInGroup("groups_second",data['$parent'], data['value']);
         }
     },
-    save_form: function(){
-
-        var mForm = $$(this.id);
-        var values =  mForm.getValues();
-        // Если не новая запись - убираем признак новой записи
-        mForm.setValues({is_new:0},true);
-
-        if ( mForm.save() === false)  return false;
-
-        webix.ajax().post("/" + hreflink + "/savegroup", mForm.getValues(),
-            function(responce){
-                if(responce)
-                    webix.message({type:"error", expire: 3000, text: responce}); // server side response
-                else {
-                    webix.message("ОK"); // server side response
-                    var mView = mForm.getParentView();
-                    mView.config.newID = "";
-                    $$('list_' + objID).openAll();
-                    mView.back();
-                }
-            })
-    },
-    cancel: function(){
-        mView = $$(this.id).getParentView();
-        values = $$(this.id).getValues();
-        if (values.is_new) {
-            $$("list_" + objID).remove( values.id );
+    list_on: {
+        "onKeyPress": function (key) {
+            formId = ( this.getSelectedItem()['$parent'] ) ? "form_groups_second__rs" : "form_groups_second__txt";
+            Groups_AliasPage.keyPressAction(this, key, formId);
         }
-        mView.back();
-    }
+    },
+    list_url: "/groups/showTree/"
 });
 
 <?php else: ?>

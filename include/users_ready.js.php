@@ -9,8 +9,7 @@
 
     Aliases_AliasPage.list_bind();
     Domains_AliasPage.list_bind();
-    Groups_AliasPage.list_bind("form_groups_Txt");
-    Groups_AliasPage.list_bind("form_groups_RS");
+    Groups_AliasPage.list_bind();
 
 
 <?php endif; ?>

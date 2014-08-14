@@ -64,12 +64,11 @@ class Groups extends \App\Page {
     }
 
     public function action_savegroup(){
-        if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
+//        if( $this->permissions != $this::WRITE_LEVEL )
+//			return $this->noperm();
 
         if( ! $params = $this->request->post() )
             return false;
-
         try {
             // Если в запрос поместить true -  предполагается UPDATE
             $is_update =   $params['is_new'] ? false : true;
