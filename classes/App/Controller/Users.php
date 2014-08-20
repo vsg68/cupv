@@ -22,7 +22,8 @@ class Users extends \App\Page {
             unset( $params['is_new'] );
 
 			// Если в запрос поместить true -  предполагается UPDATE
-			$this->pixie->orm->get("users")->values($params, $is_update)->save();
+			$x = $this->pixie->orm->get("users")->values($params, $is_update)->save();
+
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();

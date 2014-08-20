@@ -32,10 +32,12 @@ class Logs extends \App\Page {
 			$params = $this->request->get();
 
 			try {
-				$time_start = $params['start_date']." ".$params['start_time'].":00";
-				$time_stop  = $params['stop_date']." ".$params['stop_time'].":00";
+//                $time_start = date("Y-m-d H:i:s", strtotime($params['start_date']));
+//				$time_stop  = date("Y-m-d H:i:s", strtotime($params['stop_date']));
+                $time_start = "2014-01-12 00:00:33";
+				$time_stop  = "2014-01-12 01:24:33";
 				$server		= $params['server'];
-				$filter 	= $params['fltr'];
+				$filter 	= $params['address'];
 				$direction  = $params['direction']; //0-To 1-From
 
 
@@ -52,11 +54,9 @@ class Logs extends \App\Page {
 				if( $filter ) {
 
 					if( $direction ) { // From
-#						array_push($query,array( $this->pixie->db->expr('LOCATE("qmgr",X.SysLogTag)'),'>', 0));
 						array_push($query,array( $this->pixie->db->expr('X.Message REGEXP "^from=<.*'.$filter.'"'),'=', 1));
 					}
 					else {
-#						array_push($query,array( $this->pixie->db->expr('LOCATE("pipe",X.SysLogTag)'),'>', 0));
 						array_push($query,array( $this->pixie->db->expr('X.Message REGEXP "^to=<.*'.$filter.'"'),'=', 1));
 					}
 				}
@@ -69,7 +69,7 @@ class Logs extends \App\Page {
 											A.ReceivedAt AS ReceivedAt,
 											REPLACE(A.SysLogTag,"postfix\/","") AS SysLogTag,
 											A.MSGID AS MSGID,
-											A.Message AS Message'
+											REPLACE( REPLACE(A.Message,"<","&lt"),">","&gt") AS Message'
 							))
 							->table('maillog','X')
 							->JOIN(array('maillog','Y'),array('X.MSGID','Y.MSGID'),'LEFT')
@@ -81,14 +81,11 @@ class Logs extends \App\Page {
 							->execute()
 							->as_array();
 
-				$values = count($answer) ? $this->DTPropAddToObject($answer, '', '') : array("ReceivedAt"=>"-","SysLogTag"=>"-","MSGID"=>"-","Message"=>"-");
-				$this->response->body = json_encode($values) ;
+				$this->response->body = json_encode($answer) ;
 
 			}
 			catch (\Exception $e) {
-				$view = $this->pixie->view('form_alert');
-				$view->errorMsg = $e->getMessage();
-				$this->response->body = $view->render();
+				$this->response->body = $e->getMessage();
 				return;
 			}
 
@@ -101,23 +98,24 @@ class Logs extends \App\Page {
 			//~ if( ! isset( $this->request->get('id')) )
 				//~ return false;
 
-			$id = $this->request->get('id');
+			$startDate = $this->request->get('startDate');
 
 			try {
-				if( $id == '0') {
-					$values = $this->pixie->orm->get('maillog')->order_by('id', 'desc')->limit(1)->find();
-					$id = $values->ID - 1;
-				}
+				$startDate = $startDate ? $startDate : date("Y-m-d H:i:s");
+//					$values = $this->pixie->orm->get('maillog')->order_by('id', 'desc')->limit(1)->find();
+                $answer = $this->pixie->orm->get('maillog')->where('ReceivedAt','>', $startDate )->find_all()->as_array(true);
+//					$id = $values->ID - 1;
 
-				$answer = $this->pixie->orm->get('maillog')->where('ID','>', $id)->find_all()->as_array(true);
+
+//				$answer = $this->pixie->orm->get('maillog')->where('ID','>', $id)->find_all()->as_array(true);
 
 				$this->response->body = json_encode($answer) ;
 
 			}
 			catch (\Exception $e) {
-				$view = $this->pixie->view('form_alert');
-				$view->errorMsg = $e->getMessage();
-				$this->response->body = $view->render();
+//				$view = $this->pixie->view('form_alert');
+//				$view->errorMsg = $e->getMessage();
+				$this->response->body = $e->getMessage();
 				return;
 			}
 	}

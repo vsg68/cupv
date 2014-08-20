@@ -35,94 +35,128 @@ var buttonMinus = {
     view: "button", type: "iconButton", icon: "minus", label: "Del", width: 70,
 }
 
-function testFunc(setup) {
-    var opt1 = setup.opt1 || 14;
-    var opt2 = setup.opt2 || 15;
-    alert(opt1 +"," +opt2);
-}
-
-        testFunc(13,15);
-
-var treea = {
-            id: "list_domains",
-            view:"list", select:true,
-            url: "/domains/showTable/",
-            type: { height: 40 },
-            on: {
-                onAfterLoad: function(){
-                    this.filter( function(data){ return data.domain_type == "0"})
-                },
-                "onKeyPress": function (key) {
-//                        formId = ( this.getSelectedItem()['$parent'] ) ? "form_groups_RS" : "form_groups_Txt";
-                    keyPressAction(this, key, formId);
-                }
-            },
-            template: function(obj){
-                var tmpl = "<div class='fleft domain_name isactive_" + obj.active + "'  title='" + (obj.domain_notes ? obj.domain_notes : "") + "'>" + obj.domain_name + "</div>";
-
-                if (obj.domain_type)                tmpl += "<div class='fleft fa-exchange webix_icon domain_type_" + obj.domain_type + "' title='" + obj.delivery_to+ "'></div>";
-                if (obj.all_enable == "1")          tmpl += "<div class='fleft fa-envelope webix_icon' title='рассылка: " + obj.all_email + "'></div>";
-                if (obj.relay_domain == "1")        tmpl += "<div class='fleft fa-share webix_icon' title='relay: " + obj.relay_address + "'></div>";
-                if (obj.relay_notcheckusers == "1") tmpl += "<div class='fleft fa-check webix_icon' title='check users'></div>";
-
-                return tmpl;
-            }
-        };
-var tabb =  { view:"segmented",
-//              css: "tabbar",
-              options:[
-                {id:0, value:"Основные"},
-                {id: 1, value: "Алиасы"},
-                {id:2, value: "Транспорт"},
-              ],
-              click: function(obj){
-                        $$("list_domains").filter( function(data){
-                            return data.domain_type == $$(obj).getValue();
-                        });
-            }
-        };
 var tb = {
     view: "toolbar",
     height: 30,
-    cols: [tabb, {view: "label", label: "Groups"}, addUsr,buttonMinus]
+    cols: [
+        {view: "label", label: "Фильтр поиска"},
+    ]
 };
-var mf = {
-     view: "multiview",
-     newID: "",
-     css: "win",
-     cells: [ treea ,
-                { id: "form_tree", view: "form", elementsConfig: {labelWidth: 110}, elements: [
-                    {view: "text", label: "Название", name: "domain_name" },
-                    {view: "text", label: "Описание", name: "domain_notes" },
-                    {view: "fieldset", label:"Рассылка", body: {
-                        rows:[
-                                {view: "checkbox", label: "Рассылка.Вкл", name: "all_enable" },
-                                {view: "text", label: "Рассылка", name: "all_email" },
-                              ]
-                    }},
-                    {view: "fieldset", label:"Relay", body: {
-                        rows: [
-                                {view: "checkbox", label: "Вкл.Пересылку", name: "relay_enable" },
-                                {view: "text", label: "Пересылка", name: "relay_address" },
-                                {view: "checkbox", label: "Проверка польз.", name: "relay_notcheckusers"},
-                                ]
-                    }},
-                    {view: "checkbox", label: "Активно", name: "active"},
-                    { margin: 5, cols: [
-                        {},
-                        { view: "button", value: "Cancel", width: 70, click: "cancel()" },
-                        { view: "button", value: "Save", width: 70, type: "form", click: "save_form" },
-                        {}
-                    ]},
-                    {}
-                ],
-                    rules: {
-                        alias_name: webix.rules.isEmail,
-                        delivery_to: webix.rules.isEmail
-                    }
-                }
+var treea = {
+    id: "form_tree",
+    view: "form",
+    elementsConfig: {labelWidth: 130},
+    elements: [
+//        {view: "fieldset", label:"Просмотр онлайн", body: {
+//            rows:[
+////                {},
+//                {view:"toggle", type:"iconButton", icon:"play", label:"Старт", width: 90, click: "fnTail()"}
+//            ]}
+//        },
+        {view: "fieldset", label:"Дата поиска", body: {
+            rows:[
+                {view: "datepicker", label: "Начало", name: "start_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date() },
+                {view: "datepicker", label: "Окончание", name: "stop_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date()  },
             ]
-        }
+        }},
+        {view: "fieldset", label:"Направление", body: {
+            rows: [
+                {view: "radio", label:"Направление", name: "direction", value:0, options:[
+                    {id:0,value:"To"},
+                    {id:1,value:"From"}
+                ]},
+                {view: "text", label: "Адрес", name: "address" },
+            ]
+        }},
+        {view: "fieldset", label:"Источник", body:{
+            view: "select", label: "Сервер", name: "server", value:"mail", options:["mail","relay"]
+        }},
+        { view: "button", type:"iconButton", icon: "search", label: "Поиск", width: 90, click: "find()" },
+
+
+    ]
+};
+
+function find(){
+    var self = this;
+    self.define({disabled:true});
+
+    $$("list_log").clearAll();
+    webix.ajax().get("/logs/show/", this.getFormView().getValues(), function (data){
+        if (data)
+            $$("list_log" ).parse(data);
+        else
+            webix.message("Данных нет");
+        self.define({disabled:false});
+    })
+}
+
+var startDate = 0;
+var intervalID;
+
+function fnTail() {
+
+    $$("list_log").clearAll();
+
+    if(this.config.icon == "play") {
+        this.define({icon:"stop", label: "Стоп"});
+        intervalID = setInterval(function(){
+            webix.ajax().get('/logs/tail/',{'startDate': startDate}, function(response) {
+                len = response.length;
+                if(len) {
+                    startDate = response[(len-1)].ReceivedAt;
+                    $$("list_log" ).parse(response);
+                    $$("list_log" ).scrollTo(0,9999);
+                }
+            });
+        }, 3000);
+    }
+    else {
+        this.define({icon:"play", label: "Старт"});
+        clearInterval(intervalID);
+    }
+}
+
+var nowMsgId, changeClass, prevMsgId;
+var mf = {
+     rows: [
+         { view:"toolbar",height: 30, cols:[
+             {view:"toggle", type:"iconButton", icon:"play", label:"Старт", width: 90, click: "fnTail()"}
+         ]}, //1st row
+         {
+            id: "list_log",
+            view: "list",
+//            scheme: this.list_scheme,
+            scroll: true,
+//            css: this.list_css,
+            type: { height: "auto" },
+            select: true,
+//            on:{
+//                 onBeforeLoad:function(){
+//                     this.showOverlay("Loading...");
+//                 },
+//                 onAfterLoad:function(){
+//                     this.hideOverlay();
+//                 }
+//            },
+//             template: "<div class='fleft receivedat'>#ReceivedAt#</div><div class='fleft syslogtag'>#SysLogTag#</div>" +
+//                        "<div class='fleft msgid'>#MSGID#</div><div class='fleft'>#Message#</div>",
+            template: function(obj){
+
+                nowMsgId = obj.MSGID;
+
+                if( nowMsgId != prevMsgId) {
+                    changeClass = ! changeClass;
+                    prevMsgId = obj.MSGID;
+                }
+
+                bgclass = changeClass ? "even" : "";
+                return "<div class='"+ bgclass +"'><div class='fleft receivedat'>" + obj.ReceivedAt + "</div><div class='fleft syslogtag'>" + obj.SysLogTag + "</div>" +
+                        "<div class='fleft msgid'>" + obj.MSGID +"</div><div class='fleft'>" + obj.Message +"</div></div>";
+            }
+         }
+     ]
+}
 
 // TODO таббар с кнопками добавления 1) групп 2) ползователей 3) удаления
 //        форма добавления групп - текст, проверка на существование
@@ -131,8 +165,12 @@ var mf = {
 webix.ready(function () {
     // Вывод основного представления
 
-    webix.ui({rows:[tb, mf] , width: 600});
-    $$('form_tree').bind('list_tree');
+    webix.ui({
+            cols: [
+                {rows:[tb, treea] , width: 400},
+                {rows:[mf]}
+
+    ]});
 });
 
 

@@ -219,7 +219,7 @@ function MView(setup) {
                     scheme: this.list_scheme,
                     scroll: this.isScroll,
                     css: this.list_css,
-                    type: { height: 40 },
+                    type: { height: "auto" },
                     select: true,
                     template: this.list_template,
                     url: this.list_url,
@@ -333,7 +333,7 @@ function PageAdm(setup) {
         {
             id: this.formID,
             view: "form",
-            elementsConfig: {labelWidth: 110},
+            elementsConfig: {labelWidth: 130},
             elements: this.formElements,
             rules: this.formRules,
             save_form: function(){
@@ -343,10 +343,12 @@ function PageAdm(setup) {
 
                 if(values.is_new == undefined)
                     values.is_new = 0;
+
+                if ( mForm.save() === false)  return false;
+
                 // Если не новая запись - убираем признак новой записи
                 mForm.setValues({is_new:0},true);
 
-                if ( mForm.save() === false)  return false;
                 // Исключение для форварда
                 self.hreflink = (self.hreflink == "fwd" ) ? "aliases" : self.hreflink;
 
@@ -357,6 +359,7 @@ function PageAdm(setup) {
                         else {
                             webix.message("ОK"); // server side response
                             mForm.getParentView().back();
+                            $$("list_" + self.objID).showItem(values.id);
                         }
                     }
                 );
@@ -481,7 +484,7 @@ function PageTreeAdm(setup) {
         {
             id: this.formID +"__txt",
             view: "form",
-            elementsConfig: {labelWidth: 110},
+            elementsConfig: {labelWidth: 130},
             elements: this.formElements,
             rules: this.formRules,
             save_form: function(){
@@ -491,10 +494,11 @@ function PageTreeAdm(setup) {
 
                 if(values.is_new == undefined)
                     values.is_new = 0;
-                // Если не новая запись - убираем признак новой записи
-                mForm.setValues({is_new:0},true);
 
                 if ( mForm.save() === false)  return false;
+
+                // Если не новая запись - убираем признак новой записи
+                mForm.setValues({is_new:0},true);
 
                 webix.ajax().post("/" + self.hreflink + "/savegroup", values,
                     function(responce){
@@ -503,6 +507,7 @@ function PageTreeAdm(setup) {
                         else {
                             webix.message("ОK"); // server side response
                             mForm.getParentView().back();
+                            $$("list_" + self.objID).scrollTo(0, values.id);
                         }
                     }
                 );
@@ -519,7 +524,7 @@ function PageTreeAdm(setup) {
         {
             id: this.formID +"__rs",
             view: "form",
-            elementsConfig: {labelWidth: 110},
+            elementsConfig: {labelWidth: 130},
             elements: this.formElements_rs,
             rules: this.formRules_rs,
             save_form: function(){
@@ -555,4 +560,71 @@ function PageTreeAdm(setup) {
             }
         }
     );
+};
+
+function LogsView(setup) {
+    var self            = this;
+    extend(MAdmView, MView);    // Наследуем
+    MView.apply(this, arguments);  // Запускаем родительский конструктор
+
+    this.formElements    = setup.formElements || [];
+    this.hideStartButton = ! setup.showStartButton;
+    this.isHideToolbar = setup.isHideToolbar,
+    this._nowMsgId;
+    this._changeClass;
+    this._prevMsgId;
+    this._intervalID;
+    this._startDate = 0;
+    this.rows = [
+        {
+            view: "toolbar",
+            height: 35,
+            hidden: this.isHideToolbar,
+            cols: [
+                {
+                    view: "label",
+                    label: this.toolbarlabel
+                },
+                {
+                    view:"toggle",
+                    type:"iconButton",
+                    icon:"play",
+                    label:"Старт",
+                    width: 90,
+                    hidden: this.hideStartButton,
+                    click: function(){
+                        $$("list_log").clearAll();
+
+                        if(this.config.icon == "play") {
+                            this.define({icon:"stop", label: "Стоп"});
+                            intervalID = setInterval(function(){
+                                webix.ajax().get('/logs/tail/',{'startDate': startDate}, function(response) {
+                                    len = response.length;
+                                    if(len) {
+                                        startDate = response[(len-1)].ReceivedAt;
+                                        $$("list_log" ).parse(response);
+                                        $$("list_log" ).scrollTo(0,9999);
+                                    }
+                                });
+                            }, 3000);
+                        }
+                        else {
+                            this.define({icon:"play", label: "Старт"});
+                            clearInterval(intervalID);
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            view: this.list_view,
+            id: this.list_view + "_" + self.objID,
+            scroll: this.isScroll,
+            css: this.list_css,
+            template: this.list_template,
+            on: this.list_on,
+            elementsConfig: {labelWidth: 130},
+            elements: this.formElements
+        }
+    ];
 };

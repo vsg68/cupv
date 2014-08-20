@@ -10,6 +10,9 @@ body {
 .tb-color .webix_list_item:hover {
     background: #C76103;
 }
+/*.ftab .webix_list_item{*/
+    /*height: auto !important;*/
+/*}*/
 .isactive_0 {
     color: #ff6653;
     text-decoration: line-through;
@@ -44,7 +47,6 @@ body {
     color: #dddddd;
 }
 .webix.view,
-/*.groups,*/
 .ftab,
 .webix_el_box input {
     font-family: 'Ubuntu';
@@ -96,9 +98,21 @@ body {
     margin: 0;
     width: 150px;
 }
+
 .fleft.alias_name {
     width: 200px;
 }
+.fleft.receivedat {
+    width: 150px;
+}
+
+.fleft.syslogtag {
+    width: 110px;
+}
+.fleft.msgid {
+    width: 80px;
+}
+
 .noborder {
     border: none !important;
 }
@@ -117,4 +131,11 @@ body {
 }
 .accord .webix_accordionitem_header{
     background: #949f15;
+}
+.even {
+    color: #824100;
+}
+
+.logs .webix_list_item{
+    height: auto !important;
 }

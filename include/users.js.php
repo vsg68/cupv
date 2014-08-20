@@ -67,7 +67,7 @@ var Users_UserPage = new PageAdm({
     ],
     formRules: {
         mailbox: function (value) {
-            return  checkEmail("users_first", value);
+            return  checkEmail("form_users_first", value);
         },
         allow_nets: function (value) {
             return fnTestByType("nets", value);
@@ -334,87 +334,6 @@ var Domains_AliasPage = new PageAdm({
 });
 
 /************ groups */
-
-//var delGrp = {
-//    view: "button", type: "iconButton", icon: "trash-o", label: "Del", width: 70,
-//    click: function () {
-//
-//        // Если кнопка нажата не на списке - выходим
-//        if (!isActiveCell_List("groups")) {
-//            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-//            return false;
-//        }
-//
-//        var selected_item = $$("list_groups").getSelectedItem();
-//
-//        webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
-//            //  тут надо отослать данные на сервер
-//            if (result) {
-//
-//                webix.ajax().post("/groups/delEntry/", {id: selected_item['id'], group_id: selected_item['$parent']}, function (text, xml, xhr) {
-//                    if (!text) {
-//                        webix.message("ОK"); // server side response
-//                        $$("list_groups").remove(selected_item['id']);
-//                    }
-//                    else
-//                        webix.message({type: "error", text: text});
-//                })
-//            }
-//        }})
-//    }
-//};
-//
-//var addUsr = {
-//    view: "button", type: "iconButton", icon: "user", label: "New", width: 70,
-//    click: function () {
-//        var selected_item = $$("list_groups").getSelectedItem();
-//
-//        // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
-//        if (!isActiveCell_List("groups") || selected_item == undefined) {
-//            webix.message({ type: "error", text: "Выделите группу, в которую будем добавлять пользователя" });
-////            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-//            return false;
-//        }
-//
-//        selected_id = selected_item.id;
-//        // если узел не является корнем, то ищем ID его корня
-//        if( $$('list_groups').getParentId(selected_id) )
-//            selected_id = $$('list_groups').getParentId( selected_id );
-//
-//        defaults = {"value":"", "is_new":1};    // Дефолтные значения
-//        newID = $$("list_groups").add(defaults, 0, selected_id);     // создаем новую запись
-//        // заносим новый ид в переменную.
-//        $$("list_groups").getParentView().config.newID = newID;
-//
-//        // Переход к редактированию
-//        $$("form_groups_RS").show();
-//        $$("list_groups").select(newID);
-//    }
-//};
-//
-//var addGrp = {
-//    view: "button", type: "iconButton", icon: "group", label: "New", width: 70,
-//    click: function () {
-//        // Если кнопка нажата не на списке  - выходим
-//        if (!Groups_AliasPage.isActiveCell_List("groups")) {
-//            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-//            return false;
-//        }
-//        // заполняю дефолтными значениями
-//        // is_new - вспомогательное поле, которое проверяется на стороне сервера
-//        defaults      = {"active":1, "is_new":1};
-//
-//        newID = $$("list_groups_second").add(defaults);     // создаем новую запись
-//        // заносим новый ид в переменную.
-//        $$("list_groups_second").getParentView().config.newID = newID;
-//
-//        // Переход к редактированию
-//        $$("form_groups_Txt").show();
-//        $$("list_groups").select(newID);
-//    }
-//};
-
-
 var Groups_AliasPage = new PageTreeAdm({
     id: "groups_second",
     list_view: "tree",
@@ -483,6 +402,85 @@ var Groups_AliasPage = new PageTreeAdm({
 
 /******************************************** For ALL ***********************************************/
 
+var Form_LogsPage = new LogsView({
+    id: "logs",
+    toolbarlabel: "Фильтр поиска",
+    list_template: "",
+    list_view: "form",
+    isHideToolbar: true,
+    list_on: {
+        "onAfterLoad": function () {
+            this.config.height = (window.innerHeight - 140);
+            this.resize();
+        }
+    },
+    formElements:[
+        {view: "fieldset", label:"Дата поиска", body: {
+            rows:[
+                {view: "datepicker", label: "Начало", name: "start_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date() },
+                {view: "datepicker", label: "Окончание", name: "stop_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date()  },
+            ]
+        }},
+        {view: "fieldset", label:"Направление", body: {
+            rows: [
+                {view: "radio", label:"Направление", name: "direction", value:0, options:[
+                    {id:0,value:"To"},
+                    {id:1,value:"From"}
+                ]},
+                {view: "text", label: "Адрес", name: "address" },
+            ]
+        }},
+        {view: "fieldset", label:"Источник", body:{
+            view: "select", label: "Сервер", name: "server", value:"mail", options:["mail","relay"]
+        }},
+        {
+            view: "button",
+            type:"iconButton",
+            icon: "search",
+            label: "Поиск",
+            width: 90,
+//            click: function(){ this.getFormView().config.find()}
+            click: function(){
+                    var own = this;
+                    own.define({disabled:true});
+                    var listV = $$("list_" + Data_LogsPage.objID);
+
+                    listV.clearAll();
+                    webix.ajax().get("/logs/show/", this.getFormView().getValues(), function (data){
+                        if (data)
+                            listV.parse(data);
+                        else
+                            webix.message("Данных нет");
+
+                        own.define({disabled:false});
+                    })
+            }
+        }
+    ]
+});
+
+var Data_LogsPage = new LogsView({
+    id: "logs",
+    list_view: "list",
+    list_css: "logs",
+    showStartButton: true,
+    isListScroll: true,
+//    list_template: "<div class='even'>#ReceivedAt#  #SysLogTag# #MSGID# #Message# rrrrrrrrrrrrrrrr </div>"
+    list_template: function(obj){
+
+        self._nowMsgId = obj.MSGID;
+
+        if( self._nowMsgId != self._prevMsgId) {
+            self._changeClass = ! self._changeClass;
+            self._prevMsgId = obj.MSGID;
+        }
+
+        bgclass = self._changeClass ? "even" : "";
+        return "<div class='"+ bgclass +"'><div class='fleft receivedat'>" + obj.ReceivedAt + "</div><div class='fleft syslogtag'>" + obj.SysLogTag + "</div>" +
+            "<div class='fleft msgid'>" + obj.MSGID +"</div><div class='fleft'>" + obj.Message +"</div></div>";
+    }
+
+});
 
 maintable = {
     view: "accordion",
@@ -532,6 +530,21 @@ maintable = {
                             rows: [ Domains_AliasPage ]
                         }
                     },
+                ]
+            }
+        },
+        {
+            headerAlt:"Почтовые логи",
+            headerHeight:0,
+            header:" ",
+            collapsed: true,
+            body: {
+                cols: [
+                    { header:"Фильтр",
+                      height:30,
+                      body: {rows: [ Form_LogsPage ], width: 400 }
+                    },
+                    { rows: [ Data_LogsPage ] }
                 ]
             }
         }
