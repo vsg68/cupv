@@ -189,10 +189,6 @@ function MView(setup) {
             height: 30,
             cols: [
                 {
-                    view: "label",
-                    label: this.toolbarlabel
-                },
-                {
                     view: 'text',
                     css:"filter",
                     placeholder: 'Filter..',
@@ -206,6 +202,10 @@ function MView(setup) {
                             } );
                         }
                     }
+                },
+                {
+                    view: "label",
+                    label: this.toolbarlabel
                 },
 
             ]

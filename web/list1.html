@@ -28,18 +28,26 @@
 
 <script type="text/javascript" charset="utf-8">
         //plain json data, based on objects
-var addUsr = {
-    view: "button", type: "iconButton", icon: "user", label: "New", width: 70,
-};
-var buttonMinus = {
-    view: "button", type: "iconButton", icon: "minus", label: "Del", width: 70,
-}
 
 var tb = {
     view: "toolbar",
     height: 30,
     cols: [
-        {view: "label", label: "Фильтр поиска"},
+        {
+            view: 'text',
+            css:"filter",
+            placeholder: 'Filter..',
+            width:200
+//            on: {
+//                "onTimedKeyPress": function() {
+//                    var value = this.getValue().toLowerCase();
+//                    $$('list_' + self.objID).filter( function(obj) {
+//                        return self.filterRule(obj, value);
+//                    } );
+//                }
+//            }
+        },
+                {view: "label", label: "Фильтр поиска"},
     ]
 };
 var treea = {
@@ -126,21 +134,9 @@ var mf = {
          {
             id: "list_log",
             view: "list",
-//            scheme: this.list_scheme,
             scroll: true,
-//            css: this.list_css,
             type: { height: "auto" },
             select: true,
-//            on:{
-//                 onBeforeLoad:function(){
-//                     this.showOverlay("Loading...");
-//                 },
-//                 onAfterLoad:function(){
-//                     this.hideOverlay();
-//                 }
-//            },
-//             template: "<div class='fleft receivedat'>#ReceivedAt#</div><div class='fleft syslogtag'>#SysLogTag#</div>" +
-//                        "<div class='fleft msgid'>#MSGID#</div><div class='fleft'>#Message#</div>",
             template: function(obj){
 
                 nowMsgId = obj.MSGID;
@@ -167,7 +163,8 @@ webix.ready(function () {
 
     webix.ui({
             cols: [
-                {rows:[tb, treea] , width: 400},
+                {rows:[tb, treea] , minWidth: 400},
+                {view:"resizer"},
                 {rows:[mf]}
 
     ]});
