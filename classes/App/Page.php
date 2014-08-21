@@ -29,13 +29,14 @@ class Page extends \PHPixie\Controller {
         $this->view->script_file = '';
 		$this->view->css_file 	 = '';
         $this->view->ctrl 	 = $this->ctrl;
+        $this->view->pages = '';
 
-//		 if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
+		 if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
 
-//			$name = $this->auth->user()->login ;
-$name = "vsg";
-			$this->view->pages = $this->pixie->db->query('select','admin')
-											->fields($this->pixie->db->expr('S.id, S.name, S.note, COALESCE(C.class,"#") AS link'))
+			$name = $this->auth->user()->login ;
+//$name = "vsg";
+			$result = $this->pixie->db->query('select','admin')
+											->fields($this->pixie->db->expr('S.name, S.note, LCASE(C.class) AS link'))
 											->table('sections','S')
 											->join(array('controllers','C'),array('S.id','C.section_id'),'LEFT')
 											->join(array('rights','P'),array('C.id','P.control_id'),'LEFT')
@@ -50,20 +51,22 @@ $name = "vsg";
 											->where('C.order',0)
 											->where('SL.slevel','>',0)
 											->group_by('S.name')
-											->execute();
+											->execute()->as_array();
 
-//		 }
+            $this->view->pages = json_encode($result);
 
-		/* Определяем все контроллеры с одинаковыми ID */
-		$this->view->menuitems = $this->pixie->db
-										->query('select','admin')
-										->fields('Y.*')
-										->table('controllers','X')
-										->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
-										->where('X.class',$this->ctrl)
-										->where('Y.active',1)
-										->order_by('Y.order')
-										->execute()->as_array();
+		 }
+
+//		/* Определяем все контроллеры с одинаковыми ID */
+//		$this->view->menuitems = $this->pixie->db
+//										->query('select','admin')
+//										->fields('Y.*')
+//										->table('controllers','X')
+//										->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
+//										->where('X.class',$this->ctrl)
+//										->where('Y.active',1)
+//										->order_by('Y.order')
+//										->execute()->as_array();
  $this->permissions = 2;
  return;
 		// Проверка легитимности пользователя и его прав
@@ -166,16 +169,18 @@ $name = "vsg";
 
 	public function action_view() {
 
+
 		// Проверка легитимности пользователя и его прав
         if( $this->permissions == $this::NONE_LEVEL )
 			return  $this->noperm();
 
+
         $this->view->permissions  = $this->permissions;
         $this->view->WRITE_LEVEL = $this::WRITE_LEVEL;
         $this->view->NONE_LEVEL  = $this::NONE_LEVEL;
-
-		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') )
-			$this->view->css_file = '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
+//print_r($pages); echo "___"; exit;
+//		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') )
+//			$this->view->css_file = '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
 
 		// Подключаем файл, с названием равным контроллеру
 		$this->view->subview = $this->ctrl;

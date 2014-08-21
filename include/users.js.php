@@ -3,7 +3,6 @@
 
 /*********   USER PAGE  ********/
 
-/*********   Users  ********/
 var Users_UserPage = new PageAdm({
     id: "users_first",
     toolbarlabel: "Пользователи",
@@ -99,7 +98,6 @@ var Users_UserPage = new PageAdm({
     }
 });
 
-/*********   Aliases - UserPage ********/
 var Aliases_UserPage = new PageAdm({
     id: "aliases_first",
     toolbarlabel: "Псевдонимы",
@@ -127,7 +125,6 @@ var Aliases_UserPage = new PageAdm({
     }
 });
 
-/*********   Forward  ********/
 var Fwd_UserPage = new PageAdm({
     id: "fwd_first",
     toolbarlabel: "Пересылка",
@@ -154,7 +151,6 @@ var Fwd_UserPage = new PageAdm({
     }
 });
 
-/*********   Groups  ********/
 var Group_UserPage = new PageAdm({
     id: "groups_first",
     toolbarlabel: "Группы",
@@ -333,7 +329,6 @@ var Domains_AliasPage = new PageAdm({
     list_url: "/domains/showTable/"
 });
 
-/************ groups */
 var Groups_AliasPage = new PageTreeAdm({
     id: "groups_second",
     list_view: "tree",
@@ -402,12 +397,13 @@ var Groups_AliasPage = new PageTreeAdm({
 
 /******************************************** For ALL ***********************************************/
 
+/*********   LOGS PAGE  ********/
 var Form_LogsPage = new LogsView({
     id: "logs",
     toolbarlabel: "Фильтр поиска",
-    list_template: "",
     list_view: "form",
     isHideToolbar: true,
+    isDataHidden: true,
     list_on: {
         "onAfterLoad": function () {
             this.config.height = (window.innerHeight - 140);
@@ -439,18 +435,17 @@ var Form_LogsPage = new LogsView({
             icon: "search",
             label: "Поиск",
             width: 90,
-//            click: function(){ this.getFormView().config.find()}
             click: function(){
                     var own = this;
                     own.define({disabled:true});
-                    var listV = $$("list_" + Data_LogsPage.objID);
+                    var listV = $$(Data_LogsPage.list_view + "_" + Data_LogsPage.objID);
 
                     listV.clearAll();
                     webix.ajax().get("/logs/show/", this.getFormView().getValues(), function (data){
                         if (data)
                             listV.parse(data);
                         else
-                            webix.message("Данных нет");
+                            listV.showOverlay("Данных нет");
 
                         own.define({disabled:false});
                     })
@@ -461,25 +456,38 @@ var Form_LogsPage = new LogsView({
 
 var Data_LogsPage = new LogsView({
     id: "logs",
-    list_view: "list",
-    list_css: "logs",
+    list_view: "datatable",
+    isFormHidden: true,
     showStartButton: true,
-    isListScroll: true,
-//    list_template: "<div class='even'>#ReceivedAt#  #SysLogTag# #MSGID# #Message# rrrrrrrrrrrrrrrr </div>"
-    list_template: function(obj){
-
-        self._nowMsgId = obj.MSGID;
-
-        if( self._nowMsgId != self._prevMsgId) {
-            self._changeClass = ! self._changeClass;
-            self._prevMsgId = obj.MSGID;
+    isListScroll: "false",
+    columnConfig:[
+        {id:"ReceivedAt", header:"ReceivedAt", width:150},
+        {id:"SysLogTag",header:"SyslogTag", width:120},
+        {id:"MSGID",header:"MsgID", width:100},
+        {id:"Message",header:"Message",fillspace: true}
+    ],
+    list_on:{
+        onBeforeLoad:function(){
+            this.showOverlay("Loading...");
+        },
+        onAfterLoad:function(){
+            this.hideOverlay();
         }
+    },
+    list_scheme:{
+        $init: function(obj){
 
-        bgclass = self._changeClass ? "even" : "";
-        return "<div class='"+ bgclass +"'><div class='fleft receivedat'>" + obj.ReceivedAt + "</div><div class='fleft syslogtag'>" + obj.SysLogTag + "</div>" +
-            "<div class='fleft msgid'>" + obj.MSGID +"</div><div class='fleft'>" + obj.Message +"</div></div>";
+            self._nowMsgId = obj.MSGID;
+
+            if( self._nowMsgId != self._prevMsgId) {
+                self._changeClass = ! self._changeClass;
+                self._prevMsgId = obj.MSGID;
+            }
+
+            if(self._changeClass)
+                $$( "datatable_logs" ).addRowCss(obj.id,"even");
+        }
     }
-
 });
 
 maintable = {

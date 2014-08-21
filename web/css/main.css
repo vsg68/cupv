@@ -2,13 +2,22 @@
 body {
     margin: 0;
 }
+
+.tb-color .webix_image,
+.tb-color .webix_img_btn,
+.tb-color .webix_img_btn_top,
 .tb-color .webix_list_item,
 .tb-color .webix_menu-x,
 .tb-color.webix_layout_toolbar.webix_toolbar {
-    background: #E97E29;
+    background-color: #E97E29 !important;
+    border: 0 solid transparent !important;
 }
+.tb-color .webix_img_btn:hover,
+.tb-color .webix_img_btn_top:hover,
+.tb-color .webix_image:hover,
 .tb-color .webix_list_item:hover {
-    background: #C76103;
+    background-color: #C76103 !important;
+    border: 0 solid transparent !important;
 }
 /*.ftab .webix_list_item{*/
     /*height: auto !important;*/
@@ -138,4 +147,13 @@ body {
 
 .logs .webix_list_item{
     height: auto !important;
+}
+.logo {
+    margin: 5px 0px auto;
+}
+
+.tb-color .webix_image,
+.tb-color .webix_image:hover{
+    background-position: center center;
+    background-repeat: no-repeat;
 }

@@ -22,8 +22,8 @@ function checkEmail(ID, value) {
     var valid = false;
     var mForm = $$(ID).getValues();
     if (webix.rules.isEmail(value)) {
-        webix.ajax().sync().get("/users/validateEmail/", { mbox: mForm.mailbox, id: mForm.id }, function (responce) {
-            valid = responce;  // responce
+        webix.ajax().sync().get("/users/validateEmail/", { mbox: mForm.mailbox, id: mForm.id }, function (response) {
+            valid = response;  // response
         });
         if (!valid)
             webix.message({type: "error", expire: 3000, text: "Проверьте адрес и домен"});
@@ -353,9 +353,9 @@ function PageAdm(setup) {
                 self.hreflink = (self.hreflink == "fwd" ) ? "aliases" : self.hreflink;
 
                 webix.ajax().post("/" + self.hreflink + "/save", values,
-                    function(responce){
-                        if(responce)
-                            webix.message({type:"error", expire: 3000, text: responce}); // server side response
+                    function(response){
+                        if(response)
+                            webix.message({type:"error", expire: 3000, text: response}); // server side response
                         else {
                             webix.message("ОK"); // server side response
                             mForm.getParentView().back();
@@ -501,9 +501,9 @@ function PageTreeAdm(setup) {
                 mForm.setValues({is_new:0},true);
 
                 webix.ajax().post("/" + self.hreflink + "/savegroup", values,
-                    function(responce){
-                        if(responce)
-                            webix.message({type:"error", expire: 3000, text: responce}); // server side response
+                    function(response){
+                        if(response)
+                            webix.message({type:"error", expire: 3000, text: response}); // server side response
                         else {
                             webix.message("ОK"); // server side response
                             mForm.getParentView().back();
@@ -540,9 +540,9 @@ function PageTreeAdm(setup) {
                 if ( mForm.save() === false)  return false;
 
                 webix.ajax().post("/" + self.hreflink + "/savegroup", values,
-                    function(responce){
-                        if(responce)
-                            webix.message({type:"error", expire: 3000, text: responce}); // server side response
+                    function(response){
+                        if(response)
+                            webix.message({type:"error", expire: 3000, text: response}); // server side response
                         else {
                             webix.message("ОK"); // server side response
                             mForm.getParentView().back();
@@ -570,10 +570,7 @@ function LogsView(setup) {
     this.formElements    = setup.formElements || [];
     this.hideStartButton = ! setup.showStartButton;
     this.isHideToolbar = setup.isHideToolbar,
-    this._nowMsgId;
-    this._changeClass;
-    this._prevMsgId;
-    this._intervalID;
+    this.columnConfig  = setup.columnConfig || [{}],
     this._startDate = 0;
     this.rows = [
         {
@@ -618,13 +615,14 @@ function LogsView(setup) {
         },
         {
             view: this.list_view,
-            id: this.list_view + "_" + self.objID,
-            scroll: this.isScroll,
-            css: this.list_css,
-            template: this.list_template,
+            id: this.list_view + "_" + this.objID,
             on: this.list_on,
             elementsConfig: {labelWidth: 130},
-            elements: this.formElements
+            elements: this.formElements,
+            scroll: this.isScroll,
+            scrollX: false,
+            columns: this.columnConfig,
+            scheme: this.list_scheme
         }
     ];
 };

@@ -6,28 +6,12 @@ namespace App\Controller;
 
 class Logs extends \App\Page {
 
-    public function action_view() {
-
-			if( $this->permissions == $this::NONE_LEVEL )
-				return $this->noperm();
-
-
-			$this->view->subview 		= 'logs';
-
-			$this->view->script_file = '<script type="text/javascript" src="/js/logs.js"></script>';
-			$this->view->css_file 	 = '<link rel="stylesheet" href="/css/logs.css" type="text/css" />';
-
-			$this->response->body	= $this->view->render();
-    }
-
-
 	public function action_show() {
 
 			if( $this->permissions == $this::NONE_LEVEL )
 				return $this->noperm();
 
 			$query = $values = array();
-			$returnData = array();
 
 			$params = $this->request->get();
 
@@ -86,7 +70,6 @@ class Logs extends \App\Page {
 			}
 			catch (\Exception $e) {
 				$this->response->body = $e->getMessage();
-				return;
 			}
 
 	}
@@ -95,28 +78,18 @@ class Logs extends \App\Page {
 			if( $this->permissions == $this::NONE_LEVEL )
 				return $this->noperm();
 
-			//~ if( ! isset( $this->request->get('id')) )
-				//~ return false;
-
 			$startDate = $this->request->get('startDate');
 
 			try {
 				$startDate = $startDate ? $startDate : date("Y-m-d H:i:s");
-//					$values = $this->pixie->orm->get('maillog')->order_by('id', 'desc')->limit(1)->find();
+
                 $answer = $this->pixie->orm->get('maillog')->where('ReceivedAt','>', $startDate )->find_all()->as_array(true);
-//					$id = $values->ID - 1;
-
-
-//				$answer = $this->pixie->orm->get('maillog')->where('ID','>', $id)->find_all()->as_array(true);
 
 				$this->response->body = json_encode($answer) ;
 
 			}
 			catch (\Exception $e) {
-//				$view = $this->pixie->view('form_alert');
-//				$view->errorMsg = $e->getMessage();
 				$this->response->body = $e->getMessage();
-				return;
 			}
 	}
 }

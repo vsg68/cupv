@@ -12,15 +12,35 @@
 
         <script type="text/javascript" charset="utf-8">
 
-//            var menuitem = {
-//                view: "menu",
-//                template: function(obj){
-//                     return (obj.name) ? obj.name : '<a href=' + obj.href +'>' + obj.name + '</a>';
-//                },
-//                openAction: "click",
-//                type: { subsign : true},
-//                url: "/<?= $ctrl ?>/get_menulist/"
-//            };
+            function createMenu(){
+                var sections = [];
+                <?= "sections = ".$pages.";"  ?>
+                var items = [];
+
+                for(i=0; i < sections.length; i++){
+                    if( sections[i].link == "<?= $ctrl ?>" )  continue;
+
+                    items.push({view:"button",
+                                type:"icon",
+                                icon:"angle-right",
+                                label:sections[i].name,
+                                link:sections[i].link,
+                                tooltip:sections[i].note,
+                                click: function(){  window.location = "/" + this.config.link; },
+                                width: 100
+                    })
+                }
+                items.push({}); // заполняю пустые места
+                items.push({
+                            view:"button",
+                            type:"icon",
+                            icon:"times-circle",
+                            tooltip:"Выход",
+                            click: function(){window.location = "/login/logout/"},
+                            width: 40
+                        });
+                return items;
+            }
 
             var maintable;   //  в подключенном скрипте ему присваивается значение
 
@@ -35,13 +55,13 @@
                     container:"mainlayer",
                     id:"mainlayer",
                     type: "space",
-                    rows: [{
-                            view: "toolbar",
-                            css: "tb-color",
-                            elements:[]
-//                            elements:[ menuitem ]
-                            },
-                            maintable
+                    rows: [
+                        {
+                        view: "toolbar",
+                        css: "tb-color",
+                        cols: createMenu()
+                        },
+                        maintable
                     ]
                 });
 

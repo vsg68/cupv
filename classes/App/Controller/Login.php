@@ -10,14 +10,11 @@ class Login extends \App\Page {
 
 		$this->view = $this->pixie->view('login');
 
-		$this->view->script_file	= '<script type="text/javascript" src="/js/login.js"></script>';
-		$this->view->css_file 		= '<link rel="stylesheet" href="/css/login.css" type="text/css" />';
-
 		if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
 
 			$name = $this->auth->user()->login ;
 
-			$this->view->pages = $this->pixie->db->query('select','admin')
+			$pages = $this->pixie->db->query('select','admin')
 											->fields($this->pixie->db->expr('S.name, S.note, COALESCE(C.class,"#") AS link'))
 											->table('sections','S')
 											->join(array('controllers','C'),array('S.id','C.section_id'),'LEFT')
@@ -32,13 +29,19 @@ class Login extends \App\Page {
 											->where('A.active',1)
 											->where('C.order',0)
 											->where('SL.slevel','>',0)
+                                            ->order_by('S.id')
 											->group_by('S.name')
-											->execute();
+                                            ->limit(1)
+											->execute()->as_array();
 
+            // Если у нас есть доступ к какому-нить разделу - уходим на первый доступный
+            if( $pages[0]->link ) {
+                $this->redirect('/'.$pages[0]->link);
+                return;
+            }
 		}
 
-
-		$this->view->is_hidden = ( isset($name) ? 0: 1 );
+		$this->view->is_hidden = 0;
 
 		$this->response->body = $this->view->render();
 
