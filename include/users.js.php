@@ -462,7 +462,7 @@ var Data_LogsPage = new LogsView({
     isListScroll: "false",
     columnConfig:[
         {id:"ReceivedAt", header:"ReceivedAt", width:150},
-        {id:"SysLogTag",header:"SyslogTag", width:120,template: function(){
+        {id:"SysLogTag",header:"SyslogTag", width:120,template: function(obj){
             obj.SysLogTag = obj.SysLogTag.replace("postfix\/","");
             return obj.SysLogTag;
         }},
