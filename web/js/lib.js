@@ -578,7 +578,7 @@ function LogsView(setup) {
     this.hideStartButton = ! setup.showStartButton;
     this.isHideToolbar = setup.isHideToolbar,
     this.columnConfig  = setup.columnConfig || [{}],
-    this._startDate = 0;
+    this._startID = 0;
     this.rows = [
         {
             view: "toolbar",
@@ -603,22 +603,22 @@ function LogsView(setup) {
                         if(this.config.icon == "play") {
 
                             $$(id).clearAll();
-
-                            self._startDate = ( new Date()).toLocaleFormat('%y-%m-%d %H:%M:%S');
+                            // сделаю по ID
+                            self._startID = 0;
+//                            self._startDate = ( new Date()).toLocaleFormat('%y-%m-%d %H:%M:%S');
                             this.define({icon:"stop", label: "Стоп"});
 
                             intervalID = setInterval(function(){
-                                webix.ajax().get('/logs/tail/',{'startDate': self._startDate}, function(data) {
+                                webix.ajax().get('/logs/tail/',{'startDate': self._startID}, function(data) {
 
                                     $$(id).parse(data);
                                     var lastid = $$(id).getLastId();
                                     // Если ничего не пришло - выходим
                                     if( ! lastid ) return;
-                                    self._startDate = $$(id).getItem(lastid).ReceivedAt;
-//                                        $$(id ).scrollTo(0,9999);
+                                    self._startID = $$(id).getItem(lastid).ID;
                                     $$(id ).showItem(lastid);
                                 });
-                            }, 3000);
+                            }, 5000);
                         }
                         else {
                             this.define({icon:"play", label: "Старт"});

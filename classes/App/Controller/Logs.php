@@ -78,13 +78,16 @@ class Logs extends \App\Page {
 			if( $this->permissions == $this::NONE_LEVEL )
 				return $this->noperm();
 
-			$startDate = $this->request->get('startDate');
+			$startID = $this->request->get('startID');
 
 			try {
-                $answer = $this->pixie->db->query("select","logs")
-                                          ->table('maillog')
-                                          ->where('ReceivedAt','>', $startDate )
-                                          ->execute()->as_array();
+                // начало запроса
+                if( $startID == 0 ) {
+                        $values = $this->pixie->orm->get('maillog')->order_by('ID', 'desc')->limit(1)->find();
+                        $startID = $values->ID;
+                }
+
+                $answer = $this->pixie->orm->get('maillog')->where('ID','>', $startID)->find_all()->as_array(true);
 
 				$this->response->body = json_encode($answer) ;
 
