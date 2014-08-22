@@ -115,6 +115,13 @@ function fnTestByType(type, str) {
 
 }
 
+Date.prototype.toLocaleFormat = function(format) {
+    var f = {y : this.getYear() + 1900,m : this.getMonth() + 1,d : this.getDate(),H : this.getHours(),M : this.getMinutes(),S : this.getSeconds()}
+    for(var k in f)
+        format = format.replace('%' + k, f[k] < 10 ? "0" + f[k] : f[k]);
+    return format;
+};
+
 /*
  Входные параметры:
    id - кусок id для форм и списков. для упрощенной индентификации ОБЯЗАТЕЛЕН
@@ -596,14 +603,14 @@ function LogsView(setup) {
                         if(this.config.icon == "play") {
 
                             $$(id).clearAll();
-                            self._startDate = toString( new Date());
+                            self._startDate = ( new Date()).toLocaleFormat('%y-%m-%d %H:%M:%S');
                             this.define({icon:"stop", label: "Стоп"});
 
                             intervalID = setInterval(function(){
                                 webix.ajax().get('/logs/tail/',{'startDate': self._startDate}, function(response) {
                                     len = response.length;
                                     if(len) {
-                                        self.startDate = response[(len-1)].ReceivedAt;
+                                        self._startDate = response[(len-1)].ReceivedAt;
                                         $$(id).parse(response);
                                         $$(id ).scrollTo(0,9999);
                                     }
