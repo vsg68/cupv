@@ -596,11 +596,11 @@ function LogsView(setup) {
                         if(this.config.icon == "play") {
 
                             $$(id).clearAll();
-
+                            self._startDate = toString( new Date());
                             this.define({icon:"stop", label: "Стоп"});
 
                             intervalID = setInterval(function(){
-                                webix.ajax().get('/logs/tail/',{'startDate': self.startDate}, function(response) {
+                                webix.ajax().get('/logs/tail/',{'startDate': self._startDate}, function(response) {
                                     len = response.length;
                                     if(len) {
                                         self.startDate = response[(len-1)].ReceivedAt;

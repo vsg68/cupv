@@ -16,10 +16,10 @@ class Logs extends \App\Page {
 			$params = $this->request->get();
 
 			try {
-//                $time_start = date("Y-m-d H:i:s", strtotime($params['start_date']));
-//				$time_stop  = date("Y-m-d H:i:s", strtotime($params['stop_date']));
-                $time_start = "2014-01-12 00:00:33";
-				$time_stop  = "2014-01-12 01:24:33";
+                $time_start = date("Y-m-d H:i:s", strtotime($params['start_date']));
+				$time_stop  = date("Y-m-d H:i:s", strtotime($params['stop_date']));
+//                $time_start = "2014-01-12 00:00:33";
+//				$time_stop  = "2014-01-12 01:24:33";
 				$server		= $params['server'];
 				$filter 	= $params['address'];
 				$direction  = $params['direction']; //0-To 1-From
