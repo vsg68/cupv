@@ -609,12 +609,13 @@ function LogsView(setup) {
                             this.define({icon:"stop", label: "Стоп"});
 
                             intervalID = setInterval(function(){
-                                webix.ajax().get('/logs/tail/',{'startDate': self._startID}, function(data) {
+
+                                webix.ajax().get('/logs/tail/',{'ID': self._startID}, function(data) {
 
                                     $$(id).parse(data);
                                     var lastid = $$(id).getLastId();
                                     // Если ничего не пришло - выходим
-                                    if( ! lastid ) return;
+                                    if( ! lastid ) return;   // если долгое время не изменяется !?
                                     self._startID = $$(id).getItem(lastid).ID;
                                     $$(id ).showItem(lastid);
                                 });

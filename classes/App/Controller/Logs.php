@@ -78,7 +78,7 @@ class Logs extends \App\Page {
 			if( $this->permissions == $this::NONE_LEVEL )
 				return $this->noperm();
 
-			$startID = $this->request->get('startID');
+			$startID = $this->request->get('ID');
 
 			try {
                 // начало запроса
