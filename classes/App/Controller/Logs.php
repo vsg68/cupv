@@ -81,9 +81,11 @@ class Logs extends \App\Page {
 			$startDate = $this->request->get('startDate');
 
 			try {
-				$startDate = $startDate ? $startDate : date("Y-m-d H:i:s");
-
-                $answer = $this->pixie->orm->get('maillog')->where('ReceivedAt','>', $startDate )->find_all()->as_array(true);
+                $answer = $this->pixie->db->query("select","logs")
+                                          ->fields($this->pixie->db->expr('UNIX_TIMESTAMP(ReceivedAt) AS timestamp, *'))
+                                          ->table('maillog')
+                                          ->where($this->pixie->db->expr('UNIX_TIMESTAMP(ReceivedAt)'),'>', $startDate )
+                                          ->execute()->as_array();
 
 				$this->response->body = json_encode($answer) ;
 
