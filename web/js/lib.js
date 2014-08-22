@@ -607,13 +607,15 @@ function LogsView(setup) {
                             this.define({icon:"stop", label: "Стоп"});
 
                             intervalID = setInterval(function(){
-                                webix.ajax().get('/logs/tail/',{'startDate': self._startDate}, function(response) {
-                                    data = response.json();
-                                    if(data.len ) {
-                                        self._startDate = data[(len-1)].ReceivedAt;
-                                        $$(id).parse(data);
-                                        $$(id ).scrollTo(0,9999);
-                                    }
+                                webix.ajax().get('/logs/tail/',{'startDate': self._startDate}, function(data) {
+
+                                    $$(id).parse(data);
+                                    var lastid = $$(id).getLastId();
+                                    // Если ничего не пришло - выходим
+                                    if( ! lastid ) return;
+                                    self._startDate = $$(id).getItem(lastid).ReceivedAt;
+//                                        $$(id ).scrollTo(0,9999);
+                                    $$(id ).showItem(lastid);
                                 });
                             }, 3000);
                         }
