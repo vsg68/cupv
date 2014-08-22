@@ -590,17 +590,22 @@ function LogsView(setup) {
                     width: 90,
                     hidden: this.hideStartButton,
                     click: function(){
-                        $$("list_log").clearAll();
+
+                        var id = self.list_view + "_" + self.objID;
 
                         if(this.config.icon == "play") {
+
+                            $$(id).clearAll();
+
                             this.define({icon:"stop", label: "Стоп"});
+
                             intervalID = setInterval(function(){
-                                webix.ajax().get('/logs/tail/',{'startDate': startDate}, function(response) {
+                                webix.ajax().get('/logs/tail/',{'startDate': self.startDate}, function(response) {
                                     len = response.length;
                                     if(len) {
-                                        startDate = response[(len-1)].ReceivedAt;
-                                        $$("list_log" ).parse(response);
-                                        $$("list_log" ).scrollTo(0,9999);
+                                        self.startDate = response[(len-1)].ReceivedAt;
+                                        $$(id).parse(response);
+                                        $$(id ).scrollTo(0,9999);
                                     }
                                 });
                             }, 3000);

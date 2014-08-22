@@ -134,11 +134,11 @@ body {
 /****   alias| groups ****/
 .groups .webix_tree_folder_open,
 .groups .webix_tree_folder{
-    background-image: url(/images/groups.png);
+    background-image: url(/groups.png);
     background-position: 0px 4px;
 }
 .groups .webix_tree_file{
-    background-image: url(/images/usr.png);
+    background-image: url(/usr.png);
     background-position: 0px 4px;
 }
 .tabbar {
