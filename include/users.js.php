@@ -90,7 +90,7 @@ var Users_UserPage = new PageAdm({
             Users_UserPage.keyPressAction(this, key);
         },
         "onAfterLoad": function () {
-            this.config.height = (window.innerHeight - 140);
+            this.config.height = (window.innerHeight - 130);
             if (window.innerWidth < 1500)  // 8-) minWidth
                 this.config.width = 800;
             this.resize();
@@ -230,10 +230,6 @@ var Aliases_AliasPage = new PageAdm({
     list_on: {
         "onKeyPress": function (key) {
              Aliases_AliasPage.keyPressAction(this, key);
-        },
-        "onAfterLoad": function () {
-            this.config.height = (window.innerHeight - 140);
-            this.resize();
         }
     },
     list_url: "/aliases/showTable/"
@@ -404,12 +400,6 @@ var Form_LogsPage = new LogsView({
     list_view: "form",
     isHideToolbar: true,
     isDataHidden: true,
-    list_on: {
-        "onAfterLoad": function () {
-            this.config.height = (window.innerHeight - 140);
-            this.resize();
-        }
-    },
     formElements:[
         {view: "fieldset", label:"Дата поиска", body: {
             rows:[
