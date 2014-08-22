@@ -18,8 +18,7 @@ class Logs extends \App\Page {
 			try {
                 $time_start = date("Y-m-d H:i:s", strtotime($params['start_date']));
 				$time_stop  = date("Y-m-d H:i:s", strtotime($params['stop_date']));
-//                $time_start = "2014-01-12 00:00:33";
-//				$time_stop  = "2014-01-12 01:24:33";
+
 				$server		= $params['server'];
 				$filter 	= $params['address'];
 				$direction  = $params['direction']; //0-To 1-From
@@ -49,12 +48,13 @@ class Logs extends \App\Page {
 
 
 				$answer = $this->pixie->db->query('select','logs')
-							->fields($this->pixie->db->expr('DISTINCT
-											A.ReceivedAt AS ReceivedAt,
-											REPLACE(A.SysLogTag,"postfix\/","") AS SysLogTag,
-											A.MSGID AS MSGID,
-											REPLACE( REPLACE(A.Message,"<","&lt"),">","&gt") AS Message'
-							))
+//							->fields($this->pixie->db->expr('DISTINCT
+//											A.ReceivedAt AS ReceivedAt,
+//											REPLACE(A.SysLogTag,"postfix\/","") AS SysLogTag,
+//											A.MSGID AS MSGID,
+//											REPLACE( REPLACE(A.Message,"<","&lt"),">","&gt") AS Message'
+//							))
+                            ->fields($this->pixie->db->expr('DISTINCT A.ReceivedAt, A.SysLogTag, A.MSGID, A.Message'))
 							->table('maillog','X')
 							->JOIN(array('maillog','Y'),array('X.MSGID','Y.MSGID'),'LEFT')
 							->JOIN(array('maillog','Z'),array('Y.message','Z.message'),'LEFT')

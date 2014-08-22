@@ -414,7 +414,7 @@ var Form_LogsPage = new LogsView({
         {view: "fieldset", label:"Дата поиска", body: {
             rows:[
                 {view: "datepicker", label: "Начало", name: "start_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date() },
-                {view: "datepicker", label: "Окончание", name: "stop_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date()  },
+                {view: "datepicker", label: "Окончание", name: "stop_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date() }
             ]
         }},
         {view: "fieldset", label:"Направление", body: {
