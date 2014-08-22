@@ -521,19 +521,22 @@ maintable = {
                         header:"Пересылка / Псевдонимы",
                         body: {
                             rows: [ Aliases_AliasPage ]
-                        }
+                        },
+                        gravity: 2
                     },
                     {
                         header:"Группы / Пользователи",
                         body: {
                             rows: [ Groups_AliasPage ]
-                        }
+                        },
+                        gravity: 1
                     },
                     {
                         header:"Домены",
                         body: {
                             rows: [ Domains_AliasPage ]
-                        }
+                        },
+                        gravity: 2
                     },
                 ]
             }
