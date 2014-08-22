@@ -82,12 +82,10 @@ class Logs extends \App\Page {
 
 			try {
                 // начало запроса
-                if( $startID == 0 ) {
-                        $values = $this->pixie->orm->get('maillog')->order_by('ID', 'desc')->limit(1)->find();
-                        $startID = $values->ID;
-                }
-
-                $answer = $this->pixie->orm->get('maillog')->where('ID','>', $startID)->find_all()->as_array(true);
+                if( $startID == 0 )
+                    $answer = $this->pixie->orm->get('maillog')->order_by('ID', 'desc')->limit(1)->find_all()->as_array(true);
+                else
+                    $answer = $this->pixie->orm->get('maillog')->where('ID','>', $startID)->find_all()->as_array(true);
 
 				$this->response->body = json_encode($answer) ;
 
