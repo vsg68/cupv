@@ -603,9 +603,8 @@ function LogsView(setup) {
                         if(this.config.icon == "play") {
 
                             $$(id).clearAll();
-                            self._startDate = ( new Date()).getTime();
-//                            x = (new Date(self._startDate)).toString();
-//                            self._startDate = ( new Date()).toLocaleFormat('%y-%m-%d %H:%M:%S');
+
+                            self._startDate = ( new Date()).toLocaleFormat('%y-%m-%d %H:%M:%S');
                             this.define({icon:"stop", label: "Стоп"});
 
                             intervalID = setInterval(function(){

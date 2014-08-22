@@ -82,10 +82,8 @@ class Logs extends \App\Page {
 
 			try {
                 $answer = $this->pixie->db->query("select","logs")
-//                                          ->fields($this->pixie->db->expr('UNIX_TIMESTAMP(ReceivedAt) AS timestamp, ReceivedAt, SysLogTag, MSGID, Message'))
                                           ->table('maillog')
                                           ->where('ReceivedAt','>', $startDate )
-//                                          ->where($this->pixie->db->expr('UNIX_TIMESTAMP(ReceivedAt)'),'>', $startDate )
                                           ->execute()->as_array();
 
 				$this->response->body = json_encode($answer) ;
