@@ -608,10 +608,10 @@ function LogsView(setup) {
 
                             intervalID = setInterval(function(){
                                 webix.ajax().get('/logs/tail/',{'startDate': self._startDate}, function(response) {
-                                    len = response.length;
-                                    if(len) {
-                                        self._startDate = response[(len-1)].ReceivedAt;
-                                        $$(id).parse(response);
+                                    data = response.json();
+                                    if(data.len ) {
+                                        self._startDate = data[(len-1)].ReceivedAt;
+                                        $$(id).parse(data);
                                         $$(id ).scrollTo(0,9999);
                                     }
                                 });
