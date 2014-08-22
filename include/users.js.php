@@ -464,7 +464,11 @@ var Data_LogsPage = new LogsView({
         {id:"ReceivedAt", header:"ReceivedAt", width:150},
         {id:"SysLogTag",header:"SyslogTag", width:120},
         {id:"MSGID",header:"MsgID", width:100},
-        {id:"Message",header:"Message",fillspace: true}
+        {id:"Message",header:"Message",fillspace: true, template: function(obj){
+            obj.Message = obj.Message.replace("<","&lt");
+            obj.Message = obj.Message.replace(">","&gt");
+            return obj.Message;
+        }}
     ],
     list_on:{
         onBeforeLoad:function(){

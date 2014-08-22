@@ -605,7 +605,6 @@ function LogsView(setup) {
                             $$(id).clearAll();
                             // сделаю по ID
                             self._startID = 0;
-//                            self._startDate = ( new Date()).toLocaleFormat('%y-%m-%d %H:%M:%S');
                             this.define({icon:"stop", label: "Стоп"});
 
                             intervalID = setInterval(function(){
