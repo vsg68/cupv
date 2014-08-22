@@ -82,7 +82,7 @@ class Logs extends \App\Page {
 
 			try {
                 $answer = $this->pixie->db->query("select","logs")
-                                          ->fields($this->pixie->db->expr('UNIX_TIMESTAMP(ReceivedAt) AS timestamp, *'))
+                                          ->fields($this->pixie->db->expr('UNIX_TIMESTAMP(ReceivedAt) AS timestamp, ReceivedAt, SysLogTag, MSGID, Message'))
                                           ->table('maillog')
                                           ->where($this->pixie->db->expr('UNIX_TIMESTAMP(ReceivedAt)'),'>', $startDate )
                                           ->execute()->as_array();
