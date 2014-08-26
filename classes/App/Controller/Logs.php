@@ -48,12 +48,6 @@ class Logs extends \App\Page {
 
 
 				$answer = $this->pixie->db->query('select','logs')
-//							->fields($this->pixie->db->expr('DISTINCT
-//											A.ReceivedAt AS ReceivedAt,
-//											REPLACE(A.SysLogTag,"postfix\/","") AS SysLogTag,
-//											A.MSGID AS MSGID,
-//											REPLACE( REPLACE(A.Message,"<","&lt"),">","&gt") AS Message'
-//							))
                             ->fields($this->pixie->db->expr('DISTINCT A.ReceivedAt, A.SysLogTag, A.MSGID, A.Message'))
 							->table('maillog','X')
 							->JOIN(array('maillog','Y'),array('X.MSGID','Y.MSGID'),'LEFT')

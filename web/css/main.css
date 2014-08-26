@@ -58,13 +58,13 @@ body {
 .webix.view,
 .ftab,
 .webix_el_box input {
-    font-family: 'Ubuntu';
+    font-family: 'UbuntuRegular';
     font-size: 14px;
 }
 
 .webix_accordionitem_label,
 .webix_toolbar .webix_el_label{
-    font-family: 'Ubuntu' !important;
+    font-family: 'UbuntuRegular' !important;
 }
 
 .fleft {
@@ -158,11 +158,8 @@ body {
     margin: 5px 0px auto;
 }
 
-.tb-color .webix_image,
-.tb-color .webix_image:hover{
-    background-position: center center;
-    background-repeat: no-repeat;
-}
-.submitButton{
-    left: 9999px;
-}
+/*.tb-color .webix_image,*/
+/*.tb-color .webix_image:hover{*/
+    /*background-position: center center;*/
+    /*background-repeat: no-repeat;*/
+/*}*/

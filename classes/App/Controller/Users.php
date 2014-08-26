@@ -29,7 +29,6 @@ class Users extends \App\Page {
 			$this->response->body = $e->getMessage();
 		}
 	}
-
     // Функция проверки почтового адреса
     public function action_validateEmail(){
 
