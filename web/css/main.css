@@ -23,7 +23,7 @@ body {
     /*height: auto !important;*/
 /*}*/
 .isactive_0 {
-    color: #898989;
+    color: #c3c3c3;
     text-decoration: line-through;
 }
 
@@ -106,9 +106,9 @@ body {
     font-size: 11px;
 }
 
-.filter {
-    float: left;
-}
+/*.filter {*/
+    /*float: left;*/
+/*}*/
 .arrow {
     margin: 0;
     width: 150px;

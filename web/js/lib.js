@@ -140,6 +140,7 @@ function MView(setup) {
     this.isScroll = setup.isListScroll;
     this.toolbarlabel = setup.toolbarlabel || "";
     this.hideSearchField = ! setup.showSearchField;
+    this.hideActiveOnly = ! setup.showActiveOnly;
     this.filterRule = setup.filterRule || "";
     this.list_view = setup.list_view || "list";
     this.list_css  = setup.list_css || "ftab";
@@ -196,6 +197,12 @@ function MView(setup) {
             height: 30,
             cols: [
                 {
+                    view: "label",
+                    label: this.toolbarlabel,
+                    width: 150,
+                    hidden: this.toolbarlabel ? false : true
+                },
+                {
                     view: 'text',
                     css:"filter",
                     placeholder: 'Filter..',
@@ -211,9 +218,18 @@ function MView(setup) {
                     }
                 },
                 {
-                    view: "label",
-                    label: this.toolbarlabel
+                    view: "checkbox",
+                    label: "Онлайн",
+                    hidden: this.hideActiveOnly,
+                    value: 1,
+                    width: 100,
+                    on: {
+                        "onChange": function() {
+                            $$('list_' + self.objID).filter( "#active#",this.config.value);
+                        }
+                    }
                 },
+                {}
 
             ]
         },

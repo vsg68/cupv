@@ -8,6 +8,7 @@ var Users_UserPage = new PageAdm({
     toolbarlabel: "Пользователи",
     hideDelButton: true,
     showSearchField: true,
+    showActiveOnly: true,
     isListScroll: true,
     filterRule: function(obj,value){
             return (obj.mailbox.toLowerCase().indexOf(value) >= 0 || obj.username.toLowerCase().indexOf(value) >= 0)
@@ -94,6 +95,8 @@ var Users_UserPage = new PageAdm({
             if (window.innerWidth < 1500)  // 8-) minWidth
                 this.config.width = 800;
             this.resize();
+            // Фильтруем неактивные записи
+            $$('list_users_first').filter("#active#",1);
         }
     }
 });
@@ -195,9 +198,9 @@ var Group_UserPage = new PageAdm({
 
 var Aliases_AliasPage = new PageAdm({
     id: "aliases_second",
-//    toolbarlabel: "Пересылка",
     isListScroll: true,
     showSearchField: true,
+    showActiveOnly: true,
     filterRule: function(obj,value){
         value = value.toLowerCase();
         return (obj.alias_name.toLowerCase().indexOf(value) >= 0 || obj.delivery_to.toLowerCase().indexOf(value) >= 0);
@@ -230,6 +233,9 @@ var Aliases_AliasPage = new PageAdm({
     list_on: {
         "onKeyPress": function (key) {
              Aliases_AliasPage.keyPressAction(this, key);
+        },
+        "onAfterLoad": function () {
+            $$('list_aliases_second').filter("#active#",1);
         }
     },
     list_url: "/aliases/showTable/"
