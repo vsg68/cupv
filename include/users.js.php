@@ -420,6 +420,7 @@ var Form_LogsPage = new LogsView({
             view: "select", label: "Сервер", name: "server", value:"mail", options:["mail","relay"]
         }},
         {
+            id: "searchButton",
             view: "button",
             type:"iconButton",
             icon: "search",

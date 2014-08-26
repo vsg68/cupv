@@ -606,6 +606,7 @@ function LogsView(setup) {
                             // сделаю по ID
                             self._startID = 0;
                             this.define({icon:"stop", label: "Стоп"});
+                            $$("searchButton").define({disabled:true});
 
                             intervalID = setInterval(function(){
 
@@ -622,6 +623,7 @@ function LogsView(setup) {
                         }
                         else {
                             this.define({icon:"play", label: "Старт"});
+                            $$("searchButton").define({disabled:false});
                             clearInterval(intervalID);
                         }
                     }

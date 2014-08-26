@@ -25,7 +25,7 @@
                     {
                         cols:[
                             {},
-                            {view:"button", value: "Submit", type:"form", click:function(){
+                            {id:"submitButton", view:"button", value: "Submit", type:"form", hotkey: "enter", click:function(){
 
                                 var formV= this.getFormView();
                                 if (formV.validate()) {
@@ -49,8 +49,10 @@
                     $all: webix.rules.isNotEmpty
                 },
                 elementsConfig:{ labelPosition:"top"}
+
             }
         });
+
 
         </script>
 
