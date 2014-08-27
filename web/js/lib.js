@@ -229,6 +229,7 @@ function MView(setup) {
         },
        {
             view: "multiview",
+            fitBiggest: true,
             cells: [
                 {
                     id: "list_" + self.objID,
