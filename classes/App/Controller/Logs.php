@@ -8,9 +8,6 @@ class Logs extends \App\Page {
 
 	public function action_show() {
 
-			if( $this->permissions == $this::NONE_LEVEL )
-				return $this->noperm();
-
 			$query = $values = array();
 
 			$params = $this->request->get();
@@ -69,8 +66,6 @@ class Logs extends \App\Page {
 	}
 
 	public function action_tail() {
-			if( $this->permissions == $this::NONE_LEVEL )
-				return $this->noperm();
 
 			$startID = $this->request->get('ID');
 

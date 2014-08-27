@@ -3,6 +3,7 @@ body {
     margin: 0;
 }
 
+
 .tb-color .webix_image,
 .tb-color .webix_img_btn,
 .tb-color .webix_img_btn_top,
@@ -55,13 +56,15 @@ body {
 .webix_icon.disabled {
     color: #dddddd;
 }
+
 .webix.view,
 .ftab,
 .webix_el_box input {
     font-family: 'UbuntuRegular';
     font-size: 14px;
 }
-
+.webix_inp_label,
+.webix_inp_top_label,
 .webix_accordionitem_label,
 .webix_toolbar .webix_el_label{
     font-family: 'UbuntuRegular' !important;
@@ -82,9 +85,9 @@ body {
     width: 300px;
 }
 
-.fleft.fa-envelope {
-    color: green;
-}
+/*.fleft.fa-envelope {*/
+    /*color: green;*/
+/*}*/
 .fleft.fa-male {
     color: #660099;
 }
@@ -158,8 +161,11 @@ body {
     margin: 5px 0px auto;
 }
 
-/*.tb-color .webix_image,*/
-/*.tb-color .webix_image:hover{*/
-    /*background-position: center center;*/
-    /*background-repeat: no-repeat;*/
-/*}*/
+.exit .webix_icon_btn {
+    margin: 3px 3px 3px 6px;
+    font-size:28px;
+}
+.webix_toolbar .webix_custom_checkbox:before{
+    color: #C76103;
+}
+

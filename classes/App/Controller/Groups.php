@@ -45,8 +45,6 @@ class Groups extends \App\Page {
     }
 
     public function action_save(){
-        if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
 
         if( ! $params = $this->request->post() )
             return false;
@@ -64,8 +62,6 @@ class Groups extends \App\Page {
     }
 
     public function action_savegroup(){
-//        if( $this->permissions != $this::WRITE_LEVEL )
-//			return $this->noperm();
 
         if( ! $params = $this->request->post() )
             return false;

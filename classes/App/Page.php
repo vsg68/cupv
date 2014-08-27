@@ -34,7 +34,6 @@ class Page extends \PHPixie\Controller {
 		 if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
 
 			$name = $this->auth->user()->login ;
-//$name = "vsg";
 			$result = $this->pixie->db->query('select','admin')
 											->fields($this->pixie->db->expr('S.name, S.note, LCASE(C.class) AS link'))
 											->table('sections','S')
@@ -57,18 +56,7 @@ class Page extends \PHPixie\Controller {
 
 		 }
 
-//		/* Определяем все контроллеры с одинаковыми ID */
-//		$this->view->menuitems = $this->pixie->db
-//										->query('select','admin')
-//										->fields('Y.*')
-//										->table('controllers','X')
-//										->join(array('controllers','Y'),array('Y.section_id','X.section_id'),'LEFT')
-//										->where('X.class',$this->ctrl)
-//										->where('Y.active',1)
-//										->order_by('Y.order')
-//										->execute()->as_array();
- $this->permissions = 2;
- return;
+
 		// Проверка легитимности пользователя и его прав
         if( $this->ctrl != 'login' )
 			$this->permissions = $this->is_approve();
@@ -78,9 +66,10 @@ class Page extends \PHPixie\Controller {
 	/* Проверка на предоставление доступа к разделу */
 	protected function is_approve(){
 
-		if( $this->auth->user() == null )
+		if( $this->auth->user() == null ) {
+            $this->redirect("/");
 			return 0;
-
+        }
 		$name = $this->auth->user()->login;
 		$ctrl = $this->request->param('controller');
 

@@ -141,7 +141,7 @@ function MView(setup) {
     this.toolbarlabel = setup.toolbarlabel || "";
     this.hideSearchField = ! setup.showSearchField;
     this.hideActiveOnly = ! setup.showActiveOnly;
-    this.filterRule = setup.filterRule || "";
+    this.filterFunction = setup.filterFunction || (function(){return true});
     this.list_view = setup.list_view || "list";
     this.list_css  = setup.list_css || "ftab";
     this.list_url  = setup.list_url || "";
@@ -203,30 +203,24 @@ function MView(setup) {
                     hidden: this.toolbarlabel ? false : true
                 },
                 {
+                    id: 'fltr_' + self.objID,
                     view: 'text',
-                    css:"filter",
                     placeholder: 'Filter..',
                     width: 200,
                     hidden: this.hideSearchField,
                     on: {
-                        "onTimedKeyPress": function() {
-                            var value = this.getValue().toLowerCase();
-                            $$('list_' + self.objID).filter( function(obj) {
-                                return self.filterRule(obj, value);
-                            } );
-                        }
+                        "onTimedKeyPress": this.filterFunction
                     }
                 },
                 {
+                    id: 'chkBox_' + self.objID,
                     view: "checkbox",
                     label: "Онлайн",
                     hidden: this.hideActiveOnly,
                     value: 1,
                     width: 100,
                     on: {
-                        "onChange": function() {
-                            $$('list_' + self.objID).filter( "#active#",this.config.value);
-                        }
+                        "onChange": this.filterFunction
                     }
                 },
                 {}

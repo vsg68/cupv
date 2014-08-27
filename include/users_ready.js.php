@@ -14,13 +14,4 @@
 
 <?php endif; ?>
 
-    // Фильтрация по текстовым полям
-//    $$("filter_users").attachEvent("onTimedKeyPress", function () {
-//        //get user input value
-//        var value = this.getValue().toLowerCase();
-//
-//        $$('list_users').filter(function (obj) {
-//            return (obj.mailbox.toLowerCase().indexOf(value) >= 0 || obj.username.toLowerCase().indexOf(value) >= 0);
-//        })
-//    });
 

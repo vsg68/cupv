@@ -36,6 +36,7 @@
                             type:"icon",
                             icon:"times-circle",
                             tooltip:"Выход",
+                            css:"exit",
                             click: function(){window.location = "/login/logout/"},
                             width: 40
                         });

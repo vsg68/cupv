@@ -25,7 +25,7 @@
                     {
                         cols:[
                             {},
-                            {id:"submitButton", view:"button", value: "Submit", type:"form", hotkey: "enter", click:function(){
+                            {id:"submitButton", view:"button", value: "Вход",  hotkey: "enter", click:function(){
 
                                 var formV= this.getFormView();
                                 if (formV.validate()) {
