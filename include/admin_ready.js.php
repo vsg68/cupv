@@ -2,15 +2,14 @@
 // Связка формы и представления
 <?php if( $permissions == $WRITE_LEVEL ): ?>
 //
-    Users_UserPage.list_bind();
-    Aliases_UserPage.list_bind();
-    Fwd_UserPage.list_bind();
-    Group_UserPage.list_bind();
-
-    Aliases_AliasPage.list_bind();
-    Domains_AliasPage.list_bind();
-    Groups_AliasPage.list_bind();
-
+    SectPage.list_bind();
+    Roles_Page.list_bind();
+    Rights_Page.list_bind();
+    Auth_Page.list_bind();
+   // $$('form_roles').bind('list_roles',function(list_data, form_data){
+   //     x = list_data;
+//        return list_data.name == form_data.name;
+    //})
 
 <?php endif; ?>
 

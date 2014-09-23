@@ -4,7 +4,7 @@ namespace App\Controller;
 
 class Users extends \App\Page {
 
-	public function action_save() {
+    public function action_save() {
 
 		if( ! $params = $this->request->post() )
 			return false;

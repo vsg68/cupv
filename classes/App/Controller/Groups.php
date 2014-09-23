@@ -14,6 +14,7 @@ class Groups extends \App\Page {
 
         $this->response->body = json_encode($result);
     }
+
     public function action_showTree(){
 
         $entries = $this->pixie->db->query('select')

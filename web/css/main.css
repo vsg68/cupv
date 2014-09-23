@@ -59,6 +59,8 @@ body {
 
 .webix.view,
 .ftab,
+.webix_inp_static,
+.webix_list,
 .webix_el_box input {
     font-family: 'UbuntuRegular';
     font-size: 14px;
@@ -75,6 +77,7 @@ body {
     margin: 4px;
 }
 
+.fleft.roles,
 .fleft.domain_name,
 .fleft.mailbox,
 .fleft.username {
@@ -94,6 +97,7 @@ body {
 .fleft.fa-users {
     color: #3498db;
 }
+
 .fleft.webix_icon,
 .fleft.last_login {
     border: 1px solid #999;
@@ -120,6 +124,8 @@ body {
 .fleft.alias_name {
     width: 200px;
 }
+
+.fleft.roles,
 .fleft.receivedat {
     width: 150px;
 }
@@ -127,6 +133,13 @@ body {
 .fleft.syslogtag {
     width: 110px;
 }
+.fleft.sections{
+    border: 1px solid #999;
+    border-radius: 6px;
+    padding: 0 5px;
+    text-align: center;
+}
+
 .fleft.msgid {
     width: 80px;
 }
@@ -135,6 +148,11 @@ body {
     border: none !important;
 }
 /****   alias| groups ****/
+.roles .webix_tree_folder_open,
+.roles .webix_tree_folder{
+    background-image: url(/role.png);
+    background-position: 0px 4px;
+}
 .groups .webix_tree_folder_open,
 .groups .webix_tree_folder{
     background-image: url(/groups.png);
@@ -169,3 +187,22 @@ body {
     color: #C76103;
 }
 
+/*.webix_el_box :nth-child(odd){*/
+    /*background-color: #eeeeee;*/
+/*}*/
+.fleft.permission{
+    background-size: 100% 100%;
+    width:20px;
+    height:20px;
+    margin: 10px 5px 0 0;
+}
+.permission_NONE {
+    background-image: url(/NONE.png);
+}
+.permission_READ{
+    
+    background-image: url(/READ.png);
+}
+.permission_WRITE{
+    background-image: url(/WRITE.png);
+}

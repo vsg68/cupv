@@ -6,97 +6,42 @@ namespace App\Controller;
 
 class Auth extends \App\Page {
 
-    public function action_ShowTable() {
+    public function action_showTable() {
 
-		$returnData = $data = array();
+		$entries = $this->pixie->db->query('select', 'admin')
+									->fields('A.id','A.login','A.note','A.active','A.role_id','R.name')
+									->table('auth','A')
+									->join(array('roles', 'R'), array('R.id','A.role_id'), 'LEFT')
+									->execute()->as_array();
 
-		$entries = $this->pixie->orm->get('auth')->with('roles')->find_all();
-
-		foreach( $entries as $entry ) {
-			$data[] = array($entry->login,
-							$entry->note,
-							$entry->roles->name,
-							$entry->active,
-							"DT_RowId" => 'tab-auth-'.$entry->id
-							);
-		}
-
-		$returnData['aaData'] = $data;
-        $this->response->body	= json_encode($returnData);
+        $this->response->body = json_encode($entries);
     }
 
-	public function action_showEditForm() {
+	public function action_save() {
 
-		if( $this->permissions == $this::NONE_LEVEL )
-			return $this->noperm();
+        if( ! $params = $this->request->post() )
+            return false;
 
+        try {
+            $is_update = $params['is_new'] ? false : true;
+            
+            if( $params['passwd'] ) 
+            	$params['passwd'] = $this->auth->provider('password')->hash_password($params['passwd']);
+            else
+            	unset( $params['passwd']);
 
-		if( ! $tab = $this->request->post('t') )
-			return;
+            unset( $params['is_new'], $params['name']);
 
-		$this->_id 	= $this->request->param('id');
-		$view 		= $this->pixie->view('form_'.$tab);
-		$view->tab  = $tab;
+            // Если в запрос поместить true -  предполагается UPDATE
+            $this->pixie->orm->get("auth")->values($params, $is_update)->save();
 
-        $view->data = $this->pixie->orm->get($tab)
-									   ->where('id',$this->_id)
-									   ->find();
-
-        $view->roles = $this->pixie->orm->get('roles')->find_all();
-
-       $this->response->body = $view->render();
+        }
+        catch (\Exception $e) {
+            $this->response->body = $e->getMessage();
+        }
     }
 
-	public function action_edit() {
-
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
-
-		if( ! $params = $this->request->post() )
-			return;
-
-		// хешируем пароль средством модуля
-		if( isset( $params['passwd']) && $params['passwd'] ) {
-			$params['passwd']  = $this->auth->provider('password')->hash_password($params['passwd']);
-		}
-
-		$params['active'] = $this->getVar($params['active'],0);
-
-		try {
-
-			$tab = $params['tab'];
-			unset($params['tab']);
-
-			$is_update = $params['id'] ? true : false;
-
-			// сохраняем модель
-			// Если в запрос поместить true -  предполагается UPDATE
-			$row = $this->pixie->orm->get($tab)
-									->values($params, $is_update)
-									->save();
-
-			$id = ($params['id']) ? $params['id'] : $row->id;
-			unset( $params['id'] );
-
-			// Что будем возвращать
-			$entry = $this->pixie->orm->get('auth')->where('id',$id)->find();
-
-			// Массив, который будем возвращать
-			$returnData = array($entry->login,
-								$entry->note,
-								$entry->roles->name,	// Не указывал в запросе - она уже есть из модели !!!
-								$entry->active,
-								'DT_RowId' => 'tab-auth-'.$id);
-
-			$this->response->body 		= json_encode($returnData);
-		}
-		catch (\Exception $e) {
-			$this->response->body = $e->getMessage();
-			return;
-		}
-	}
-
+	
 	public function action_delEntry() {
 
 		if( $this->permissions != $this::WRITE_LEVEL )

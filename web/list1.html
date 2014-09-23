@@ -50,38 +50,14 @@ var tb = {
                 {view: "label", label: "Фильтр поиска"},
     ]
 };
+var mylist = {}
 var treea = {
     id: "form_tree",
     view: "form",
     elementsConfig: {labelWidth: 130},
     elements: [
-//        {view: "fieldset", label:"Просмотр онлайн", body: {
-//            rows:[
-////                {},
-//                {view:"toggle", type:"iconButton", icon:"play", label:"Старт", width: 90, click: "fnTail()"}
-//            ]}
-//        },
-        {view: "fieldset", label:"Дата поиска", body: {
-            rows:[
-                {view: "datepicker", label: "Начало", name: "start_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date() },
-                {view: "datepicker", label: "Окончание", name: "stop_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date()  },
-            ]
-        }},
-        {view: "fieldset", label:"Направление", body: {
-            rows: [
-                {view: "radio", label:"Направление", name: "direction", value:0, options:[
-                    {id:0,value:"To"},
-                    {id:1,value:"From"}
-                ]},
-                {view: "text", label: "Адрес", name: "address" },
-            ]
-        }},
-        {view: "fieldset", label:"Источник", body:{
-            view: "select", label: "Сервер", name: "server", value:"mail", options:["mail","relay"]
-        }},
-        { view: "button", type:"iconButton", icon: "search", label: "Поиск", width: 90, click: "find()" },
-
-
+            {view: "datepicker", label: "Начало", name: "start_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date() },
+            {view: "datepicker", label: "Окончание", name: "stop_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date()  },
     ]
 };
 
@@ -132,40 +108,28 @@ var mf = {
              {view:"toggle", type:"iconButton", icon:"play", label:"Старт", width: 90, click: "fnTail()"}
          ]}, //1st row
          {
-            id: "list_log",
-            view: "list",
-            scroll: true,
-            type: { height: "auto" },
-            select: true,
-            template: function(obj){
-
-                nowMsgId = obj.MSGID;
-
-                if( nowMsgId != prevMsgId) {
-                    changeClass = ! changeClass;
-                    prevMsgId = obj.MSGID;
-                }
-
-                bgclass = changeClass ? "even" : "";
-                return "<div class='"+ bgclass +"'><div class='fleft receivedat'>" + obj.ReceivedAt + "</div><div class='fleft syslogtag'>" + obj.SysLogTag + "</div>" +
-                        "<div class='fleft msgid'>" + obj.MSGID +"</div><div class='fleft'>" + obj.Message +"</div></div>";
-            }
+             id: "list_",
+             view: "datatable",
+             select: true,
+             columns: [
+                 {id:"name", header: "Название", width: 100},
+                 {id:"class", header: "link", width: 100, template:"http://<?= $_SERVER['SERVER_NAME'] ?>#link#"},
+                 {id:"note", header: "Описание", fillspace: true}
+             ],
+             url: "/admin/sections/"
          }
      ]
 }
 
-// TODO таббар с кнопками добавления 1) групп 2) ползователей 3) удаления
-//        форма добавления групп - текст, проверка на существование
-//        пользователей - список почтовых ящиков
 
 webix.ready(function () {
     // Вывод основного представления
 
     webix.ui({
             cols: [
-                {rows:[tb, treea] , minWidth: 400},
-                {view:"resizer"},
-                {rows:[mf]}
+//                {rows:[tb, treea] , minWidth: 400},
+//                {view:"resizer"},
+                {rows:[mf], width: 500}
 
     ]});
 });

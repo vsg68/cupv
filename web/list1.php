@@ -56,10 +56,15 @@ var treea = {
     view: "form",
     elementsConfig: {labelWidth: 130},
     elements: [
-            {view: "datepicker", label: "Начало", name: "start_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date() },
-            {view: "datepicker", label: "Окончание", name: "stop_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date()  },
-    ]
-};
+        {view:'radio',id:'l_1', label:'MAIL',options:[{id:'s_1', value:'NONE'},{id:'s_2', value:'READ'},{id:'s_3', value:'WRITE'}]},
+        {view:'radio',id:'l_3', label:'SQUID',options:[{id:'s_1', value:'NONE'},{id:'s_2', value:'READ'},{id:'s_3', value:'WRITE'}]},
+        {view:'radio',id:'l_4', label:'ADMIN',options:[{id:'s_1', value:'NONE'},{id:'s_2', value:'READ'},{id:'s_3', value:'WRITE'}]},
+        {view:'radio',id:'l_5', label:'RADIUS',options:[{id:'s_1', value:'NONE'},{id:'s_2', value:'READ'},{id:'s_3', value:'WRITE'}]},
+        {},
+        { view: "button", value: "Cancel", width: 70, click: function(){ this.getFormView().config.cancel()} },
+        { view: "button", value: "Save", width: 70, type: "form", click: function(){ this.getFormView().config.save_form()} },
+        {}
+    ]}
 
 function find(){
     var self = this;
@@ -109,14 +114,16 @@ var mf = {
          ]}, //1st row
          {
              id: "list_",
-             view: "datatable",
+             css: "roles",
+             view: "tree",
              select: true,
-             columns: [
-                 {id:"name", header: "Название", width: 100},
-                 {id:"class", header: "link", width: 100, template:"http://<?= $_SERVER['SERVER_NAME'] ?>#link#"},
-                 {id:"note", header: "Описание", fillspace: true}
-             ],
-             url: "/admin/sections/"
+             template: function(obj, com){
+                 // Подставляем свою иконку для группы
+                 var icon = obj.$parent ? "<img src='/" + obj.image +".png' style='float:left; margin:3px 4px 0px 1px;'>" : "<div class='webix_tree_folder'></div>";
+                 return com.icon(obj, com) + icon + '<span>'+ obj.value + '</span>';
+             },
+//             template: "{common.icon()} <img src='/#image#.png' style='float:left; margin:3px 4px 0px 1px;'> #value#",
+             url: "/roles/showTree/"
          }
      ]
 }
@@ -127,9 +134,9 @@ webix.ready(function () {
 
     webix.ui({
             cols: [
-//                {rows:[tb, treea] , minWidth: 400},
-//                {view:"resizer"},
-                {rows:[mf], width: 500}
+                {rows:[tb, treea] , minWidth: 400},
+                {view:"resizer"},
+                {rows:[mf], width: 700}
 
     ]});
 });

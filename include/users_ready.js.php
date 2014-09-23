@@ -5,7 +5,7 @@
     Users_UserPage.list_bind();
     Aliases_UserPage.list_bind();
     Fwd_UserPage.list_bind();
-    Group_UserPage.list_bind();
+    Groups_UserPage.list_bind();
 
     Aliases_AliasPage.list_bind();
     Domains_AliasPage.list_bind();

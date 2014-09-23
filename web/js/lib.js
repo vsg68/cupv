@@ -30,8 +30,7 @@ function checkEmail(ID, value) {
     }
     return valid;
 }
-
-// проверка наличия основного домена у домена - псевдонима
+-// проверка наличия основного домена у домена - псевдонима
 function chkDomainAlias(ID, value) {
     var ok = false;
     $$("list_" + ID).data.each( function(obj){
@@ -44,7 +43,7 @@ function chkDomainAlias(ID, value) {
 
     return ok;
 }
-
+// проверка наличия одинаковых групп
 function checkGroups(ID, value) {
     var ok = true;
     $$("list_" + ID).data.each( function(obj){
@@ -55,7 +54,6 @@ function checkGroups(ID, value) {
     });
     return ok;
 }
-
 // проверка наличия одинаковых пользователей в группе
 function chkUserInGroup(ID, pid, name){
     var ok = true;
@@ -71,7 +69,17 @@ function chkUserInGroup(ID, pid, name){
 
     return ok;
 }
-
+// проверка на существовании роли
+function chkDublRoles(ID, value) {
+    var ok = true;  
+    $$("list_" + ID).data.each( function(obj){
+        if (obj.name == value) {
+            webix.message({ type: "error", text: "Такая роль уже присутствует" });
+            ok = false;
+        }
+    });
+    return ok;
+}
 // Функция проверки правильности значения поля формы
 function fnTestByType(type, str) {
 
@@ -112,7 +120,6 @@ function fnTestByType(type, str) {
     }
 
     return (reg.test(str));
-
 }
 
 Date.prototype.toLocaleFormat = function(format) {
@@ -137,6 +144,7 @@ function MView(setup) {
     var self = this;
     this.objID = setup.id;  // Общее название
     this.hreflink = setup.id.split("_")[0];  // Общее название
+    self.savefunct = setup.savefunct || "save";
     this.isScroll = setup.isListScroll;
     this.toolbarlabel = setup.toolbarlabel || "";
     this.hideSearchField = ! setup.showSearchField;
@@ -215,7 +223,7 @@ function MView(setup) {
                 {
                     id: 'chkBox_' + self.objID,
                     view: "checkbox",
-                    label: "Онлайн",
+                    label: "Active",
                     hidden: this.hideActiveOnly,
                     value: 1,
                     width: 100,
@@ -265,12 +273,12 @@ function MAdmView(setup) {
     this.formRules      = setup.formRules || {};
     this.addButtonClick = setup.addButtonClick || function(){return {}};
 
-    this.list_bind      = function(){
-        for(i=0; i < self.rows[1].cells.length; i++) {
-            if( self.rows[1].cells[i].view == "form" )
-                $$(self.rows[1].cells[i].id).bind('list_' + self.objID);
-        }
-    };
+    this.list_bind      = setup.list_bind || function(){
+                                                for(i=0; i < self.rows[1].cells.length; i++) {
+                                                    if( self.rows[1].cells[i].view == "form" )
+                                                        $$(self.rows[1].cells[i].id).bind('list_' + self.objID);
+                                                }
+                                             };
 
     this.isActiveCell_List = function(ID) {
         var multiview = $$("list_" + ID).getParentView(); // multiview
@@ -370,7 +378,7 @@ function PageAdm(setup) {
                 // Исключение для форварда
                 self.hreflink = (self.hreflink == "fwd" ) ? "aliases" : self.hreflink;
 
-                webix.ajax().post("/" + self.hreflink + "/save", values,
+                webix.ajax().post("/" + self.hreflink + "/" + self.savefunct, values,
                     function(response){
                         if(response)
                             webix.message({type:"error", expire: 3000, text: response}); // server side response
@@ -427,9 +435,6 @@ function PageTreeAdm(setup) {
                     selected_id = $$('list_'+ self.objID).getParentId( selected_id );
 
                 defaults = {"value":"", "is_new":1};    // Дефолтные значения
-//                newID = $$("list_"+ objID).add(defaults, 0, selected_id);     // создаем новую запись
-//                // заносим новый ид в переменную.
-//                $$("list_"+ objID).getParentView().config.newID = newID;
 
                 // Переход к редактированию
                 $$(self.formID + "__rs").show();
@@ -455,10 +460,6 @@ function PageTreeAdm(setup) {
 
                 defaults["is_new"] = 1;
                 defaults["active"] = 1;
-
-//                newID = $$("list_groups_second").add(defaults);     // создаем новую запись
-//                // заносим новый ид в переменную.
-//                $$("list_groups_second").getParentView().config.newID = newID;
 
                 // Переход к редактированию
                 $$(self.formID + "__txt").show();

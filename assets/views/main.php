@@ -9,7 +9,6 @@
 
         <script src="/codebase/webix.js" type="text/javascript" charset="utf-8"></script>
         <script src="/js/lib.js" type="text/javascript" charset="utf-8"></script>
-
         <script type="text/javascript" charset="utf-8">
 
             function createMenu(){
@@ -24,10 +23,10 @@
                                 type:"icon",
                                 icon:"angle-right",
                                 label:sections[i].name,
-                                link:sections[i].link,
+                                link: sections[i].link,
                                 tooltip:sections[i].note,
                                 click: function(){  window.location = "/" + this.config.link; },
-                                width: 100
+                                width: 80
                     })
                 }
                 items.push({}); // заполняю пустые места
