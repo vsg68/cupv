@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "assets"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "classes"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "include"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "web"
+		}
+	]
+}

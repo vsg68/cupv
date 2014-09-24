@@ -253,7 +253,7 @@ var Domains_AliasPage = new PageAdm({
         var tmpl = "<div class='fleft domain_name isactive_" + obj.active + "'  title='" + (obj.domain_notes ? obj.domain_notes : "") + "'>" + obj.domain_name + "</div>";
         tmpl += "<div class='fleft fa-truck webix_icon domain_type_" + obj.domain_type + "' title='delivery_to: " + obj.delivery_to+ "'></div>";
         if (obj.all_enable == "1")          tmpl += "<div class='fleft fa-envelope webix_icon' title='" + obj.all_email + "'></div>";
-        if (obj.relay_domain == "1")        tmpl += "<div class='fleft fa-anchor webix_icon' title='" + obj.relay_address + "'></div>";
+        if (obj.relay_domain == "1")        tmpl += "<div class='fleft fa-external-link webix_icon' title='relay_address:" + obj.relay_address + "'></div>";
         if (obj.relay_notcheckusers == "1") tmpl += "<div class='fleft fa-check webix_icon' title='check users'></div>";
 
         return tmpl;
@@ -537,7 +537,7 @@ var Domains_AliasPage = new MView({
         var tmpl = "<div class='fleft domain_name isactive_" + obj.active + "'  title='" + (obj.domain_notes ? obj.domain_notes : "") + "'>" + obj.domain_name + "</div>";
         tmpl += "<div class='fleft fa-truck webix_icon domain_type_" + obj.domain_type + "' title='delivery_to: " + obj.delivery_to+ "'></div>";
         if (obj.all_enable == "1")          tmpl += "<div class='fleft fa-envelope webix_icon' title='" + obj.all_email + "'></div>";
-        if (obj.relay_domain == "1")        tmpl += "<div class='fleft fa-anchor webix_icon' title='" + obj.relay_address + "'></div>";
+        if (obj.relay_domain == "1")        tmpl += "<div class='fleft fa-external-link webix_icon' title='relay_address:" + obj.relay_address + "'></div>";
         if (obj.relay_notcheckusers == "1") tmpl += "<div class='fleft fa-check webix_icon' title='check users'></div>";
 
         return tmpl;
