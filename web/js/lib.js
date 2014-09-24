@@ -224,9 +224,10 @@ function MView(setup) {
                     id: 'chkBox_' + self.objID,
                     view: "checkbox",
                     label: "Active",
+                    labelWidth:60,
                     hidden: this.hideActiveOnly,
                     value: 1,
-                    width: 100,
+                    width: 80,
                     on: {
                         "onChange": this.filterFunction
                     }

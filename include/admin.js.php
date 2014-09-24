@@ -157,6 +157,73 @@ var Auth_Page = new PageAdm({
 
 <?php else: ?>
 /*********   USER PAGE  ********/
+var SectPage = new MView({
+    id: "admin_sect",
+    toolbarlabel: "Разделы",
+    list_template: function (obj) {
+        var tmpl = "<div class='fleft syslogtag isactive_" + obj.active + "'>" + obj.name + "</div>";
+
+        tmpl += "<div class='fleft fa-link webix_icon' title='http://<?= $_SERVER["SERVER_NAME"] ?>/" + obj.link + "'></div>";
+        tmpl += "<div class='fleft  isactive_" + obj.active + " '>" + obj.note + "</div>";
+        return tmpl;
+    },
+    list_url: '/admin/sections/',
+    list_on:  {
+        "onKeyPress": function (key) {
+            SectPage.keyPressAction(this, key);
+        },
+        "onAfterLoad": function () {
+            this.config.height = (window.innerHeight - 170);
+            this.resize();
+        }
+    }
+});
+
+var Roles_Page = new MView({
+    id: "roles",
+    toolbarlabel: "Роли",
+    list_css: "roles",
+    list_template: function(obj){
+        var tmpl = "<div class='fleft roles isactive_" + obj.active + "'>" + obj.name + "</div>";
+            tmpl += "<div class='fleft isactive_" + obj.active + "'>" + obj.note + "</div>";
+        return tmpl;
+    },
+    list_on: {
+        "onKeyPress": function (key) {
+            Roles_Page.keyPressAction(this, key);
+        },
+        "onAfterSelect": function () {
+            item = $$('list_roles').getSelectedItem();
+            // Закрываем все открытые формы редактирования
+            $$('list_roles_rights').getParentView().back();
+            $$('list_roles_rights').clearAll();
+
+            $$('list_roles_rights').load("/roles/select/?id=" + item.id);
+        },
+    },
+    list_url: "/roles/showTable/"
+});
+
+var Rights_Page = new MView({
+    id: "roles_rights",
+    toolbarlabel: "Права",
+    savefunct: "saveRights",
+    hideAddButton: true,
+    hideDelButton: true,
+    list_template: "<div class='fleft permission permission_#slname#' title='#slname#'></div><div class='fleft'>#sectname#</div>",
+});
+
+var Auth_Page = new MView({
+    id: "auth",
+    toolbarlabel: "Пользователи",
+    list_template: "<div class='fleft username isactive_#active#' title='#login#'>#note#</div><div class='fleft' title='Роль'>#name#</div>",
+    list_url: '/auth/showTable/',
+    list_on: {
+        "onKeyPress": function (key) {
+            Auth_Page.keyPressAction(this, key);
+        },
+    }
+});
 
 <?php endif; ?>
 
@@ -193,14 +260,3 @@ maintable = {
        },        
     ]  
 };
-
-
-//TODO
-// 2) заполнение строки "пароль" - по клику на иконку
-// 3) заполниние строки "сети" -  по клику на иконку (?)
-// 4) экспорт в файл ....
-// 5) При клике на почтовую иконку - переход на почту(www) в транскрипции user@domain*i_am@gmpro.ru
-/*
-При подключении:
-id - min 14 знаков (bigint) такое же выставляется для всех id  в lists
- */

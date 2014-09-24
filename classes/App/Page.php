@@ -57,15 +57,16 @@ class Page extends \PHPixie\Controller {
 
 		// Проверка легитимности пользователя и его прав
         if( $this->ctrl != 'login' )
-			 $this->permissions = 2;
-			//$this->permissions = $this->is_approve();
-
+			 // $this->permissions = 2;
+			$this->permissions = $this->is_approve();
+ 
 	}
 
 	/* Проверка на предоставление доступа к разделу */
 	protected function is_approve(){
 
 		if( $this->auth->user() == null ) {
+
             $this->redirect("/");
 			return 0;
         }
@@ -81,10 +82,11 @@ class Page extends \PHPixie\Controller {
 									->join(array('slevels','S'),array('S.id','P.slevel_id'),'LEFT')
 									->join(array('auth','A'),array('A.role_id','P.role_id'),'LEFT')
 									->where('A.login',$name)
-									->where('C.class',$ctrl)
+									->where('C.link',$ctrl)
 									->where('R.active',1)
 									->where('C.active',1)
 									->where('A.active',1)
+									->limit(1)
 									->execute()
 									->current();
 
