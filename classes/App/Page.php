@@ -57,8 +57,8 @@ class Page extends \PHPixie\Controller {
 
 		// Проверка легитимности пользователя и его прав
         if( $this->ctrl != 'login' )
-			 // $this->permissions = 2;
-			$this->permissions = $this->is_approve();
+			  $this->permissions = 2;
+			//$this->permissions = $this->is_approve();
  
 	}
 

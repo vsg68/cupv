@@ -57,7 +57,7 @@ class ItBase extends Page {
 		$this->response->body = $this->view->render();
     }
 
-	protected function RecursiveTree(&$rs,$parent) {
+	protected function RecursiveTree(&$rs, $parent = 0) {
 
 	    $data = array();
 
@@ -67,11 +67,11 @@ class ItBase extends Page {
 
 				$chidls = $this->RecursiveTree($rs,$row->id);
 
-				$out = array("title"=>$row->name, "key" => $row->id);
+				$out = array("value"=>$row->name, "id" => $row->id);
 				// $row->records пусто для разделов
 				if( $chidls || !$row->data) {
-					 $out["isFolder"] = true;
-					 $out["children"] = $chidls;
+					 $out["data"] = $chidls;
+					 // $out["open"] = true;
 				}
 
 				array_push($data, $out);
@@ -79,6 +79,28 @@ class ItBase extends Page {
 
 		return $data;
 	}
+	// protected function RecursiveTree(&$rs,$parent) {
+
+	//     $data = array();
+
+	// 	if (!isset($rs[$parent])) return false;
+
+	// 	foreach ($rs[$parent] as $row) {
+
+	// 			$chidls = $this->RecursiveTree($rs,$row->id);
+
+	// 			$out = array("title"=>$row->name, "key" => $row->id);
+	// 			// $row->records пусто для разделов
+	// 			if( $chidls || !$row->data) {
+	// 				 $out["isFolder"] = true;
+	// 				 $out["children"] = $chidls;
+	// 			}
+
+	// 			array_push($data, $out);
+	// 	}
+
+	// 	return $data;
+	// }
 
 	protected function action_getTree() {
 
@@ -93,28 +115,32 @@ class ItBase extends Page {
 			$rs[$row->pid][] = $row;
 		}
 
-		$tree_struct = $this->RecursiveTree($rs,0);
+		$tree_struct = $this->RecursiveTree($rs);
+
 		$this->response->body =  json_encode($tree_struct);
 
 	}
 
-	public function action_records() {
+	public function action_select() {
 
-		if( ! $this->_id = $this->request->param('id') )
+
+		if( ! $this->_id = $this->request->get('id') )
 			return;
 
 		$entry = $this->pixie->orm->get('names')->where('id',$this->_id)->find();
 
-		$returnData = array();
-		$rows = json_decode($entry->data);
+		$this->response->body = $entry->data;
 
-		$returnData['aaData'] = $this->DTPropAddToArray($rows->entry, 'rec', 'gradeA');
+		// $returnData = array();
+		// $rows = json_decode($entry->data);
 
-		if( isset($rows->records) ) {
-			$returnData['records'] = $this->DTPropAddToArray($rows->records, 'cont', 'gradeB');
-		}
+		// $returnData['aaData'] = $this->DTPropAddToArray($rows->entry, 'rec', 'gradeA');
 
-        $this->response->body = json_encode($returnData);
+		// if( isset($rows->records) ) {
+		// 	$returnData['records'] = $this->DTPropAddToArray($rows->records, 'cont', 'gradeB');
+		// }
+
+  //       $this->response->body = json_encode($returnData);
     }
 
 

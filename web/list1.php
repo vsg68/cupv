@@ -50,38 +50,6 @@ var tb = {
                 {view: "label", label: "Фильтр поиска"},
     ]
 };
-var mylist = {}
-var treea = {
-    id: "form_tree",
-    view: "form",
-    elementsConfig: {labelWidth: 130},
-    elements: [
-        {view:'radio',id:'l_1', label:'MAIL',options:[{id:'s_1', value:'NONE'},{id:'s_2', value:'READ'},{id:'s_3', value:'WRITE'}]},
-        {view:'radio',id:'l_3', label:'SQUID',options:[{id:'s_1', value:'NONE'},{id:'s_2', value:'READ'},{id:'s_3', value:'WRITE'}]},
-        {view:'radio',id:'l_4', label:'ADMIN',options:[{id:'s_1', value:'NONE'},{id:'s_2', value:'READ'},{id:'s_3', value:'WRITE'}]},
-        {view:'radio',id:'l_5', label:'RADIUS',options:[{id:'s_1', value:'NONE'},{id:'s_2', value:'READ'},{id:'s_3', value:'WRITE'}]},
-        {},
-        { view: "button", value: "Cancel", width: 70, click: function(){ this.getFormView().config.cancel()} },
-        { view: "button", value: "Save", width: 70, type: "form", click: function(){ this.getFormView().config.save_form()} },
-        {}
-    ]}
-
-function find(){
-    var self = this;
-    self.define({disabled:true});
-
-    $$("list_log").clearAll();
-    webix.ajax().get("/logs/show/", this.getFormView().getValues(), function (data){
-        if (data)
-            $$("list_log" ).parse(data);
-        else
-            webix.message("Данных нет");
-        self.define({disabled:false});
-    })
-}
-
-var startDate = 0;
-var intervalID;
 
 function fnTail() {
 
@@ -106,12 +74,10 @@ function fnTail() {
     }
 }
 
-var nowMsgId, changeClass, prevMsgId;
+
 var mf = {
      rows: [
-         { view:"toolbar",height: 30, cols:[
-             {view:"toggle", type:"iconButton", icon:"play", label:"Старт", width: 90, click: "fnTail()"}
-         ]}, //1st row
+        
          {
              id: "list_",
              css: "roles",
@@ -128,17 +94,50 @@ var mf = {
      ]
 }
 
+var Net_Page = {
+    id: "treedata",
+    view: 'tree',
+    select: true,
+    open: true,
+    // template: function(obj, com){
+    //              // Подставляем свою иконку для группы
+    //              // var icon = obj.$parent ? "<img src='/" + obj.image +".png' style='float:left; margin:3px 4px 0px 1px;'>" : "<div class='webix_tree_folder'></div>";
+    //              return com.icon(obj, com) + '<span>'+ obj.value + '</span>';
+    //          },
+    url: "/bcont/getTree/",
+    on: {
+        "onAfterSelect": function(){
+            item = this.getSelectedItem();
+            if( this.data.getFirstChildId(this.getSelectedId()) ) return;
+            $$('dtable').load("/badm/select/?id=" + item.id);
+        }
+    }
+}
+
+var Contact_Page = {
+    id: "dtable",
+    view:"list",
+    template: function(obj){
+        x = obj;
+    }
+    // data: []
+}
 
 webix.ready(function () {
     // Вывод основного представления
 
-    webix.ui({
-            cols: [
-                {rows:[tb, treea] , minWidth: 400},
-                {view:"resizer"},
-                {rows:[mf], width: 700}
-
-    ]});
+   webix.ui({
+               rows:[
+                 { type:"header", template:"My App!" },
+                 { cols:[
+                   // { view:"tree", data:tree_data, gravity:0.3, select:true },
+                      Net_Page,
+                      { view:"resizer" },
+                      Contact_Page
+                      // { view:"datatable", autoConfig:true, data:grid_data }
+                 ]}
+               ]
+            })
 });
 
 

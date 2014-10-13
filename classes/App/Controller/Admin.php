@@ -6,30 +6,6 @@ namespace App\Controller;
 
 class Admin extends \App\Page {
 
-//     public function action_view() {
-
-//         $sections = $this->pixie->orm->get('sections')->find_all()->as_array(true);
-//         $slevels =$this->pixie->orm->get('slevels')->find_all()->as_array(true);
-
-//         $sectionview = $slevelview = "";
-
-//         foreach( $slevels as $slevel) {
-//             // $slevelview[] = "'".$slevel->name."'";
-//            $slevelview .= "{id:'".$slevel->id ."', value:'".$slevel->name."'},";
-//         }
-
-//         foreach( $sections as $section) {
-//             // $sectionview .= "{view:'radio', label:'".$section->name."', options:[".implode(",",$slevelview)."]},";
-//            $sectionview .= "{view:'text', label:'".$section->name."', name: 'sectname'},";
-//            // $sectionview .= "{view:'radio', label:'".$section->name."',options:[".$slevelview."]},";
-//         }
-// //        print_r($sectionview); exit;
-// 		$this->view->sections = $sectionview;
-//         \App\Page::action_view();
-
-//     }
-
-   
     public function action_delEntry() {
 
 		if( ! $params = $this->request->post() )
