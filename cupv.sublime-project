@@ -68,10 +68,13 @@
 			}
 		},
 		{
+			"contents": "@import \"ubuntu.css\";\nbody {\n    margin: 0;\n}\n\n\n.tb-color .webix_image,\n.tb-color .webix_img_btn,\n.tb-color .webix_img_btn_top,\n.tb-color .webix_list_item,\n.tb-color .webix_menu-x,\n.tb-color.webix_layout_toolbar.webix_toolbar {\n    background-color: #E97E29 !important;\n    border: 0 solid transparent !important;\n}\n.tb-color .webix_img_btn:hover,\n.tb-color .webix_img_btn_top:hover,\n.tb-color .webix_image:hover,\n.tb-color .webix_list_item:hover {\n    background-color: #C76103 !important;\n    border: 0 solid transparent !important;\n}\n/*.ftab .webix_list_item{*/\n    /*height: auto !important;*/\n/*}*/\n.isactive_0 {\n    color: #c3c3c3;\n    text-decoration: line-through;\n}\n\n.localnet {\n    color: #000000;\n}\n\n.net10 {\n    color: #8bccac;\n}\n.domain_type_0,\n.net-0 {\n    color: #cc5000;\n}\n.domain_type_1,\n.net-4 {\n    color: #0000ff;\n}\n.domain_type_2,\n.net-5 {\n    color: #1bcc05;\n}\n.net-10 {\n    color: #0aaeff;\n}\n.net-109 {\n    color: #cc0a48;\n}\n.net-12 {\n    color: #0aaeff;\n}\n.webix_icon.disabled {\n    color: #dddddd;\n}\n\n.webix.view,\n.ftab,\n.webix_inp_static,\n.webix_list,\n.webix_el_box input {\n    font-family: 'UbuntuRegular';\n    font-size: 14px;\n}\n.webix_inp_label,\n.webix_inp_top_label,\n.webix_accordionitem_label,\n.webix_toolbar .webix_el_label{\n    font-family: 'UbuntuRegular' !important;\n}\n\n.fleft {\n    float: left;\n    margin: 4px;\n}\n\n.fleft.roles,\n.fleft.domain_name,\n.fleft.mailbox,\n.fleft.username {\n    width: 200px;\n    border-right: 1px solid #ddd;\n}\n.fleft.username {\n    width: 300px;\n}\n\n/*.fleft.fa-envelope {*/\n    /*color: green;*/\n/*}*/\n.fleft.fa-male {\n    color: #660099;\n}\n.fleft.fa-users {\n    color: #3498db;\n}\n\n.fleft.webix_icon,\n.fleft.last_login {\n    border: 1px solid #999;\n    border-radius: 6px;\n    padding: 5px;\n    text-align: center;\n}\n.webix_selected .fleft {\n    border-color: #fff;\n}\n.fleft.last_login {\n    line-height: 17px;\n    font-size: 11px;\n}\n\n/*.filter {*/\n    /*float: left;*/\n/*}*/\n.arrow {\n    margin: 0;\n    width: 150px;\n}\n\n.fleft.alias_name {\n    width: 200px;\n}\n\n.fleft.roles,\n.fleft.receivedat {\n    width: 150px;\n}\n\n.fleft.syslogtag {\n    width: 110px;\n}\n.fleft.sections{\n    border: 1px solid #999;\n    border-radius: 6px;\n    padding: 0 5px;\n    text-align: center;\n}\n\n.fleft.msgid {\n    width: 80px;\n}\n\n.noborder {\n    border: none !important;\n}\n/****   alias| groups ****/\n.roles .webix_tree_folder_open,\n.roles .webix_tree_folder{\n    background-image: url(/role.png);\n    background-position: 0px 4px;\n}\n.groups .webix_tree_folder_open,\n.groups .webix_tree_folder{\n    background-image: url(/groups.png);\n    background-position: 0px 4px;\n}\n.groups .webix_tree_file{\n    background-image: url(/usr.png);\n    background-position: 0px 4px;\n}\n.tabbar {\n    padding-top: 10px;\n}\n.accord .webix_accordionitem_header{\n    background: #949f15;\n}\n.even {\n    color: #824100;\n}\n\n.logs .webix_list_item{\n    height: auto !important;\n}\n.logo {\n    margin: 5px 0px auto;\n}\n\n.exit .webix_icon_btn {\n    margin: 3px 3px 3px 6px;\n    font-size:28px;\n}\n.webix_toolbar .webix_custom_checkbox:before{\n    color: #C76103;\n}\n\n/*.webix_el_box :nth-child(odd){*/\n    /*background-color: #eeeeee;*/\n/*}*/\n.fleft.permission{\n    background-size: 100% 100%;\n    width:20px;\n    height:20px;\n    margin: 8px 5px 0 0;\n}\n.permission_NONE {\n    background-image: url(/NONE.png);\n}\n.permission_READ{\n    \n    background-image: url(/READ.png);\n}\n.permission_WRITE{\n    background-image: url(/WRITE.png);\n}",
 			"file": "web/css/main.css",
+			"file_size": 3412,
+			"file_write_time": 130560149601950978,
 			"settings":
 			{
-				"buffer_size": 3412,
+				"buffer_size": 3444,
 				"line_ending": "Unix"
 			}
 		},
@@ -108,15 +111,6 @@
 			}
 		},
 		{
-			"contents": "qq\nКто-нибудь может сказать что-нибудь про фирму \"UNION. итальянские двери\"? Интересует возможность роста, обстановка в коллективе, своевременность зарплаты, адекватность начальства и т.п. Спасибо.\n\n\nSingapore Post	RF258981320SG\n\n\n)",
-			"settings":
-			{
-				"buffer_size": 232,
-				"line_ending": "Unix",
-				"name": "qq"
-			}
-		},
-		{
 			"file": "web/list1.php",
 			"settings":
 			{
@@ -128,9 +122,37 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 54.0,
+		"height": 117.0,
 		"selected_items":
 		[
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"git ",
+				"Git: Push"
+			],
+			[
+				"git co",
+				"Git: Quick Commit"
+			],
+			[
+				"gico",
+				"Git: Commit"
+			],
+			[
+				"git pull ",
+				"Git: Pull"
+			],
+			[
+				"git",
+				"Git: Push"
+			],
+			[
+				"git commit",
+				"Git: Quick Commit"
+			],
 			[
 				"install",
 				"Package Control: Install Package"
@@ -138,10 +160,6 @@
 			[
 				"pac",
 				"Package Control: Remove Package"
-			],
-			[
-				"insta",
-				"Package Control: Install Package"
 			],
 			[
 				"git bla",
@@ -152,16 +170,8 @@
 				"Package Control: List Packages"
 			],
 			[
-				"git",
-				"Set Syntax: Git Graph"
-			],
-			[
 				"",
 				"Git: Push"
-			],
-			[
-				"git commit",
-				"Set Syntax: Git Commit Message"
 			],
 			[
 				"git add",
@@ -182,10 +192,6 @@
 			[
 				"git push",
 				"Git: Push"
-			],
-			[
-				"git ",
-				"Git: Gui"
 			],
 			[
 				"color",
@@ -256,10 +262,10 @@
 	},
 	"expanded_folders":
 	[
-		"/home/vsg/Dropbox/cupv/web"
 	],
 	"file_history":
 	[
+		"/home/vsg/Dropbox/cupv/web/css/users.css",
 		"/usr/share/icons/malys-uniblue/index.theme",
 		"/home/vsg/Dropbox/cupv/classes/App/Controller/Bcont.php",
 		"/home/vsg/Dropbox/cupv/include/admin.js.php",
@@ -356,7 +362,7 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -456,15 +462,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3412,
+						"buffer_size": 3444,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3217,
-								3217
+								905,
+								905
 							]
 						],
 						"settings":
@@ -534,10 +540,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2511.0,
+						"translation.y": 102.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
@@ -623,10 +629,10 @@
 							"syntax": "Packages/PHP/PHP.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 2142.0,
+						"translation.y": 408.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
@@ -656,7 +662,7 @@
 						"translation.y": 6044.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
@@ -686,7 +692,7 @@
 						"translation.y": 51.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
@@ -716,39 +722,11 @@
 						"translation.y": 1683.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 6,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 232,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								230,
-								230
-							]
-						],
-						"settings":
-						{
-							"auto_name": "qq",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
 					"file": "web/list1.php",
 					"semi_transient": false,
 					"settings":
@@ -774,7 +752,7 @@
 						"translation.y": 1428.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -818,6 +796,18 @@
 	"output.git":
 	{
 		"height": 112.0
+	},
+	"output.git-commit":
+	{
+		"height": 112.0
+	},
+	"output.git-pull":
+	{
+		"height": 112.0
+	},
+	"output.git-push":
+	{
+		"height": 320.0
 	},
 	"project": "",
 	"replace":

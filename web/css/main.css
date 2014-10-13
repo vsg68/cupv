@@ -33,7 +33,7 @@ body {
 }
 
 .net10 {
-    color: #8bccac;
+    color: #0DB2F2;
 }
 .domain_type_0,
 .net-0 {
@@ -47,11 +47,14 @@ body {
 .net-5 {
     color: #1bcc05;
 }
-.net-12 {
+.net-10 {
     color: #0aaeff;
 }
 .net-109 {
     color: #cc0a48;
+}
+.net-12 {
+    color: #0aaeff;
 }
 .webix_icon.disabled {
     color: #dddddd;
