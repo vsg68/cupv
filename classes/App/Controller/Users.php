@@ -52,8 +52,7 @@ class Users extends \App\Page {
                                     ->execute()->as_array();
 
 
-        $this->response->body = count($result) ? "false" : "true";
-        // $this->response->body = count($result) ? false : true;
+        $this->response->body = count($result) ? false : true;
     }
 
     public function action_showTable(){
