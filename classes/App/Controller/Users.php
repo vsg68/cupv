@@ -40,7 +40,7 @@ class Users extends \App\Page {
 
         $result = $this->pixie->db->query('select')
                                     ->table('users')
-                                    ->where(array(array('or',array(
+                                    ->where(array('or',array(
                                                 array('id','!=', $id),
                                                 array("mailbox", $mbox),
                                     )))
