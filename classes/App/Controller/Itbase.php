@@ -1,7 +1,7 @@
 <?php
-namespace App;
+namespace App\Controller;
 
-class ItBase extends Page {
+class ItBase extends \App\Page {
 
 	/*
 	 * Функция добавляет элементы массива, для правильной передачи
@@ -33,7 +33,8 @@ class ItBase extends Page {
 		return $arr;
 	}
 
-	public function action_view() {
+	public function action_view1() {
+
 
 		// Проверка легитимности пользователя и его прав
         if( $this->permissions == $this::NONE_LEVEL )
@@ -104,23 +105,83 @@ class ItBase extends Page {
 
 	protected function action_getTree() {
 
-		$tree = $rs = array();
-
-		$tree = $this->pixie->orm->get('names')
-								->where('page', $this->ctrl)
+		$tree = $this->pixie->db->query('select',"itbase")->table('docs')
+								->where('tpage','')
 								->order_by('pid')
-								->find_all();
-
+								->execute()->as_array();
+//Какие поля нужны для создания дерева (названия)
+		
 		foreach ($tree as $row)	{
 			$rs[$row->pid][] = $row;
 		}
-
-		$tree_struct = $this->RecursiveTree($rs);
-
+		
+		$tree_struct = $this->RecursiveTree($rs,0);
+		print_r($tree_struct);exit;
 		$this->response->body =  json_encode($tree_struct);
 
 	}
+	protected function action_getTree_old() {
 
+		$tree = $data = array();
+
+		$tree = $this->pixie->db->query('select','itbase')
+								->table('names')
+								->order_by('id')
+								->execute()->as_array();
+
+		foreach ($tree as $row)	{
+			$data = array(
+					'pid' => $row->pid,
+					'label' => $row->name,
+					);
+
+			$this->pixie->db->query('insert','itbase')->table('docs')->data($data)->execute();
+
+			$arr = json_decode($row->data);
+
+			if(isset($arr->entry)) {
+				foreach( $arr->entry as $entry) {
+					$data = array(
+									'pid' => $row->id,
+									'tpage' => 'list',
+									'label' => $entry[0],
+									'value' => $entry[2]
+									);
+
+					$this->pixie->db->query('insert','itbase')->table('docs')->data($data)->execute();
+				}
+			}	
+			
+			if(isset($arr->records)) {
+				
+				 foreach( $arr->records as $records ) {
+
+				 	foreach( $records as $k => $val ) {
+						if ($k == 0 ) $label = 'Контакт';
+						if ($k == 1 ) $label = 'Должность';
+						if ($k == 2 ) $label = 'Телефон';
+						if ($k == 3 ) $label = 'Email';
+	 
+						$data = array(
+										'pid' => $row->id,
+										'tpage' => 'tabl',
+										'label' => $label,
+										'value' => $val
+										);
+
+						$this->pixie->db->query('insert','itbase')->table('docs')->data($data)->execute();
+					}
+				}
+			}
+		}
+
+		 print_r ($arr);
+
+		// $tree_struct = $this->RecursiveTree($rs);
+
+		// $this->response->body =  json_encode($tree);
+
+	}
 	public function action_select() {
 
 

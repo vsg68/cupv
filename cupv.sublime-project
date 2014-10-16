@@ -5,7 +5,15 @@
 		[
 			[
 				"tree",
-				"treedata"
+				"tree_struct"
+			],
+			[
+				"for",
+				"foreach	foreach …"
+			],
+			[
+				"ITBA",
+				"ITBasePage"
 			],
 			[
 				"label",
@@ -60,18 +68,23 @@
 	"buffers":
 	[
 		{
-			"file": "include/users.js.php",
+			"file": "include/itbase.js.php",
 			"settings":
 			{
-				"buffer_size": 28651,
+				"buffer_size": 13307,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "@import \"ubuntu.css\";\nbody {\n    margin: 0;\n}\n\n\n.tb-color .webix_image,\n.tb-color .webix_img_btn,\n.tb-color .webix_img_btn_top,\n.tb-color .webix_list_item,\n.tb-color .webix_menu-x,\n.tb-color.webix_layout_toolbar.webix_toolbar {\n    background-color: #E97E29 !important;\n    border: 0 solid transparent !important;\n}\n.tb-color .webix_img_btn:hover,\n.tb-color .webix_img_btn_top:hover,\n.tb-color .webix_image:hover,\n.tb-color .webix_list_item:hover {\n    background-color: #C76103 !important;\n    border: 0 solid transparent !important;\n}\n/*.ftab .webix_list_item{*/\n    /*height: auto !important;*/\n/*}*/\n.isactive_0 {\n    color: #c3c3c3;\n    text-decoration: line-through;\n}\n\n.localnet {\n    color: #000000;\n}\n\n.net10 {\n    color: #8bccac;\n}\n.domain_type_0,\n.net-0 {\n    color: #cc5000;\n}\n.domain_type_1,\n.net-4 {\n    color: #0000ff;\n}\n.domain_type_2,\n.net-5 {\n    color: #1bcc05;\n}\n.net-10 {\n    color: #0aaeff;\n}\n.net-109 {\n    color: #cc0a48;\n}\n.net-12 {\n    color: #0aaeff;\n}\n.webix_icon.disabled {\n    color: #dddddd;\n}\n\n.webix.view,\n.ftab,\n.webix_inp_static,\n.webix_list,\n.webix_el_box input {\n    font-family: 'UbuntuRegular';\n    font-size: 14px;\n}\n.webix_inp_label,\n.webix_inp_top_label,\n.webix_accordionitem_label,\n.webix_toolbar .webix_el_label{\n    font-family: 'UbuntuRegular' !important;\n}\n\n.fleft {\n    float: left;\n    margin: 4px;\n}\n\n.fleft.roles,\n.fleft.domain_name,\n.fleft.mailbox,\n.fleft.username {\n    width: 200px;\n    border-right: 1px solid #ddd;\n}\n.fleft.username {\n    width: 300px;\n}\n\n/*.fleft.fa-envelope {*/\n    /*color: green;*/\n/*}*/\n.fleft.fa-male {\n    color: #660099;\n}\n.fleft.fa-users {\n    color: #3498db;\n}\n\n.fleft.webix_icon,\n.fleft.last_login {\n    border: 1px solid #999;\n    border-radius: 6px;\n    padding: 5px;\n    text-align: center;\n}\n.webix_selected .fleft {\n    border-color: #fff;\n}\n.fleft.last_login {\n    line-height: 17px;\n    font-size: 11px;\n}\n\n/*.filter {*/\n    /*float: left;*/\n/*}*/\n.arrow {\n    margin: 0;\n    width: 150px;\n}\n\n.fleft.alias_name {\n    width: 200px;\n}\n\n.fleft.roles,\n.fleft.receivedat {\n    width: 150px;\n}\n\n.fleft.syslogtag {\n    width: 110px;\n}\n.fleft.sections{\n    border: 1px solid #999;\n    border-radius: 6px;\n    padding: 0 5px;\n    text-align: center;\n}\n\n.fleft.msgid {\n    width: 80px;\n}\n\n.noborder {\n    border: none !important;\n}\n/****   alias| groups ****/\n.roles .webix_tree_folder_open,\n.roles .webix_tree_folder{\n    background-image: url(/role.png);\n    background-position: 0px 4px;\n}\n.groups .webix_tree_folder_open,\n.groups .webix_tree_folder{\n    background-image: url(/groups.png);\n    background-position: 0px 4px;\n}\n.groups .webix_tree_file{\n    background-image: url(/usr.png);\n    background-position: 0px 4px;\n}\n.tabbar {\n    padding-top: 10px;\n}\n.accord .webix_accordionitem_header{\n    background: #949f15;\n}\n.even {\n    color: #824100;\n}\n\n.logs .webix_list_item{\n    height: auto !important;\n}\n.logo {\n    margin: 5px 0px auto;\n}\n\n.exit .webix_icon_btn {\n    margin: 3px 3px 3px 6px;\n    font-size:28px;\n}\n.webix_toolbar .webix_custom_checkbox:before{\n    color: #C76103;\n}\n\n/*.webix_el_box :nth-child(odd){*/\n    /*background-color: #eeeeee;*/\n/*}*/\n.fleft.permission{\n    background-size: 100% 100%;\n    width:20px;\n    height:20px;\n    margin: 8px 5px 0 0;\n}\n.permission_NONE {\n    background-image: url(/NONE.png);\n}\n.permission_READ{\n    \n    background-image: url(/READ.png);\n}\n.permission_WRITE{\n    background-image: url(/WRITE.png);\n}",
+			"file": "include/itbase_ready.js.php",
+			"settings":
+			{
+				"buffer_size": 164,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "web/css/main.css",
-			"file_size": 3412,
-			"file_write_time": 130560149601950978,
 			"settings":
 			{
 				"buffer_size": 3444,
@@ -83,6 +96,14 @@
 			"settings":
 			{
 				"buffer_size": 5937,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "classes/App/Controller/Admin.php",
+			"settings":
+			{
+				"buffer_size": 2410,
 				"line_ending": "Unix"
 			}
 		},
@@ -103,10 +124,10 @@
 			}
 		},
 		{
-			"file": "classes/App/ItBase.php",
+			"file": "classes/App/Controller/Itbase.php",
 			"settings":
 			{
-				"buffer_size": 9927,
+				"buffer_size": 11458,
 				"line_ending": "Unix"
 			}
 		},
@@ -122,9 +143,37 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 117.0,
+		"height": 392.0,
 		"selected_items":
 		[
+			[
+				"bra",
+				"Git: Push Current Branch"
+			],
+			[
+				"qui",
+				"Git: Quick Commit"
+			],
+			[
+				"ush",
+				"Git: Push Current Branch"
+			],
+			[
+				"git comm",
+				"Git: Quick Commit"
+			],
+			[
+				"git pu",
+				"Git: Push Current Branch"
+			],
+			[
+				"git push ",
+				"Git: Push"
+			],
+			[
+				"git commi",
+				"Git: Quick Commit"
+			],
 			[
 				"insta",
 				"Package Control: Install Package"
@@ -222,14 +271,6 @@
 				"Preferences: Browse Packages"
 			],
 			[
-				"git push ",
-				"Git: Push Current Branch"
-			],
-			[
-				"git pu",
-				"Git: Push"
-			],
-			[
 				"comm",
 				"Git: Quick Commit"
 			],
@@ -262,9 +303,15 @@
 	},
 	"expanded_folders":
 	[
+		"/home/vsg/Dropbox/cupv/assets",
+		"/home/vsg/Dropbox/cupv/classes",
+		"/home/vsg/Dropbox/cupv/classes/App",
+		"/home/vsg/Dropbox/cupv/classes/App/Controller"
 	],
 	"file_history":
 	[
+		"/home/vsg/Dropbox/cupv/include/users.js.php",
+		"/home/vsg/Dropbox/sublime-text-3/Packages/Default/Default (Linux).sublime-keymap",
 		"/home/vsg/Dropbox/cupv/web/css/users.css",
 		"/usr/share/icons/malys-uniblue/index.theme",
 		"/home/vsg/Dropbox/cupv/classes/App/Controller/Bcont.php",
@@ -279,7 +326,6 @@
 		"/home/vsg/Dropbox/sublime-text-3/Packages/User/Preferences.sublime-settings",
 		"/home/vsg/Dropbox/cupv/classes/App/Controller/Groups.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Model/Slevels.php",
-		"/home/vsg/Dropbox/sublime-text-3/Packages/Default/Default (Linux).sublime-keymap",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/User/Default (Linux).sublime-keymap",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/Package Control/Package Control.sublime-settings",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/Default/Preferences.sublime-settings",
@@ -288,7 +334,7 @@
 	],
 	"find":
 	{
-		"height": 25.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -303,6 +349,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"sche",
+			"values",
 			"onSelect",
 			"anchore",
 			"anchor",
@@ -362,102 +410,73 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 7,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "include/users.js.php",
+					"file": "include/itbase.js.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 28651,
+						"buffer_size": 13307,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								18145,
-								18145
+								464,
+								464
 							]
 						],
 						"settings":
 						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content"
-							],
-							"is_xml": false,
+							"open_with_edit": true,
 							"side_bar_folders_auto_load_folder": 1,
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 7387.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
+					"file": "include/itbase_ready.js.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 164,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								146,
+								146
+							]
+						],
+						"settings":
+						{
+							"open_with_edit": true,
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
 					"file": "web/css/main.css",
 					"semi_transient": false,
 					"settings":
@@ -469,8 +488,8 @@
 						"selection":
 						[
 							[
-								905,
-								905
+								757,
+								757
 							]
 						],
 						"settings":
@@ -540,14 +559,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 102.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 3,
 					"file": "classes/App/Page.php",
 					"semi_transient": false,
 					"settings":
@@ -629,14 +648,45 @@
 							"syntax": "Packages/PHP/PHP.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 408.0,
+						"translation.y": 153.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
+					"file": "classes/App/Controller/Admin.php",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 2410,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": -0.0,
+						"translation.y": 357.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
 					"file": "web/js/lib.js",
 					"semi_transient": false,
 					"settings":
@@ -648,25 +698,26 @@
 						"selection":
 						[
 							[
-								13079,
-								13079
+								7780,
+								7780
 							]
 						],
 						"settings":
 						{
+							"side_bar_folders_auto_load_folder": 1,
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 6044.0,
+						"translation.y": 3721.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 6,
 					"file": "assets/views/main.php",
 					"semi_transient": false,
 					"settings":
@@ -678,38 +729,39 @@
 						"selection":
 						[
 							[
-								572,
-								572
+								242,
+								242
 							]
 						],
 						"settings":
 						{
+							"side_bar_folders_auto_load_folder": 1,
 							"syntax": "Packages/PHP/PHP.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 51.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "classes/App/ItBase.php",
+					"buffer": 7,
+					"file": "classes/App/Controller/Itbase.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9927,
+						"buffer_size": 11458,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3533,
-								3533
+								1928,
+								1928
 							]
 						],
 						"settings":
@@ -719,14 +771,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1683.0,
+						"translation.y": 930.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 8,
 					"file": "web/list1.php",
 					"semi_transient": false,
 					"settings":
@@ -744,15 +796,16 @@
 						],
 						"settings":
 						{
+							"side_bar_folders_auto_load_folder": 1,
 							"syntax": "Packages/PHP/PHP.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1428.0,
+						"translation.y": 459.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 8,
 					"type": "text"
 				}
 			]

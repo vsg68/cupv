@@ -40,10 +40,10 @@ class Users extends \App\Page {
 
         $result = $this->pixie->db->query('select')
                                     ->table('users')
-                                    ->where(array(
+                                    ->where(array(array('or',array(
                                                 array('id','!=', $id),
                                                 array("mailbox", $mbox),
-                                    ))
+                                    )))
                                     ->where(array('or',array(
                                         array('id', $id),
                                         array("mailbox", '!=', $mbox),
@@ -51,7 +51,9 @@ class Users extends \App\Page {
                                     ->where(array('or',array( $this->pixie->db->expr("SUBSTRING_INDEX('".$mbox."', '@', -1)"), 'NOT IN', $sql)))
                                     ->execute()->as_array();
 
-        $this->response->body = count($result) ? false : true;
+
+        $this->response->body = count($result) ? "false" : "true";
+        // $this->response->body = count($result) ? false : true;
     }
 
     public function action_showTable(){
