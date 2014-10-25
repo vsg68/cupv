@@ -3,6 +3,9 @@ body {
     margin: 0;
 }
 
+html, body, #mainlayer {
+    height:100%;
+}
 
 .tb-color .webix_image,
 .tb-color .webix_img_btn,
@@ -49,6 +52,9 @@ body {
 }
 .net-10 {
     color: #09960E;
+}
+.net-11 {
+    color: #D3B61B;
 }
 .net-109 {
     color: #cc0a48;
@@ -208,4 +214,12 @@ body {
 }
 .permission_WRITE{
     background-image: url(/WRITE.png);
+}
+.datapage {
+    width: 150px;
+    /*color: #2828A1;*/
+    font-weight: bold;
+}
+.webix_view  .transp {
+    background-color: #ddd;
 }

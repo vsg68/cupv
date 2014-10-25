@@ -95,10 +95,6 @@ var Users_UserPage = new PageAdm({
             Users_UserPage.keyPressAction(this, key);
         },
         "onAfterLoad": function () {
-            this.config.height = (window.innerHeight - 130);
-            if (window.innerWidth < 1500)  // 8-) minWidth
-                this.config.width = 800;
-            this.resize();
             // Фильтруем неактивные записи
             $$('list_users_first').filter("#active#",1);
         }
@@ -453,10 +449,6 @@ var Users_UserPage = new MView({
             Users_UserPage.keyPressAction(this, key);
         },
         "onAfterLoad": function () {
-            this.config.height = (window.innerHeight - 130);
-            if (window.innerWidth < 1500)  // 8-) minWidth
-                this.config.width = 800;
-            this.resize();
             // Фильтруем неактивные записи
             $$('list_users_first').filter("#active#",1);
         }
@@ -614,7 +606,8 @@ var Form_LogsPage = new LogsView({
                         own.define({disabled:false});
                     })
             }
-        }
+        },
+        {}
     ]
 });
 
@@ -673,7 +666,7 @@ maintable = {
             expand: true,
             body:{
                 cols: [
-                    { rows:[Users_UserPage] , gravity:5},
+                    { rows:[Users_UserPage] , gravity:5, minWidth:800},
                     { view:"resizer"},
                     { rows:[
                             {rows: [ Aliases_UserPage ]},
@@ -723,8 +716,11 @@ maintable = {
             body: {
                 cols: [
                     { header:"Фильтр",
-                      height:30,
-                      body: {rows: [ Form_LogsPage ], width: 400 }
+                      // height:30,
+                      body: {
+                        rows: [ Form_LogsPage ],
+                        width: 400 
+                      }
                     },
                     { rows: [ Data_LogsPage ] }
                 ]

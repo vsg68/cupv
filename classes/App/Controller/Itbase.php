@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-class ItBase extends \App\Page {
+class Itbase extends \App\Page {
 
 	/*
 	 * Функция добавляет элементы массива, для правильной передачи
@@ -33,32 +33,8 @@ class ItBase extends \App\Page {
 		return $arr;
 	}
 
-	public function action_view1() {
 
-
-		// Проверка легитимности пользователя и его прав
-        if( $this->permissions == $this::NONE_LEVEL )
-			return  $this->noperm();
-
-		$this->view->script_file = "<script type='text/javascript' src='/js/jquery.dynatree.min.js'></script>";
-		$this->view->script_file .= "<script type='text/javascript' src='/js/tree_init.js'></script>";
-		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/js/'.$this->ctrl.'.js') ) {
-			$this->view->script_file .= '<script type="text/javascript" src="/js/'.$this->ctrl.'.js"></script>';
-		}
-
-		$this->view->css_file = '<link rel="stylesheet" href="/css/skin/ui.dynatree.css" type="text/css" />';
-		if( file_exists($_SERVER['DOCUMENT_ROOT'].'/css/'.$this->ctrl.'.css') ) {
-			$this->view->css_file .= '<link rel="stylesheet" type="text/css" href="/css/'.$this->ctrl.'.css" />';
-		}
-
-		// Подключаем файл, с названием равным контроллеру
-		$this->view->subview = 'badm';
-		$this->view->ctrl = $this->ctrl;
-
-		$this->response->body = $this->view->render();
-    }
-
-	protected function RecursiveTree(&$rs, $parent = 0) {
+	protected function RecursiveTree(&$rs, $parent) {
 
 	    $data = array();
 
@@ -66,13 +42,13 @@ class ItBase extends \App\Page {
 
 		foreach ($rs[$parent] as $row) {
 
-				$chidls = $this->RecursiveTree($rs,$row->id);
+				$childs = $this->RecursiveTree($rs,$row->id);
 
-				$out = array("value"=>$row->name, "id" => $row->id);
-				// $row->records пусто для разделов
-				if( $chidls || !$row->data) {
-					 $out["data"] = $chidls;
-					 // $out["open"] = true;
+				$out = array("name"=>$row->name, "id" => $row->id);
+
+				if( isset($childs) && $childs ) {
+					 $out["data"] = $childs;
+					 // echo 'a,';
 				}
 
 				array_push($data, $out);
@@ -105,56 +81,61 @@ class ItBase extends \App\Page {
 
 	protected function action_getTree() {
 
-		$tree = $this->pixie->db->query('select',"itbase")->table('docs')
-								->where('tpage','')
+		$rs = array();
+		$tree = $this->pixie->orm->get('itbase')
+								->where('tpage', "")
 								->order_by('pid')
-								->execute()->as_array();
-//Какие поля нужны для создания дерева (названия)
-		
+								->find_all()->as_array(true);               
+
 		foreach ($tree as $row)	{
 			$rs[$row->pid][] = $row;
 		}
-		
+
 		$tree_struct = $this->RecursiveTree($rs,0);
-		print_r($tree_struct);exit;
+
 		$this->response->body =  json_encode($tree_struct);
 
 	}
+
 	protected function action_getTree_old() {
 
+		exit;
 		$tree = $data = array();
 
 		$tree = $this->pixie->db->query('select','itbase')
 								->table('names')
-								->order_by('id')
+								->order_by('pid')
 								->execute()->as_array();
 
 		foreach ($tree as $row)	{
-			$data = array(
+
+			$data1 = array(
+					'id' => $row->id,
 					'pid' => $row->pid,
-					'label' => $row->name,
+					'name' => $row->name,
+					'tpage' => ($row->page == 'badm') ? 0 : 1,
 					);
 
-			$this->pixie->db->query('insert','itbase')->table('docs')->data($data)->execute();
+			$this->pixie->db->query('insert','itbase')->table('docs')->data($data1)->execute();
 
 			$arr = json_decode($row->data);
-
+			
 			if(isset($arr->entry)) {
+				
 				foreach( $arr->entry as $entry) {
-					$data = array(
+					$data1 = array(
 									'pid' => $row->id,
 									'tpage' => 'list',
 									'label' => $entry[0],
-									'value' => $entry[2]
+									'name' => $entry[2]
 									);
 
-					$this->pixie->db->query('insert','itbase')->table('docs')->data($data)->execute();
+					$this->pixie->db->query('insert','itbase')->table('docs')->data($data1)->execute();
 				}
 			}	
 			
 			if(isset($arr->records)) {
-				
-				 foreach( $arr->records as $records ) {
+				foreach( $arr->records as $records ) {
 
 				 	foreach( $records as $k => $val ) {
 						if ($k == 0 ) $label = 'Контакт';
@@ -162,14 +143,14 @@ class ItBase extends \App\Page {
 						if ($k == 2 ) $label = 'Телефон';
 						if ($k == 3 ) $label = 'Email';
 	 
-						$data = array(
+						$data1 = array(
 										'pid' => $row->id,
 										'tpage' => 'tabl',
 										'label' => $label,
-										'value' => $val
+										'name' => $val
 										);
 
-						$this->pixie->db->query('insert','itbase')->table('docs')->data($data)->execute();
+						$this->pixie->db->query('insert','itbase')->table('docs')->data($data1)->execute();
 					}
 				}
 			}
@@ -180,288 +161,58 @@ class ItBase extends \App\Page {
 		// $tree_struct = $this->RecursiveTree($rs);
 
 		// $this->response->body =  json_encode($tree);
-
+exit;
 	}
+
 	public function action_select() {
 
-
-		if( ! $this->_id = $this->request->get('id') )
+		if( ! $params = $this->request->get() )
 			return;
 
-		$entry = $this->pixie->orm->get('names')->where('id',$this->_id)->find();
+		$entry = $this->pixie->orm->get('itbase')
+								  ->where('pid',$params["pid"])
+								// ->where('tpage',$params["tpage"])
+								  ->find_all()->as_array(true);
+		
+		$this->response->body = json_encode($entry);
+	}
 
-		$this->response->body = $entry->data;
-
-		// $returnData = array();
-		// $rows = json_decode($entry->data);
-
-		// $returnData['aaData'] = $this->DTPropAddToArray($rows->entry, 'rec', 'gradeA');
-
-		// if( isset($rows->records) ) {
-		// 	$returnData['records'] = $this->DTPropAddToArray($rows->records, 'cont', 'gradeB');
-		// }
-
-  //       $this->response->body = json_encode($returnData);
-    }
+	public function action_getSelect() {
 
 
-	public function action_showEditForm() {
-
-		if( $this->permissions == $this::NONE_LEVEL )
-			return $this->noperm();
-
-		if( ! $tab = $this->request->post('t') )
+		if( ! $params = $this->request->get() )
 			return;
 
-		// для правильного отображения меняем местами id и  pid
-		$this->_id 	= ($tab == 'tree') ? $this->request->param('id') : $this->request->post('init');
-		$view 		= ($tab == 'tree') ? $this->pixie->view('form_tree') : $this->pixie->view('form_rec');
-		$view->tab  = $tab;
-
-		$view->page	= $this->ctrl;
-		// Во втором случае пид - это ID записи
-		$view->pid	= ($tab == 'tree') ? $this->request->post('pid') : $this->_id;
-
-		$view->id = $this->request->param('id');
-
-		$entry = $this->pixie->orm->get('names')
-								 ->where('id',$this->_id)
-								 ->find();
-
-		// при редактировании данных записи в дереве подменяем массивы
-		if( $tab != 'tree' ) {
-			$entry = isset($entry->data) ? json_decode($entry->data) : '';
-		}
-
-		// Перед выводом - обрабатываем специальные символы
-		if( isset($entry->entry) ) {
-			array_walk_recursive($entry->entry, array($this,'blockspechars'));
-		}
-
-		if( isset($entry->records) ) {
-			array_walk_recursive($entry->records, array($this,'blockspechars'));
-		}
-
-		$view->data = $entry;
-
-        $this->response->body = $view->render();
+		$entry = $this->pixie->db->query('select','itbase')
+								 ->fields( $this->pixie->db->expr("id, name AS value "))
+								 ->table('docs')
+								 ->where('pid',$params["pid"])
+								// ->where('tpage',$params["tsect"])    надо разделить по разделам
+								 ->execute()->as_array();
+		
+		$this->response->body = json_encode($entry);
     }
 
-	public function action_showNewForm() {
-
-		if( $this->permissions == $this::NONE_LEVEL )
-			return $this->noperm();
-
-		$view = $this->pixie->view('form_'.$this->ctrl);
-
-		if( ! $view->pid = $this->request->param('id') )
-			return;
-
-        $this->response->body = $view->render();
-    }
-
-	public function action_editTree() {
-
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
+	public function action_savegroup() {
 
 		if( ! $params = $this->request->post() )
-			return;
+			return false;
 
 		try {
-			$tab  = isset($params['tab']) ? $params['tab'] : '';
+			$is_update = $params['is_new'] ? false : true;
+            unset( $params['is_new'], $params['$parent'], $params['$level'], $params['$count'], $params['value'] );
 
-			$params['pid']  = (isset($params['in_root']) && $params['in_root']) ? '0' : $params['pid'];
-			$params['page'] = $this->ctrl;
-			unset($params['tab'], $params['in_root']);
-
-			$is_update = $params['id'] ? true : false;
-
-			// сохраняем модель
 			// Если в запрос поместить true -  предполагается UPDATE
-			$row = $this->pixie->orm->get('names')
-									->values($params, $is_update)
-									->save();
+			$this->pixie->orm->get("itbase")->values($params, $is_update)->save();
 
-			$id = $params['id'];
-			unset( $params['id'] );
-
-			// tab = '' - идет запрос на изменение принадлежности
-			if( $tab ) {
-				$returnData  = array('title' => $params['name'],
-									 'isFolder' => true,
-									 'key'   => ($id ? $id : $row->id));
-
-				$this->response->body = json_encode($returnData);
-			}
 		}
+		
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
-			return;
 		}
-
-
-	}
-
-	public function action_delEntryTree() {
-
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
-		if( ! $params = $this->request->post() or
-			! $this->_id = $this->request->param('id') )
-			return;
-
-		try {
-
-			$entry = $this->pixie->orm->get($params['tab'])
-									 ->where('id', $this->_id)
-									 ->find();
-			// вынимаем данные
-			$rows = json_decode($entry->data);
-
-			if( count($rows->entry) ) {
-
-				$text = "Сначала нужно удалить все данные объекта, а потом удалить сам объект. Данные(кол-во записей):".count($rows->entry);
-
-				if ( isset($rows->records) && count($rows->records) ) {
-					$text .= ";  Контакты(кол-во записей); ".count($rows->records);
-				}
-				throw new \Exception( $text );
-			}
-			else {
-				$entry->delete();
-			}
-		}
-		catch (\Exception $e) {
-			$view = $this->pixie->view('form_alert');
-			$view->errorMsg = $e->getMessage();
-			$this->response->body = $view->render();
-		}
-
+		
     }
 
-    public function action_delEntry() {
-
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
-		if( ! $params = $this->request->post() )
-			return;
-
-		try {
-			$entry = $this->pixie->orm->get('names')
-									->where('id', $params['pid'])
-									->find();
-
-			$rows = json_decode($entry->data);
-
-			$data = ($params['tab'] == 'rec') ? $rows->entry : $rows->records;
-
-			// delete item
-			unset($data[$params['id']]);
-			$data = array_values($data);  // Иначе будет ассоциированный массив
-
-			if($params['tab'] == 'rec') {
-				$rows->entry = $data;
-			}
-			else {
-				$rows->records = $data;
-			}
-
-			$entry->data = json_encode($rows);
-			$entry->save();
-		}
-		catch (\Exception $e) {
-			$view = $this->pixie->view('form_alert');
-			$view->errorMsg = $e->getMessage();
-			$this->response->body = $view->render();
-		}
-
-    }
-
-   	public function action_edit() {
-
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
-		if( ! $params = $this->request->post() )
-			return;
-
-		try {
-			$row = $this->pixie->orm->get('names')
-									->where('id', $params['pid'])
-									->find();
-
-			$records = json_decode($row->data);
-
-			$data = ( $params['tab'] == 'rec' ) ? $records->entry : $records->records;
-
-			// Если новая запись - порядковый номер делаем руками
-			$ord = ($params['id'] != '_0') ? $params['id'] : count($data) ;
-
-			//$data[$ord] = array_map('htmlspecialchars', $params['fval']);
-			$data[$ord] = $params['fval'];
-
-			if( $params['tab'] == 'rec' ) {
-				$records->entry = $data;
-				$class = 'gradeA';
-			}
-			else {
-				$records->records = $data;
-				$class = 'gradeB';
-			}
-
-			$row->data = json_encode($records);
-			$row->save();
-
-			$returnData  = $this->DTPropAddToEntry($params['fval'], $params['tab'].'-'.$ord, $class);
-
-			$this->response->body = json_encode($returnData);
-		}
-		catch (\Exception $e) {
-
-			$this->response->body = $e->getMessage();
-			return;
-		}
-	}
-
-	public function action_addNewItem() {
-
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
-		if( ! $params = $this->request->post() )
-			return;
-
-		try {
-			$returnData = array();
-
-			$records['entry'] = array_map(null, $params['fname'], $params['ftype'], $params['fval']);
-
-
-			if( $this->ctrl == 'bcont' ) {
-				$records['records'] = array();
-			}
-
-			$data = array('data' => json_encode($records),
-						  'pid' 	=> $params['pid'],
-						  'name' 	=> $params['fval'][0], //NAME
-						  'page' 	=> $this->ctrl);
-
-			$row = $this->pixie->orm->get('names')
-									 ->values($data)
-									 ->save();
-
-			$returnData	= array('title' => $data['name'],
-								'key' 	=> $row->id);
-
-			$this->response->body = json_encode($returnData);
-		}
-		catch (\Exception $e) {
-			$this->response->body = $e->getMessage();
-			return;
-		}
-	}
+	
 
 }

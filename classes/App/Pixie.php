@@ -16,9 +16,9 @@ class Pixie extends \PHPixie\Pixie {
 		//'validate' => '\PHPixie\Validate'
 	);
 
-	protected function after_bootstrap(){
-		//Whatever code you want to run after bootstrap is done.
-        $this->debug->display_errors = true;
+	// protected function after_bootstrap(){
+	// 	//Whatever code you want to run after bootstrap is done.
+ //        $this->debug->display_errors = true;
 
-	}
+	// }
 }

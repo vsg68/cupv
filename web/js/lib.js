@@ -411,8 +411,7 @@ function PageTreeAdm(setup) {
 
     this.formElements_rs = setup.formElements_rs;
     this.formRules_rs    = setup.formRules_rs;
-
-
+    this.list_view       = setup.list_view || "tree";
 
     this.rows[0].cols.push(
         {
@@ -422,7 +421,8 @@ function PageTreeAdm(setup) {
             label: "New",
             width: 70,
             click: function () {
-                var selected_item = $$("list_" + self.objID).getSelectedItem();
+                tree = $$("list_" + self.objID);
+                var selected_item = tree.getSelectedItem();
 
                 // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
                 if (! self.isActiveCell_List(self.objID) || selected_item == undefined) {
@@ -554,11 +554,13 @@ function PageTreeAdm(setup) {
 
                 if(values.is_new == undefined)
                     values.is_new = 0;
+
                 // Если не новая запись - убираем признак новой записи
                 mForm.setValues({is_new:0},true);
 
-                if ( mForm.save() === false)  return false;
-
+               
+                        // $$("list_" + self.objID).move(selected_item.id,0,0, {parent:selected_item.pid}); if ( mForm.save() === false)  return false;
+                
                 webix.ajax().post("/" + self.hreflink + "/savegroup", values,
                     function(response){
                         if(response)
@@ -649,10 +651,47 @@ function LogsView(setup) {
             on: this.list_on,
             elementsConfig: {labelWidth: 130},
             elements: this.formElements,
-            scroll: this.isScroll,
-            scrollX: false,
-            columns: this.columnConfig,
-            scheme: this.list_scheme
         }
-    ];
+     ];
+};
+
+function BaseTreeAdm(setup) {
+
+    var self = this;
+    extend(BaseTreeAdm,PageTreeAdm);    // Наследуем
+    PageTreeAdm.apply(this, arguments);  // Запускаем родительский конструктор
+    
+    lastnum = this.rows[1].cells.length;
+
+    this.rows[1].cells[(lastnum-1)].save_form = function(){
+                            var mForm = $$(this.id);
+                            
+                            var values =  mForm.getValues();
+                            
+                            if(values.is_new == undefined)
+                                values.is_new    = 0;
+                            
+                            // Если не новая запись - убираем признак новой записи
+                            mForm.setValues({is_new:0},true);
+                            
+                            $$("list_" + self.objID).move(values.id,0,0, {parent:values.pid}); 
+                            
+                            if ( mForm.save() === false)  return false;
+                            
+                            webix.ajax().post("/" + self.hreflink + "/savegroup", values,
+                                function(response){
+                                    if(response)
+                                        webix.message({type:"error", expire: 3000, text: response}); // server side response
+                                    else {
+                                        webix.message("ОK"); // server side response
+                                        // открываем бранч, куда переместили листок
+                                      
+                                        $$("list_" + self.objID).open( values.pid );
+                                        $$("list_" + self.objID).scrollTo(0, values.id);
+                                        mForm.getParentView().back();
+                                    }
+                                }
+                            );
+                        };
+                            
 };
