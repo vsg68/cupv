@@ -411,7 +411,6 @@ function PageTreeAdm(setup) {
 
     this.formElements_rs = setup.formElements_rs;
     this.formRules_rs    = setup.formRules_rs;
-    this.list_view       = setup.list_view || "tree";
 
     this.rows[0].cols.push(
         {
@@ -672,10 +671,10 @@ function BaseTreeAdm(setup) {
                                 values.is_new    = 0;
                             
                             // Если не новая запись - убираем признак новой записи
-                            mForm.setValues({is_new:0},true);
+                           
                             
-                            $$("list_" + self.objID).move(values.id,0,0, {parent:values.pid}); 
-                            
+                            $$("list_" + self.objID).move(values.id,null,null, {parent:values.pid}); 
+                             mForm.setValues({is_new:0, "$parent":values.pid },true);
                             if ( mForm.save() === false)  return false;
                             
                             webix.ajax().post("/" + self.hreflink + "/savegroup", values,
