@@ -223,3 +223,9 @@ html, body, #mainlayer {
 .webix_view  .transp {
     background-color: #ddd;
 }
+.itbase_tabs .webix_item_tab {
+    font-size: 1.1em;
+}
+.itbase_data  .webix_list_item:nth-child(odd) {
+    background-color: #fcfcfc;
+}
