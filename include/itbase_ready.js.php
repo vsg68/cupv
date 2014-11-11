@@ -7,3 +7,6 @@
 <?php endif; ?>
 
 
+
+   $$("list_itbase").filter("#tsect#",2);
+   	

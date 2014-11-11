@@ -10,25 +10,27 @@ var ITBasePage = new BaseTreeAdm({
     list_template: "{common.icon()}{common.folder()}<span>#name#</span>",
     formElements: [
         {view: "text", label: "Значение", name: "name" },
-        // {view: "text", label: "Тип записи", name: "ptype",suggest: "/itbase/getPtype" },
-        webix.copy(save_cancel_button),
-        {}
+        webix.copy(save_cancel_button),{}
     ],
-    // formRules: {
-    //     $obj: function(data){
-    //         return chkUserInGroup("groups_second", data['$parent'], data['value']);
-    //     }
-    // },
+
+    formRules: {
+         name: webix.rules.isNotEmpty
+    },
+
     formElements_rs: [
         {view: "text", label: "Название", name: "name" },
         {
             view: "richselect",
             label: "Раздел",
             name: "value",
-            options:"/itbase/getSelect/?pid=0", //&tsect=",
+            options:"/itbase/getSelect/?pid=0",
             on: {
                 "onChange": function(){
-
+                    // x = this.getFormView().getValues().tsect;
+                    // y = $$(this.data.suggest).define("filter", function(value){
+                    //     "#tsect#",x});
+                    // // .filter("#tsect#",x);
+            
                     optId = $$(this.data.suggest).getMasterValue();
                     selected_item = $$(this.data.suggest).getList().getItem(optId);
                     Form = this.getFormView().getValues();
@@ -44,11 +46,11 @@ var ITBasePage = new BaseTreeAdm({
         },
         webix.copy(save_cancel_button),{}
     ],
-    // formRules_rs: {
-    //     $obj: function(data){
-    //         return chkUserInGroup("groups_second",data['$parent'], data['value']);
-    //     }
-    // },
+
+    formRules_rs: {
+          name: webix.rules.isNotEmpty
+    },
+
     list_on: {
         "onKeyPress": function (key) {
             formId = ( this.getSelectedItem()['$parent'] ) ? "form_itbase__rs" : "form_itbase__txt";
@@ -64,7 +66,6 @@ var ITBasePage = new BaseTreeAdm({
             $$('list_itemdata').clearAll();
 
             $$('list_itemdata').load("/itbase/select/?pid=" + item.id);
-            
         },
         "onItemClick": function(id){
 
@@ -78,15 +79,32 @@ var ITBasePage = new BaseTreeAdm({
                 tree.close(id);
             else
                 tree.open(id);
+        },
+        "onAfterLoad": function () {
+            // Фильтруем записи для второй вкладки
+            $$('list_itbase').filter("#tsect#","0");
         }
     },
+
     list_url: "/itbase/getTree/"
 });
 
 var DataPage = new PageAdm({
     id: "itemdata",
     toolbarlabel: "",
-    list_template: "<div class='fleft datapage'>#label#:</div><div class='fleft'>#name#</div>",
+    list_css: "itbase_data",
+    list_template: function(obj){
+        tmpl = "";
+        for(i = 0; i < obj["fields"].length; i++)
+            tmpl +=  "<div class='clear'>" + 
+                     "<div class='fleft " + obj.type + "'></div>" +
+                     "<div class='fleft flabel'>" + obj["fields"][i].label + "</div>" +
+                     "<div class='fleft fname'>" + obj["fields"][i].name + "</div>" +
+                     "</div>";
+
+        return tmpl;
+        // "<div class='fleft datapage'>#label#:</div><div class='fleft'>#name#</div>",
+    },
     // addButtonClick: function(){
     //     selected_User = $$("list_users_first").getSelectedItem();
     //     // Если не выбран пользователь - выходим
@@ -106,11 +124,30 @@ var DataPage = new PageAdm({
         "onKeyPress": function (key) {
             DataPage.keyPressAction(this, key);
         }
-    }
+    },
+    
 });
+
+
 <?php else: ?>
 
 <?php endif; ?>
+
+var TAB = {view:"tabbar", id:"chPage", click:"getOptionTab", value: "sect_0", options: [ 
+                { value: "<span class='webix_icon fa-sitemap'></span>Сеть", id:"sect_0",width:150 },
+                { value: "<span class='webix_icon fa-book'></span>Контакты", id:"sect_1",width:150 },
+                { value: "<span class='webix_icon fa-phone'></span>Телeфоны", id:"sect_2",width:150 },
+               ],
+           minWidth:400, 
+           css: "itbase_tabs"  
+           
+    };
+
+function getOptionTab() {
+    val = "" + this.getValue().split("_")[1];
+    $$("list_itbase").filter("#tsect#", val);
+}
+
 
 /*********   USER PAGE  ********/
 /******************************************** For ALL ***********************************************/
@@ -119,20 +156,25 @@ maintable = {
     css:"accord1",
 
     // multi: false,
-    cols:[
-        // {
-            // headerAlt:"Пользователи",
-            // headerHeight:0,
-            // header:" ",
-            // expand: true,
-            // body:{
-            //     cols: [
-                    { rows:[ITBasePage] , gravity:3},
-                    { width: 12, css: "transp"},
-                    { rows:[DataPage ], gravity:5,autoheight: true,}
-            //     ]
+    rows: [
+        TAB,
+        {
+            cols:[
+            // {
+                // headerAlt:"Пользователи",
+                // headerHeight:0,
+                // header:" ",
+                // expand: true,
+                // body:{
+                //     cols: [
+                        { rows:[ITBasePage] , gravity:3},
+                        { width: 12, css: "transp"},
+                        { rows:[DataPage ], gravity:5,autoheight: true,}
+                //     ]
+                // }
             // }
-        // }
+            ]
+        }
     ]
 };
 

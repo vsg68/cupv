@@ -51,7 +51,7 @@ html, body, #mainlayer {
     color: #1bcc05;
 }
 .net-10 {
-    color: #09960E;
+    color: #FFAAFF;
 }
 .net-11 {
     color: #D3B61B;
@@ -215,6 +215,8 @@ html, body, #mainlayer {
 .permission_WRITE{
     background-image: url(/WRITE.png);
 }
+
+.fleft.flabel,
 .datapage {
     width: 150px;
     /*color: #2828A1;*/
@@ -226,6 +228,13 @@ html, body, #mainlayer {
 .itbase_tabs .webix_item_tab {
     font-size: 1.1em;
 }
-.itbase_data  .webix_list_item:nth-child(odd) {
+/*.itbase_data .webix_list_item {
+    border-color: transparent;
+    border-width: 0;
+}*/
+/*.itbase_data  .webix_list_item:nth-child(odd) {
     background-color: #fcfcfc;
+}*/
+.clear{
+    clear: both;
 }

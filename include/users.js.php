@@ -342,42 +342,48 @@ var Groups_AliasPage = new PageTreeAdm({
         var icon = obj.$parent ? com.folder(obj, com) : "<div class='webix_tree_folder'></div>";
         return com.icon(obj, com) + icon + '<span>'+ obj.value + '</span>';
     },
-    formElements: [
-        {view: "text", label: "Группы", name: "value" },
-        {view: "checkbox", label: "Активно", name: "active"},
-        webix.copy(save_cancel_button),
-        {}
-    ],
-    formRules: {
-        $obj: function(data){
-            return chkUserInGroup("groups_second", data['$parent'], data['value']);
-        }
-    },
-    formElements_rs: [
+    formPages: [
         {
-            view: "richselect",
-            label: "Пользователи",
-            name: "value",
-            options:"/users/getMailboxes",
-            on: {
-                "onChange": function(){
-                    optId = $$(this.data.suggest).getMasterValue();
-                    selected_item = $$(this.data.suggest).getList().getItem(optId);
-                    // поле optId - ID выбранной опции
-                    if( ! optId || selected_item == undefined) return false;
-                    Form = this.getFormView();
-                    // заполняем поле user_id при изменении select
-                    this.getFormView().setValues({ user_id: selected_item.user_id},true);
+            formElements: [
+                {view: "text", label: "Группы", name: "value" },
+                {view: "checkbox", label: "Активно", name: "active"},
+                webix.copy(save_cancel_button),
+                {}
+            ],
+            formRules: {
+                $obj: function(data){
+                    return chkUserInGroup("groups_second", data['$parent'], data['value']);
                 }
-            }
+            },
         },
-        webix.copy(save_cancel_button),{}
-    ],
-    formRules_rs: {
-        $obj: function(data){
-            return chkUserInGroup("groups_second",data['$parent'], data['value']);
+        {
+            formElements: [
+                {
+                    view: "richselect",
+                    label: "Пользователи",
+                    name: "value",
+                    options:"/users/getMailboxes",
+                    on: {
+                        "onChange": function(){
+                            optId = $$(this.data.suggest).getMasterValue();
+                            selected_item = $$(this.data.suggest).getList().getItem(optId);
+                            // поле optId - ID выбранной опции
+                            if( ! optId || selected_item == undefined) return false;
+                            Form = this.getFormView();
+                            // заполняем поле user_id при изменении select
+                            this.getFormView().setValues({ user_id: selected_item.user_id},true);
+                        }
+                    }
+                },
+                webix.copy(save_cancel_button),{}
+            ],
+            formRules: {
+                $obj: function(data){
+                    return chkUserInGroup("groups_second",data['$parent'], data['value']);
+                }
+            },
         }
-    },
+    ],
     list_on: {
         "onKeyPress": function (key) {
             formId = ( this.getSelectedItem()['$parent'] ) ? "form_groups_second__rs" : "form_groups_second__txt";
