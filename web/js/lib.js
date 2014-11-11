@@ -30,7 +30,7 @@ function checkEmail(ID, value) {
     }
     return valid;
 }
--// проверка наличия основного домена у домена - псевдонима
+// проверка наличия основного домена у домена - псевдонима
 function chkDomainAlias(ID, value) {
     var ok = false;
     $$("list_" + ID).data.each( function(obj){
