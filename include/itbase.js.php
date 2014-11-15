@@ -3,58 +3,194 @@
 
 /*********   USER PAGE  ********/
 
-var ITBasePage = new BaseTreeAdm({
+var ITBasePage = new PageTreeAdm({
     id: "itbase",
     list_view: "tree",
     // list_css: "groups",
     list_template: "{common.icon()}{common.folder()}<span>#name#</span>",
-    formElements: [
-        {view: "text", label: "Значение", name: "name" },
-        webix.copy(save_cancel_button),{}
-    ],
-
-    formRules: {
-         name: webix.rules.isNotEmpty
-    },
-
-    formElements_rs: [
-        {view: "text", label: "Название", name: "name" },
+    menuButtons:[
         {
-            view: "richselect",
-            label: "Раздел",
-            name: "value",
-            options:"/itbase/getSelect/?pid=0",
-            on: {
-                "onChange": function(){
-                    // x = this.getFormView().getValues().tsect;
-                    // y = $$(this.data.suggest).define("filter", function(value){
-                    //     "#tsect#",x});
-                    // // .filter("#tsect#",x);
-            
-                    optId = $$(this.data.suggest).getMasterValue();
-                    selected_item = $$(this.data.suggest).getList().getItem(optId);
-                    Form = this.getFormView().getValues();
+            icon    : "laptop",
+            label   : "New",
+            click   : function() {          
+                               
+                                // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
+                                if (! ITBasePage.isActiveCell_List("itbase") ) {
+                                    webix.message({ type: "error", text:  "Кнопки в этой области не работают" });
+                                    return false;
+                                }
 
-                    // поле optId - ID выбранной опции
-                    if( ! optId || selected_item == undefined) 
-                        this.setValue(Form["$parent"]);
-                    else
-                    // заполняем поле user_id при изменении select
-                       this.getFormView().setValues({"pid": selected_item.id },true);
-                }
-            }
+                                tree = $$("list_itbase");
+                                selected_item = tree.getSelectedItem();
+
+                                if( selected_item == undefined ) {
+                                    webix.message({ type: "error", text: "Выделите раздел, в который будем добавлять" });
+                                    return false;
+                                }
+                                
+                                // если узел не является корнем, то ищем ID его корня
+                                if( tree.getParentId(selected_item.id) )
+                                    selected_item.id = tree.getParentId( selected_item.id );
+                                
+                                defaults = {
+                                            "is_new": 1, 
+                                            "value": selected_item.id, 
+                                            "pid": selected_item.id,
+                                            "tsect": selected_item.tsect
+                                        };
+
+                                // Переход к редактированию
+                                $$("itbase__rs").show();
+                                tree.select( $$("list_itbase").add( defaults, 0, selected_item.id) );
+                            }
         },
-        webix.copy(save_cancel_button),{}
-    ],
+        {
+            icon    : "folder-o",
+            label   : "New",
+            click   : function() {    
+                                // какой фильтр стоит? - какое значение таббара
+                                defaults = {
+                                            "is_new": 1, 
+                                            "pid":0, 
+                                            "tsect": ($$("chPage").getValue().split("_"))[1],
+                                        };
+                                // Переход к редактированию
+                                $$("itbase__txt").show();
+                                $$("list_itbase").select( $$("list_itbase").add( defaults ) );
+                            }
+        },
+        {
+            icon    : "trash-o",
+            label   : "Del",
+            click   : function () {
+                                // Если кнопка нажата не на списке - выходим
+                                if (! ITBasePage.isActiveCell_List("itbase")) {
+                                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+                                    return false;
+                                }
 
-    formRules_rs: {
-          name: webix.rules.isNotEmpty
-    },
+                                var selected_item = $$("list_itbase").getSelectedItem();
+
+                                // null если нет потомков
+                                if( $$("list_itbase").data.getFirstChildId(selected_item.id) ) {
+                                    webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
+                                    return false;
+                                }
+
+                                webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                                    //  тут надо отослать данные на сервер
+                                    if (result) {
+
+                                        webix.ajax().post("/"+ ITBasePage.hreflink +"/delEntry/", selected_item, function (text, xml, xhr) {
+                                            if (!text) {
+                                                webix.message("ОK"); // server side response
+                                                $$("list_itbase").remove(selected_item['id']);
+                                            }
+                                            else
+                                                webix.message({type: "error", text: text});
+                                        })
+                                    }
+                                }})     
+                            }
+        }
+    ],
+    formPages: [
+        {
+            formID: "itbase__txt",
+            formElements: [
+                {view: "text", label: "Значение", name: "name" },
+                webix.copy(save_cancel_button),{}
+            ],
+            formRules: {
+                 name: webix.rules.isNotEmpty
+            },
+        },
+        {
+            formID: "itbase__rs",
+            formElements: [
+                {view: "text", label: "Название", name: "name" },
+                {
+                    view: "richselect",
+                    id: "rs",
+                    label: "Раздел",
+                    name: "value",
+                    options:"/itbase/RichSelect/?pid=0&tsect=0",
+                    on: {
+                        "onChange": function(){
+                            optId = this.getPopup().getMasterValue();
+                            selected_item = this.getPopup().getList().getItem(optId);
+/*                            optId = $$(this.data.suggest).getMasterValue();
+                            selected_item = $$(this.data.suggest).getList().getItem(optId);
+*/                            Form = this.getFormView().getValues();
+
+                            // поле optId - ID выбранной опции
+                            if( ! optId || selected_item == undefined) 
+                                this.setValue(Form["$parent"]);
+                            else
+                            // заполняем поле user_id при изменении select
+                               this.getFormView().setValues({"pid": selected_item.id },true);
+                        }
+                    }
+                },
+                webix.copy(save_cancel_button),{}
+            ],
+            formRules: {
+                  name: webix.rules.isNotEmpty
+            },
+            save_form: function(){
+                                    var mForm = $$(this.id);
+                                    
+                                    var values =  mForm.getValues();
+                                    
+                                    if(values.is_new == undefined)
+                                        values.is_new    = 0;
+                                    
+                                    // Сначала валидация формы - потом отправка
+                                    if( mForm.validate() === false ) return false;
+
+                                    $$("list_itbase").move(values.id,null,null, {parent:values.pid}); 
+
+                                    // Если не новая запись - убираем признак новой записи
+                                    // Важно изменить $parent после MOVE, 
+                                    // иначе следующее изменение будет брать не правильный парент для перемещения
+                                    mForm.setValues({is_new:0, "$parent":values.pid },true);
+
+                                    mForm.save();
+                                    
+                                    webix.ajax().post("/" + ITBasePage.hreflink + "/savegroup", values,
+                                        function(response){
+                                            if(response)
+                                                webix.message({type:"error", expire: 3000, text: response}); // server side response
+                                            else {
+                                                webix.message("ОK"); // server side response
+                                                // открываем бранч, куда переместили листок
+                                              
+                                                $$("list_itbase").open( values.pid );
+                                                $$("list_itbase").scrollTo(0, values.id);
+                                                mForm.getParentView().back();
+                                            }
+                                        }
+                                    );
+                                }
+        }
+    ],
 
     list_on: {
         "onKeyPress": function (key) {
-            formId = ( this.getSelectedItem()['$parent'] ) ? "form_itbase__rs" : "form_itbase__txt";
-            ITBasePage.keyPressAction(this, key, formId);
+            selected_item = this.getSelectedItem();
+
+           if( selected_item['$parent'] != 0 ){
+                // Фильтруем значения richselect
+                list = $$("rs").getPopup().getList();
+                list.clearAll();
+                list.load("/itbase/RichSelect?pid=0&tsect=" + selected_item["tsect"]);
+                
+                formID = "itbase__rs";
+            }
+            else
+                formID = "itbase__txt";
+
+            ITBasePage.keyPressAction(this, key, formID);
         },
         "onAfterSelect": function () {
             item = $$('list_itbase').getSelectedItem();
