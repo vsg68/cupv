@@ -344,6 +344,7 @@ var Groups_AliasPage = new PageTreeAdm({
     },
     formPages: [
         {
+            formID: "groups_second__txt",
             formElements: [
                 {view: "text", label: "Группы", name: "value" },
                 {view: "checkbox", label: "Активно", name: "active"},
@@ -357,16 +358,22 @@ var Groups_AliasPage = new PageTreeAdm({
             },
         },
         {
+            formID: "groups_second__rs",
             formElements: [
                 {
                     view: "richselect",
+                    id:"rs",
                     label: "Пользователи",
                     name: "value",
                     options:"/users/getMailboxes",
                     on: {
                         "onChange": function(){
-                            optId = $$(this.data.suggest).getMasterValue();
-                            selected_item = $$(this.data.suggest).getList().getItem(optId);
+                            
+                            suggestList = this.getPopup();
+                            optId = suggestList.getMasterValue();
+                            
+                            selected_item = suggestList.getList().getItem(optId);
+                            
                             // поле optId - ID выбранной опции
                             if( ! optId || selected_item == undefined) return false;
                             Form = this.getFormView();
@@ -384,9 +391,88 @@ var Groups_AliasPage = new PageTreeAdm({
             },
         }
     ],
+    menuButtons:[
+        {
+            formID: "form_groups_second__rs",
+            icon : "user",
+            label: "New",
+            click: function () {
+                                tree = $$("list_groups_second");
+                                var selected_item = tree.getSelectedItem();
+
+                                // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
+                                if (! Groups_AliasPage.isActiveCell_List("groups_second") || selected_item == undefined) {
+                                    webix.message({ type: "error", text: "Выделите группу, в которую будем добавлять пользователя" });
+                                    return false;
+                                }
+
+                                selected_id = selected_item.id;
+                                // если узел не является корнем, то ищем ID его корня
+                                if( tree.getParentId(selected_id) )
+                                    selected_id = tree.getParentId( selected_id );
+
+                                defaults = {"value":"", "is_new":1};    // Дефолтные значения
+
+                                // Переход к редактированию
+                                $$("groups_second__rs").show();
+                                tree.select( tree.add(defaults, 0, selected_id) );
+                            }        
+        },
+        {
+            formID: "form_groups_second__txt",
+            icon : "group",
+            label: "New",
+            click: function () {
+                                // Если кнопка нажата не на списке  - выходим
+                                if (! Groups_AliasPage.isActiveCell_List("groups_second")) {
+                                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+                                    return false;
+                                }
+
+                                defaults = Groups_AliasPage.addButtonClick();
+
+                                if( defaults == false )   return false;
+
+                                defaults["is_new"] = 1;
+                                defaults["active"] = 1;
+
+                                // Переход к редактированию
+                                $$("groups_second__txt").show();
+                                $$("list_groups_second").select( $$("list_groups_second").add(defaults) );
+                            }    
+        },
+        {
+            icon : "trash-o",
+            label: "Del",
+            click: function () {
+                                // Если кнопка нажата не на списке - выходим
+                                if (! Groups_AliasPage.isActiveCell_List("groups_second")) {
+                                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+                                    return false;
+                                }
+
+                                var selected_item = $$("list_groups_second").getSelectedItem();
+
+                                webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                                    //  тут надо отослать данные на сервер
+                                    if (result) {
+
+                                        webix.ajax().post("/"+ Groups_AliasPage.hreflink +"/delEntry/", {id: selected_item['id'], group_id: selected_item['$parent']}, function (text, xml, xhr) {
+                                            if (!text) {
+                                                webix.message("ОK"); // server side response
+                                                $$("list_groups_second").remove(selected_item['id']);
+                                            }
+                                            else
+                                                webix.message({type: "error", text: text});
+                                        })
+                                    }
+                                }})     
+                            }
+        }
+    ],
     list_on: {
         "onKeyPress": function (key) {
-            formId = ( this.getSelectedItem()['$parent'] ) ? "form_groups_second__rs" : "form_groups_second__txt";
+            formId = ( this.getSelectedItem()['$parent'] ) ? "groups_second__rs" : "groups_second__txt";
             Groups_AliasPage.keyPressAction(this, key, formId);
         }
     },

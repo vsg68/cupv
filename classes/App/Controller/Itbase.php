@@ -31,7 +31,7 @@ class Itbase extends \App\Page {
 		$tree = $this->pixie->db->query('select','itbase')
 								->table("entries")
 								->order_by('pid')
-								->execute()->as_array(true);               
+								->execute()->as_array();               
 
 		foreach ($tree as $row)	{
 			$rs[$row->pid][] = $row;
@@ -42,6 +42,28 @@ class Itbase extends \App\Page {
 
 	}
 
+	public function action_delEntry() {
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$this->pixie->db->query("delete","itbase")
+							->table("entries")
+							->where('id',$params['id'])
+							->execute();
+			
+			// Связанные документы //
+			$this->pixie->db->query("delete","itbase")
+							->table("records")
+							->where('pid',$params['id'])
+							->execute();
+
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+		}
+    }
 
 	/**
 	 * выбирает из базы все записи, связвнные с PID, группируя по TID(тип записи), GID ("порядковый номер" типа записи)
@@ -74,16 +96,17 @@ class Itbase extends \App\Page {
 	 * вынимаем записи для дерева объектов. 
 	 * @return [json] [записи дерева объектов]
 	 */
-	public function action_getSelect() {
+	public function action_RichSelect() {
 
 
 		if( ! $params = $this->request->get() )
 			return;
 
 		$entry = $this->pixie->db->query('select','itbase')
-								 ->fields( $this->pixie->db->expr("id, name AS value "))
+								 ->fields( $this->pixie->db->expr("id, name AS value"))
 								 ->table('entries')
 								 ->where('pid',$params["pid"])
+								 ->where('tsect',$params["tsect"])
 								 ->execute()->as_array();
 		
 		$this->response->body = json_encode($entry);
@@ -96,7 +119,8 @@ class Itbase extends \App\Page {
 
 		try {
 			$is_update = $params['is_new'] ? false : true;
-            unset( $params['is_new'], $params['$parent'], $params['$level'], $params['$count'], $params['value'] );
+
+            unset( $params['is_new'], $params['$parent'], $params['$level'], $params['$count'], $params['value'], $params['open'] );
 
 			// Если в запрос поместить true -  предполагается UPDATE
 			$this->pixie->orm->get("itbase")->values($params, $is_update)->save();
