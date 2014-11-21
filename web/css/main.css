@@ -162,6 +162,28 @@ html, body, #mainlayer {
     background-image: url(/role.png);
     background-position: 0px 4px;
 }
+.itbase-net .webix_tree_folder_open{
+    background-image: url(/folder-up.png);
+    background-position: 0px 4px;
+}
+.itbase-net .webix_tree_folder{
+    background-image: url(/folder.png);
+    background-position: 0px 4px;
+}
+.itbase-0.webix_tree_file{
+    background-image: url(/monitor.png);
+    background-position: 0px 4px;
+}
+.itbase-1.webix_tree_file{
+    background-image: url(/document.png);
+    background-position: 0px 4px;
+}
+.itbase-2.webix_tree_file{
+    background-image: url(/phone.png);
+    background-position: 0px 4px;
+}
+
+/* for  it base */
 .groups .webix_tree_folder_open,
 .groups .webix_tree_folder{
     background-image: url(/groups.png);
@@ -171,6 +193,8 @@ html, body, #mainlayer {
     background-image: url(/usr.png);
     background-position: 0px 4px;
 }
+
+
 .tabbar {
     padding-top: 10px;
 }

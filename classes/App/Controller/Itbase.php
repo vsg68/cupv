@@ -77,19 +77,20 @@ class Itbase extends \App\Page {
 		$data = array();
 		
 		$entry = $this->pixie->db->query('select','itbase')
-								  ->table("records")
+								  ->table("strings")
+								  // ->table("records")
 								  ->where('pid',$params["pid"])
-								  ->order_by("type")
-								  ->execute()->as_array(true);
+								  ->order_by("datatype")
+								  ->execute()->as_array();
 								  
 		// вынимаем записи json и раскодируем для последующей кодировки всей строки
-		foreach ($entry as $val) {
-			$tmp = (array)$val;
-			$tmp["fields"] = json_decode($val->fields);
-			$data[] = $tmp;
-		}
+		// foreach ($entry as $val) {
+		// 	$tmp = (array)$val;
+		// 	$tmp["fields"] = json_decode($val->fields);
+		// 	$data[] = $tmp;
+		// }
 
-		$this->response->body = json_encode($data);
+		$this->response->body = json_encode($entry);
 	}
 
 	/**
@@ -98,15 +99,14 @@ class Itbase extends \App\Page {
 	 */
 	public function action_RichSelect() {
 
-
 		if( ! $params = $this->request->get() )
 			return;
 
 		$entry = $this->pixie->db->query('select','itbase')
-								 ->fields( $this->pixie->db->expr("id, name AS value"))
+								 ->fields( $this->pixie->db->expr("id, name AS value,tsect"))
 								 ->table('entries')
 								 ->where('pid',$params["pid"])
-								 ->where('tsect',$params["tsect"])
+								 // ->where('tsect',$params["tsect"])
 								 ->execute()->as_array();
 		
 		$this->response->body = json_encode($entry);
@@ -133,9 +133,39 @@ class Itbase extends \App\Page {
 		
     }
 
+    protected function action_str(){
+    	exit;
+    	$tree = $this->pixie->db->query('select','itbase')
+								->table('records')
+								->execute()->as_array();
+
+		try{
+			foreach ($tree as $row)	{
+
+				$fields = json_decode($row->fields);
+				
+				foreach ($fields as $str){	
+				echo $row->id."; ";		
+					$data1 = array(
+						'pid' => $row->pid,
+						'datatype' => $row->datatype,
+						'label' => $str->label,
+						'value' => $str->name,
+						'ftype' => isset($str->type) ? $str->type : "text"
+						);
+					$this->pixie->db->query('insert','itbase')->table('strings')->data($data1)->execute();
+	    		}
+	    	}
+    		echo "that is all";
+    	}
+    	catch (\Exception $e) {
+			echo $e->getMessage();
+		}
+    }	
+
 	protected function action_getTree_old() {
 
-exit;
+		exit;
 		$tree = $data = $arr = array();
 
 		$tree = $this->pixie->db->query('select','itbase')
@@ -199,7 +229,6 @@ exit;
 		// $tree_struct = $this->RecursiveTree($rs);
 
 		// $this->response->body =  json_encode($tree);
-
 	}
 		
 

@@ -159,23 +159,7 @@
 			"file": "include/itbase.js.php",
 			"settings":
 			{
-				"buffer_size": 14239,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "classes/App/Controller/Users.php",
-			"settings":
-			{
-				"buffer_size": 2785,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "classes/App/Page.php",
-			"settings":
-			{
-				"buffer_size": 5937,
+				"buffer_size": 21689,
 				"line_ending": "Unix"
 			}
 		},
@@ -183,7 +167,7 @@
 			"file": "include/itbase_ready.js.php",
 			"settings":
 			{
-				"buffer_size": 178,
+				"buffer_size": 896,
 				"line_ending": "Unix"
 			}
 		},
@@ -191,7 +175,7 @@
 			"file": "web/css/main.css",
 			"settings":
 			{
-				"buffer_size": 3925,
+				"buffer_size": 4483,
 				"line_ending": "Unix"
 			}
 		},
@@ -223,17 +207,8 @@
 			"file": "classes/App/Controller/Itbase.php",
 			"settings":
 			{
-				"buffer_size": 4699,
+				"buffer_size": 4851,
 				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "var data2 =[\n                      \n						{ id:20, value:\"Papaya\",tsect:\"1\"   }, \n						{ id:30, value:\"Apple\",tsect:\"1\" }\n					];\nwebix.ui({\n		container:\"data_container\",\n		view:\"form\", scroll:false,\n		\n		rows:[\n          { view:\"button\", label:\"Country\", click: function(){\n            list = $$(\"rs\").getPopup().getList();\n           \n            list.filter(\"tsect\",\"0\");\n            \n            list1 =list;\n            list.clearAll();\n        webix.messages(list1.data.count());     \n            list1.data.each(function(obj){\n            \n              webix.messages(obj.id);\n            });\n            // list.parse(list1);\n            // list.refresh();      \n          \n          } },\n			\n			{ \n              view:\"richselect\", width:300, id:\"rs\",\n				label: 'Extra',  name:\"fruit2\",  options:{\n					template:\"#value#\",\n					data:[\n                      { id:1, value:\"Banana\",tsect:\"0\"  },\n						{ id:2, value:\"Papaya\",tsect:\"1\"   }, \n						{ id:3, value:\"Apple\",tsect:\"1\" }\n					]\n				}\n			},	\n			\n          \n				\n			\n		]\n	});\n",
-			"settings":
-			{
-				"buffer_size": 1043,
-				"line_ending": "Unix",
-				"name": "var data2 =["
 			}
 		},
 		{
@@ -241,6 +216,14 @@
 			"settings":
 			{
 				"buffer_size": 1548,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "classes/App/Controller/Users.php",
+			"settings":
+			{
+				"buffer_size": 2785,
 				"line_ending": "Unix"
 			}
 		}
@@ -251,6 +234,22 @@
 		"height": 392.0,
 		"selected_items":
 		[
+			[
+				"tas",
+				"Tasks: New document"
+			],
+			[
+				"gp",
+				"Git: Push Current Branch"
+			],
+			[
+				"gc",
+				"Git: Quick Commit"
+			],
+			[
+				"git",
+				"Git: Commit"
+			],
 			[
 				"cont",
 				"Package Control: Remove Package"
@@ -352,10 +351,6 @@
 				"Git: Pull"
 			],
 			[
-				"git",
-				"Git: Push"
-			],
-			[
 				"git commit",
 				"Git: Quick Commit"
 			],
@@ -443,13 +438,14 @@
 		"/home/vsg/Dropbox/cupv/assets",
 		"/home/vsg/Dropbox/cupv/assets/config",
 		"/home/vsg/Dropbox/cupv/include",
-		"/home/vsg/Dropbox/cupv/classes",
-		"/home/vsg/Dropbox/cupv/classes/App",
-		"/home/vsg/Dropbox/cupv/classes/App/Controller",
 		"/home/vsg/Dropbox/cupv/web"
 	],
 	"file_history":
 	[
+		"/home/vsg/Dropbox/cupv/classes/App/Page.php",
+		"/home/vsg/Dropbox/cupv/cupv.TODO",
+		"/home/vsg/Dropbox/sublime-text-3/Packages/PlainTasks/messages/Tutorial.todo",
+		"/home/vsg/Dropbox/sublime-text-3/Packages/PlainTasks/PlainTasks (Linux).sublime-settings",
 		"/home/vsg/Dropbox/mebel/index.html",
 		"/home/vsg/Dropbox/mebel/css/style.css",
 		"/home/vsg/Dropbox/cupv/classes/App/Model/Aliases.php",
@@ -465,11 +461,8 @@
 		"/var/www/mzh/css/mediaqueries.css",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/Colorsublime/Colorsublime.sublime-settings",
 		"/home/vsg/Dropbox/cupv/web/cupv.todo",
-		"/home/vsg/Dropbox/sublime-text-3/Packages/PlainTasks/PlainTasks (Linux).sublime-settings",
-		"/home/vsg/Dropbox/sublime-text-3/Packages/PlainTasks/messages/Tutorial.todo",
 		"/home/vsg/Рабочий стол/CleanWSUS.cmd",
 		"/home/vsg/Рабочий стол/CleanWSUS.ps1",
-		"/home/vsg/Dropbox/cupv/classes/App/Page.php",
 		"/home/vsg/Dropbox/cupv/assets/config/db.php",
 		"/home/vsg/Dropbox/cupv/web/list1.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Pixie.php",
@@ -612,7 +605,7 @@
 	"groups":
 	[
 		{
-			"selected": 9,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -621,7 +614,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 14239,
+						"buffer_size": 21689,
 						"regions":
 						{
 							"bookmarks":
@@ -631,12 +624,12 @@
 								"regions":
 								[
 									[
-										5151,
-										5151
+										5863,
+										5863
 									],
 									[
-										13193,
-										13193
+										20643,
+										20643
 									]
 								],
 								"scope": "bookmarks"
@@ -645,8 +638,8 @@
 						"selection":
 						[
 							[
-								5150,
-								5150
+								15500,
+								15500
 							]
 						],
 						"settings":
@@ -663,88 +656,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "classes/App/Controller/Users.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2785,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								610,
-								610
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "classes/App/Page.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5937,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3904,
-								3904
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/PHP/PHP.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 204.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
 					"file": "include/itbase_ready.js.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 178,
+						"buffer_size": 896,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								131,
-								131
+								821,
+								821
 							]
 						],
 						"settings":
@@ -759,16 +688,16 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 2,
 					"file": "web/css/main.css",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3925,
+						"buffer_size": 4483,
 						"regions":
 						{
 							"gutter_color_1002":
@@ -908,8 +837,8 @@
 								"regions":
 								[
 									[
-										2858,
-										2882
+										3415,
+										3439
 									]
 								],
 								"scope": "gutter_color"
@@ -921,8 +850,8 @@
 								"regions":
 								[
 									[
-										2893,
-										2912
+										3450,
+										3469
 									]
 								],
 								"scope": "gutter_color"
@@ -934,8 +863,8 @@
 								"regions":
 								[
 									[
-										3129,
-										3148
+										3686,
+										3705
 									]
 								],
 								"scope": "gutter_color"
@@ -947,8 +876,8 @@
 								"regions":
 								[
 									[
-										3187,
-										3221
+										3744,
+										3778
 									]
 								],
 								"scope": "gutter_color"
@@ -960,8 +889,8 @@
 								"regions":
 								[
 									[
-										3567,
-										3590
+										4124,
+										4147
 									]
 								],
 								"scope": "gutter_color"
@@ -973,8 +902,8 @@
 								"regions":
 								[
 									[
-										3639,
-										3666
+										4196,
+										4223
 									]
 								],
 								"scope": "gutter_color"
@@ -986,8 +915,8 @@
 								"regions":
 								[
 									[
-										3864,
-										3894
+										4421,
+										4451
 									]
 								],
 								"scope": "gutter_color"
@@ -1113,8 +1042,8 @@
 						"selection":
 						[
 							[
-								3788,
-								3788
+								2940,
+								2940
 							]
 						],
 						"settings":
@@ -1186,14 +1115,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3156.0,
+						"translation.y": 2397.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 3,
 					"file": "web/js/lib.js",
 					"semi_transient": false,
 					"settings":
@@ -1218,8 +1147,8 @@
 						"selection":
 						[
 							[
-								8916,
-								8916
+								17087,
+								17087
 							]
 						],
 						"settings":
@@ -1231,15 +1160,15 @@
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
-						"translation.x": -0.0,
-						"translation.y": 4197.0,
+						"translation.x": 0.0,
+						"translation.y": 4044.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 4,
 					"file": "include/users.js.php",
 					"semi_transient": false,
 					"settings":
@@ -1268,8 +1197,8 @@
 						"selection":
 						[
 							[
-								15266,
-								15266
+								13892,
+								13892
 							]
 						],
 						"settings":
@@ -1282,14 +1211,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4335.0,
+						"translation.y": 5608.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 5,
 					"file": "assets/views/main.php",
 					"semi_transient": false,
 					"settings":
@@ -1318,24 +1247,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 6,
 					"file": "classes/App/Controller/Itbase.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4699,
+						"buffer_size": 4851,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2219,
-								2219
+								2053,
+								2053
 							]
 						],
 						"settings":
@@ -1347,44 +1276,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1377.0,
+						"translation.y": 867.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1043,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1043,
-								1043
-							]
-						],
-						"settings":
-						{
-							"auto_name": "var data2 =[",
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
+					"buffer": 7,
 					"file": "classes/App/Controller/Aliases.php",
 					"semi_transient": true,
 					"settings":
@@ -1406,6 +1305,39 @@
 							"encoding_helper_encoding": "UTF-8",
 							"side_bar_folders_auto_load_folder": 1,
 							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "classes/App/Controller/Users.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2785,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								610,
+								610
+							]
+						],
+						"settings":
+						{
+							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
+							"encoding_helper_encoding": "UTF-8",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
