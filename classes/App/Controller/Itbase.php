@@ -56,7 +56,7 @@ class Itbase extends \App\Page {
 			
 			// Связанные документы //
 			$this->pixie->db->query("delete","itbase")
-							->table("records")
+							->table("strings")
 							->where('pid',$params['id'])
 							->execute();
 
@@ -160,110 +160,6 @@ class Itbase extends \App\Page {
 			$this->response->body = $e->getMessage();
 		}
     }
-
-    protected function action_str(){
-    	exit;
-    	$tree = $this->pixie->db->query('select','itbase')
-								->table('records')
-								->execute()->as_array();
-
-		try{
-			foreach ($tree as $row)	{
-
-				$fields = json_decode($row->fields);
-				
-				foreach ($fields as $str){	
-				echo $row->id."; ";		
-					$data1 = array(
-						'pid' => $row->pid,
-						'datatype' => $row->datatype,
-						'label' => $str->label,
-						'value' => $str->name,
-						'ftype' => isset($str->type) ? $str->type : "text"
-						);
-					$this->pixie->db->query('insert','itbase')->table('strings')->data($data1)->execute();
-	    		}
-	    	}
-    		echo "that is all";
-    	}
-    	catch (\Exception $e) {
-			echo $e->getMessage();
-		}
-    }	
-
-	protected function action_getTree_old() {
-
-		$tree = $data = $arr = array();
-
-		$tree = $this->pixie->db->query('select','itbase')
-								->table('names')
-								->order_by('pid')
-								->execute()->as_array();
-
-		foreach ($tree as $row)	{
-
-			$data1 = array(
-					'id' => $row->id,
-					'pid' => $row->pid,
-					'name' => $row->name,
-					'tsect' => ($row->page == 'badm') ? 0 : 1,
-					);
-
-			$this->pixie->db->query('insert','itbase')->table('entries')->data($data1)->execute();
-
-			$arr = json_decode($row->data);
-			
-			
-
-			if(isset($arr->entry)) {
-				$fields = array();
-				foreach( $arr->entry as $entry) {
-		
-					$data1 = array(
-							'pid' => $row->id,
-							'datatype' => 1, 
-							"label"	=> $entry[0],
-							"value" => $entry[2],
-							"ftype" => $entry[1],
-							);
-
-					$this->pixie->db->query('insert','itbase')->table('strings')->data($data1)->execute();
-				}
-			}	
-
-			if(isset($arr->records)) {
-				
-				foreach( $arr->records as $records ) {
-					$fields = array();
-				 	
-				 	if( ($records[0] == "Контакт") OR ( $records[0] == $records[1] && $records[0] == $records[2] && $records[0] == $records[3] ) ) 
-				 		continue;
-
-
-					foreach( $records as $k=>$v) {
-						if($k == 0) $label = "Контакт";
-						if($k == 1) $label = "Должность";
-						if($k == 2) $label = "Телефон";
-						if($k == 3) $label = "Email";
-
-						$data1 = array('pid' => $row->id,
-											'datatype' => 2, 
-											"label"	=> $label,
-											"value" => $v,
-											"ftype" => "text",);
-					}
-
-					$this->pixie->db->query('insert','itbase')->table('strings')->data($data1)->execute();
-				}
-			}
-		}
-
-		 print_r ($arr);
-
-		// $tree_struct = $this->RecursiveTree($rs);
-
-		// $this->response->body =  json_encode($tree);
-	}
 		
 
 }
