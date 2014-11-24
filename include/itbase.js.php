@@ -37,8 +37,7 @@ var ITBasePage = new PageTreeAdm({
                              }
 
                              // если узел не является корнем, то ищем ID его корня
-                             // if( ! tree.isBranch(selected_item.id) )
-                             if( tree.hasCss(selected_item.id, "webix_tree_file") )
+                             if( selected_item["$count"] == 0 && selected_item.pid != 0 )
                                  selected_item.id = selected_item.pid ;
                              
                              defaults = {
@@ -83,7 +82,7 @@ var ITBasePage = new PageTreeAdm({
                          var selected_item   = $$("list_itbase").getSelectedItem();
                          
                          // null если нет потомков
-                         if( $$("list_itbase").data.getFirstChildId(selected_item.id) ) {
+                         if( selected_item["$count"] ) {
                              webix.message({type : "error",text:"Копирются только объекты"});
                              return false;
                          }
@@ -116,8 +115,8 @@ var ITBasePage = new PageTreeAdm({
 
                              var selected_item = $$("list_itbase").getSelectedItem();
 
-                             // null если нет потомков
-                             if( $$("list_itbase").data.getFirstChildId(selected_item.id) ) {
+                             // count == 0 если нет потомков
+                             if( selected_item["$count"] ) {
                                  webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
                                  return false;
                              }
@@ -159,18 +158,7 @@ var ITBasePage = new PageTreeAdm({
                     id: "rs",
                     label: "Раздел",
                     name: "value",
-                    options: {
-                        body: {
-                            url:"/itbase/RichSelect/?pid=0",
-                        },
-                        on: { // работает фильтрация list в элементе richselect
-                            "onShow": function(){
-                                selected_item = $$("list_itbase").getSelectedItem();
-                                // Фильтруем значения richselect
-                                $$("rs").getPopup().getList().filter("#tsect#", selected_item.tsect);
-                            }
-                        }
-                    },
+                    options: {},
                     on: {
                         "onChange": function(){
                             optId = this.getPopup().getMasterValue();
@@ -251,6 +239,10 @@ var ITBasePage = new PageTreeAdm({
             $$('list_itemdata').clearAll();
 
             $$('list_itemdata').load("/itbase/select/?pid=" + item.id);
+            // Заполняем селект в форме     
+            selectOpt = $$("rs").getPopup().getList();
+            selectOpt.clearAll();
+            selectOpt.load("/itbase/RichSelect/?pid=0&tsect="+item.tsect);
         },
         "onItemClick": function(id){
 
@@ -398,11 +390,10 @@ var TAB = {view:"tabbar", id:"chPage", click:"getOptionTab", value: "sect_0", op
 
 function getOptionTab() {
     val = "" + this.getValue().split("_")[1];
-    $$("list_itbase").filter("#tsect#", val);
+    $$("list_itbase").filter("tsect", val);
     // закрываются фсе формы
     $$('list_itemdata').clearAll();
     $$('list_itemdata').show();
-
 }
 
 

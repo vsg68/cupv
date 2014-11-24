@@ -143,8 +143,7 @@ Date.prototype.toLocaleFormat = function(format) {
 function MView(setup) {
     var self = this;
     this.objID = setup.id;  // Общее название
-    this.hreflink = setup.id.split("_")[0];  // Общее название
-    self.savefunct = setup.savefunct || "save";
+    this.hreflink = setup.hreflink || setup.id.split("_")[0];  // Общее название
     this.isScroll = setup.isListScroll;
     this.toolbarlabel = setup.toolbarlabel || "";
     this.hideSearchField = ! setup.showSearchField;
@@ -262,6 +261,7 @@ function MAdmView(setup) {
     extend(MAdmView, MView);    // Наследуем
     MView.apply(this, arguments);  // Запускаем родительский конструктор
 
+    self.savefunct      = setup.savefunct || "save";
     this.hideAddButton  = setup.hideAddButton;
     this.hideDelButton  = setup.hideDelButton;
     this.formID         = setup.formID || "form_" + this.objID;
@@ -358,51 +358,51 @@ function PageAdm(setup) {
 
     this.rows[1].cells.push(
         {
-            id: this.formID,
-            view: "form",
+            id            : this.formID,
+            view          : "form",
             elementsConfig: {labelWidth: 130},
-            elements: this.formElements || [{view: "text", label: "Псевдоним", name: "alias_name" },
+            elements      : this.formElements || [{view: "text", label: "Псевдоним", name: "alias_name" },
                                             {view: "text", label: "Пересылка", name: "delivery_to" },
                                             {view: "checkbox", label: "Активно", name: "active"},
                                             webix.copy(save_cancel_button),
                                             {}],
-            rules: this.formRules,
-            save_form: function(){
-                var mForm = $$(this.id);
+            rules         : this.formRules,            
+            save_form     : setup.save_form || function(){
+                                                    var mForm = $$(this.id);
 
-                var values =  mForm.getValues();
+                                                    var values =  mForm.getValues();
 
-                if(values.is_new == undefined)
-                    values.is_new = 0;
+                                                    if(values.is_new == undefined)
+                                                        values.is_new = 0;
 
-                if ( mForm.save() === false)  return false;
+                                                    if ( mForm.save() === false)  return false;
 
-                // Если не новая запись - убираем признак новой записи
-                mForm.setValues({is_new:0},true);
+                                                    // Если не новая запись - убираем признак новой записи
+                                                    mForm.setValues({is_new:0},true);
 
-                // Исключение для форварда
-                self.hreflink = (self.hreflink == "fwd" ) ? "aliases" : self.hreflink;
+                                                    // Исключение для форварда
+                                                    self.hreflink = (self.hreflink == "fwd" ) ? "aliases" : self.hreflink;
 
-                webix.ajax().post("/" + self.hreflink + "/" + self.savefunct, values,
-                    function(response){
-                        if(response)
-                            webix.message({type:"error", expire: 3000, text: response}); // server side response
-                        else {
-                            webix.message("ОK"); // server side response
-                            mForm.getParentView().back();
-                            $$("list_" + self.objID).showItem(values.id);
-                        }
-                    }
-                );
-            },
-            cancel: function() {
-                mView = $$(this.id).getParentView();
-                values = $$(this.id).getValues();
-                if (values.is_new) {
-                    $$("list_" + self.objID).remove( values.id );
-                }
-                mView.back();
-            }
+                                                    webix.ajax().post("/" + self.hreflink + "/" + self.savefunct, values,
+                                                        function(response){
+                                                            if(response)
+                                                                webix.message({type:"error", expire: 3000, text: response}); // server side response
+                                                            else {
+                                                                webix.message("ОK"); // server side response
+                                                                mForm.getParentView().back();
+                                                                $$("list_" + self.objID).showItem(values.id);
+                                                            }
+                                                        }
+                                                    );
+                                                },
+            cancel       : setup.cancel || function() {
+                                                mView = $$(this.id).getParentView();
+                                                values = $$(this.id).getValues();
+                                                if (values.is_new) {
+                                                    $$("list_" + self.objID).remove( values.id );
+                                                }
+                                                mView.back();
+                                            }
         }
     );
 };
@@ -426,28 +426,7 @@ function PageTreeAdm(setup) {
                 label    : menuButtons[i].label || "New",
                 width    : menuButtons[i].width || 70,
                 icon     : menuButtons[i].icon || "user",
-                errorMsg : menuButtons[i].errorMsg || "Error",
-                go2formID: menuButtons[i].formID || self.formID,
-                defaults : menuButtons[i].defaults || {"value":"", "is_new":1},
-                click    : menuButtons[i].click || function (obj) {}
-                                                        //     tree = $$("list_" + self.objID);
-                                                        //     var selected_item = tree.getSelectedItem();
-
-                                                        //     // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
-                                                        //     if (! self.isActiveCell_List(self.objID) || selected_item == undefined) {
-                                                        //         webix.message({ type: "error", text: $$(obj).config.errorMsg });
-                                                        //         return false;
-                                                        //     }
-
-                                                        //     selected_id = selected_item.id;
-                                                        //     // если узел не является корнем, то ищем ID его корня
-                                                        //     if( $$('list_'+ self.objID).getParentId(selected_id) )
-                                                        //         selected_id = $$('list_'+ self.objID).getParentId( selected_id );
-
-                                                        //     // Переход к редактированию
-                                                        //     $$( $$(obj).config.go2formID ).show();
-                                                        //     $$("list_" + self.objID).select( $$("list_"+ self.objID).add( $$(obj).config.defaults, 0, selected_id) );
-                                                        // }
+                click    : menuButtons[i].click || function(){},
         });
 
         if( i >= formPages.length )  continue; 

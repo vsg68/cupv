@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"new",
+				"is_new"
+			],
+			[
+				"cp",
+				"copy"
+			],
+			[
+				"json",
+				"json_encode"
+			],
+			[
 				"cle",
 				"clearAll"
 			],
@@ -52,10 +64,6 @@
 				"getValue"
 			],
 			[
-				"json",
-				"json_decode"
-			],
-			[
 				"back",
 				"background-color"
 			],
@@ -66,10 +74,6 @@
 			[
 				"getItem",
 				"getSelectedItem"
-			],
-			[
-				"new",
-				"newindx"
 			],
 			[
 				"getSele",
@@ -159,7 +163,7 @@
 			"file": "include/itbase.js.php",
 			"settings":
 			{
-				"buffer_size": 21689,
+				"buffer_size": 15443,
 				"line_ending": "Unix"
 			}
 		},
@@ -167,7 +171,15 @@
 			"file": "include/itbase_ready.js.php",
 			"settings":
 			{
-				"buffer_size": 896,
+				"buffer_size": 205,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "classes/App/Controller/Itbase.php",
+			"settings":
+			{
+				"buffer_size": 6850,
 				"line_ending": "Unix"
 			}
 		},
@@ -183,7 +195,7 @@
 			"file": "web/js/lib.js",
 			"settings":
 			{
-				"buffer_size": 24778,
+				"buffer_size": 24009,
 				"line_ending": "Unix"
 			}
 		},
@@ -192,38 +204,6 @@
 			"settings":
 			{
 				"buffer_size": 33028,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "assets/views/main.php",
-			"settings":
-			{
-				"buffer_size": 2927,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "classes/App/Controller/Itbase.php",
-			"settings":
-			{
-				"buffer_size": 4851,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "classes/App/Controller/Aliases.php",
-			"settings":
-			{
-				"buffer_size": 1548,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "classes/App/Controller/Users.php",
-			"settings":
-			{
-				"buffer_size": 2785,
 				"line_ending": "Unix"
 			}
 		}
@@ -438,10 +418,19 @@
 		"/home/vsg/Dropbox/cupv/assets",
 		"/home/vsg/Dropbox/cupv/assets/config",
 		"/home/vsg/Dropbox/cupv/include",
+		"/home/vsg/Dropbox/cupv/classes",
+		"/home/vsg/Dropbox/cupv/classes/App",
+		"/home/vsg/Dropbox/cupv/classes/App/Controller",
 		"/home/vsg/Dropbox/cupv/web"
 	],
 	"file_history":
 	[
+		"/home/vsg/Dropbox/cupv/classes/App/Controller/Users.php",
+		"/home/vsg/Dropbox/cupv/assets/views/main.php",
+		"/home/vsg/Dropbox/cupv/classes/App/Controller/Itemdata.php",
+		"/home/vsg/Dropbox/cupv/classes/App/Model/Itbase.php",
+		"/home/vsg/Dropbox/cupv/web/cupv.todo",
+		"/home/vsg/Dropbox/cupv/classes/App/Model/Itemdata.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Page.php",
 		"/home/vsg/Dropbox/cupv/cupv.TODO",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/PlainTasks/messages/Tutorial.todo",
@@ -449,7 +438,6 @@
 		"/home/vsg/Dropbox/mebel/index.html",
 		"/home/vsg/Dropbox/mebel/css/style.css",
 		"/home/vsg/Dropbox/cupv/classes/App/Model/Aliases.php",
-		"/home/vsg/Dropbox/cupv/classes/App/Model/Itbase.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Controller/Groups.php",
 		"/home/vsg/tmp/Magnific Popup  Responsive jQuery Lightbox Plugin.html",
 		"/home/vsg/tmp/Magnific Popup  Responsive jQuery Lightbox Plugin_files/magnific-popup.css",
@@ -460,13 +448,11 @@
 		"/home/vsg/Dropbox/sublime-text-3/Packages/User/Base File.sublime-settings",
 		"/var/www/mzh/css/mediaqueries.css",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/Colorsublime/Colorsublime.sublime-settings",
-		"/home/vsg/Dropbox/cupv/web/cupv.todo",
 		"/home/vsg/Рабочий стол/CleanWSUS.cmd",
 		"/home/vsg/Рабочий стол/CleanWSUS.ps1",
 		"/home/vsg/Dropbox/cupv/assets/config/db.php",
 		"/home/vsg/Dropbox/cupv/web/list1.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Pixie.php",
-		"/home/vsg/Dropbox/cupv/classes/App/Controller/Users.php",
 		"/home/vsg/Dropbox/cupv/include/users.js.php",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/Default/Default (Linux).sublime-keymap",
 		"/home/vsg/Dropbox/cupv/web/css/users.css",
@@ -504,6 +490,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"addButtonClick",
 			"save_cancel_button",
 			"addButtonClick",
 			"createButtons",
@@ -605,7 +592,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -614,7 +601,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 21689,
+						"buffer_size": 15443,
 						"regions":
 						{
 							"bookmarks":
@@ -624,12 +611,12 @@
 								"regions":
 								[
 									[
-										5863,
-										5863
+										7357,
+										7357
 									],
 									[
-										20643,
-										20643
+										14397,
+										14397
 									]
 								],
 								"scope": "bookmarks"
@@ -638,8 +625,8 @@
 						"selection":
 						[
 							[
-								15500,
-								15500
+								13521,
+								13521
 							]
 						],
 						"settings":
@@ -656,7 +643,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
@@ -665,15 +652,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 896,
+						"buffer_size": 205,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								821,
-								821
+								136,
+								136
 							]
 						],
 						"settings":
@@ -688,11 +675,43 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
+					"file": "classes/App/Controller/Itbase.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6850,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2600,
+								2600
+							]
+						],
+						"settings":
+						{
+							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
+							"encoding_helper_encoding": "UTF-8",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "web/css/main.css",
 					"semi_transient": false,
 					"settings":
@@ -1122,12 +1141,12 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
 					"file": "web/js/lib.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 24778,
+						"buffer_size": 24009,
 						"regions":
 						{
 							"bookmarks":
@@ -1137,8 +1156,8 @@
 								"regions":
 								[
 									[
-										19916,
-										19916
+										19147,
+										19147
 									]
 								],
 								"scope": "bookmarks"
@@ -1147,8 +1166,8 @@
 						"selection":
 						[
 							[
-								17087,
-								17087
+								4567,
+								4567
 							]
 						],
 						"settings":
@@ -1161,14 +1180,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4044.0,
+						"translation.y": 490.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "include/users.js.php",
 					"semi_transient": false,
 					"settings":
@@ -1197,8 +1216,8 @@
 						"selection":
 						[
 							[
-								13892,
-								13892
+								7551,
+								7551
 							]
 						],
 						"settings":
@@ -1211,139 +1230,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 5608.0,
+						"translation.y": 2752.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "assets/views/main.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2927,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2830,
-								2830
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "classes/App/Controller/Itbase.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4851,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2053,
-								2053
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 867.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "classes/App/Controller/Aliases.php",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 1548,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								999,
-								999
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/PHP/PHP.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "classes/App/Controller/Users.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2785,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								610,
-								610
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
 					"type": "text"
 				}
 			]
