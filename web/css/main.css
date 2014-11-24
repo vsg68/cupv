@@ -162,12 +162,12 @@ html, body, #mainlayer {
     background-image: url(/role.png);
     background-position: 0px 4px;
 }
-.itbase-net .webix_tree_folder_open{
-    background-image: url(/folder-up.png);
+.itbase-0.webix_tree_folder_open{
+    background-image: url(/net.png);
     background-position: 0px 4px;
 }
-.itbase-net .webix_tree_folder{
-    background-image: url(/folder.png);
+.itbase-0.webix_tree_folder{
+    background-image: url(/net.png);
     background-position: 0px 4px;
 }
 .itbase-0.webix_tree_file{
