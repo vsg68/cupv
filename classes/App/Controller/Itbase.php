@@ -209,7 +209,7 @@ class Itbase extends \App\Page {
 					'tsect' => ($row->page == 'badm') ? 0 : 1,
 					);
 
-			//$this->pixie->db->query('insert','itbase')->table('entries')->data($data1)->execute();
+			$this->pixie->db->query('insert','itbase')->table('entries')->data($data1)->execute();
 
 			$arr = json_decode($row->data);
 			
