@@ -31,6 +31,7 @@ class Itbase extends \App\Page {
 		$tree = $this->pixie->db->query('select','itbase')
 								->table("entries")
 								->order_by('pid')
+								->order_by('name')
 								->execute()->as_array();               
 
 		foreach ($tree as $row)	{
@@ -65,6 +66,7 @@ class Itbase extends \App\Page {
 		}
     }
 
+	
 	/**
 	 * выбирает из базы все записи, связвнные с PID, группируя по TID(тип записи), GID ("порядковый номер" типа записи)
 	 * @return [json] [записи, которые будут формировать описание выделеннонго объекта]
@@ -78,18 +80,10 @@ class Itbase extends \App\Page {
 		
 		$entry = $this->pixie->db->query('select','itbase')
 								  ->table("strings")
-								  // ->table("records")
 								  ->where('pid',$params["pid"])
 								  ->order_by("datatype")
 								  ->execute()->as_array();
 								  
-		// вынимаем записи json и раскодируем для последующей кодировки всей строки
-		// foreach ($entry as $val) {
-		// 	$tmp = (array)$val;
-		// 	$tmp["fields"] = json_decode($val->fields);
-		// 	$data[] = $tmp;
-		// }
-
 		$this->response->body = json_encode($entry);
 	}
 
@@ -103,13 +97,30 @@ class Itbase extends \App\Page {
 			return;
 
 		$entry = $this->pixie->db->query('select','itbase')
-								 ->fields( $this->pixie->db->expr("id, name AS value,tsect"))
+								 ->fields( $this->pixie->db->expr("id, name AS value"))
+								 // ->fields( $this->pixie->db->expr("id, name AS value,tsect"))
 								 ->table('entries')
 								 ->where('pid',$params["pid"])
-								 // ->where('tsect',$params["tsect"])
+								 ->where('tsect',$params["tsect"])
 								 ->execute()->as_array();
 		
 		$this->response->body = json_encode($entry);
+    }
+
+    public function action_save() {
+
+		if( ! $params = $this->request->post() )
+			return false;
+
+		try {
+			$is_update = $params['is_new'] ? false : true;
+            unset( $params['is_new'], $params['active'] );
+			// Если в запрос поместить true -  предполагается UPDATE
+			$this->pixie->orm->get("itbase")->strings->values($params, $is_update)->save();
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+		}
     }
 
 	public function action_savegroup() {
@@ -119,18 +130,35 @@ class Itbase extends \App\Page {
 
 		try {
 			$is_update = $params['is_new'] ? false : true;
-
-            unset( $params['is_new'], $params['$parent'], $params['$level'], $params['$count'], $params['value'], $params['open'] );
+			$copy_id   = isset( $params['copy_id'] ) ? $params['copy_id'] : false;
+            unset( $params['is_new'], $params['$parent'], $params['$level'], $params['$count'], $params['value'], $params['open'], $params['copy_id'] );
 
 			// Если в запрос поместить true -  предполагается UPDATE
 			$this->pixie->orm->get("itbase")->values($params, $is_update)->save();
 
+			if ( $copy_id ) {
+				$entries = $this->pixie->db->query("select","itbase")
+										->table("strings")
+										->where('pid',$copy_id )
+										->execute()->as_array();
+
+				// Связанные документы 
+				foreach($entries as $entry) {
+					$entry        = (array)$entry;
+					$entry["pid"] = $params["id"];
+					unset($entry["id"],$entry["value"]);
+					
+					$this->pixie->db->query("insert","itbase")
+									->table("strings")
+									->data($entry)
+									->execute();
+				}
+			}
 		}
 		
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
 		}
-		
     }
 
     protected function action_str(){
@@ -191,11 +219,15 @@ class Itbase extends \App\Page {
 			if(isset($arr->entry)) {
 				$fields = array();
 				foreach( $arr->entry as $entry) {
-					$fields[0] = array("label" => $entry[0], "type" => $entry[1], "name" => $entry[2]);
 		
-					$data1 = array('pid' => $row->id, 'type' => 1, "fields"	=> json_encode($fields));
+					$data1 = array(
+							'pid' => $row->id,
+							'datatype' => 1, 
+							"label"	=> $entry[0],
+							"value" => $entry[2],
+							"ftype" => $entry[1],
 
-					$this->pixie->db->query('insert','itbase')->table('records')->data($data1)->execute();
+					$this->pixie->db->query('insert','itbase')->table('strings')->data($data1)->execute();
 				}
 			}	
 
@@ -214,12 +246,14 @@ class Itbase extends \App\Page {
 						if($k == 2) $label = "Телефон";
 						if($k == 3) $label = "Email";
 
-						$fields[] = array("label" => $label, "name" => $v);
+						$data1 = array('pid' => $row->id,
+											'datatype' => 2, 
+											"label"	=> $label,
+											"value" => $v,
+											"ftype" => "text",);
 					}
 
-					$data1 = array('pid' => $row->id, 'type' => 2, "fields"	=> json_encode($fields));
-
-					$this->pixie->db->query('insert','itbase')->table('records')->data($data1)->execute();
+					$this->pixie->db->query('insert','itbase')->table('strings')->data($data1)->execute();
 				}
 			}
 		}
