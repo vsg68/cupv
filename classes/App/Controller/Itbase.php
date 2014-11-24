@@ -193,7 +193,6 @@ class Itbase extends \App\Page {
 
 	protected function action_getTree_old() {
 
-		exit;
 		$tree = $data = $arr = array();
 
 		$tree = $this->pixie->db->query('select','itbase')
