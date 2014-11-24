@@ -225,6 +225,7 @@ class Itbase extends \App\Page {
 							"label"	=> $entry[0],
 							"value" => $entry[2],
 							"ftype" => $entry[1],
+							);
 
 					$this->pixie->db->query('insert','itbase')->table('strings')->data($data1)->execute();
 				}
