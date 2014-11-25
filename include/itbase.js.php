@@ -6,13 +6,12 @@
 var ITBasePage = new PageTreeAdm({
     id: "itbase",
     list_view: "tree",
-    list_css: "itbase-net",
     list_template: function(obj, com){
         // Подставляем свою иконку для группы
-        if( obj.$parent || obj.tsect == 1)
+        if( obj.$count == 0 )
             icon = "<div class='itbase-"+obj.tsect+" webix_tree_file'></div>";
         else
-            icon = obj.open ? "<div class='webix_tree_folder_open'></div>" : "<div class='webix_tree_folder'></div>";
+            icon = obj.open ? "<div class='itbase-"+obj.tsect+" webix_tree_folder_open'></div>" : "<div class='itbase-"+obj.tsect+" webix_tree_folder'></div>";
 
         return com.icon(obj, com) + icon + '<span>'+ obj.name + '</span>';
     },
@@ -27,14 +26,13 @@ var ITBasePage = new PageTreeAdm({
                                  webix.message({ type: "error", text:  "Кнопки в этой области не работают" });
                                  return false;
                              }
+                             // Присваиваем дефолтные значения если ничего не выделено
+                             selected_item = $$("list_itbase").getSelectedItem() || { "id":0, "pid":0, "tsect": $$("chPage").getValue().split("_")[1] };
 
-                             tree = $$("list_itbase");
-                             selected_item = tree.getSelectedItem();
-
-                             if( selected_item == undefined ) {
-                                 webix.message({ type: "error", text: "Выделите раздел, в который будем добавлять" });
-                                 return false;
-                             }
+                             // if( selected_item == undefined ) {
+                             //     webix.message({ type: "error", text: "Выделите раздел, в который будем добавлять" });
+                             //     return false;
+                             // }
 
                              // если узел не является корнем, то ищем ID его корня
                              if( selected_item["$count"] == 0 && selected_item.pid != 0 )
@@ -48,8 +46,10 @@ var ITBasePage = new PageTreeAdm({
                                      };
 
                              // Переход к редактированию
-                             tree.select( $$("list_itbase").add( defaults, 0, selected_item.id) );
-                             $$("itbase__rs").show();                                
+                             $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.id) );
+
+                             // не показываем richselect, если кладем объект в корень
+                             selected_item.id ? $$("itbase__rs").show() : $$("itbase__txt").show();                                
                          }
         },
         {
@@ -231,18 +231,19 @@ var ITBasePage = new PageTreeAdm({
         },
         "onAfterSelect": function () {
             item = $$('list_itbase').getSelectedItem();
-            // count != 0 - значит это папка, 
-            if( item['$count'] ) return false;
-
+            
             // Закрываем все открытые формы редактирования
             $$('list_itemdata').getParentView().back(); 
             $$('list_itemdata').clearAll();
+
+            // count != 0 - значит это папка, 
+            if( item['$count'] ) return false;
 
             $$('list_itemdata').load("/itbase/select/?pid=" + item.id);
             // Заполняем селект в форме     
             selectOpt = $$("rs").getPopup().getList();
             selectOpt.clearAll();
-            selectOpt.load("/itbase/RichSelect/?pid=0&tsect="+item.tsect);
+            selectOpt.load("/itbase/RichSelect/?tsect="+item.tsect);
         },
         "onItemClick": function(id){
 
@@ -250,11 +251,8 @@ var ITBasePage = new PageTreeAdm({
             item = tree.getItem(id);
             
             // если потомков нет, то и говорить не о чем :)
-            if( ! item['$count'] ) {
-                $$('list_itemdata').clearAll();             
-                return true;
-            }
-
+            if( ! item['$count'] ) return true;
+            
             if( tree.isBranchOpen(id) )
                 tree.close(id);
             else
@@ -389,11 +387,16 @@ var TAB = {view:"tabbar", id:"chPage", click:"getOptionTab", value: "sect_0", op
     };
 
 function getOptionTab() {
-    val = "" + this.getValue().split("_")[1];
-    $$("list_itbase").filter("tsect", val);
+    var val = "" + this.getValue().split("_")[1];
+    // В листе присутствует удаленное поле, и если это не обработать, 
+    // получаем ошибку т.k. obj == undefined
+    $$("list_itbase").filter(function(obj){
+         return ( obj == undefined) ? false : obj.tsect == val;
+    });
     // закрываются фсе формы
-    $$('list_itemdata').clearAll();
-    $$('list_itemdata').show();
+    $$("list_itemdata").clearAll();
+    $$("list_itemdata").show();
+    $$("list_itbase").show();
 }
 
 
