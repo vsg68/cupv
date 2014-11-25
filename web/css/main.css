@@ -51,10 +51,10 @@ html, body, #mainlayer {
     color: #1bcc05;
 }
 .net-10 {
-    color: #FFAAFF;
+    color: #FE71C9;
 }
 .net-11 {
-    color: #D3B61B;
+    color: #FFB200;
 }
 .net-109 {
     color: #cc0a48;
@@ -162,12 +162,22 @@ html, body, #mainlayer {
     background-image: url(/role.png);
     background-position: 0px 4px;
 }
-.itbase-0.webix_tree_folder_open{
+.itbase-0.webix_tree_folder_open {
     background-image: url(/net.png);
     background-position: 0px 4px;
 }
 .itbase-0.webix_tree_folder{
     background-image: url(/net.png);
+    background-position: 0px 4px;
+}
+.itbase-1.webix_tree_folder_open,
+.itbase-2.webix_tree_folder_open {
+    background-image: url(/folder-up.png);
+    background-position: 0px 4px;
+}
+.itbase-1.webix_tree_folder,
+.itbase-2.webix_tree_folder{
+    background-image: url(/folder.png);
     background-position: 0px 4px;
 }
 .itbase-0.webix_tree_file{
