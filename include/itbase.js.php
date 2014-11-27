@@ -20,19 +20,12 @@ var ITBasePage = new PageTreeAdm({
             icon : "laptop",
             label: "New",
             click: function() {          
-                            
                              // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
-                             if (! ITBasePage.isActiveCell_List("itbase") ) {
-                                 webix.message({ type: "error", text:  "Кнопки в этой области не работают" });
-                                 return false;
-                             }
+                             if( ! ITBasePage.isActiveCell_List() )
+                                return false;
+
                              // Присваиваем дефолтные значения если ничего не выделено
                              selected_item = $$("list_itbase").getSelectedItem() || { "id":0, "pid":0, "tsect": $$("chPage").getValue().split("_")[1] };
-
-                             // if( selected_item == undefined ) {
-                             //     webix.message({ type: "error", text: "Выделите раздел, в который будем добавлять" });
-                             //     return false;
-                             // }
 
                              // если узел не является корнем, то ищем ID его корня
                              if( selected_item["$count"] == 0 && selected_item.pid != 0 )
@@ -50,12 +43,14 @@ var ITBasePage = new PageTreeAdm({
 
                              // не показываем richselect, если кладем объект в корень
                              selected_item.id ? $$("itbase__rs").show() : $$("itbase__txt").show();                                
-                         }
+                         },
         },
         {
             icon : "folder-o",
             label: "New",
             click: function() {    
+                            if( ! ITBasePage.isActiveCell_List() )
+                                return false;
                              // какой фильтр стоит? - какое значение таббара
                              defaults = {
                                          "is_new": 1, 
@@ -69,57 +64,53 @@ var ITBasePage = new PageTreeAdm({
                         }
         },
         {
-            icon : "copy",
-            label: "Copy",
-            width: 75,
-            click: function () {
-                         // Если кнопка нажата не на списке - выходим
-                         if (! ITBasePage.isActiveCell_List("itbase")) {
-                             webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-                             return false;
-                         }
-                         
-                         var selected_item   = $$("list_itbase").getSelectedItem();
-                         
-                         // null если нет потомков
-                         if( selected_item["$count"] ) {
-                             webix.message({type : "error",text:"Копирются только объекты"});
-                             return false;
-                         }
-                         
-                         defaults = {
-                                         "is_new"  : 1, 
-                                         "copy_id" : selected_item.id, 
-                                         "name"    : selected_item.name + "_copy", 
-                                         "value"   : selected_item.pid, 
-                                         "pid"     : selected_item.pid,
-                                         "tsect"   : selected_item.tsect
-                                     };
+            icon :    "copy",
+            label:    "Copy",
+            isEnable: function(){
+                             itemID = $$("list_itbase").getSelectedId() || 0;
+                             if( $$("list_itbase").isBranch(itemID) && itemID ) 
+                                 webix.message({type : "error",text:"Копирются только объекты"});
 
-                         //  делаем новую запись
-                         tree.select( $$("list_itbase").add( defaults, 0, selected_item.pid) );
-                         
-                         $$("itbase__rs").show();  
-                     } 
-                            
+                             return (! $$("list_itbase").isBranch(itemID) && itemID );
+            }, 
+            click:    function(){
+                            // Если кнопка нажата не на списке - выходим
+                            if( ! (this.config.isEnable() && ITBasePage.isActiveCell_List()) )
+                                return false;
+                             
+                             var selected_item   = $$("list_itbase").getSelectedItem();
+                             
+                             defaults = {
+                                             "is_new"  : 1, 
+                                             "copy_id" : selected_item.id, 
+                                             "name"    : selected_item.name + "_copy", 
+                                             "value"   : selected_item.pid, 
+                                             "pid"     : selected_item.pid,
+                                             "tsect"   : selected_item.tsect
+                                         };
+
+                             //  делаем новую запись
+                             $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.pid) );
+                             
+                             $$("itbase__rs").show();  
+                         },
         }, 
         {
-            icon : "trash-o",
-            label: "Del",
-            click: function () {
-                             // Если кнопка нажата не на списке - выходим
-                             if (! ITBasePage.isActiveCell_List("itbase")) {
-                                 webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-                                 return false;
-                             }
+            icon :    "trash-o",
+            label:    "Del",
+            isEnable: function(){
+                         itemID = $$("list_itbase").getSelectedId() || 0;
+                         if( $$("list_itbase").isBranch(itemID) && itemID)
+                            webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
+
+                         return (! $$("list_itbase").isBranch(itemID) && itemID );
+            },  
+            click:    function() {
+                            // Если кнопка нажата не на списке - выходим
+                            if( ! (this.config.isEnable() && ITBasePage.isActiveCell_List()) )
+                                return false;
 
                              var selected_item = $$("list_itbase").getSelectedItem();
-
-                             // count == 0 если нет потомков
-                             if( selected_item["$count"] ) {
-                                 webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
-                                 return false;
-                             }
 
                              webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
                                  //  тут надо отослать данные на сервер
@@ -135,7 +126,8 @@ var ITBasePage = new PageTreeAdm({
                                      })
                                  }
                              }})     
-                         }
+                         },
+                        
         }
     ],
     formPages: [
@@ -272,6 +264,15 @@ var DataPage = new PageAdm({
     hreflink     : "itbase",
     toolbarlabel : "",
     list_css     : "itbase_data",
+    isEnableDelButton: function(){   // true - работают
+        // когда выделена строка
+        return $$("list_itemdata").getSelectedId();
+    },
+    isEnableAddButton: function(){          // когда работают, а когда не работают кнопки
+        // когда выделен объект и он не папка
+        itemID = $$("list_itbase").getSelectedId() || 0;
+        return (! $$("list_itbase").isBranch(itemID) && itemID );
+    },
     // list_template: "<div class='fleft datapage'>#label#:</div><div class='fleft'>#value#</div>",
     list_template: function(obj){
         value = (obj.ftype  == "password") ? "<dev class='webix-icon fa-key'></dev>" : obj.value;
@@ -296,7 +297,7 @@ var DataPage = new PageAdm({
         // Если не выбран пользователь - выходим
         if ( selected_item == false) return false;
 
-        if( tree.getFirstChildId(selected_item.id) )
+        if( $$("list_itbase").isBranch(selected_item.id) )
             webix.message({type:"error", text:"Выделите объект"});
 
         return { "pid": selected_item.id, "datatype": 1, "ftype": "text",};

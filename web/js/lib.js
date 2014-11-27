@@ -280,17 +280,24 @@ function MAdmView(setup) {
                                                         $$(self.rows[1].cells[i].id).bind('list_' + self.objID);
                                                 }
                                              };
+    this.isEnableAddButton  = setup.isEnableAddButton || true;
+    this.isEnableDelButton  = setup.isEnableDelButton || true;
 
-    this.isActiveCell_List = function(ID) {
-        var multiview = $$("list_" + ID).getParentView(); // multiview
+    this.isActiveCell_List = function() {
+        var multiview = $$("list_" + self.objID).getParentView(); // multiview
 
         if (multiview.config.view != "multiview")
             return false;
 
-        activeID = multiview.getActiveId();
+        
+        if( multiview.getActiveId() != "list_" + self.objID ) {
+            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+            return false;
+        }
 
-        return activeID == "list_" + ID;
+        return true;
     };
+    
  };
 
 function PageAdm(setup) {
@@ -304,17 +311,17 @@ function PageAdm(setup) {
             type  : "iconButton",
             icon  : "plus",
             label : "New",
-            width : 70,
+            width : 75,
             hidden: this.hideAddButton,
+            
             click :  function(){
-                // Если кнопка нажата не на списке  - выходим
-                if (! self.isActiveCell_List(self.objID)) {
-                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+                // Условие срабатывание кнопки
+                if( ! (self.isEnableAddButton() && self.isActiveCell_List()) )
                     return false;
-                }
+
                 defaults = self.addButtonClick();
 
-                if( defaults == false )   return false;
+                if( defaults == false )  return false;
 
                 defaults["is_new"] = 1;
                 defaults["active"] = 1;
@@ -329,15 +336,14 @@ function PageAdm(setup) {
             type  : "iconButton",
             icon  : "trash-o",
             label : "Del",
-            width : 70,
+            width : 75,
             hidden: this.hideDelButton,
             click : function(){
 
                 // Если кнопка нажата не на списке - выходим
-                if (! self.isActiveCell_List(self.objID)) {
-                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
+                if( ! (self.isEnableDelButton() && self.isActiveCell_List()) )
                     return false;
-                }
+                    
 
                 var selected_id = $$("list_" + self.objID).getSelectedId();
 
@@ -423,9 +429,10 @@ function PageTreeAdm(setup) {
         this.rows[0].cols.push({
                 view     : "button",
                 type     : menuButtons[i].type || "iconButton",
-                label    : menuButtons[i].label || "New",
-                width    : menuButtons[i].width || 70,
+                label    : menuButtons[i].label || "",
+                width    : menuButtons[i].width || 75,
                 icon     : menuButtons[i].icon || "user",
+                isEnable : menuButtons[i].isEnable || true,
                 click    : menuButtons[i].click || function(){},
         });
 
