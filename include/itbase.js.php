@@ -42,7 +42,8 @@ var ITBasePage = new PageTreeAdm({
                              $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.id) );
 
                              // не показываем richselect, если кладем объект в корень
-                             selected_item.id ? $$("itbase__rs").show() : $$("itbase__txt").show();                                
+                             //selected_item.id ? $$("itbase__rs").show() : $$("itbase__txt").show();                                
+                             $$("itbase__rs").show();                                
                          },
         },
         {
@@ -218,6 +219,7 @@ var ITBasePage = new PageTreeAdm({
     list_on: {
         "onKeyPress": function (key) {
             selected_item = this.getSelectedItem();
+            // formID = selected_item['$count'] == 0  ? "itbase__rs" : "itbase__txt";
             formID = selected_item['$parent'] != 0  ? "itbase__rs" : "itbase__txt";
             ITBasePage.keyPressAction(this, key, formID);
         },
@@ -235,6 +237,7 @@ var ITBasePage = new PageTreeAdm({
             // Заполняем селект в форме     
             selectOpt = $$("rs").getPopup().getList();
             selectOpt.clearAll();
+            // selectOpt.add({"id": "0", "value":"-root-"},0);
             selectOpt.load("/itbase/RichSelect/?tsect="+item.tsect);
         },
         "onItemClick": function(id){
