@@ -66,6 +66,23 @@ class Itbase extends \App\Page {
 		}
     }
 
+	public function action_delStr() {
+
+		if( ! $params = $this->request->post() )
+			return;
+
+		try {
+			$this->pixie->db->query("delete","itbase")
+							->table("strings")
+							->where('id',$params['id'])
+							->execute();
+
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+		}
+    }
+
 	
 	/**
 	 * выбирает из базы все записи, связвнные с PID, группируя по TID(тип записи), GID ("порядковый номер" типа записи)
