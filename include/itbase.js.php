@@ -35,6 +35,7 @@ var ITBasePage = new PageTreeAdm({
                                          "is_new": 1, 
                                          "value" : selected_item.id, 
                                          "pid"   : selected_item.id,
+                                         "fldr"  : 0,
                                          "tsect" : selected_item.tsect
                                      };
 
