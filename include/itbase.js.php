@@ -304,7 +304,7 @@ var DataPage = new PageTreeAdm({
                             if( ! (this.config.isEnable() && DataPage.isActiveCell_List()) )
                                 return false;
 
-                             var selected_item = $$("list_itbase").getSelectedItem();
+                             var selected_item = $$("list_itemdata").getSelectedItem();
 
                              webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
                                  //  тут надо отослать данные на сервер
