@@ -102,11 +102,11 @@ var ITBasePage = new PageTreeAdm({
             icon :    "trash-o",
             label:    "Del",
             isEnable: function(){
-                         item = $$("list_itbase").getSelectedItem();
-                         if( item.fldr == "1")
+                         id = $$("list_itbase").getSelectedId();
+                         if( $$("list_itbase").isBranch(id) ) 
                             webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
-
-                         return (item.fldr != "1");
+                         
+                         return ! $$("list_itbase").isBranch(id);
             },  
             click:    function() {
                             // Если кнопка нажата не на списке - выходим
@@ -366,16 +366,16 @@ var DataPage = new PageTreeAdm({
             DataPage.keyPressAction(this, key);
         }
     },
-    addButtonClick: function(){
-        selected_item = $$("list_itbase").getSelectedItem();
-        // Если не выбран пользователь - выходим
-        if ( selected_item == false) return false;
+    // addButtonClick: function(){
+    //     selected_item = $$("list_itbase").getSelectedItem();
+    //     // Если не выбран пользователь - выходим
+    //     if ( selected_item == false) return false;
 
-        if( $$("list_itbase").isBranch(selected_item.id) )
-            webix.message({type:"error", text:"Выделите объект"});
+    //     if( $$("list_itbase").isBranch(selected_item.id) )
+    //         webix.message({type:"error", text:"Выделите объект"});
 
-        return { "pid": selected_item.id, "datatype": 1, "ftype": "text",};
-    }
+    //     return { "pid": selected_item.id, "datatype": 1, "ftype": "text",};
+    // }
 });
 
 
