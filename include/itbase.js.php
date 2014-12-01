@@ -207,7 +207,7 @@ var ITBasePage = new PageTreeAdm({
 
                                                 $$("list_itbase").scrollTo(0, values.id);
                                                 // при редактировании записи - показываем данные
-                                                is_reload == true || $$('list_itemdata').load("/itbase/select/?pid=" + values.id);
+                                                !is_reload  || $$('list_itemdata').load("/itbase/select/?pid=" + values.id);
                                                 
                                                 mForm.getParentView().back();
                                             }
