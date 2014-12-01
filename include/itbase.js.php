@@ -309,7 +309,7 @@ var DataPage = new PageTreeAdm({
                              webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
                                  //  тут надо отослать данные на сервер
                                  if (result) {
-                                     webix.ajax().post("/"+ DataPage.hreflink +"/delEntry/", selected_item, function (text, xml, xhr) {
+                                     webix.ajax().post("/"+ DataPage.hreflink +"/delStr/", selected_item, function (text, xml, xhr) {
                                          if (!text) {
                                              webix.message("ОK"); // server side response
                                              $$("list_itemdata").remove(selected_item['id']);
