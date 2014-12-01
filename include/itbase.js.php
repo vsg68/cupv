@@ -8,7 +8,7 @@ var ITBasePage = new PageTreeAdm({
     list_view: "tree",
     list_template: function(obj, com){
         // Подставляем свою иконку для группы
-        if( obj.$count == 0 )
+        if( obj.fldr == "0" )
             icon = "<div class='itbase-"+obj.tsect+" webix_tree_file'></div>";
         else
             icon = obj.open ? "<div class='itbase-"+obj.tsect+" webix_tree_folder_open'></div>" : "<div class='itbase-"+obj.tsect+" webix_tree_folder'></div>";
@@ -42,7 +42,6 @@ var ITBasePage = new PageTreeAdm({
                              $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.id) );
 
                              // не показываем richselect, если кладем объект в корень
-                             //selected_item.id ? $$("itbase__rs").show() : $$("itbase__txt").show();                                
                              $$("itbase__rs").show();                                
                          },
         },
@@ -56,6 +55,7 @@ var ITBasePage = new PageTreeAdm({
                              defaults = {
                                          "is_new": 1, 
                                          "pid":0, 
+                                         "fldr":1, 
                                          "tsect": ($$("chPage").getValue().split("_"))[1],
                                      };
 
@@ -68,11 +68,11 @@ var ITBasePage = new PageTreeAdm({
             icon :    "copy",
             label:    "Copy",
             isEnable: function(){
-                             itemID = $$("list_itbase").getSelectedId() || 0;
-                             if( $$("list_itbase").isBranch(itemID) && itemID ) 
+                             item = $$("list_itbase").getSelectedItem();
+                             if( item.fldr == "1" ) 
                                  webix.message({type : "error",text:"Копирются только объекты"});
 
-                             return (! $$("list_itbase").isBranch(itemID) && itemID );
+                             return ( item.fldr != "1" );
             }, 
             click:    function(){
                             // Если кнопка нажата не на списке - выходим
@@ -87,6 +87,7 @@ var ITBasePage = new PageTreeAdm({
                                              "name"    : selected_item.name + "_copy", 
                                              "value"   : selected_item.pid, 
                                              "pid"     : selected_item.pid,
+                                             "fldr"    : selected_item.fldr,
                                              "tsect"   : selected_item.tsect
                                          };
 
@@ -100,11 +101,11 @@ var ITBasePage = new PageTreeAdm({
             icon :    "trash-o",
             label:    "Del",
             isEnable: function(){
-                         itemID = $$("list_itbase").getSelectedId() || 0;
-                         if( $$("list_itbase").isBranch(itemID) && itemID)
+                         item = $$("list_itbase").getSelectedItem();
+                         if( item.fldr == "1")
                             webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
 
-                         return (! $$("list_itbase").isBranch(itemID) && itemID );
+                         return (item.fldr != "1");
             },  
             click:    function() {
                             // Если кнопка нажата не на списке - выходим
@@ -128,7 +129,6 @@ var ITBasePage = new PageTreeAdm({
                                  }
                              }})     
                          },
-                        
         }
     ],
     formPages: [
@@ -155,16 +155,15 @@ var ITBasePage = new PageTreeAdm({
                     on: {
                         "onChange": function(){
                             optId = this.getPopup().getMasterValue();
-                            selected_item = this.getPopup().getList().getItem(optId);
                             Form = this.getFormView().getValues();
-
-                            // поле optId - ID выбранной опции
-                            if( ! optId || selected_item == undefined) 
-                                this.setValue(Form["$parent"]);
+                            // поле optId - ID выбранной опции - делаем строковое значение
+                            if(  ! optId  ) 
+                                this.setValue("" + Form["$parent"]);
                             else
                             // заполняем поле user_id при изменении select
-                               this.getFormView().setValues({"pid": selected_item.id },true);
+                                this.getFormView().setValues({"pid": Form["value"] },true);
                         },
+                        
                     }
                 },
 
@@ -177,7 +176,7 @@ var ITBasePage = new PageTreeAdm({
                                     var mForm = $$(this.id);
                                     
                                     var values =  mForm.getValues();
-                                    
+                                   
                                     if(values.is_new == undefined)
                                         values.is_new    = 0;
                                     
@@ -203,11 +202,11 @@ var ITBasePage = new PageTreeAdm({
                                                 webix.message("ОK"); // server side response
                                                 // открываем бранч, куда переместили листок
                                               
-                                                $$("list_itbase").open( values.pid );
-                                                $$("list_itbase").scrollTo(0, values.id);
+                                                values.pid == "0" || $$("list_itbase").open( values.pid );
 
-                                                if( is_reload )
-                                                    $$('list_itemdata').load("/itbase/select/?pid=" + values.id);
+                                                $$("list_itbase").scrollTo(0, values.id);
+                                                // при редактировании записи - показываем данные
+                                                is_reload == true || $$('list_itemdata').load("/itbase/select/?pid=" + values.id);
                                                 
                                                 mForm.getParentView().back();
                                             }
@@ -219,8 +218,7 @@ var ITBasePage = new PageTreeAdm({
     list_on: {
         "onKeyPress": function (key) {
             selected_item = this.getSelectedItem();
-            // formID = selected_item['$count'] == 0  ? "itbase__rs" : "itbase__txt";
-            formID = selected_item['$parent'] != 0  ? "itbase__rs" : "itbase__txt";
+            formID = selected_item.fldr == "0"  ? "itbase__rs" : "itbase__txt";
             ITBasePage.keyPressAction(this, key, formID);
         },
         "onAfterSelect": function () {
@@ -237,7 +235,7 @@ var ITBasePage = new PageTreeAdm({
             // Заполняем селект в форме     
             selectOpt = $$("rs").getPopup().getList();
             selectOpt.clearAll();
-            // selectOpt.add({"id": "0", "value":"-root-"},0);
+            selectOpt.add({"id": "0", "value":"-root-"},0);
             selectOpt.load("/itbase/RichSelect/?tsect="+item.tsect);
         },
         "onItemClick": function(id){
@@ -262,38 +260,109 @@ var ITBasePage = new PageTreeAdm({
     list_url: "/itbase/getTree/"
 });
 
-var DataPage = new PageAdm({
+var DataPage = new PageTreeAdm({
     id           : "itemdata",
     hreflink     : "itbase",
     toolbarlabel : "",
     list_css     : "itbase_data",
-    isEnableDelButton: function(){   // true - работают
-        // когда выделена строка
-        return $$("list_itemdata").getSelectedId();
-    },
-    isEnableAddButton: function(){          // когда работают, а когда не работают кнопки
-        // когда выделен объект и он не папка
-        itemID = $$("list_itbase").getSelectedId() || 0;
-        return (! $$("list_itbase").isBranch(itemID) && itemID );
-    },
-    // list_template: "<div class='fleft datapage'>#label#:</div><div class='fleft'>#value#</div>",
     list_template: function(obj){
-        value = (obj.ftype  == "password") ? "<dev class='webix-icon fa-key'></dev>" : obj.value;
-        return "<div class='fleft datapage'>" + obj.label +":</div><div class='fleft'>"+ value +"</div>";
+        value = (obj.secure == "1") ? "<div class='fleft webix_icon fa-key'></div>" : "<div class='fleft'>"+ obj.value +"</div>";
+        return "<div class='fleft datapage'>" + obj.label +":</div>" + value;
     },
+    menuButtons:[
+        {
+            icon : "plus",
+            label: "New",
+            isEnable: function(){   
+                // true - работают
+                return $$("list_itbase").getSelectedItem().fldr != "1";
+            },
+            click: function() {          
+                            // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
+                            if( ! (this.config.isEnable() && DataPage.isActiveCell_List() ) ) 
+                               return false;
+                            selected_item   = $$("list_itbase").getSelectedItem();
+                            defaults = {
+                                        is_new  : 1,
+                                        datatype: selected_item.tsect,
+                                        pid     : selected_item.id,
+                                    };
+                            $$("form_itemdata").show();
+                            // создаем новую запись
+                            $$("list_itemdata").select( $$("list_itemdata").add(defaults) );
+                             
+                         },
+        },
+        {
+            icon :    "trash-o",
+            label:    "Del",
+            isEnable: function(){
+                         return $$("list_itemdata").getSelectedId();
+            },  
+            click:    function() {
+                            // Если кнопка нажата не на списке - выходим
+                            if( ! (this.config.isEnable() && DataPage.isActiveCell_List()) )
+                                return false;
+
+                             var selected_item = $$("list_itbase").getSelectedItem();
+
+                             webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                                 //  тут надо отослать данные на сервер
+                                 if (result) {
+                                     webix.ajax().post("/"+ DataPage.hreflink +"/delEntry/", selected_item, function (text, xml, xhr) {
+                                         if (!text) {
+                                             webix.message("ОK"); // server side response
+                                             $$("list_itemdata").remove(selected_item['id']);
+                                         }
+                                         else
+                                             webix.message({type: "error", text: text});
+                                     })
+                                 }
+                             }})     
+                         },
+        },
+    ],
+    formPages: [
+        {
+            formElements: [
+                {view: "text",label: "Лейбл", name: "label" },
+                {view: "text",label: "Название", name: "value"},
+                {view: "checkbox",label: "Скрыто", name: "secure"},
+                webix.copy(save_cancel_button),{}
+            ],
+            formRules: {
+                 label: webix.rules.isNotEmpty,
+                 value: webix.rules.isNotEmpty
+            },
+            save_form: function(){
+                                var mForm = $$(this.id);
+
+                                var values =  mForm.getValues();
+
+                                if(values.is_new == undefined)
+                                    values.is_new = 0;
+
+                                if ( mForm.save() === false)  return false;
+
+                                // Если не новая запись - убираем признак новой записи
+                                mForm.setValues({is_new:0},true);
+
+                                webix.ajax().post("/itbase/save/", values, function(response){
+                                                                                if(response)
+                                                                                    webix.message({type:"error", expire: 3000, text: response}); // server side response
+                                                                                else {
+                                                                                    webix.message("ОK"); // server side response
+                                                                                    mForm.getParentView().back();
+                                                                                    $$("list_itemdata").showItem(values.id);
+                                                                                }
+                                        });
+                                },
+        }
+    ],
     list_on: {
         "onKeyPress": function (key) {
             DataPage.keyPressAction(this, key);
         }
-    },
-    formElements: [
-        {view: "text",label: "Лейбл", name: "label" },
-        {view: "text",label: "Название", name: "value"},
-        webix.copy(save_cancel_button),{}
-    ],
-    formRules: {
-         label: webix.rules.isNotEmpty,
-         value: webix.rules.isNotEmpty
     },
     addButtonClick: function(){
         selected_item = $$("list_itbase").getSelectedItem();
@@ -339,7 +408,6 @@ var ITBasePage = new MView({
             $$('list_itemdata').load("/itbase/select/?pid=" + item.id);
         },
         "onItemClick": function(id){
-
             tree = $$('list_itbase');
             item = tree.getItem(id);
             
