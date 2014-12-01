@@ -123,6 +123,7 @@ var ITBasePage = new PageTreeAdm({
                                          if (!text) {
                                              webix.message("ОK"); // server side response
                                              $$("list_itbase").remove(selected_item['id']);
+                                             $$("list_iemdata").clearAll();
                                          }
                                          else
                                              webix.message({type: "error", text: text});
