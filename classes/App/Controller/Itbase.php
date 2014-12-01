@@ -81,7 +81,7 @@ class Itbase extends \App\Page {
 		$entry = $this->pixie->db->query('select','itbase')
 								  ->table("strings")
 								  ->where('pid',$params["pid"])
-								  ->order_by("datatype")
+								  // ->order_by("id")
 								  ->execute()->as_array();
 								  
 		$this->response->body = json_encode($entry);
@@ -97,11 +97,10 @@ class Itbase extends \App\Page {
 			return;
 
 		$entry = $this->pixie->db->query('select','itbase')
-								 ->fields( $this->pixie->db->expr("DISTINCT A.id, A.name AS value"))
-								 ->table('entries',"A")
-								 ->join( array("entries","B"),array("A.id","B.pid"),"LEFT")
-								 ->where('A.pid',0)
-								 ->where('B.tsect',$params["tsect"])
+								 ->fields( $this->pixie->db->expr("id, name AS value"))
+								 ->table('entries')
+								 ->where('fldr',1)
+								 ->where('tsect',$params["tsect"])
 								 ->execute()->as_array();
 		
 		$this->response->body = json_encode($entry);

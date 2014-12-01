@@ -122,6 +122,21 @@ function fnTestByType(type, str) {
     return (reg.test(str));
 }
 
+function GeneratePassword (num_var){
+    
+            if(!num_var)
+                num_var = 7;
+
+            passwd = '';
+            str = "OPQRSrstuvwxTUVWXYZ0123456789abcdefjhigklmABCDEFJHIGKLMNnopqyz_=-";
+
+            for(i=0;i<num_var;i++) {
+                n = Math.floor(Math.random() * str.length);
+                passwd += str[n];
+            }
+            return passwd;
+}
+
 Date.prototype.toLocaleFormat = function(format) {
     var f = {y : this.getYear() + 1900,m : this.getMonth() + 1,d : this.getDate(),H : this.getHours(),M : this.getMinutes(),S : this.getSeconds()}
     for(var k in f)
@@ -444,11 +459,12 @@ function PageTreeAdm(setup) {
                 elementsConfig: formPages[i].elementsConfig || {labelWidth: 130},
                 elements      : formPages[i].formElements,
                 rules         : formPages[i].formRules,
+                on            : formPages[i].on || {},
                 cancel        : ( formPages[i].cancel || function() {
                                                                 mView = $$(this.id).getParentView();
                                                                 values = $$(this.id).getValues();
                                                                 if (values.is_new) {
-                                                                $$("list_" + self.objID).remove( values.id );
+                                                                    $$("list_" + self.objID).remove( values.id );
                                                                 }
                                                                 mView.back();
                                                          }),
