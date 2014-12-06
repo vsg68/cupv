@@ -264,7 +264,8 @@ function MView(setup) {
                     select: true,
                     template: this.list_template,
                     url: this.list_url,
-                    on: this.list_on
+                    on: this.list_on,
+                    onContext: {},
                 }
             ]
         }
@@ -297,6 +298,8 @@ function MAdmView(setup) {
                                              };
     this.isEnableAddButton  = setup.isEnableAddButton || true;
     this.isEnableDelButton  = setup.isEnableDelButton || true;
+
+    this.list_Edit      = setup.list_Edit;
 
     this.isActiveCell_List = function() {
         var multiview = $$("list_" + self.objID).getParentView(); // multiview

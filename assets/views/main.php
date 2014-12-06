@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="theme-color" content="#468996">
         <link rel="stylesheet" href="/codebase/webix.css" type="text/css" media="screen" charset="utf-8">
         <link rel="stylesheet" href="/css/main.css" type="text/css" media="screen" charset="utf-8">
 

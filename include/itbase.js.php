@@ -15,6 +15,91 @@ var ITBasePage = new PageTreeAdm({
 
         return com.icon(obj, com) + icon + '<span>'+ obj.name + '</span>';
     },
+    list_Edit:{
+        Add_Item  : function(){
+                                 selected_item = $$("list_itbase").getSelectedItem() || 
+                                            { "id":0, "pid":0, "tsect": $$("chPage").getValue().split("_")[1] };
+
+                                 // если узел не является корнем, то ищем ID его корня
+                                 if( selected_item["fldr"] == 0 && selected_item.pid != 0 )
+                                     selected_item.id = selected_item.pid ;
+                                 
+                                 defaults = {
+                                             "is_new": 1, 
+                                             "value" : selected_item.id, 
+                                             "pid"   : selected_item.id,
+                                             "fldr"  : 0,
+                                             "tsect" : selected_item.tsect
+                                         };
+
+                                 // Переход к редактированию
+                                 $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.id) );
+
+                                 // не показываем richselect, если кладем объект в корень
+                                 $$("itbase__rs").show();     
+                    },
+        Add_Folder: function(){
+                             defaults = {
+                                         "is_new": 1, 
+                                         "pid":0, 
+                                         "fldr":1, 
+                                         "tsect": ($$("chPage").getValue().split("_"))[1],
+                                     };
+
+                             // Переход к редактированию
+                             $$("itbase__txt").show(); 
+                             $$("list_itbase").select( $$("list_itbase").add( defaults ) );   
+                    },
+        Delete    : function(){
+                            var selected_item = $$("list_itbase").getSelectedItem();
+                            
+                            if( !selected_item )
+                                return webix.message({type : "error",text:"Выделите объект"});
+
+                            if( $$("list_itbase").isBranch(selected_item['id']) ) 
+                              return  webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
+
+                            webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                                //  тут надо отослать данные на сервер
+                                if (result) {
+                                    webix.ajax().post("/"+ ITBasePage.hreflink +"/delEntry/", selected_item, function (text, xml, xhr) {
+                                        if (!text) {
+                                            webix.message("ОK"); // server side response
+                                            $$("list_itbase").remove(selected_item['id']);
+                                            $$("list_iemdata").clearAll();
+                                        }
+                                        else
+                                            webix.message({type: "error", text: text});
+                                    })
+                                }
+                            }})     
+                    },
+        Copy      : function(){
+
+                            var selected_item = $$("list_itbase").getSelectedItem();
+
+                            if( !selected_item )
+                               return webix.message({type : "error",text:"Выделите объект"});
+
+                            if( selected_item["fldr"] == "1" ) 
+                               return  webix.message({type : "error",text:"Копирются только объекты"});
+
+                            defaults = {
+                                            "is_new"  : 1, 
+                                            "copy_id" : selected_item.id, 
+                                            "name"    : selected_item.name + "_copy", 
+                                            "value"   : selected_item.pid, 
+                                            "pid"     : selected_item.pid,
+                                            "fldr"    : selected_item.fldr,
+                                            "tsect"   : selected_item.tsect
+                                        };
+
+                            //  делаем новую запись
+                            $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.pid) );
+                            
+                            $$("itbase__rs").show();   
+                    },
+    },               
     menuButtons:[
         {
             icon : "laptop",
@@ -105,8 +190,8 @@ var ITBasePage = new PageTreeAdm({
                          id = $$("list_itbase").getSelectedId();
                          if( $$("list_itbase").isBranch(id) ) 
                             webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
-                         
                          return ! $$("list_itbase").isBranch(id);
+                         
             },  
             click:    function() {
                             // Если кнопка нажата не на списке - выходим
@@ -464,10 +549,11 @@ function getOptionTab() {
     var val = "" + this.getValue().split("_")[1];
     // В листе присутствует удаленное поле, и если это не обработать, 
     // получаем ошибку т.k. obj == undefined
-    $$("list_itbase").filter(function(obj){
-         return ( obj == undefined) ? false : obj.tsect == val;
-    });
+    // $$("list_itbase").filter(function(obj){
+    //      return ( obj == undefined) ? false : obj.tsect == val;
+    // });
     // закрываются фсе формы
+    $$("list_itbase").filter("tsect",val);  // работает для версии 1.10
     $$("list_itemdata").clearAll();
     $$("list_itemdata").show();
     $$("list_itbase").show();

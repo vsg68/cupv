@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"sele",
+				"getSelectedItem"
+			],
+			[
+				"list_i",
+				"list_itemdata"
+			],
+			[
 				"onA",
 				"onAfterLoad"
 			],
@@ -42,10 +50,6 @@
 			[
 				"form",
 				"formID"
-			],
-			[
-				"sele",
-				"selected_item"
 			],
 			[
 				"add",
@@ -171,7 +175,15 @@
 			"file": "include/itbase.js.php",
 			"settings":
 			{
-				"buffer_size": 17513,
+				"buffer_size": 21555,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "assets/views/main.php",
+			"settings":
+			{
+				"buffer_size": 2979,
 				"line_ending": "Unix"
 			}
 		},
@@ -187,7 +199,32 @@
 			"file": "classes/App/Controller/Itbase.php",
 			"settings":
 			{
-				"buffer_size": 3937,
+				"buffer_size": 4247,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "include/tmp.js",
+			"settings":
+			{
+				"buffer_size": 1114,
+				"line_ending": "Unix",
+				"name": "data = [{id: \"\", value:\"\", tsect:\"\"}]"
+			}
+		},
+		{
+			"file": "web/cupv.todo",
+			"settings":
+			{
+				"buffer_size": 921,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "web/list1.html",
+			"settings":
+			{
+				"buffer_size": 3991,
 				"line_ending": "Unix"
 			}
 		},
@@ -203,7 +240,7 @@
 			"file": "web/js/lib.js",
 			"settings":
 			{
-				"buffer_size": 24219,
+				"buffer_size": 24608,
 				"line_ending": "Unix"
 			}
 		}
@@ -211,24 +248,24 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 54.0,
+		"height": 327.0,
 		"selected_items":
 		[
 			[
-				"git status",
-				"Git: Status"
+				"git pu",
+				"Git: Pull Current Branch"
+			],
+			[
+				"git qc",
+				"Git: Quick Commit"
 			],
 			[
 				"git push ",
 				"Git: Push Current Branch"
 			],
 			[
-				"git pull",
-				"Git: Pull Current Branch"
-			],
-			[
-				"git qc",
-				"Git: Quick Commit"
+				"git status",
+				"Git: Status"
 			],
 			[
 				"git push cb",
@@ -237,6 +274,26 @@
 			[
 				"git",
 				"Git: Amend Commit"
+			],
+			[
+				"git  qc",
+				"Git: Quick Commit"
+			],
+			[
+				"git push",
+				"Git: Push Current Branch"
+			],
+			[
+				"git br",
+				"Git: Merge Branch"
+			],
+			[
+				"git b",
+				"Git: Change Branch"
+			],
+			[
+				"git pull",
+				"Git: Pull Current Branch"
 			],
 			[
 				"git add",
@@ -257,10 +314,6 @@
 			[
 				"status",
 				"Git: Status"
-			],
-			[
-				"git push",
-				"Git: Push Current Branch"
 			],
 			[
 				"git push c",
@@ -383,10 +436,6 @@
 				"Git: Push Current Branch"
 			],
 			[
-				"git pu",
-				"Git: Push Current Branch"
-			],
-			[
 				"git commi",
 				"Git: Quick Commit"
 			],
@@ -481,14 +530,13 @@
 	[
 		"/home/vsg/Dropbox/cupv/assets",
 		"/home/vsg/Dropbox/cupv/assets/config",
+		"/home/vsg/Dropbox/cupv/assets/views",
 		"/home/vsg/Dropbox/cupv/include",
-		"/home/vsg/Dropbox/cupv/classes",
-		"/home/vsg/Dropbox/cupv/classes/App",
-		"/home/vsg/Dropbox/cupv/classes/App/Controller",
 		"/home/vsg/Dropbox/cupv/web"
 	],
 	"file_history":
 	[
+		"/home/vsg/Dropbox/cupv/web/test",
 		"/home/vsg/Dropbox/cupv/web/cupv.todo",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/PlainTasks/messages/Tutorial.todo",
 		"/home/vsg/Dropbox/cupv/include/users.js.php",
@@ -662,7 +710,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -671,7 +719,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 17513,
+						"buffer_size": 21555,
 						"regions":
 						{
 							"bookmarks":
@@ -681,16 +729,16 @@
 								"regions":
 								[
 									[
-										3633,
-										3641
+										3687,
+										3695
 									],
 									[
-										7140,
-										7140
+										7296,
+										7296
 									],
 									[
-										16917,
-										16917
+										20887,
+										20887
 									]
 								],
 								"scope": "bookmarks"
@@ -699,8 +747,8 @@
 						"selection":
 						[
 							[
-								17014,
-								17014
+								21163,
+								21163
 							]
 						],
 						"settings":
@@ -714,14 +762,47 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1224.0,
+						"translation.y": 4436.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "assets/views/main.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2979,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								161,
+								161
+							]
+						],
+						"settings":
+						{
+							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
+							"encoding_helper_encoding": "UTF-8",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
+					"buffer": 2,
 					"file": "include/itbase_ready.js.php",
 					"semi_transient": false,
 					"settings":
@@ -749,24 +830,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 3,
 					"file": "classes/App/Controller/Itbase.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3937,
+						"buffer_size": 4247,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2248,
-								2248
+								693,
+								693
 							]
 						],
 						"settings":
@@ -778,14 +859,111 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1173.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
+					"file": "include/tmp.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1114,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								442,
+								442
+							]
+						],
+						"settings":
+						{
+							"auto_name": "data = [{id: \"\", value:\"\", tsect:\"\"}]",
+							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
+							"encoding_helper_encoding": "UTF-8",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "web/cupv.todo",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 921,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								499,
+								499
+							]
+						],
+						"settings":
+						{
+							"encoding_helper_encoding": "UTF-8",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/PlainTasks/PlainTasks.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "web/list1.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3991,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3661,
+								3661
+							]
+						],
+						"settings":
+						{
+							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
+							"encoding_helper_encoding": "UTF-8",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1530.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
 					"file": "web/css/main.css",
 					"semi_transient": false,
 					"settings":
@@ -1211,16 +1389,16 @@
 						"translation.y": 306.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 8,
 					"file": "web/js/lib.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 24219,
+						"buffer_size": 24608,
 						"regions":
 						{
 							"bookmarks":
@@ -1230,8 +1408,8 @@
 								"regions":
 								[
 									[
-										19357,
-										19357
+										19746,
+										19746
 									]
 								],
 								"scope": "bookmarks"
@@ -1240,8 +1418,8 @@
 						"selection":
 						[
 							[
-								16802,
-								16802
+								16303,
+								16303
 							]
 						],
 						"settings":
@@ -1254,10 +1432,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 5336.0,
+						"translation.y": 4160.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
