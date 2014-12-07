@@ -54,9 +54,9 @@ var ITBasePage = new PageTreeAdm({
                             var selected_item = $$("list_itbase").getSelectedItem();
                             
                             if( !selected_item )
-                                return webix.message({type : "error",text:"Выделите объект"});
+                                return webix.message({type : "error",text:"Выделите объект, который будем удалять"});
 
-                            if( $$("list_itbase").isBranch(selected_item['id']) ) 
+                            if( selected_item['$count'] ) 
                               return  webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
 
                             webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
@@ -107,124 +107,6 @@ var ITBasePage = new PageTreeAdm({
                                 $$("itbase__rs").show();
                     },
     },             
-    menuButtons:[
-        {
-            icon : "laptop",
-            label: "New",
-            click: function() {          
-                             // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
-                             if( ! ITBasePage.isActiveCell_List() )
-                                return false;
-
-                             // Присваиваем дефолтные значения если ничего не выделено
-                             selected_item = $$("list_itbase").getSelectedItem() || { "id":0, "pid":0, "tsect": $$("chPage").getValue().split("_")[1] };
-
-                             // если узел не является корнем, то ищем ID его корня
-                             if( selected_item["$count"] == 0 && selected_item.pid != 0 )
-                                 selected_item.id = selected_item.pid ;
-                             
-                             defaults = {
-                                         "is_new": 1, 
-                                         "value" : selected_item.id, 
-                                         "pid"   : selected_item.id,
-                                         "fldr"  : 0,
-                                         "tsect" : selected_item.tsect
-                                     };
-
-                             // Переход к редактированию
-                             $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.id) );
-
-                             // не показываем richselect, если кладем объект в корень
-                             $$("itbase__rs").show();                                
-                         },
-        },
-        {
-            icon : "folder-o",
-            label: "New",
-            click: function() {    
-                            if( ! ITBasePage.isActiveCell_List() )
-                                return false;
-                             // какой фильтр стоит? - какое значение таббара
-                             defaults = {
-                                         "is_new": 1, 
-                                         "pid":0, 
-                                         "fldr":1, 
-                                         "tsect": ($$("chPage").getValue().split("_"))[1],
-                                     };
-
-                             // Переход к редактированию
-                             $$("itbase__txt").show(); 
-                             $$("list_itbase").select( $$("list_itbase").add( defaults ) ); 
-                        }
-        },
-        {
-            icon :    "copy",
-            label:    "Copy",
-            isEnable: function(){
-                             item = $$("list_itbase").getSelectedItem();
-                             if( item.fldr == "1" ) 
-                                 webix.message({type : "error",text:"Копирются только объекты"});
-
-                             return ( item.fldr != "1" );
-            }, 
-            click:    function(){
-                            // Если кнопка нажата не на списке - выходим
-                            if( ! (this.config.isEnable() && ITBasePage.isActiveCell_List()) )
-                                return false;
-                             
-                             var selected_item   = $$("list_itbase").getSelectedItem();
-                             
-                             defaults = {
-                                             "is_new"  : 1, 
-                                             "copy_id" : selected_item.id, 
-                                             "name"    : selected_item.name + "_copy", 
-                                             "value"   : selected_item.pid, 
-                                             "pid"     : selected_item.pid,
-                                             "fldr"    : selected_item.fldr,
-                                             "tsect"   : selected_item.tsect
-                                         };
-
-                             //  делаем новую запись
-                             $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.pid) );
-                             
-                             $$("itbase__rs").show();  
-                         },
-        }, 
-        {
-            icon :    "trash-o",
-            label:    "Del",
-            isEnable: function(){
-                         id = $$("list_itbase").getSelectedId();
-                         if( $$("list_itbase").isBranch(id) ) 
-                            webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
-                         return ! $$("list_itbase").isBranch(id);
-                         
-            },  
-            click:    function() {
-                            // Если кнопка нажата не на списке - выходим
-                            if( ! (this.config.isEnable() && ITBasePage.isActiveCell_List()) )
-                                return false;
-
-                             var selected_item = $$("list_itbase").getSelectedItem();
-
-                             webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
-                                 //  тут надо отослать данные на сервер
-                                 if (result) {
-
-                                     webix.ajax().post("/"+ ITBasePage.hreflink +"/delEntry/", selected_item, function (text, xml, xhr) {
-                                         if (!text) {
-                                             webix.message("ОK"); // server side response
-                                             $$("list_itbase").remove(selected_item['id']);
-                                             $$("list_iemdata").clearAll();
-                                         }
-                                         else
-                                             webix.message({type: "error", text: text});
-                                     })
-                                 }
-                             }})     
-                         },
-        }
-    ],
     formPages: [
         {
             formID: "itbase__txt",
@@ -329,7 +211,7 @@ var ITBasePage = new PageTreeAdm({
             // Заполняем селект в форме     
             selectOpt = $$("rs").getPopup().getList();
             selectOpt.clearAll();
-            selectOpt.add({"id": "0", "value":"-root-"},0);
+            selectOpt.add({"id": "0", "value":"> ROOT <"},0);
             selectOpt.load("/itbase/RichSelect/?tsect="+item.tsect);
         },
         "onItemClick": function(id){
@@ -357,50 +239,35 @@ var ITBasePage = new PageTreeAdm({
 var DataPage = new PageTreeAdm({
     id           : "itemdata",
     hreflink     : "itbase",
+    // list_view    : "datatable",
     toolbarlabel : "",
     list_css     : "itbase_data",
     list_template: function(obj){
         value = (obj.secure == "1") ? "<div class='fleft webix_icon fa-key'></div>" : "<div class='fleft'>"+ obj.value +"</div>";
         return "<div class='fleft datapage'>" + obj.label +":</div>" + value;
     },
-    menuButtons:[
-        {
-            icon : "plus",
-            label: "New",
-            isEnable: function(){   
-                // true - работают
-                return $$("list_itbase").getSelectedItem().fldr != "1";
-            },
-            click: function() {          
-                            // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
-                            if( ! (this.config.isEnable() && DataPage.isActiveCell_List() ) ) 
-                               return false;
-                            selected_item   = $$("list_itbase").getSelectedItem();
-                            defaults = {
-                                        is_new  : 1,
-                                        datatype: selected_item.tsect,
-                                        pid     : selected_item.id,
-                                    };
-                            $$("form_itemdata").show();
-                            // создаем новую запись
-                            $$("list_itemdata").select( $$("list_itemdata").add(defaults) );
-                             
-                         },
+    list_Edit    : {
+        Add   : function(){
+            selected_item   = $$("list_itbase").getSelectedItem();
+            if( selected_item.fldr != "0" ) 
+                return webix.message({type:"error", text: "Выделите объект"});
+            
+            defaults = {
+                        is_new  : 1,
+                        datatype: selected_item.tsect,
+                        pid     : selected_item.id,
+                    };
+            $$("form_itemdata").show();
+            // создаем новую запись
+            $$("list_itemdata").select( $$("list_itemdata").add(defaults) );
         },
-        {
-            icon :    "trash-o",
-            label:    "Del",
-            isEnable: function(){
-                         return $$("list_itemdata").getSelectedId();
-            },  
-            click:    function() {
-                            // Если кнопка нажата не на списке - выходим
-                            if( ! (this.config.isEnable() && DataPage.isActiveCell_List()) )
-                                return false;
+        Delete: function(){
+            selected_item   = $$("list_itemdata").getSelectedItem();
+            if( selected_item == undefined )
+                return webix.message({type:"error", text: "Выделите объект,который надо удалить"});
 
-                             var selected_item = $$("list_itemdata").getSelectedItem();
-
-                             webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+            webix.confirm({ text: "Уверены, что надо удалять?", 
+                            callback: function (result) {
                                  //  тут надо отослать данные на сервер
                                  if (result) {
                                      webix.ajax().post("/"+ DataPage.hreflink +"/delStr/", selected_item, function (text, xml, xhr) {
@@ -412,10 +279,15 @@ var DataPage = new PageTreeAdm({
                                              webix.message({type: "error", text: text});
                                      })
                                  }
-                             }})     
-                         },
+                             }});     
         },
-    ],
+        Edit  : function(){
+                        if( $$("list_itemdata").getSelectedItem() == undefined )
+                            return webix.message({type:"error", text: "Выделите объект, который будем редактировать"});
+                        
+                        $$("form_itemdata").show();
+                },
+    },
     formPages: [
         {
             formElements: [
@@ -458,16 +330,6 @@ var DataPage = new PageTreeAdm({
             DataPage.keyPressAction(this, key);
         }
     },
-    // addButtonClick: function(){
-    //     selected_item = $$("list_itbase").getSelectedItem();
-    //     // Если не выбран пользователь - выходим
-    //     if ( selected_item == false) return false;
-
-    //     if( $$("list_itbase").isBranch(selected_item.id) )
-    //         webix.message({type:"error", text:"Выделите объект"});
-
-    //     return { "pid": selected_item.id, "datatype": 1, "ftype": "text",};
-    // }
 });
 
 

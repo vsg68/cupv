@@ -438,23 +438,8 @@ function PageTreeAdm(setup) {
     MAdmView.apply(this, arguments);  // Запускаем родительский конструктор
 
     formPages = setup.formPages || [];
-    menuButtons = setup.menuButtons || [];
     // определение страницы с формой и ее добавление
-    for( i=0; i<menuButtons.length; i++) {
-
-        // Сначала описываем формы
-        // количество кнопок = кол-во форм +1
-        this.rows[0].cols.push({
-                view     : "button",
-                type     : menuButtons[i].type || "iconButton",
-                label    : menuButtons[i].label || "",
-                width    : menuButtons[i].width || 75,
-                icon     : menuButtons[i].icon || "user",
-                isEnable : menuButtons[i].isEnable || true,
-                click    : menuButtons[i].click || function(){},
-        });
-
-        if( i >= formPages.length )  continue; 
+    for( i=0; i<formPages.length; i++) {
 
         this.rows[1].cells.push({
                 view          : "form",
@@ -497,8 +482,6 @@ function PageTreeAdm(setup) {
                                                             );
                                                       })
         });
-        
-
     }
 };
 
