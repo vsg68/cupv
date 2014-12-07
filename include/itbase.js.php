@@ -99,7 +99,14 @@ var ITBasePage = new PageTreeAdm({
                             
                             $$("itbase__rs").show();   
                     },
-    },               
+        Edit      : function(){
+                            if( $$("list_itbase").getSelectedItem()["fldr"] == 1) 
+                                $$("itbase__txt").show();
+
+                            if( $$("list_itbase").getSelectedItem()["fldr"] == 0)
+                                $$("itbase__rs").show();
+                    },
+    },             
     menuButtons:[
         {
             icon : "laptop",

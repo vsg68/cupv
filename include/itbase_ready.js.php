@@ -8,7 +8,7 @@
    
 	webix.ui({
 		view:"contextmenu",
-		data:["Add_Item","Add_Folder","Delete",{ $template:"Separator" }, "Copy"],
+		data:["Add_Item","Add_Folder","Edit","Delete",{ $template:"Separator" }, "Copy"],
 		master: $$("list_itbase"),
 		on:{
 			"onItemClick": function(id){
