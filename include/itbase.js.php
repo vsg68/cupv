@@ -32,11 +32,10 @@ var ITBasePage = new PageTreeAdm({
                                              "tsect" : selected_item.tsect
                                          };
 
-                                 // Переход к редактированию
-                                 $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.id) );
-
                                  // не показываем richselect, если кладем объект в корень
                                  $$("itbase__rs").show();     
+                                 // Переход к редактированию
+                                 $$("list_itbase").select( $$("list_itbase").add( defaults, 0, selected_item.id) );
                     },
         Add_Folder: function(){
                              defaults = {
