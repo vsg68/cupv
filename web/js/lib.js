@@ -334,7 +334,7 @@ function PageAdm(setup) {
             
             click :  function(){
                 // Условие срабатывание кнопки
-                if( ! (self.isEnableAddButton() && self.isActiveCell_List()) )
+                if( ! (self.isEnableAddButton && self.isActiveCell_List()) )
                     return false;
 
                 defaults = self.addButtonClick();
@@ -359,7 +359,7 @@ function PageAdm(setup) {
             click : function(){
 
                 // Если кнопка нажата не на списке - выходим
-                if( ! (self.isEnableDelButton() && self.isActiveCell_List()) )
+                if( ! (self.isEnableDelButton && self.isActiveCell_List()) )
                     return false;
                     
 
