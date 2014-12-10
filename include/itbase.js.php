@@ -49,14 +49,21 @@ var ITBasePage = new PageTreeAdm({
                              $$("itbase__txt").show(); 
                              $$("list_itbase").select( $$("list_itbase").add( defaults ) );   
                     },
+        Edit      : function(){
+                            if( $$("list_itbase").getSelectedItem()["fldr"] == 1) 
+                                $$("itbase__txt").show();
+
+                            if( $$("list_itbase").getSelectedItem()["fldr"] == 0)
+                                $$("itbase__rs").show();
+                    },
         Delete    : function(){
                             var selected_item = $$("list_itbase").getSelectedItem();
                             
-                            if( !selected_item )
-                                return webix.message({type : "error",text:"Выделите объект, который будем удалять"});
+                            // if( !selected_item )
+                            //     return webix.message({type : "error",text:"Выделите объект, который будем удалять"});
 
-                            if( selected_item['$count'] ) 
-                              return  webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
+                            // if( selected_item['$count'] ) 
+                            //   return  webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
 
                             webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
                                 //  тут надо отослать данные на сервер
@@ -77,11 +84,11 @@ var ITBasePage = new PageTreeAdm({
 
                             var selected_item = $$("list_itbase").getSelectedItem();
 
-                            if( !selected_item )
-                               return webix.message({type : "error",text:"Выделите объект"});
+                            // if( !selected_item )
+                            //    return webix.message({type : "error",text:"Выделите объект"});
 
-                            if( selected_item["fldr"] == "1" ) 
-                               return  webix.message({type : "error",text:"Копирются только объекты"});
+                            // if( selected_item["fldr"] == "1" ) 
+                            //    return  webix.message({type : "error",text:"Копирются только объекты"});
 
                             defaults = {
                                             "is_new"  : 1, 
@@ -98,14 +105,22 @@ var ITBasePage = new PageTreeAdm({
                             
                             $$("itbase__rs").show();   
                     },
-        Edit      : function(){
-                            if( $$("list_itbase").getSelectedItem()["fldr"] == 1) 
-                                $$("itbase__txt").show();
-
-                            if( $$("list_itbase").getSelectedItem()["fldr"] == 0)
-                                $$("itbase__rs").show();
-                    },
-    },             
+        
+    },    
+    list_EditRules: function(key){
+        var selected_item = $$("list_itbase").getSelectedItem();
+         
+        if( !selected_item ){
+            if( key == "Delete" || key == "Edit" || key == "Copy") 
+                return false;
+        }
+        else {
+            if( ( selected_item['$count'] && key == "Delete" ) || 
+                ( selected_item['fldr'] == "1" && key == "Copy" ) )
+                return false;
+        }
+        return true;
+    },         
     formPages: [
         {
             formID: "itbase__txt",
@@ -235,16 +250,23 @@ var ITBasePage = new PageTreeAdm({
     list_url: "/itbase/getTree/"
 });
 
+
 var DataPage = new PageTreeAdm({
     id           : "itemdata",
     hreflink     : "itbase",
-    // list_view    : "datatable",
     toolbarlabel : "",
-    list_css     : "itbase_data",
+    list_css     : "itemdata",
     list_template: function(obj){
         value = (obj.secure == "1") ? "<div class='fleft webix_icon fa-key'></div>" : "<div class='fleft'>"+ obj.value +"</div>";
         return "<div class='fleft datapage'>" + obj.label +":</div>" + value;
     },
+    list_columns: [
+        {id:"label", header:{height:2},width: 150, template: "<strong>#label#:</strong>"},
+        {id:"value", header:{height:2},width: 200, fillspace:true, template: function(obj){
+            return (obj.secure == "1") ? "<div class='webix_icon fa-key'></div>" : obj.value ;
+            }
+        },
+    ],
     list_Edit    : {
         Add   : function(){
             selected_item   = $$("list_itbase").getSelectedItem();
@@ -286,6 +308,16 @@ var DataPage = new PageTreeAdm({
                         
                         $$("form_itemdata").show();
                 },
+    },
+    list_EditRules: function(key){
+        var selected_itbase = $$("list_itbase").getSelectedItem();
+        var selected_item   = $$("list_itemdata").getSelectedItem(); 
+
+        if( ( !selected_itbase || selected_itbase["fldr"] =="1" ) ||
+            ( !selected_item && key == "Delete" ) )
+            return false;
+
+        return true;
     },
     formPages: [
         {
@@ -330,7 +362,6 @@ var DataPage = new PageTreeAdm({
         }
     },
 });
-
 
 <?php else: ?>
 
@@ -431,16 +462,13 @@ function getOptionTab() {
 /*********   USER PAGE  ********/
 /******************************************** For ALL ***********************************************/
 maintable = {
-    // view: "accordion",
-    // css:"accord1",
-    // multi: false,
     rows: [
         TAB,
         {
             cols:[
                 { rows:[ITBasePage] , gravity:3},
-                { width: 12, css: "transp"},
-                { rows:[DataPage ], gravity:5,autoheight: true,}
+                // { width: 12, css: "transp"},
+                { rows:[DataPage ], gravity:5}
             ]
         }
     ]
