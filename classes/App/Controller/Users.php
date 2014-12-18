@@ -29,30 +29,35 @@ class Users extends \App\Page {
     // Функция проверки почтового адреса
     public function action_validateEmail(){
 
-        $mbox = $this->request->get("mbox");
-        $id = $this->request->get("id");
+        try {
+            $mbox = $this->request->get("mbox");
+            $id   = $this->request->get("id");
 
-        // запрос
-        $sql = $this->pixie->db->query('select')
-                                ->fields("domain_name")
-                                ->table('domains')
-                                ->where(array('delivery_to','virtual'));
+            $sql = $this->pixie->db->query('select')
+                                    ->fields("domain_name")
+                                    ->table('domains')
+                                    ->where('domain_type',0);
+                                    // если будет легитимным адрес с доменом-алиасом 
+                                    // ->where(array('or', array(
+                                    //                 array('domain_type',1), 
+                                    //                 array('domain_type',0))));
 
-        $result = $this->pixie->db->query('select')
-                                    ->table('users')
-                                    ->where(array('or',array(
-                                                array('id','!=', $id),
-                                                array("mailbox", $mbox),
-                                    )))
-                                    ->where(array('or',array(
-                                        array('id', $id),
-                                        array("mailbox", '!=', $mbox),
-                                    )))
+            $num = $this->pixie->db->query('count')
+                                    ->table('users', "A")
+                                    ->join( array("users","B"), array("A.mailbox", "B.mailbox"))
+                                    ->where('B.id','!=',$id)
+                                    ->where($this->pixie->db->expr('B.id IS NOT NULL'), true)
+                                    ->where("A.mailbox", $mbox)
                                     ->where(array('or',array( $this->pixie->db->expr("SUBSTRING_INDEX('".$mbox."', '@', -1)"), 'NOT IN', $sql)))
-                                    ->execute()->as_array();
+                                    ->execute();
 
+            $this->response->body = $num;                        
+        }
+        catch (\Exception $e) {
+            $this->response->body = $e->getMessage();
+        }
 
-        $this->response->body = count($result) ? false : true;
+        
     }
 
     public function action_showTable(){

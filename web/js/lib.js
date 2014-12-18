@@ -8,12 +8,18 @@ function extend(Child, Parent) {
 }
 
 var save_cancel_button = {
-    margin: 5,
-    cols: [
-        {},
-        { view: "button", value: "Cancel", width: 70, click: function(){ this.getFormView().config.cancel()} },
-        { view: "button", value: "Save", width: 70, type: "form", click: function(){ this.getFormView().config.save_form()} },
-        {}
+    rows:[
+            {height: 30},
+            {
+                margin: 5,
+                cols: [
+                    {},
+                    { view: "button", value: "Cancel", width: 70, click: function(){ this.getFormView().config.cancel()} },
+                    { view: "button", value: "Save", width: 70, type: "form", click: function(){ this.getFormView().config.save_form()} },
+                    {}
+                ]
+            },
+            {}
     ]
 };
 
@@ -23,10 +29,11 @@ function checkEmail(ID, value) {
     var mForm = $$(ID).getValues();
     if (webix.rules.isEmail(value)) {
         webix.ajax().sync().get("/users/validateEmail/", { mbox: mForm.mailbox, id: mForm.id }, function (response) {
-            valid = response;  // response
+            if (response != "0")
+                webix.message({type: "error", expire: 3000, text: "Проверьте адрес и домен"});
+            else
+                valid = true;  // response
         });
-        if (!valid)
-            webix.message({type: "error", expire: 3000, text: "Проверьте адрес и домен"});
     }
     return valid;
 }
@@ -144,6 +151,7 @@ Date.prototype.toLocaleFormat = function(format) {
     return format;
 };
 
+
 /*
  Входные параметры:
    id - кусок id для форм и списков. для упрощенной индентификации ОБЯЗАТЕЛЕН
@@ -156,20 +164,22 @@ Date.prototype.toLocaleFormat = function(format) {
  */
 
 function MView(setup) {
-    var self = this;
-    this.objID = setup.id;  // Общее название
-    this.hreflink = setup.hreflink || setup.id.split("_")[0];  // Общее название
-    this.isScroll = setup.isListScroll;
-    this.toolbarlabel = setup.toolbarlabel || "";
+    var self             = this;
+    this.objID           = setup.id;  // Общее название
+    this.hreflink        = setup.hreflink || setup.id.split("_")[0];  // Общее название
+    this.isScroll        = setup.isListScroll;
+    this.toolbarlabel    = setup.toolbarlabel || "";
     this.hideSearchField = ! setup.showSearchField;
-    this.hideActiveOnly = ! setup.showActiveOnly;
-    this.filterFunction = setup.filterFunction || (function(){return true});
-    this.list_view = setup.list_view || "list";
-    this.list_css  = setup.list_css || "ftab";
-    this.list_url  = setup.list_url || "";
-    this.list_scheme =  setup.list_scheme || {};
-    this.list_template = setup.list_template || "<div class='isactive_#active#'>#name#</div>";  // Шаблон для отображения в list
-    this.list_on = setup.list_on || {};
+    this.hideActiveOnly  = ! setup.showActiveOnly;
+    this.filterFunction  = setup.filterFunction || (function(){return true});
+    this.list_view       = setup.list_view || "list";
+    this.list_css        = setup.list_css || "ftab";
+    this.list_url        = setup.list_url || "";
+    this.list_scheme     =  setup.list_scheme || {};
+    this.list_template   = setup.list_template || "<div class='isactive_#active#'>#name#</div>";  // Шаблон для отображения в list
+    this.list_on         = setup.list_on || {};
+    this.contextmenu     = setup.list_Edit;
+    this.cmenuRules      = setup.list_EditRules;
 
     this.keyPressAction = function(list, key ,formId){
 
@@ -255,17 +265,20 @@ function MView(setup) {
             fitBiggest: true,
             cells: [
                 {
-                    id: "list_" + self.objID,
-                    view: this.list_view,
-                    scheme: this.list_scheme,
-                    scroll: this.isScroll,
-                    css: this.list_css,
-                    type: { height: "auto" },
-                    select: true,
-                    template: this.list_template,
-                    url: this.list_url,
-                    on: this.list_on,
-                    onContext: {},
+                    id         : "list_" + self.objID,
+                    view       : this.list_view,
+                    scheme     : this.list_scheme,
+                    scroll     : this.isScroll,
+                    css        : this.list_css,
+                    type       : { height: "auto" },
+                    select     : true,
+                    columns    : this.list_columns,
+                    template   : this.list_template,
+                    url        : this.list_url,
+                    on         : this.list_on,
+                    onContext  : {},
+                    contextmenu: this.contextmenu,
+                    cmenuRules : this.cmenuRules,
                 }
             ]
         }
@@ -299,8 +312,6 @@ function MAdmView(setup) {
     this.isEnableAddButton  = setup.isEnableAddButton || true;
     this.isEnableDelButton  = setup.isEnableDelButton || true;
 
-    this.list_Edit      = setup.list_Edit;
-
     this.isActiveCell_List = function() {
         var multiview = $$("list_" + self.objID).getParentView(); // multiview
 
@@ -315,7 +326,6 @@ function MAdmView(setup) {
 
         return true;
     };
-    
  };
 
 function PageAdm(setup) {
@@ -334,7 +344,7 @@ function PageAdm(setup) {
             
             click :  function(){
                 // Условие срабатывание кнопки
-                if( ! (self.isEnableAddButton() && self.isActiveCell_List()) )
+                if( ! (self.isEnableAddButton && self.isActiveCell_List()) )
                     return false;
 
                 defaults = self.addButtonClick();
@@ -359,7 +369,7 @@ function PageAdm(setup) {
             click : function(){
 
                 // Если кнопка нажата не на списке - выходим
-                if( ! (self.isEnableDelButton() && self.isActiveCell_List()) )
+                if( ! (self.isEnableDelButton && self.isActiveCell_List()) )
                     return false;
                     
 
@@ -437,6 +447,7 @@ function PageTreeAdm(setup) {
     extend(PageTreeAdm,MAdmView);    // Наследуем
     MAdmView.apply(this, arguments);  // Запускаем родительский конструктор
 
+    // this.rows[0].hidden = true;      // прячем тулбар
     formPages = setup.formPages || [];
     // определение страницы с формой и ее добавление
     for( i=0; i<formPages.length; i++) {
@@ -448,6 +459,7 @@ function PageTreeAdm(setup) {
                 elements      : formPages[i].formElements,
                 rules         : formPages[i].formRules,
                 on            : formPages[i].on || {},
+                onContext     : {},
                 cancel        : ( formPages[i].cancel || function() {
                                                                 mView = $$(this.id).getParentView();
                                                                 values = $$(this.id).getValues();
@@ -554,51 +566,62 @@ function LogsView(setup) {
             elements: this.formElements,
         }
      ];
+};
 
- }
-
-function BaseTreeAdm(setup) {
-
+/* 
+    Контекстное меню. 
+    Входные параметры:
+     - ID вьюхи, к чему будем привязываться
+     - Индекс в массиве меню, где будет разделитель (украшательство)
+*/
+function CMenu(setup){
     var self = this;
-    extend(BaseTreeAdm,PageTreeAdm);    // Наследуем
-    PageTreeAdm.apply(this, arguments);  // Запускаем родительский конструктор
-    
-    lastnum = this.rows[1].cells.length;
+    this.separator_index = setup.separator_index || -1;
+    var menuItems = $$(setup.listID).config.contextmenu || {};
 
-    this.rows[1].cells[(lastnum-1)].save_form = function(){
-                            var mForm = $$(this.id);
-                            
-                            var values =  mForm.getValues();
-                            
-                            if(values.is_new == undefined)
-                                values.is_new    = 0;
-                            
-                            // Сначала валидация формы - потом отправка
-                            if( mForm.validate() === false ) return false;
+    // заполняем список меню по существующим функциям в мастер-объекте
+    function printMenuItems() {  
+                          var data = [];
+                          var i = 0;
+                          for (key in menuItems) {
+                               
+                              if( i == self.separator_index )
+                                  data.push({ $template:"Separator" });
+                                
+                              data.push(key);
+                              i++;
+                          }
+                          return data;
+    };
+    // объект меню
+    this.menu = {
+        view:"contextmenu",
+        data: printMenuItems(),
+        master: $$(setup.listID)["$view"],
+        on:{
+            "onItemClick": function(id){
+                var selectedId = $$(setup.listID).getSelectedId();
+                var item       = this.getItem(id).value;
 
-                            $$("list_" + self.objID).move(values.id,null,null, {parent:values.pid}); 
+                if( menuItems[item] != undefined  && ! this.hasCss(id,"webix_disabled"))
+                    menuItems[item]();
+            },
+            "onShow": function(){
+                if( $$(setup.listID).config.cmenuRules == undefined )
+                    return true;
+                
+                // Проходим по всем пунктам меню и применяем к ним правила
+                for( i=0; i<this.count(); i++) {
+                    
+                    var iid   = this.getIdByIndex(i);
+                    var value = this.getItem(iid).value;
 
-                            // Если не новая запись - убираем признак новой записи
-                            // Важно изменить $parent после MOVE, 
-                            // иначе следующее изменение будет брать не правильный парент для перемещения
-                            mForm.setValues({is_new:0, "$parent":values.pid },true);
-
-                            mForm.save();
-                            
-                            webix.ajax().post("/" + self.hreflink + "/savegroup", values,
-                                function(response){
-                                    if(response)
-                                        webix.message({type:"error", expire: 3000, text: response}); // server side response
-                                    else {
-                                        webix.message("ОK"); // server side response
-                                        // открываем бранч, куда переместили листок
-                                      
-                                        $$("list_" + self.objID).open( values.pid );
-                                        $$("list_" + self.objID).scrollTo(0, values.id);
-                                        mForm.getParentView().back();
-                                    }
-                                }
-                            );
-                        };
-                            
+                    if( $$(setup.listID).config.cmenuRules( value ))
+                        this.enableItem(iid);
+                    else
+                        this.disableItem(iid);
+                }
+            }
+        }
+    };
 };

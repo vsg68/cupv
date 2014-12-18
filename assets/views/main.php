@@ -18,11 +18,13 @@
                 var items = [];
 
                 for(i=0; i < sections.length; i++){
-                    if( sections[i].link == "<?= $ctrl ?>" )  continue;
+                    // if( sections[i].link == "<?= $ctrl ?>" )  continue;
 
                     items.push({view:"button",
                                 type:"icon",
                                 icon:"angle-right",
+                                disabled: (sections[i].link == "<?= $ctrl ?>"),
+                                css: "button_" + (sections[i].link == "<?= $ctrl ?>" ? 1: 0),
                                 label:sections[i].name,
                                 link: sections[i].link,
                                 tooltip:sections[i].note,

@@ -16,6 +16,7 @@ html, body, #mainlayer {
     background-color: #E97E29 !important;
     border: 0 solid transparent !important;
 }
+
 .tb-color .webix_img_btn:hover,
 .tb-color .webix_img_btn_top:hover,
 .tb-color .webix_image:hover,
@@ -211,6 +212,7 @@ html, body, #mainlayer {
 .accord .webix_accordionitem_header{
     background: #949f15;
 }
+
 .even {
     color: #824100;
 }
@@ -262,13 +264,30 @@ html, body, #mainlayer {
 .itbase_tabs .webix_item_tab {
     font-size: 1.1em;
 }
-/*.itbase_data .webix_list_item {
-    border-color: transparent;
-    border-width: 0;
-}*/
-/*.itbase_data  .webix_list_item:nth-child(odd) {
+.itemdata.webix_list {
+    padding: 9px 10px 9px 9px;
+   /* border-color: transparent;
+    border-width: 0;*/
+}
+/*.itemdata  .webix_list_item:nth-child(odd) {
     background-color: #fcfcfc;
 }*/
 .clear{
     clear: both;
 }
+.button_1 .webix_img_btn {
+    background-color: #C76103 !important;
+}
+a .fleft,
+a .fleft:hover {
+    color: #979797;
+    text-decoration: none;
+}
+/*.webix_tree .webix_scroll_cont>.webix_tree_leaves {
+    margin: 9px 10px 9px 9px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+.webix_scroll_cont {
+    background-color: #3498db;
+}*/

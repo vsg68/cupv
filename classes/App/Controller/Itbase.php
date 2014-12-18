@@ -68,10 +68,17 @@ class Itbase extends \App\Page {
 
 	public function action_delStr() {
 
+		$destination = realpath('./files');
+
 		if( ! $params = $this->request->post() )
 			return;
 
 		try {
+			if( $params["datatype"] == "1") {
+				$fileinfo = json_decode($params["value"],true);
+				@unlink($destination."/".$fileinfo["sname"]);
+			}
+
 			$this->pixie->db->query("delete","itbase")
 							->table("strings")
 							->where('id',$params['id'])
@@ -93,14 +100,11 @@ class Itbase extends \App\Page {
 		if( ! $params = $this->request->get() )
 			return;
 
-		$data = array();
-		
 		$entry = $this->pixie->db->query('select','itbase')
 								  ->table("strings")
 								  ->where('pid',$params["pid"])
-								  // ->order_by("id")
 								  ->execute()->as_array();
-								  
+
 		$this->response->body = json_encode($entry);
 	}
 
@@ -122,15 +126,17 @@ class Itbase extends \App\Page {
 		
 		$this->response->body = json_encode($entry);
     }
-
     public function action_save() {
 
 		if( ! $params = $this->request->post() )
 			return false;
 
 		try {
+
 			$is_update = $params['is_new'] ? false : true;
-            unset( $params['is_new'], $params['active'] );
+
+            unset( $params['is_new'], $params['files'] );  
+
 			// Если в запрос поместить true -  предполагается UPDATE
 			$this->pixie->orm->get("itbase")->strings->values($params, $is_update)->save();
 		}
@@ -176,6 +182,28 @@ class Itbase extends \App\Page {
 			$this->response->body = $e->getMessage();
 		}
     }
-		
+	
+	public function action_upload() {
+		ini_set('max_execution_time', 120);
+		$size = 256*256;
+		$destination = realpath('./files');
 
+			if (isset($_FILES['upload'])){
+				$file        = $_FILES['upload'];
+				$tmp 		 = array_reverse(explode(".", $file["name"]));
+				$sname       = md5($file["name"]).".". $tmp[0];
+				$filename    = $destination."/".$sname;
+
+				// $filename = $destination."/".preg_replace("|[\\\/]|", "", $file["name"]);
+				//check that file name is valid
+				if ($filename != "" && !file_exists($filename)) {
+					move_uploaded_file($file["tmp_name"], $filename);
+					echo "{ status: 'server', sname:'$sname'}";
+				// value print in base	
+				} else 
+					echo "{ status:'error' }";
+			}
+	
+
+	}
 }
