@@ -58,13 +58,6 @@ var ITBasePage = new PageTreeAdm({
                     },
         Delete    : function(){
                             var selected_item = $$("list_itbase").getSelectedItem();
-                            
-                            // if( !selected_item )
-                            //     return webix.message({type : "error",text:"Выделите объект, который будем удалять"});
-
-                            // if( selected_item['$count'] ) 
-                            //   return  webix.message({type: "error",text:"Сначала нужно удалить содержимое контейнера"});
-
                             webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
                                 //  тут надо отослать данные на сервер
                                 if (result) {
@@ -81,15 +74,7 @@ var ITBasePage = new PageTreeAdm({
                             }})     
                     },
         Copy      : function(){
-
                             var selected_item = $$("list_itbase").getSelectedItem();
-
-                            // if( !selected_item )
-                            //    return webix.message({type : "error",text:"Выделите объект"});
-
-                            // if( selected_item["fldr"] == "1" ) 
-                            //    return  webix.message({type : "error",text:"Копирются только объекты"});
-
                             defaults = {
                                             "is_new"  : 1, 
                                             "copy_id" : selected_item.id, 
@@ -105,7 +90,6 @@ var ITBasePage = new PageTreeAdm({
                             
                             $$("itbase__rs").show();   
                     },
-        
     },    
     list_EditRules: function(key){
         var selected_item = $$("list_itbase").getSelectedItem();
@@ -115,8 +99,7 @@ var ITBasePage = new PageTreeAdm({
                 return false;
         }
         else {
-            if( ( selected_item['$count'] && key == "Delete" ) || 
-                ( selected_item['fldr'] == "1" && key == "Copy" ) )
+            if( selected_item['$count'] && key == "Delete" )
                 return false;
         }
         return true;
@@ -145,7 +128,7 @@ var ITBasePage = new PageTreeAdm({
                     on: {
                         "onChange": function(){
                             optId = this.getPopup().getMasterValue();
-                            Form = this.getFormView().getValues();
+                            Form  = this.getFormView().getValues();
                             // поле optId - ID выбранной опции - делаем строковое значение
                             if(  ! optId  ) 
                                 this.setValue("" + Form["$parent"]);
@@ -208,7 +191,7 @@ var ITBasePage = new PageTreeAdm({
     list_on: {
         "onKeyPress": function (key) {
             selected_item = this.getSelectedItem();
-            formID = selected_item.fldr == "0"  ? "itbase__rs" : "itbase__txt";
+            formID        = selected_item.fldr == "0"  ? "itbase__rs" : "itbase__txt";
             ITBasePage.keyPressAction(this, key, formID);
         },
         "onAfterSelect": function () {
@@ -217,9 +200,6 @@ var ITBasePage = new PageTreeAdm({
             // Закрываем все открытые формы редактирования
             $$('list_itemdata').getParentView().back(); 
             $$('list_itemdata').clearAll();
-
-            // count != 0 - значит это папка, 
-            if( item['$count'] ) return false;
 
             $$('list_itemdata').load("/itbase/select/?pid=" + item.id);
             // Заполняем селект в форме     
@@ -246,7 +226,6 @@ var ITBasePage = new PageTreeAdm({
             $$('list_itbase').filter("#tsect#","0");
         },
     },
-
     list_url: "/itbase/getTree/"
 });
 
@@ -257,35 +236,45 @@ var DataPage = new PageTreeAdm({
     toolbarlabel : "",
     list_css     : "itemdata",
     list_template: function(obj){
+        if( obj.datatype == "1") {
+            data = JSON.parse(obj.value,",");
+            return "<div class='fleft datapage'>Файл:</div><a href='/files/" + data.sname + "'>" + 
+                    "<div class='fleft webix_icon fa-file' title='" + data.name + " (" + data.sizetext + ")'></div>" +
+                    "</a><div class='fleft'> "+ obj.label +"</div>";
+        }
+
         value = (obj.secure == "1") ? "<div class='fleft webix_icon fa-key'></div>" : "<div class='fleft'>"+ obj.value +"</div>";
         return "<div class='fleft datapage'>" + obj.label +":</div>" + value;
     },
-    list_columns: [
-        {id:"label", header:{height:2},width: 150, template: "<strong>#label#:</strong>"},
-        {id:"value", header:{height:2},width: 200, fillspace:true, template: function(obj){
-            return (obj.secure == "1") ? "<div class='webix_icon fa-key'></div>" : obj.value ;
-            }
-        },
-    ],
     list_Edit    : {
-        Add   : function(){
+        Add_Item: function(){
             selected_item   = $$("list_itbase").getSelectedItem();
-            if( selected_item.fldr != "0" ) 
-                return webix.message({type:"error", text: "Выделите объект"});
             
             defaults = {
                         is_new  : 1,
-                        datatype: selected_item.tsect,
+                        fpage   : selected_item.tsect,
                         pid     : selected_item.id,
+                        datatype: 0,
                     };
-            $$("form_itemdata").show();
+            $$("itemdata__txt").show();
+            // создаем новую запись
+            $$("list_itemdata").select( $$("list_itemdata").add(defaults) );
+        },
+        Add_File: function(){
+            selected_item   = $$("list_itbase").getSelectedItem();
+            
+            defaults = {
+                        is_new  : 1,
+                        fpage   : selected_item.tsect,
+                        pid     : selected_item.id,
+                        datatype: 1,
+                    };
+            $$("itemdata__file").show();
             // создаем новую запись
             $$("list_itemdata").select( $$("list_itemdata").add(defaults) );
         },
         Delete: function(){
             selected_item   = $$("list_itemdata").getSelectedItem();
-            if( selected_item == undefined )
-                return webix.message({type:"error", text: "Выделите объект,который надо удалить"});
 
             webix.confirm({ text: "Уверены, что надо удалять?", 
                             callback: function (result) {
@@ -303,24 +292,24 @@ var DataPage = new PageTreeAdm({
                              }});     
         },
         Edit  : function(){
-                        if( $$("list_itemdata").getSelectedItem() == undefined )
-                            return webix.message({type:"error", text: "Выделите объект, который будем редактировать"});
-                        
-                        $$("form_itemdata").show();
+                        if( $$("list_itemdata").getSelectedItem().datatype == "1" )
+                            $$("itemdata__file").show();
+                        else
+                            $$("itemdata__txt").show();
                 },
     },
     list_EditRules: function(key){
         var selected_itbase = $$("list_itbase").getSelectedItem();
         var selected_item   = $$("list_itemdata").getSelectedItem(); 
 
-        if( ( !selected_itbase || selected_itbase["fldr"] =="1" ) ||
-            ( !selected_item && key == "Delete" ) )
-            return false;
+        if( !selected_itbase || ( !selected_item && (key == "Delete"  || key == "Edit")) )
+                return false;
 
         return true;
     },
     formPages: [
         {
+            formID: "itemdata__txt",
             formElements: [
                 {view: "text",label: "Лейбл", name: "label" },
                 {view: "text",label: "Название", name: "value"},
@@ -332,8 +321,7 @@ var DataPage = new PageTreeAdm({
                  value: webix.rules.isNotEmpty
             },
             save_form: function(){
-                                var mForm = $$(this.id);
-
+                                var mForm  = $$(this.id);
                                 var values =  mForm.getValues();
 
                                 if(values.is_new == undefined)
@@ -344,21 +332,95 @@ var DataPage = new PageTreeAdm({
                                 // Если не новая запись - убираем признак новой записи
                                 mForm.setValues({is_new:0},true);
 
-                                webix.ajax().post("/itbase/save/", values, function(response){
-                                                                                if(response)
-                                                                                    webix.message({type:"error", expire: 3000, text: response}); // server side response
-                                                                                else {
-                                                                                    webix.message("ОK"); // server side response
-                                                                                    mForm.getParentView().back();
-                                                                                    $$("list_itemdata").showItem(values.id);
-                                                                                }
-                                        });
+                                webix.ajax().post("/itbase/save/", values, 
+                                                    function(response){
+                                                        if(response)
+                                                            webix.message({type:"error", expire: 3000, text: response}); // server side response
+                                                        else {
+                                                            webix.message("ОK"); // server side response
+                                                            mForm.getParentView().back();
+                                                            $$("list_itemdata").showItem(values.id);
+                                                        }
+                                                });
                                 },
-        }
+        },
+        {
+            formID: "itemdata__file",
+            formElements: [
+                {view: "text",label: "Описание", name: "label" },
+                {
+                    cols:[{
+                               view: "uploader", type:"iconButton", label: 'Upload', icon:"upload", align:"center", width:100, 
+                               name:"files", multiple:false, link:"filelist", id:"upldr", upload:"/itbase/upload", autosend:false
+                          },
+                          { width: 30},
+                          { 
+                                view:"list",id:"filelist", type:"uploader", autoheight:true, borderless:true, 
+                                template: function(data){
+                                            // откуда лезет data.value - не понятно
+                                            return (data.value == undefined) ? data.name : "";
+                                        }    
+                          },
+                    ]
+                },
+                webix.copy(save_cancel_button)
+            ],
+            formRules: {
+                 label: webix.rules.isNotEmpty,
+                 files: webix.rules.isNotEmpty
+            },
+            save_form: function(){
+                                // проверка аплоада на сервер. Не получилось - дальше не идем.
+                                var mForm  = $$(this.id);
+
+                                $$("upldr").send(function(){
+                                    //getting file properties
+                                    var item = $$('upldr').files.getItem($$('upldr').files.getFirstId());
+                                  
+                                    // если файл не загрузился - выходим
+                                    if(item.status != 'server')  return false;
+
+                                    // поля файла, которые нам потребуются
+                                    var fileinfo = { name    :item.name,
+                                                     sname   :item.sname,
+                                                     sizetext:item.sizetext };
+
+                                    // Сначала сохраняем для передачи на сервер             
+                                    mForm.setValues({value: JSON.stringify(fileinfo)},true);
+
+                                    var values =  mForm.getValues();
+                                    
+                                    if(values.is_new == undefined)
+                                        values.is_new = 0;
+
+                                    if ( mForm.save() === false)  return false;
+
+                                    // Если не новая запись - убираем признак новой записи
+                                    // Сохраняем для передачи в list
+                                    mForm.setValues({ is_new:0, value:fileinfo},true);
+                                        
+                                    // after that send form
+                                    webix.ajax().post("/itbase/save/", values, 
+                                                        function(response){
+                                                            if(response)
+                                                                webix.message({type:"error", expire: 3000, text: response}); // server side response
+                                                            else {
+                                                                webix.message("ОK"); // server side response
+                                                                mForm.getParentView().back();
+                                                                $$("list_itemdata").showItem(values.id);
+                                                            }
+                                                        });
+                                
+                               })
+
+            },
+        },
     ],
     list_on: {
         "onKeyPress": function (key) {
-            DataPage.keyPressAction(this, key);
+            selected_item = this.getSelectedItem();
+            formID        = selected_item.datatype == "1"  ? "itemdata__file" : "itemdata__txt";
+            DataPage.keyPressAction(this, key, formID);
         }
     },
 });
