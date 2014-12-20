@@ -4,8 +4,9 @@
 /*********   USER PAGE  ********/
 
 var ITBasePage = new PageTreeAdm({
-    id: "itbase",
-    list_view: "tree",
+    id           : "itbase",
+    list_view    : "tree",
+    savefunct    : "savegroup",
     list_template: function(obj, com){
         // Подставляем свою иконку для группы
         if( obj.fldr == "0" )
@@ -15,7 +16,7 @@ var ITBasePage = new PageTreeAdm({
 
         return com.icon(obj, com) + icon + '<span>'+ obj.name + '</span>';
     },
-    list_Edit:{
+    list_Edit    :{
         Add_Item  : function(){
                                  selected_item = $$("list_itbase").getSelectedItem() || 
                                             { "id":0, "pid":0, "tsect": $$("chPage").getValue().split("_")[1] };
@@ -65,7 +66,7 @@ var ITBasePage = new PageTreeAdm({
                                         if (!text) {
                                             webix.message("ОK"); // server side response
                                             $$("list_itbase").remove(selected_item['id']);
-                                            $$("list_iemdata").clearAll();
+                                            $$("list_itemdata").clearAll();
                                         }
                                         else
                                             webix.message({type: "error", text: text});
@@ -109,7 +110,7 @@ var ITBasePage = new PageTreeAdm({
             formID: "itbase__txt",
             formElements: [
                 {view: "text", label: "Значение", name: "name" },
-                webix.copy(save_cancel_button),{}
+                webix.copy(save_cancel_button)
             ],
             formRules: {
                  name: webix.rules.isNotEmpty
@@ -140,7 +141,7 @@ var ITBasePage = new PageTreeAdm({
                     }
                 },
 
-                webix.copy(save_cancel_button),{}
+                webix.copy(save_cancel_button)
             ],
             formRules: {
                   name: webix.rules.isNotEmpty
@@ -233,7 +234,7 @@ var ITBasePage = new PageTreeAdm({
 var DataPage = new PageTreeAdm({
     id           : "itemdata",
     hreflink     : "itbase",
-    toolbarlabel : "",
+    savefunct    : "save",
     list_css     : "itemdata",
     list_template: function(obj){
         if( obj.datatype == "1") {
@@ -296,7 +297,7 @@ var DataPage = new PageTreeAdm({
                             $$("itemdata__file").show();
                         else
                             $$("itemdata__txt").show();
-                },
+        },
     },
     list_EditRules: function(key){
         var selected_itbase = $$("list_itbase").getSelectedItem();
@@ -320,7 +321,7 @@ var DataPage = new PageTreeAdm({
                  label: webix.rules.isNotEmpty,
                  value: webix.rules.isNotEmpty
             },
-            save_form: function(){
+            /*save_form: function(){
                                 var mForm  = $$(this.id);
                                 var values =  mForm.getValues();
 
@@ -342,7 +343,7 @@ var DataPage = new PageTreeAdm({
                                                             $$("list_itemdata").showItem(values.id);
                                                         }
                                                 });
-                                },
+                                },*/
         },
         {
             formID: "itemdata__file",
@@ -481,11 +482,17 @@ var ITBasePage = new MView({
 var DataPage = new MView({
     id           : "itemdata",
     hreflink     : "itbase",
-    toolbarlabel : "",
     list_css     : "itbase_data",
     list_template: function(obj){
-        value = (obj.ftype  == "password") ? "<dev class='webix-icon fa-key'></dev>" : obj.value;
-        return "<div class='fleft datapage'>" + obj.label +":</div><div class='fleft'>"+ value +"</div>";
+       if( obj.datatype == "1") {
+            data = JSON.parse(obj.value,",");
+            return "<div class='fleft datapage'>Файл:</div><a href='/files/" + data.sname + "'>" + 
+                    "<div class='fleft webix_icon fa-file' title='" + data.name + " (" + data.sizetext + ")'></div>" +
+                    "</a><div class='fleft'> "+ obj.label +"</div>";
+        }
+
+        value = (obj.secure == "1") ? "<div class='fleft webix_icon fa-key'></div>" : "<div class='fleft'>"+ obj.value +"</div>";
+        return "<div class='fleft datapage'>" + obj.label +":</div>" + value;
     },
     list_on: {
         "onKeyPress": function (key) {
@@ -495,16 +502,6 @@ var DataPage = new MView({
 });
 
 <?php endif; ?>
-
-var TAB = {view:"tabbar", id:"chPage", click:"getOptionTab", value: "sect_0", options: [ 
-                { value: "<span class='webix_icon fa-sitemap'></span>Сеть", id:"sect_0",width:150 },
-                { value: "<span class='webix_icon fa-book'></span>Контакты", id:"sect_1",width:150 },
-                { value: "<span class='webix_icon fa-phone'></span>Телeфоны", id:"sect_2",width:150 },
-               ],
-           minWidth:400, 
-           css: "itbase_tabs"  
-           
-    };
 
 function getOptionTab() {
     var val = "" + this.getValue().split("_")[1];
@@ -525,7 +522,14 @@ function getOptionTab() {
 /******************************************** For ALL ***********************************************/
 maintable = {
     rows: [
-        TAB,
+        {
+            view:"tabbar", id:"chPage", click:"getOptionTab", value: "sect_0", options: [ 
+                { value: "<span class='webix_icon fa-sitemap'></span>Сеть", id:"sect_0",width:150 },
+                { value: "<span class='webix_icon fa-book'></span>Контакты", id:"sect_1",width:150 },
+               ],
+            minWidth:400, 
+            css: "itbase_tabs"  
+        },
         {
             cols:[
                 { rows:[ITBasePage] , gravity:3},

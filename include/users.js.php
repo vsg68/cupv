@@ -3,10 +3,10 @@
 
 /*********   USER PAGE  ********/
 
-var Users_UserPage = new PageAdm({
+var Users_UserPage = new PageTreeAdm({
     id: "users_first",
+    showTabbar  : true,
     toolbarlabel: "Пользователи",
-    hideDelButton: true,
     showSearchField: true,
     showActiveOnly: true,
     isListScroll: true,
@@ -17,8 +17,8 @@ var Users_UserPage = new PageAdm({
             return (obj.mailbox.toLowerCase().indexOf(mainFilter) >= 0 || obj.username.toLowerCase().indexOf(mainFilter) >= 0) && (obj.active == additionFilter);
         });
     },
-    addButtonClick: function(){
-        return {"allow_nets": "192.168.0.0/24"}
+    list_scheme:{
+        allow_nets: "192.168.0.0/24",
     },
     list_template: function (obj) {
         var tmpl = "<div class='fleft mailbox isactive_" + obj.active + "'>" + obj.mailbox + "</div>";
@@ -52,33 +52,35 @@ var Users_UserPage = new PageAdm({
 
         return tmpl;
     },
-    formElements: [
-        {view: "text", label: "mailbox", name: "mailbox"},
-        {view: "text", label: "username", name: "username"},
-        {view: "text", label: "password", name: "password"},
-        {view: "text", label: "path", name: "path"},
-        {view: "checkbox", label: "imap_enable", name: "imap_enable"},
-        {view: "text", label: "allow_nets", name: "allow_nets"},
-        {view: "text", label: "acl_groups", name: "acl_groups"},
-        {view: "checkbox", label: "master_admin", name: "master_admin"},
-        {view: "checkbox", label: "master_domain", name: "master_domain"},
-        {view: "text", label: "last_login", name: "last_login", disabled: true},
-        {view: "text", label: "last_ip", name: "last_ip", disabled: true},
-        {view: "text", label: "last_prot", name: "last_prot", disabled: true},
-        {view: "checkbox", label: "active", name: "active"},
-        webix.copy(save_cancel_button),
-        {}
-    ],
-    formRules: {
-        mailbox: function (value) {
-            return  checkEmail("form_users_first", value);
-        },
-        allow_nets: function (value) {
-            return fnTestByType("nets", value);
-        },
-        username: webix.rules.isNotEmpty,
-        password: webix.rules.isNotEmpty
-    },
+    formPages: [
+            {
+            formElements: [
+                {view: "text", label: "mailbox", name: "mailbox"},
+                {view: "text", label: "username", name: "username"},
+                {view: "text", label: "password", name: "password"},
+                {view: "text", label: "path", name: "path"},
+                {view: "checkbox", label: "imap_enable", name: "imap_enable"},
+                {view: "text", label: "allow_nets", name: "allow_nets"},
+                {view: "text", label: "acl_groups", name: "acl_groups"},
+                {view: "checkbox", label: "master_admin", name: "master_admin"},
+                {view: "checkbox", label: "master_domain", name: "master_domain"},
+                {view: "text", label: "last_login", name: "last_login", disabled: true},
+                {view: "text", label: "last_ip", name: "last_ip", disabled: true},
+                {view: "text", label: "last_prot", name: "last_prot", disabled: true},
+                {view: "checkbox", label: "active", name: "active"},
+                webix.copy(save_cancel_button),
+            ],
+            formRules: {
+                mailbox: function (value) {
+                    return  checkEmail("form_users_first", value);
+                },
+                allow_nets: function (value) {
+                    return fnTestByType("nets", value);
+                },
+                username: webix.rules.isNotEmpty,
+                password: webix.rules.isNotEmpty
+            },
+    }],
     list_url: '/users/showTable/',
     list_on:  {
         "onAfterSelect": function () {
@@ -101,25 +103,62 @@ var Users_UserPage = new PageAdm({
     }
 });
 
-var Aliases_UserPage = new PageAdm({
+var Aliases_UserPage = new PageTreeAdm({
     id: "aliases_first",
+    showTabbar  : true,
     toolbarlabel: "Псевдонимы",
     list_template: "<div class='isactive_#active#'>#alias_name#</div>",
-    addButtonClick: function(){
-        selected_User = $$("list_users_first").getSelectedItem();
-        // Если не выбран пользователь - выходим
-        if ( selected_User == false) return false;
-        return { "alias_name" : selected_User.mailbox, "delivery_to" : selected_User.mailbox};
-    },
-    formElements: [
-        { view: "text",label: "Псевдоним", name: "alias_name" },
-        {view: "checkbox", label: "active", name: "active"},
-          webix.copy(save_cancel_button),
-        {}
-    ],
-    formRules: {
-        alias_name: webix.rules.isEmail
-    },
+    list_EditRules: function(key){
+                        if( ! $$("list_users_first").getSelectedItem() )
+                                return false;
+                                 
+                        if( ! $$("list_aliases_first").getSelectedItem() ){
+                            if( key == "Delete" || key == "Edit") 
+                                return false;
+                        }
+                        return true;
+                    },  
+    list_Edit: {
+                Add  : function(){
+                                selected_User = $$("list_users_first").getSelectedItem();
+                                defaults = {
+                                             "is_new": 1, 
+                                             "active"  : 1,
+                                             "alias_name" : selected_User.mailbox, 
+                                             "delivery_to" : selected_User.mailbox
+                                            };
+                                 // не показываем richselect, если кладем объект в корень
+                                 $$("form_aliases_first").show();    
+                                 // Переход к редактированию
+                                 $$("list_aliases_first").select( $$("list_aliases_first").add(defaults) );
+                            },
+                Edit  : function(){ $$("form_aliases_first").show();},
+                Delete: function(){
+                                    var selected_id = $$("list_aliases_first").getSelectedId();
+                                    webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                                        //  тут надо отослать данные на сервер
+                                        if (result) {
+                                            webix.ajax().post("/aliases/delEntry/", {id: selected_id}, function (text, xml, xhr) {
+                                                if (!text)
+                                                    $$("list_aliases_first").remove(selected_id);
+                                                else
+                                                    webix.message({type: "error", text: text});
+                                            })
+                                        }
+                                    }})   
+                            },
+    },                
+    formPages: [
+        {
+            formElements: [
+                { view: "text",label: "Псевдоним", name: "alias_name" },
+                { view: "checkbox", label: "active", name: "active"},
+                  webix.copy(save_cancel_button),
+            ],
+            formRules: {
+                alias_name: webix.rules.isEmail
+            },
+    }],
     list_on: {
         "onKeyPress": function (key) {
             Aliases_UserPage.keyPressAction(this, key);
@@ -127,85 +166,161 @@ var Aliases_UserPage = new PageAdm({
     }
 });
 
-var Fwd_UserPage = new PageAdm({
+var Fwd_UserPage = new PageTreeAdm({
     id: "fwd_first",
+    showTabbar  : true,
     toolbarlabel: "Пересылка",
     list_template: "<div class='isactive_#active#'>#delivery_to#</div>",
-    formElements: [
-        {view: "text",label: "Псевдоним", name: "delivery_to" },
-        {view: "checkbox", label: "active", name: "active"},
-        webix.copy(save_cancel_button),
-        {}
+    list_EditRules: function(key){
+                        if( ! $$("list_users_first").getSelectedItem() )
+                                return false;
+                                 
+                        if( ! $$("list_fwd_first").getSelectedItem() ){
+                            if( key == "Delete" || key == "Edit") 
+                                return false;
+                        }
+                        return true;
+                    },  
+    list_Edit: {
+                Add   : function(){
+                            selected_User = $$("list_users_first").getSelectedItem();
+                            defaults = {
+                                         "is_new": 1, 
+                                         "active"  : 1,
+                                         "alias_name" : selected_User.mailbox, 
+                                         "delivery_to" : selected_User.mailbox
+                                        };
+                            // не показываем richselect, если кладем объект в корень
+                            $$("form_fwd_first").show();    
+                            // Переход к редактированию
+                            $$("list_fwd_first").select( $$("list_fwd_first").add(defaults) );
+                        },
+                Edit  : function(){ $$("form_fwd_first").show();},
+                Delete: function(){
+                                var selected_id = $$("list_fwd_first").getSelectedId();
+                                webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                                    //  тут надо отослать данные на сервер
+                                    if (result) {
+                                        webix.ajax().post("/aliases/delEntry/", {id: selected_id}, function (text, xml, xhr) {
+                                            if (!text)
+                                                $$("list_fwd_first").remove(selected_id);
+                                            else
+                                                webix.message({type: "error", text: text});
+                                        })
+                                    }
+                                }})   
+                        },
+    },                
+    formPages: [
+            {
+                formElements: [
+                    {view: "text",label: "Псевдоним", name: "delivery_to" },
+                    {view: "checkbox", label: "active", name: "active"},
+                    webix.copy(save_cancel_button),
+                ],
+                formRules: {
+                    delivery_to: webix.rules.isEmail
+                },
+            }
     ],
-    formRules: {
-        delivery_to: webix.rules.isEmail
-    },
     list_on: { "onKeyPress": function (key) {
             Fwd_UserPage.keyPressAction(this, key);
         }
     },
-    addButtonClick: function(){
-        selected_User = $$("list_users_first").getSelectedItem();
-        // Если не выбран пользователь - выходим
-        if ( selected_User == false) return false;
-        return { "alias_name" : selected_User.mailbox, "delivery_to" : selected_User.mailbox};
-    }
 });
 
-var Groups_UserPage = new PageAdm({
+var Groups_UserPage = new PageTreeAdm({
     id: "groups_first",
+    showTabbar  : true,
     toolbarlabel: "Группы",
     list_template: "<div class='isactive_#active#'>#name#</div>",
-    formElements: [
-        {view: "richselect", label: "Группа", name: "name",
-            options: "/groups/getGroupsList/",
-            on: {
-                "onChange": function(){
-                    optId = $$(this.data.suggest).getMasterValue();
-                    Form = this.getFormView();
-                    // поле optId - ID выбранной опции
-                    if( ! optId ) return false;
-                    // заполняем поле guid_id при изменении select
-                    Form.setValues({ group_id: $$(this.data.suggest).getList().getItem(optId).group_id},true);
-                    return;
+    formPages: [
+        {
+            formElements: [
+                {view: "richselect", label: "Группа", name: "name",
+                    options: "/groups/getGroupsList/",
+                    on: {
+                        "onChange": function(){
+                            optId = $$(this.data.suggest).getMasterValue();
+                            Form = this.getFormView();
+                            // поле optId - ID выбранной опции
+                            if( ! optId ) return false;
+                            // заполняем поле guid_id при изменении select
+                            Form.setValues({ group_id: $$(this.data.suggest).getList().getItem(optId).group_id},true);
+                            return;
+                        }
+                    }
+                },
+                webix.copy(save_cancel_button),
+            ],
+            formRules: {
+                name: function (value) {
+                    return checkGroups("groups_first", value);
                 }
-            }
-        },
-        webix.copy(save_cancel_button),
-        {}
-    ],
-    formRules: {
-        name: function (value) {
-            return checkGroups("groups_first", value);
+            },
         }
-    },
+    ],
+    list_EditRules: function(key){
+                        if( ! $$("list_users_first").getSelectedItem() )
+                                return false;
+                                 
+                        if( ! $$("list_groups_first").getSelectedItem() ){
+                            if( key == "Delete" || key == "Edit") 
+                                return false;
+                        }
+                        return true;
+                    },  
+    list_Edit: {
+                Add   : function(){
+                            selected_User = $$("list_users_first").getSelectedItem();
+                            defaults = {
+                                         "is_new": 1, 
+                                         "active"  : 1,
+                                         "user_id" : selected_User.id,
+                                        };
+                            // не показываем richselect, если кладем объект в корень
+                            $$("form_groups_first").show();    
+                            // Переход к редактированию
+                            $$("list_groups_first").select( $$("list_groups_first").add(defaults) );
+                        },
+                Edit  : function(){ $$("form_groups_first").show();},
+                Delete: function(){
+                                    var selected_id = $$("list_groups_first").getSelectedId();
+                                    webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                                        //  тут надо отослать данные на сервер
+                                        if (result) {
+                                            webix.ajax().post("/groups/delEntry/", {id: selected_id}, function (text, xml, xhr) {
+                                                if (!text)
+                                                    $$("list_groups_first").remove(selected_id);
+                                                else
+                                                    webix.message({type: "error", text: text});
+                                            })
+                                        }
+                                    }})   
+                        },
+    }, 
     list_on: {
         "onKeyPress": function (key) {
         Groups_UserPage.keyPressAction(this, key);
         }
     },
-    addButtonClick: function(){
-        selected_User = $$("list_users_first").getSelectedItem();
-        // Если не выбран пользователь - выходим
-        if ( selected_User == false) return false;
-        return { "user_id" : selected_User.id};
-    }
 });
 
 
 /*********   ALIAS PAGE  ********/
 
-var Aliases_AliasPage = new PageAdm({
+var Aliases_AliasPage = new PageTreeAdm({
     id: "aliases_second",
     isListScroll: true,
     showSearchField: true,
+    showTabbar: true,
     showActiveOnly: true,
     filterFunction: function(){
         $$('list_aliases_second').filter( function(obj) {
             additionFilter = $$('chkBox_aliases_second').config.value;
             mainFilter     = $$('fltr_aliases_second').getValue().toLowerCase();
             return (obj.alias_name.toLowerCase().indexOf(mainFilter) >= 0 || obj.delivery_to.toLowerCase().indexOf(mainFilter) >= 0) && (obj.active == additionFilter);
-        });
+        },true);
     },
     list_template: function (obj) {
         var tmpl;
@@ -221,17 +336,20 @@ var Aliases_AliasPage = new PageAdm({
 
         return tmpl;
     },
-    formElements: [
-        {view: "text",label: "Псевдоним", name: "alias_name" },
-        {view: "text",label: "Пересылка", name: "delivery_to" },
-        {view: "checkbox", label: "active", name: "active"},
-        webix.copy(save_cancel_button),
-        {}
-    ],
-    formRules: {
-        delivery_to: webix.rules.isEmail,
-        alias_name: webix.rules.isEmail
-    },
+    formPages: [
+        {
+            formElements: [
+                {view: "text",label: "Псевдоним", name: "alias_name" },
+                {view: "text",label: "Пересылка", name: "delivery_to" },
+                {view: "checkbox", label: "active", name: "active"},
+                webix.copy(save_cancel_button),
+            ],
+            formRules: {
+                delivery_to: webix.rules.isEmail,
+                alias_name: webix.rules.isEmail
+            },
+        }
+    ],  
     list_on: {
         "onKeyPress": function (key) {
              Aliases_AliasPage.keyPressAction(this, key);
@@ -243,7 +361,7 @@ var Aliases_AliasPage = new PageAdm({
     list_url: "/aliases/showTable/"
 });
 
-var Domains_AliasPage = new PageAdm({
+var Domains_AliasPage = new PageTreeAdm({
     id: "domains_second",
     list_template: function (obj) {
         var tmpl = "<div class='fleft domain_name isactive_" + obj.active + "'  title='" + (obj.domain_notes ? obj.domain_notes : "") + "'>" + obj.domain_name + "</div>";
@@ -258,73 +376,76 @@ var Domains_AliasPage = new PageAdm({
         delivery_to: "virtual",
         domain_type: 0
     },
-    formElements: [
-        {view: "text", label: "Название", name: "domain_name" },
-        {view: "text", label: "Описание", name: "domain_notes" },
-        {view: "radio", label:"Тип домена", name: "domain_type", options:[{id:0,value:"Основной"},{id:1,value:"Псевдоним"},{id:2,value:"Транспорт"}],
-            on: {
-                "onChange": function(new_value, old_value){
-                    // Принудительное установление значения
-                    if(old_value == undefined) return;
+    formPages: [
+        {
+            formElements: [
+                {view: "text", label: "Название", name: "domain_name" },
+                {view: "text", label: "Описание", name: "domain_notes" },
+                {view: "radio", label:"Тип домена", name: "domain_type", options:[{id:0,value:"Основной"},{id:1,value:"Псевдоним"},{id:2,value:"Транспорт"}],
+                    on: {
+                        "onChange": function(new_value, old_value){
+                            // Принудительное установление значения
+                            if(old_value == undefined) return;
 
-                    if( new_value == "0")
-                        this.getFormView().setValues({"delivery_to":"virtual"},true);
-                    else
-                        this.getFormView().setValues({"delivery_to":""},true);
+                            if( new_value == "0")
+                                this.getFormView().setValues({"delivery_to":"virtual"},true);
+                            else
+                                this.getFormView().setValues({"delivery_to":""},true);
+                        }
+                    }
+                },
+                {view: "text", label:"Пересылка", name: "delivery_to"},
+                {view: "fieldset", label:"Рассылка", body: {
+                    rows:[
+                        {view: "checkbox", label: "Рассылка.Вкл", name: "all_enable" },
+                        {view: "text", label: "Рассылка", name: "all_email" }
+                    ]
+                }},
+                {view: "fieldset", label:"Внешний почтовый сервер: Транспорт", body: {
+                    rows: [
+                        {view: "checkbox", label: "Вкл.Пересылку", name: "relay_domain" },
+                        {view: "text", label: "Пересылка", name: "relay_address" },
+                        {view: "checkbox", label: "Проверка польз.", name: "relay_notcheckusers"}
+                    ]
+                }},
+                {view: "checkbox", label: "Активно", name: "active"},
+                webix.copy(save_cancel_button),
+            ],
+            formRules: {
+                $obj: function(data){
+                    this.clearValidation();
+
+                    if( data.domain_type == 0 && data.delivery_to != "virtual") {
+                        webix.message({ type: "error", text: "Не заполнено поле 'Пересылка'" });
+                        this.elements['delivery_to'].define('css',"webix_invalid");
+                        return false;
+                    }
+                    else if( data.domain_type == 1 && ! chkDomainAlias("domains_second",data.delivery_to) ) {
+                        this.elements['delivery_to'].define('css',"webix_invalid");
+                        return false;
+                    }
+                    else if( data.domain_type == 2 && ! fnTestByType("transport", data.delivery_to)) {
+                        webix.message({ type: "error", text: "Не правильный формат поля 'Пересылка'" });
+                        this.elements['delivery_to'].define('css',"webix_invalid");
+                        return false;
+                    }
+
+                    if( data.all_enable == 1 && ! fnTestByType("mail",data.all_email) ) {
+                        webix.message({ type: "error", text: "Не правильный формат адреса рассылки" });
+                        this.elements['all_email'].define('css',"webix_invalid");
+                        return false;
+                    }
+                    if( data.relay_domain == 1 && ! fnTestByType("ip",data.relay_address) ) {
+                        webix.message({ type: "error", text: "Не правильный формат адреса пересылки" });
+                        this.elements['relay_address'].define('css',"webix_invalid");
+                        return false;
+                    }
+
+                    return true;
                 }
-            }
-        },
-        {view: "text", label:"Пересылка", name: "delivery_to"},
-        {view: "fieldset", label:"Рассылка", body: {
-            rows:[
-                {view: "checkbox", label: "Рассылка.Вкл", name: "all_enable" },
-                {view: "text", label: "Рассылка", name: "all_email" }
-            ]
-        }},
-        {view: "fieldset", label:"Внешний почтовый сервер: Транспорт", body: {
-            rows: [
-                {view: "checkbox", label: "Вкл.Пересылку", name: "relay_domain" },
-                {view: "text", label: "Пересылка", name: "relay_address" },
-                {view: "checkbox", label: "Проверка польз.", name: "relay_notcheckusers"}
-            ]
-        }},
-        {view: "checkbox", label: "Активно", name: "active"},
-        webix.copy(save_cancel_button),
-        {}
-    ],
-    formRules: {
-        $obj: function(data){
-            this.clearValidation();
-
-            if( data.domain_type == 0 && data.delivery_to != "virtual") {
-                webix.message({ type: "error", text: "Не заполнено поле 'Пересылка'" });
-                this.elements['delivery_to'].define('css',"webix_invalid");
-                return false;
-            }
-            else if( data.domain_type == 1 && ! chkDomainAlias("domains_second",data.delivery_to) ) {
-                this.elements['delivery_to'].define('css',"webix_invalid");
-                return false;
-            }
-            else if( data.domain_type == 2 && ! fnTestByType("transport", data.delivery_to)) {
-                webix.message({ type: "error", text: "Не правильный формат поля 'Пересылка'" });
-                this.elements['delivery_to'].define('css',"webix_invalid");
-                return false;
-            }
-
-            if( data.all_enable == 1 && ! fnTestByType("mail",data.all_email) ) {
-                webix.message({ type: "error", text: "Не правильный формат адреса рассылки" });
-                this.elements['all_email'].define('css',"webix_invalid");
-                return false;
-            }
-            if( data.relay_domain == 1 && ! fnTestByType("ip",data.relay_address) ) {
-                webix.message({ type: "error", text: "Не правильный формат адреса пересылки" });
-                this.elements['relay_address'].define('css',"webix_invalid");
-                return false;
-            }
-
-            return true;
+            },
         }
-    },
+    ],    
     list_on: {
         "onKeyPress": function (key) {
             Domains_AliasPage.keyPressAction(this, key);
@@ -336,6 +457,7 @@ var Domains_AliasPage = new PageAdm({
 var Groups_AliasPage = new PageTreeAdm({
     id: "groups_second",
     list_view: "tree",
+    savefunct: "savegroup",
     list_css: "groups",
     list_template: function(obj, com){
         // Подставляем свою иконку для группы
@@ -391,85 +513,65 @@ var Groups_AliasPage = new PageTreeAdm({
             },
         }
     ],
-    menuButtons:[
-        {
-            formID: "form_groups_second__rs",
-            icon : "user",
-            label: "New",
-            click: function () {
-                                tree = $$("list_groups_second");
-                                var selected_item = tree.getSelectedItem();
+    list_Edit:{
+        Add_User  : function(){
+                        var selected_id = $$("list_groups_second").getSelectedId();
+                        var parent_id   = $$("list_groups_second").getParentId(selected_id);
 
-                                // Если кнопка нажата не на списке  - выходим, если не выделено ничего - тоже выходим
-                                if (! Groups_AliasPage.isActiveCell_List("groups_second") || selected_item == undefined) {
-                                    webix.message({ type: "error", text: "Выделите группу, в которую будем добавлять пользователя" });
-                                    return false;
-                                }
+                        if( parent_id )
+                            selected_id = parent_id;
 
-                                selected_id = selected_item.id;
-                                // если узел не является корнем, то ищем ID его корня
-                                if( tree.getParentId(selected_id) )
-                                    selected_id = tree.getParentId( selected_id );
+                        defaults = {"value":"", "is_new":1};    // Дефолтные значения
 
-                                defaults = {"value":"", "is_new":1};    // Дефолтные значения
+                        // Переход к редактированию
+                        $$("groups_second__rs").show();
+                        $$("list_groups_second").select( $$("list_groups_second").add(defaults, 0, selected_id) );
+                    },
+        Add_Group: function(){
+                        defaults = {"is_new": 1,"active": 1};
 
-                                // Переход к редактированию
-                                $$("groups_second__rs").show();
-                                tree.select( tree.add(defaults, 0, selected_id) );
-                            }        
-        },
-        {
-            formID: "form_groups_second__txt",
-            icon : "group",
-            label: "New",
-            click: function () {
-                                // Если кнопка нажата не на списке  - выходим
-                                if (! Groups_AliasPage.isActiveCell_List("groups_second")) {
-                                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-                                    return false;
-                                }
+                        // Переход к редактированию
+                        $$("groups_second__txt").show();
+                        $$("list_groups_second").select( $$("list_groups_second").add(defaults) );
+                    },
+        Edit      : function(){
+                        if( $$("list_groups_second").getSelectedItem()['$parent'] )
+                            $$("groups_second__rs").show()
+                        else
+                            $$("groups_second__txt").show(); 
+                    },
+        Delete    : function(){
+                        var selected_item = $$("list_groups_second").getSelectedItem();
 
-                                defaults = Groups_AliasPage.addButtonClick();
+                        webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                            //  тут надо отослать данные на сервер
+                            if (result) {
 
-                                if( defaults == false )   return false;
-
-                                defaults["is_new"] = 1;
-                                defaults["active"] = 1;
-
-                                // Переход к редактированию
-                                $$("groups_second__txt").show();
-                                $$("list_groups_second").select( $$("list_groups_second").add(defaults) );
-                            }    
-        },
-        {
-            icon : "trash-o",
-            label: "Del",
-            click: function () {
-                                // Если кнопка нажата не на списке - выходим
-                                if (! Groups_AliasPage.isActiveCell_List("groups_second")) {
-                                    webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-                                    return false;
-                                }
-
-                                var selected_item = $$("list_groups_second").getSelectedItem();
-
-                                webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
-                                    //  тут надо отослать данные на сервер
-                                    if (result) {
-
-                                        webix.ajax().post("/"+ Groups_AliasPage.hreflink +"/delEntry/", {id: selected_item['id'], group_id: selected_item['$parent']}, function (text, xml, xhr) {
-                                            if (!text) {
-                                                webix.message("ОK"); // server side response
-                                                $$("list_groups_second").remove(selected_item['id']);
-                                            }
-                                            else
-                                                webix.message({type: "error", text: text});
-                                        })
+                                webix.ajax().post("/groups/delEntry/", {id: selected_item['id'], group_id: selected_item['$parent']}, function (text, xml, xhr) {
+                                    if (!text) {
+                                        webix.message("ОK"); // server side response
+                                        $$("list_groups_second").remove(selected_item['id']);
                                     }
-                                }})     
+                                    else
+                                        webix.message({type: "error", text: text});
+                                })
                             }
+                        }})   
+                    },
+    },    
+    list_EditRules: function(key){
+        var selected_item = $$("list_groups_second").getSelectedItem();
+         
+        if( !selected_item ){
+            if( key == "Delete" || key == "Edit" || key == "Add_User") 
+                return false;
         }
-    ],
+        else {
+            if( selected_item['$count'] && key == "Delete" )
+                return false;
+        }
+        return true;
+    }, 
     list_on: {
         "onKeyPress": function (key) {
             formId = ( this.getSelectedItem()['$parent'] ) ? "groups_second__rs" : "groups_second__txt";
@@ -483,6 +585,7 @@ var Groups_AliasPage = new PageTreeAdm({
 /*********   USER PAGE  ********/
 var Users_UserPage = new MView({
     id: "users_first",
+    showTabbar  : true,
     toolbarlabel: "Пользователи",
     showSearchField: true,
     showActiveOnly: true,
@@ -549,6 +652,7 @@ var Users_UserPage = new MView({
 
 var Aliases_UserPage = new MView({
     id: "aliases_first",
+    showTabbar  : true,
     toolbarlabel: "Псевдонимы",
     list_template: "<div class='isactive_#active#'>#alias_name#</div>",
     list_on: {
@@ -559,6 +663,7 @@ var Aliases_UserPage = new MView({
 
 var Fwd_UserPage = new MView({
     id: "fwd_first",
+    showTabbar  : true,
     toolbarlabel: "Пересылка",
     list_template: "<div class='isactive_#active#'>#delivery_to#</div>",
     list_on: { "onKeyPress": function (key) {
@@ -568,6 +673,7 @@ var Fwd_UserPage = new MView({
 
 var Groups_UserPage = new MView({
     id: "groups_first",
+    showTabbar  : true,
     toolbarlabel: "Группы",
     list_template: "<div class='isactive_#active#'>#name#</div>",
     list_on: {
@@ -653,9 +759,7 @@ var Groups_AliasPage = new MView({
 /*********   LOGS PAGE  ********/
 var Form_LogsPage = new LogsView({
     id: "logs",
-    toolbarlabel: "Фильтр поиска",
     list_view: "form",
-    isHideToolbar: true,
     isDataHidden: true,
     formElements:[
         {view: "fieldset", label:"Дата поиска", body: {
@@ -705,6 +809,7 @@ var Form_LogsPage = new LogsView({
 
 var Data_LogsPage = new LogsView({
     id: "logs",
+    showTabbar  : true,
     list_view: "datatable",
     isFormHidden: true,
     showStartButton: true,

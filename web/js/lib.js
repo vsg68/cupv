@@ -180,6 +180,7 @@ function MView(setup) {
     this.list_on         = setup.list_on || {};
     this.contextmenu     = setup.list_Edit;
     this.cmenuRules      = setup.list_EditRules;
+    this.hideTabbar      = ! setup.showTabbar;
 
     this.keyPressAction = function(list, key ,formId){
 
@@ -226,6 +227,7 @@ function MView(setup) {
     this.rows = [
        {
             view: "toolbar",
+            hidden: this.hideTabbar,
             height: 30,
             cols: [
                 {
@@ -257,7 +259,6 @@ function MView(setup) {
                     }
                 },
                 {}
-
             ]
         },
        {
@@ -272,7 +273,6 @@ function MView(setup) {
                     css        : this.list_css,
                     type       : { height: "auto" },
                     select     : true,
-                    columns    : this.list_columns,
                     template   : this.list_template,
                     url        : this.list_url,
                     on         : this.list_on,
@@ -291,17 +291,14 @@ function MAdmView(setup) {
     MView.apply(this, arguments);  // Запускаем родительский конструктор
 
     self.savefunct      = setup.savefunct || "save";
-    this.hideAddButton  = setup.hideAddButton;
-    this.hideDelButton  = setup.hideDelButton;
     this.formID         = setup.formID || "form_" + this.objID;
     this.formElements   = setup.formElements || [
                                         {view: "text", label: "Псевдоним", name: "alias_name" },
                                         {view: "text", label: "Пересылка", name: "delivery_to" },
                                         {view: "checkbox", label: "Активно", name: "active"},
                                         webix.copy(save_cancel_button),
-                                        {}];
+                                        ];
     this.formRules      = setup.formRules || {};
-    this.addButtonClick = setup.addButtonClick || function(){return {}};
 
     this.list_bind      = setup.list_bind || function(){
                                                 for(i=0; i < self.rows[1].cells.length; i++) {
@@ -309,23 +306,6 @@ function MAdmView(setup) {
                                                         $$(self.rows[1].cells[i].id).bind('list_' + self.objID);
                                                 }
                                              };
-    this.isEnableAddButton  = setup.isEnableAddButton || true;
-    this.isEnableDelButton  = setup.isEnableDelButton || true;
-
-    this.isActiveCell_List = function() {
-        var multiview = $$("list_" + self.objID).getParentView(); // multiview
-
-        if (multiview.config.view != "multiview")
-            return false;
-
-        
-        if( multiview.getActiveId() != "list_" + self.objID ) {
-            webix.message({ type: "error", text: "Кнопки в этой области не работают" });
-            return false;
-        }
-
-        return true;
-    };
  };
 
 function PageAdm(setup) {
@@ -442,12 +422,46 @@ function PageAdm(setup) {
 };
 
 function PageTreeAdm(setup) {
-
     var self = this;
+    
     extend(PageTreeAdm,MAdmView);    // Наследуем
     MAdmView.apply(this, arguments);  // Запускаем родительский конструктор
 
-    // this.rows[0].hidden = true;      // прячем тулбар
+    this.rows[1].cells[0].contextmenu = setup.list_Edit  || {
+                                                                Add   : function(){
+                                                                             defaults = { "is_new":1, "active":1};
+                                                                             // не показываем richselect, если кладем объект в корень
+                                                                             $$("form_" + self.objID).show();    
+                                                                             // Переход к редактированию
+                                                                             $$("list_" + self.objID).select( $$("list_" + self.objID).add(defaults) );
+                                                                        },
+                                                                Edit  : function(){ $$("form_" + self.objID).show();},
+                                                                Delete: function(){
+                                                                                var selected_id = $$("list_" + self.objID).getSelectedId();
+                                                                                webix.confirm({text: "Уверены, что надо удалять?", callback: function (result) {
+                                                                                    //  тут надо отослать данные на сервер
+                                                                                    if (result) {
+                                                                                        webix.ajax().post("/" + self.hreflink + "/delEntry/", {id: selected_id}, function (text, xml, xhr) {
+                                                                                            if (!text)
+                                                                                                $$("list_" + self.objID).remove(selected_id);
+                                                                                            else
+                                                                                                webix.message({type: "error", text: text});
+                                                                                        })
+                                                                                    }
+                                                                                }})   
+                                                                        },
+                                                               };
+
+    this.rows[1].cells[0].cmenuRules  = setup.list_EditRules || function(key){
+                                                                    var selected_item = $$("list_"+ self.objID).getSelectedItem();
+                                                                     
+                                                                    if( !selected_item ){
+                                                                        if( key == "Delete" || key == "Edit") 
+                                                                            return false;
+                                                                    }
+                                                                    return true;
+                                                                };                                                 
+                                
     formPages = setup.formPages || [];
     // определение страницы с формой и ее добавление
     for( i=0; i<formPages.length; i++) {
@@ -481,13 +495,15 @@ function PageTreeAdm(setup) {
                                                             // Если не новая запись - убираем признак новой записи
                                                             mForm.setValues({is_new:0},true);
 
-                                                            webix.ajax().post("/" + self.hreflink + "/savegroup", values,
+                                                            webix.ajax().post("/" + self.hreflink + "/" + self.savefunct, values,
                                                                 function(response){
                                                                     if(response)
                                                                         webix.message({type:"error", expire: 3000, text: response}); // server side response
                                                                     else {
                                                                         webix.message("ОK"); // server side response
                                                                         mForm.getParentView().back();
+                                                                        //l = $$("list_" + self.objID).config.view;
+                                                                        // $$("list_" + self.objID).showItem(values.id);
                                                                         $$("list_" + self.objID).scrollTo(0, values.id);
                                                                     }
                                                                 }

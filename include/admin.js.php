@@ -3,9 +3,8 @@
 
 /*********   USER PAGE  ********/
 
-var SectPage = new PageAdm({
-    id: "admin_sect",
-    toolbarlabel: "Разделы",
+var SectPage = new PageTreeAdm({
+    id           : "admin_sect",
     list_template: function (obj) {
         var tmpl = "<div class='fleft syslogtag isactive_" + obj.active + "'>" + obj.name + "</div>";
 
@@ -13,18 +12,19 @@ var SectPage = new PageAdm({
         tmpl += "<div class='fleft  isactive_" + obj.active + " '>" + obj.note + "</div>";
         return tmpl;
     },
-    formElements: [
-        {view: "text", label: "Название", name: "name"},
-        {view: "text", label: "Описание", name: "note"},
-        {view: "richselect", label: "http", name: "link", options: "/admin/get_ctrl" },
-        {view: "checkbox", label: "active", name: "active"},
-        webix.copy(save_cancel_button),
-        {}
-    ],
-    formRules: {
-        name: webix.rules.isNotEmpty,
-        link: webix.rules.isNotEmpty
-    },
+    formPages: [{
+        formElements: [
+            {view: "text", label: "Название", name: "name"},
+            {view: "text", label: "Описание", name: "note"},
+            {view: "richselect", label: "http", name: "link", options: "/admin/get_ctrl" },
+            {view: "checkbox", label: "active", name: "active"},
+            webix.copy(save_cancel_button),
+        ],
+        formRules: {
+            name: webix.rules.isNotEmpty,
+            link: webix.rules.isNotEmpty
+        },
+    }],
     list_url: '/admin/sections/',
     list_on:  {
         "onKeyPress": function (key) {
@@ -37,28 +37,29 @@ var SectPage = new PageAdm({
     }
 });
 
-var Roles_Page = new PageAdm({
-    id: "roles",
-    toolbarlabel: "Роли",
-    list_css: "roles",
+var Roles_Page = new PageTreeAdm({
+    id           : "roles",
+    list_css     : "roles",
     list_template: function(obj){
         var tmpl = "<div class='fleft roles isactive_" + obj.active + "'>" + obj.name + "</div>";
             tmpl += "<div class='fleft isactive_" + obj.active + "'>" + obj.note + "</div>";
         return tmpl;
     },
-    formElements: [
-        {view: "text", label: "Роль", name: "name" },
-        {view: "text", label: "Описание", name: "note" },
-        {view: "checkbox", label: "Активно", name: "active"},
-        webix.copy(save_cancel_button),
-        {}
-    ],
-    formRules: {
-        name: function (value) {
-            return chkDublRoles("roles", value);
-        },
-        name: webix.rules.isNotEmpty,
-    },
+    formPages: [{
+                formElements: [
+                    {view: "text", label: "Роль", name: "name" },
+                    {view: "text", label: "Описание", name: "note" },
+                    {view: "checkbox", label: "Активно", name: "active"},
+                    webix.copy(save_cancel_button),
+                    {}
+                ],
+                formRules: {
+                    name: function (value) {
+                        return chkDublRoles("roles", value);
+                    },
+                    name: webix.rules.isNotEmpty,
+                }
+    }],
     list_on: {
         "onKeyPress": function (key) {
             Roles_Page.keyPressAction(this, key);
@@ -75,31 +76,32 @@ var Roles_Page = new PageAdm({
     list_url: "/roles/showTable/"
 });
 
-var Rights_Page = new PageAdm({
-    id: "roles_rights",
-    toolbarlabel: "Права",
-    savefunct: "saveRights",
-    hideAddButton: true,
-    hideDelButton: true,
+var Rights_Page = new PageTreeAdm({
+    id           : "roles_rights",
+    savefunct    : "saveRights",
     list_template: "<div class='fleft permission permission_#slname#' title='#slname#'></div><div class='fleft'>#sectname#</div>",
-    formElements: [
-        {view: "richselect", label: "", name: "slname", 
-            options: "/roles/getSlevel",
-            on: {
-                "onChange": function(){
-                    optId = $$(this.data.suggest).getMasterValue();
-                    Form = this.getFormView();
-                    // поле optId - ID выбранной опции
-                    if( ! optId ) return false;
-                    // заполняем поле guid_id при изменении select
-                    Form.setValues({ slid: $$(this.data.suggest).getList().getItem(optId).slid},true);
-                    return;
-                }
-            }
-        },
-          webix.copy(save_cancel_button),
-        {}
-    ],
+    formPages: [{
+                formElements: [
+                    {view: "richselect", label: "", name: "slname", 
+                        options: "/roles/getSlevel",
+                        on: {
+                            "onChange": function(){
+                                optId = $$(this.data.suggest).getMasterValue();
+                                Form = this.getFormView();
+                                // поле optId - ID выбранной опции
+                                if( ! optId ) return false;
+                                // заполняем поле guid_id при изменении select
+                                Form.setValues({ slid: $$(this.data.suggest).getList().getItem(optId).slid},true);
+                                return;
+                            }
+                        }
+                    },
+                    webix.copy(save_cancel_button),
+                ],
+    }],
+    list_Edit: {
+        Edit  : function(){ $$("form_roles_rights").show();}
+    },
     list_on: {
         "onKeyPress": function (key) {
             Rights_Page.keyPressAction(this, key);
@@ -111,42 +113,42 @@ var Rights_Page = new PageAdm({
     }
 });
 
-var Auth_Page = new PageAdm({
-    id: "auth",
-    toolbarlabel: "Пользователи",
+var Auth_Page = new PageTreeAdm({
+    id           : "auth",
     list_template: "<div class='fleft username isactive_#active#' title='#login#'>#note#</div><div class='fleft' title='Роль'>#name#</div>",
-    formElements: [
-        {view: "text", label: "Логин", name: "login"},
-        {view: "text", label: "Пользователь", name: "note"},
-        {view: "text", label: "Пароль", type: 'password', name: "passwd"},
-        {view: "richselect", label: "Роль", name: "name", 
-            options: "/roles/getRoles",
-            on: {
-                "onChange": function(){
-                    optId = $$(this.data.suggest).getMasterValue();
-                    Form = this.getFormView();
-                    // поле optId - ID выбранной опции
-                    if( ! optId ) return false;
-                    // заполняем поле guid_id при изменении select
-                    Form.setValues({ role_id: $$(this.data.suggest).getList().getItem(optId).rid},true);
-                    return;
-                }
-            }
-        },
-        {view: "checkbox", label: "Активно", name: "active"},
-          webix.copy(save_cancel_button),
-        {}
-    ],
-    formRules: {
-        login: webix.rules.isNotEmpty,
-        passwd: function(obj){
-                  if( obj.is_new == 1 && obj.passwd == "") {
-                      webixю.message({type: 'error', text: 'Задайте пароль пользователю'});
-                      return false;
-                  }
-                  return true;
-        },
-    },
+    formPages: [{
+                formElements: [
+                    {view: "text", label: "Логин", name: "login"},
+                    {view: "text", label: "Пользователь", name: "note"},
+                    {view: "text", label: "Пароль", type: 'password', name: "passwd"},
+                    {view: "richselect", label: "Роль", name: "name", 
+                        options: "/roles/getRoles",
+                        on: {
+                            "onChange": function(){
+                                optId = $$(this.data.suggest).getMasterValue();
+                                Form = this.getFormView();
+                                // поле optId - ID выбранной опции
+                                if( ! optId ) return false;
+                                // заполняем поле guid_id при изменении select
+                                Form.setValues({ role_id: $$(this.data.suggest).getList().getItem(optId).rid},true);
+                                return;
+                            }
+                        }
+                    },
+                    {view: "checkbox", label: "Активно", name: "active"},
+                      webix.copy(save_cancel_button),
+                ],
+                formRules: {
+                    login: webix.rules.isNotEmpty,
+                    passwd: function(obj){
+                              if( obj.is_new == 1 && obj.passwd == "") {
+                                  webixю.message({type: 'error', text: 'Задайте пароль пользователю'});
+                                  return false;
+                              }
+                              return true;
+                    },
+                },
+    }],
     list_url: '/auth/showTable/',
     list_on: {
         "onKeyPress": function (key) {
@@ -159,7 +161,6 @@ var Auth_Page = new PageAdm({
 /*********   USER PAGE  ********/
 var SectPage = new MView({
     id: "admin_sect",
-    toolbarlabel: "Разделы",
     list_template: function (obj) {
         var tmpl = "<div class='fleft syslogtag isactive_" + obj.active + "'>" + obj.name + "</div>";
 
@@ -181,7 +182,6 @@ var SectPage = new MView({
 
 var Roles_Page = new MView({
     id: "roles",
-    toolbarlabel: "Роли",
     list_css: "roles",
     list_template: function(obj){
         var tmpl = "<div class='fleft roles isactive_" + obj.active + "'>" + obj.name + "</div>";
@@ -206,7 +206,6 @@ var Roles_Page = new MView({
 
 var Rights_Page = new MView({
     id: "roles_rights",
-    toolbarlabel: "Права",
     savefunct: "saveRights",
     hideAddButton: true,
     hideDelButton: true,
@@ -215,7 +214,6 @@ var Rights_Page = new MView({
 
 var Auth_Page = new MView({
     id: "auth",
-    toolbarlabel: "Пользователи",
     list_template: "<div class='fleft username isactive_#active#' title='#login#'>#note#</div><div class='fleft' title='Роль'>#name#</div>",
     list_url: '/auth/showTable/',
     list_on: {
