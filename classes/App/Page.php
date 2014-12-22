@@ -34,7 +34,6 @@ class Page extends \PHPixie\Controller {
 		 if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
 
 			$name = $this->auth->user()->login ;
-        // $name = "vsg";
 
 			$result = $this->pixie->db->query('select','admin')
 											->fields($this->pixie->db->expr('S.*'))
@@ -57,8 +56,8 @@ class Page extends \PHPixie\Controller {
 
 		// Проверка легитимности пользователя и его прав
         if( $this->ctrl != 'login' )
-			  $this->permissions = 2;
-			//$this->permissions = $this->is_approve();
+			  // $this->permissions = 2;
+			$this->permissions = $this->is_approve();
  
 	}
 
