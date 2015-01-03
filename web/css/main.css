@@ -24,44 +24,18 @@ html, body, #mainlayer {
     background-color: #C76103 !important;
     border: 0 solid transparent !important;
 }
-/*.ftab .webix_list_item{*/
-    /*height: auto !important;*/
-/*}*/
 .isactive_0 {
     color: #c3c3c3;
     text-decoration: line-through;
 }
-
-.localnet {
-    color: #000000;
-}
-
-.net10 {
-    color: #8bccac;
-}
-.domain_type_0,
-.net-0 {
+.domain_type_0 {
     color: #cc5000;
 }
-.domain_type_1,
-.net-4 {
+.domain_type_1{
     color: #0000ff;
 }
-.domain_type_2,
-.net-5 {
+.domain_type_2{
     color: #1bcc05;
-}
-.net-10 {
-    color: #FE71C9;
-}
-.net-11 {
-    color: #FFB200;
-}
-.net-109 {
-    color: #cc0a48;
-}
-.net-12 {
-    color: #0aaeff;
 }
 .webix_icon.disabled {
     color: #dddddd;
@@ -98,14 +72,11 @@ html, body, #mainlayer {
     width: 300px;
 }
 
-/*.fleft.fa-envelope {*/
-    /*color: green;*/
-/*}*/
 .fleft.fa-male {
-    color: #660099;
+    color: #ff009a;
 }
 .fleft.fa-users {
-    color: #3498db;
+    color: #ff8bf4;
 }
 
 .fleft.webix_icon,

@@ -157,6 +157,36 @@ var Auth_Page = new PageTreeAdm({
     }
 });
 
+var Nets_Page = new PageTreeAdm({
+    id           : "nets",
+    list_template: "<div class='fleft webix_icon fa-sitemap' style='color:#color#'></div><div class='fleft alias_name isactive_#active#'>#net#/#mask#</div><div class='fleft isactive_#active#'> #note#</div>",
+    list_scheme:{
+        color: "#dddddd",
+        mask : 24,
+    },
+    formPages: [{
+        formElements: [
+            {view: "text", label: "Сеть", name: "net"},
+            {view: "counter", label: "Маска", name: "mask", min:16, max:32, step: 1},
+            {view: "text", label: "Описание", name: "note"},
+            {view: "colorpicker", label: "Цвет", name: "color"},
+            {view: "checkbox", label: "active", name: "active"},
+            webix.copy(save_cancel_button),
+        ],
+        formRules: {
+            net: function (value) {
+                    return fnTestByType("ip", value);
+                },
+        },
+    }],
+    list_url: '/nets/showTable/',
+    list_on:  {
+        "onKeyPress": function (key) {
+            Nets_Page.keyPressAction(this, key);
+        },
+    }
+});
+
 <?php else: ?>
 /*********   USER PAGE  ********/
 var SectPage = new MView({
@@ -223,6 +253,17 @@ var Auth_Page = new MView({
     }
 });
 
+var Nets_Page = new MView({
+    id           : "nets",
+    list_template: "<div class='fleft webix_icon fa-share'>#note#</div><div class='fleft username isactive_#active#'>#nets#</div><div class='fleft' title='Роль'>#note#</div>",
+    list_url: '/auth/getNets/',
+    list_on: {
+        "onKeyPress": function (key) {
+            Nets_Page.keyPressAction(this, key);
+        },
+    }
+});
+
 <?php endif; ?>
 
 /******************************************** For ALL ***********************************************/
@@ -254,6 +295,13 @@ maintable = {
           collapsed: true,
           body: {
               rows: [ SectPage ]
+          },
+       }, 
+       {
+          header :"Сети",
+          collapsed: true,
+          body: {
+              rows: [ Nets_Page ]
           },
        },        
     ]  

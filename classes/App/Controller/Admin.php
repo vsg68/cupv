@@ -57,10 +57,10 @@ class Admin extends \App\Page {
             if( $is_update )  // Выход, если было обновление
                 return true;
 
-//          Добавляем связи созданного раздела с ролями
+            // Добавляем связи созданного раздела с ролями
             $roles  = $this->pixie->orm->get("roles")->find_all()->as_array(true);
             $slevel = $this->pixie->orm->get("slevels")->where('name','NONE')->find();
-//               Новая запись для всех разделов
+            // Новая запись для всех разделов
             foreach($roles as $role){
                 $this->pixie->orm->get("rights")->values(
                                 array(
@@ -74,5 +74,6 @@ class Admin extends \App\Page {
             $this->response->body = $e->getMessage();
         }
     }
+ 
 }
 ?>

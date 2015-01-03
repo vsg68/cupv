@@ -511,6 +511,11 @@ function getOptionTab() {
     //      return ( obj == undefined) ? false : obj.tsect == val;
     // });
     // закрываются фсе формы
+    if( val == "2") {
+        $$("sect_2").show();
+        return true;
+    }
+    $$("sect_2").hide();
     $$("list_itbase").filter("tsect",val);  // работает для версии 1.10
     $$("list_itemdata").clearAll();
     $$("list_itemdata").show();
@@ -523,18 +528,30 @@ function getOptionTab() {
 maintable = {
     rows: [
         {
-            view:"tabbar", id:"chPage", click:"getOptionTab", value: "sect_0", options: [ 
+            // view:"tabbar", id:"chPage", click:"getOptionTab", value: "sect_0", options: [ 
+            view:"tabbar", id:"chPage", multiview:true, animate: false, value: "sect_0", options: [ 
                 { value: "<span class='webix_icon fa-sitemap'></span>Сеть", id:"sect_0",width:150 },
                 { value: "<span class='webix_icon fa-book'></span>Контакты", id:"sect_1",width:150 },
+                { value: "<span class='webix_icon fa-phone'></span>Telephones", id:"sect_2",width:150 },
                ],
             minWidth:400, 
             css: "itbase_tabs"  
         },
         {
-            cols:[
-                { rows:[ITBasePage] , gravity:3},
-                // { width: 12, css: "transp"},
-                { rows:[DataPage ], gravity:5}
+            cells:[
+                {
+                    cols:[
+                        { rows:[ITBasePage] , gravity:3},
+                        // { width: 12, css: "transp"},
+                        { rows:[DataPage ], gravity:5}
+                    ],
+                    id: "sect_0"
+                },
+                {
+                    id: "sect_2",
+                    view: "template",
+                    text:"blablabla"
+                }
             ]
         }
     ]

@@ -30,6 +30,7 @@ class Page extends \PHPixie\Controller {
 		$this->view->css_file 	 = '';
         $this->view->ctrl 	 = $this->ctrl;
         $this->view->pages = '';
+        $this->view->netcolors = '';
 
 		 if( $this->auth->user() ) {  // если пусто - юзер не зарегистрировался
 

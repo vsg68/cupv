@@ -4,6 +4,30 @@ namespace App\Controller;
 
 class Users extends \App\Page {
 
+    public function action_view() {
+
+        try {
+           $c = array();
+           $nets = $this->pixie->db->query('select','admin')
+                            ->fields($this->pixie->db->expr("concat(`net`,'/',`mask`) as net, color"))
+                            ->table('nets')
+                            ->where('active',1)
+                            ->execute()->as_array();
+
+           foreach ($nets as $net) {
+               $c[$net->net] = $net->color;
+           }
+
+           $this->view->netcolors = json_encode($c);
+           // вызываем родительскую функцию, чтоб не повторятся
+           \App\Page::action_view();
+
+        }
+        catch (\Exception $e) {
+            $this->response->body = $e->getMessage();
+        }
+    }
+
     public function action_save() {
 
 		if( ! $params = $this->request->post() )
@@ -56,11 +80,11 @@ class Users extends \App\Page {
         catch (\Exception $e) {
             $this->response->body = $e->getMessage();
         }
-
-        
     }
 
     public function action_showTable(){
+
+        
 
         $result = $this->pixie->db->query('select')
                             ->fields($this->pixie->db->expr("*, DATE_FORMAT(`last_login`, '%d-%m-%Y') as last_login"))
@@ -82,5 +106,18 @@ class Users extends \App\Page {
 
         $this->response->body = json_encode($result);
     }
+
+    // public function action_getNets(){
+
+    //     $nets = $this->pixie->db->query('select')
+    //                         ->fields($this->pixie->db->expr("DISTINCT allow_nets"))
+    //                         ->table('users')
+    //                         ->execute()->as_array();
+    //     foreach( $nets as $net ) {
+    //         preg_split("/\s*[;,:]\s*/", $net->allow_nets)
+    //     }
+
+    //     $this->response->body = json_encode($result);
+    // }
 }
 ?>

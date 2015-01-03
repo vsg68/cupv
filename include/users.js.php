@@ -1,6 +1,9 @@
 
 <?php if( $permissions == $WRITE_LEVEL ): ?>
 
+var netcolors = [];
+<?= "netcolors = ".$netcolors.";"  ?>
+
 /*********   USER PAGE  ********/
 
 var Users_UserPage = new PageTreeAdm({
@@ -21,6 +24,7 @@ var Users_UserPage = new PageTreeAdm({
         allow_nets: "192.168.0.0/24",
     },
     list_template: function (obj) {
+
         var tmpl = "<div class='fleft mailbox isactive_" + obj.active + "'>" + obj.mailbox + "</div>";
 
         tmpl += "<div class='fleft username isactive_" + obj.active + "' title='username'>" + obj.username + "</div>";
@@ -33,14 +37,11 @@ var Users_UserPage = new PageTreeAdm({
         if (obj.allow_nets) {
             net = obj.allow_nets.split(',');
             for (i = 0; i < net.length; i++) {
-                if (/127.0.0.1*/.test(net[i]))
-                    colorclass = 'localnet';
-                else if (/10.0.0.0*/.test(net[i]))
-                    colorclass = 'net10';
-                else
-                    colorclass = 'net-' + (net[i].split('.'))[2];
+                net[i] = trim(net[i]);
+                // Если запись о сети существует в базе
+                colorclass = ( netcolors[net[i]] != undefined ) ? "style='color:" + netcolors[net[i]] + ";'" : "";
 
-                tmpl += "<div class='fleft fa-sitemap webix_icon " + colorclass + "' title='" + net[i] + "'></div>";
+                tmpl += "<div class='fleft fa-sitemap webix_icon' " + colorclass + " title='" + net[i] + "'></div>";
             }
         }
 
@@ -57,10 +58,10 @@ var Users_UserPage = new PageTreeAdm({
             formElements: [
                 {view: "text", label: "mailbox", name: "mailbox"},
                 {view: "text", label: "username", name: "username"},
-                {view: "text", label: "password", name: "password"},
+                {id:"pwd", view: "text", label: "password", name: "password",onContext:{}},
                 {view: "text", label: "path", name: "path"},
                 {view: "checkbox", label: "imap_enable", name: "imap_enable"},
-                {view: "text", label: "allow_nets", name: "allow_nets"},
+                {view: "text", label: "allow_nets", name: "allow_nets", id:"allow_nets", popup: "nets"},
                 {view: "text", label: "acl_groups", name: "acl_groups"},
                 {view: "checkbox", label: "master_admin", name: "master_admin"},
                 {view: "checkbox", label: "master_domain", name: "master_domain"},
@@ -79,7 +80,8 @@ var Users_UserPage = new PageTreeAdm({
                 },
                 username: webix.rules.isNotEmpty,
                 password: webix.rules.isNotEmpty
-            },
+            }
+
     }],
     list_url: '/users/showTable/',
     list_on:  {

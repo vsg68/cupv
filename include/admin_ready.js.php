@@ -13,11 +13,15 @@
 
     Auth_Page.list_bind();
     var CM_Auth = new CMenu({listID: "list_auth"});
+
+    Nets_Page.list_bind();
+    var CM_Nets = new CMenu({listID: "list_nets"});
    
     webix.ui(CM_SectPage.menu);
     webix.ui(CM_Roles.menu);
     webix.ui(CM_Rights.menu);
     webix.ui(CM_Auth.menu);
+    webix.ui(CM_Nets.menu);
 
 <?php endif; ?>
 

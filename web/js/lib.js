@@ -23,6 +23,19 @@ var save_cancel_button = {
     ]
 };
 
+// Strip whitespace (or other characters) from the beginning and end of a string
+// +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+// +   improved by: mdsjack (http://www.mdsjack.bo.it)
+// +   improved by: Alexander Ermolaev (http://snippets.dzone.com/user/AlexanderErmolaev)
+// +      input by: Erkekjetter
+// +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+function trim( str, charlist ) {    
+
+    charlist = !charlist ? ' \s\xA0' : charlist.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '\$1');
+    var re = new RegExp('^[' + charlist + ']+|[' + charlist + ']+$', 'g');
+    return str.replace(re, '');
+}
+
 // Проверка на существования адреса и id, а так же правильность домена
 function checkEmail(ID, value) {
     var valid = false;
@@ -290,14 +303,9 @@ function MAdmView(setup) {
     extend(MAdmView, MView);    // Наследуем
     MView.apply(this, arguments);  // Запускаем родительский конструктор
 
-    self.savefunct      = setup.savefunct || "save";
+    this.savefunct      = setup.savefunct || "save";
     this.formID         = setup.formID || "form_" + this.objID;
-    this.formElements   = setup.formElements || [
-                                        {view: "text", label: "Псевдоним", name: "alias_name" },
-                                        {view: "text", label: "Пересылка", name: "delivery_to" },
-                                        {view: "checkbox", label: "Активно", name: "active"},
-                                        webix.copy(save_cancel_button),
-                                        ];
+    this.formElements   = setup.formElements || [];
     this.formRules      = setup.formRules || {};
 
     this.list_bind      = setup.list_bind || function(){
@@ -473,7 +481,6 @@ function PageTreeAdm(setup) {
                 elements      : formPages[i].formElements,
                 rules         : formPages[i].formRules,
                 on            : formPages[i].on || {},
-                onContext     : {},
                 cancel        : ( formPages[i].cancel || function() {
                                                                 mView = $$(this.id).getParentView();
                                                                 values = $$(this.id).getValues();
