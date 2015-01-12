@@ -18,8 +18,6 @@
                 var items = [];
 
                 for(i=0; i < sections.length; i++){
-                    // if( sections[i].link == "<?= $ctrl ?>" )  continue;
-
                     items.push({view:"button",
                                 type:"icon",
                                 icon:"angle-right",
