@@ -762,12 +762,12 @@ var Groups_AliasPage = new MView({
 var Form_LogsPage = new LogsView({
     id: "logs",
     list_view: "form",
-    isDataHidden: true,
+    isHideToolbar: true,
     formElements:[
         {view: "fieldset", label:"Дата поиска", body: {
             rows:[
-                {view: "datepicker", label: "Начало", name: "start_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date() },
-                {view: "datepicker", label: "Окончание", name: "stop_date", timepicker:true,  format: "%Y-%n-%d %H:%i", value: new Date() }
+                {view: "datepicker", label: "Начало", name: "start_date", timepicker:true, format: "%Y-%n-%d %H:%i", value: new Date() },
+                {view: "datepicker", label: "Окончание", name: "stop_date", timepicker:true, format: "%Y-%n-%d %H:%i", value: new Date() }
             ]
         }},
         {view: "fieldset", label:"Направление", body: {
@@ -792,14 +792,13 @@ var Form_LogsPage = new LogsView({
             click: function(){
                     var own = this;
                     own.define({disabled:true});
-                    var listV = $$(Data_LogsPage.list_view + "_" + Data_LogsPage.objID);
 
-                    listV.clearAll();
+                    $$("datatable_dt").clearAll();
                     webix.ajax().get("/logs/show/", this.getFormView().getValues(), function (data){
-                        if (data)
-                            listV.parse(data);
+                        if (data) 
+                            $$("datatable_dt").parse(data);
                         else
-                            listV.showOverlay("Данных нет");
+                            $$("datatable_dt").showOverlay("Данных нет");
 
                         own.define({disabled:false});
                     })
@@ -810,10 +809,8 @@ var Form_LogsPage = new LogsView({
 });
 
 var Data_LogsPage = new LogsView({
-    id: "logs",
-    showTabbar  : true,
+    id: "dt", //  id ->  this.list_view + "_" + this.objID,
     list_view: "datatable",
-    isFormHidden: true,
     showStartButton: true,
     isListScroll: "false",
     columnConfig:[
@@ -838,7 +835,7 @@ var Data_LogsPage = new LogsView({
         }
     },
     list_scheme:{
-        $init: function(obj){
+        "$init": function(obj){
 
             self._nowMsgId = obj.MSGID;
 
@@ -848,7 +845,7 @@ var Data_LogsPage = new LogsView({
             }
 
             if(self._changeClass)
-                $$( "datatable_logs" ).addRowCss(obj.id,"even");
+                $$( "datatable_dt" ).addRowCss(obj.id,"even");
         }
     }
 });

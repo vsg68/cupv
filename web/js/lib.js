@@ -183,12 +183,12 @@ function MView(setup) {
     this.isScroll        = setup.isListScroll;
     this.toolbarlabel    = setup.toolbarlabel || "";
     this.hideSearchField = ! setup.showSearchField;
-    this.hideActiveOnly  = ! setup.showActiveOnly;
+    // this.hideActiveOnly  = ! setup.showActiveOnly;
     this.filterFunction  = setup.filterFunction || (function(){return true});
     this.list_view       = setup.list_view || "list";
     this.list_css        = setup.list_css || "ftab";
     this.list_url        = setup.list_url || "";
-    this.list_scheme     =  setup.list_scheme || {};
+    this.list_scheme     = setup.list_scheme || {};
     this.list_template   = setup.list_template || "<div class='isactive_#active#'>#name#</div>";  // Шаблон для отображения в list
     this.list_on         = setup.list_on || {};
     this.contextmenu     = setup.list_Edit;
@@ -522,14 +522,14 @@ function PageTreeAdm(setup) {
 
 function LogsView(setup) {
     var self            = this;
-    extend(MAdmView, MView);    // Наследуем
+    extend(LogsView, MView);    // Наследуем
     MView.apply(this, arguments);  // Запускаем родительский конструктор
 
     this.formElements    = setup.formElements || [];
     this.hideStartButton = ! setup.showStartButton;
-    this.isHideToolbar = setup.isHideToolbar,
-    this.columnConfig  = setup.columnConfig || [{}],
-    this._startID = 0;
+    this.isHideToolbar   = setup.isHideToolbar,
+    this.columnConfig    = setup.columnConfig || [{}],
+    this._startID        = 0;
     this.rows = [
         {
             view: "toolbar",
@@ -582,11 +582,13 @@ function LogsView(setup) {
             ]
         },
         {
-            view: this.list_view,
-            id: this.list_view + "_" + this.objID,
-            on: this.list_on,
+            view          : this.list_view,
+            id            : this.list_view + "_" + this.objID,
+            on            : this.list_on,
+            scheme        : this.list_scheme,
             elementsConfig: {labelWidth: 130},
-            elements: this.formElements,
+            elements      : this.formElements,
+            columns       : this.columnConfig,
         }
      ];
 };
