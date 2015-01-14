@@ -514,6 +514,7 @@ maintable = {
             css: "itbase_tabs"  
         },
         {
+            animate: false,
             cells:[
                 {
                     cols:[

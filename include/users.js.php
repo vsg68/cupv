@@ -29,6 +29,8 @@ var Users_UserPage = new PageTreeAdm({
 
         tmpl += "<div class='fleft username isactive_" + obj.active + "' title='username'>" + obj.username + "</div>";
 
+        if (obj.master_admin == "1")  tmpl += "<div class='fleft fa-male webix_icon' title='master_admin'></div>";          
+        if (obj.master_domain == "1") tmpl += "<div class='fleft fa-users webix_icon' title='master_domain'></div>";
         if (obj.imap_enable == "1")
             tmpl += "<div class='fleft fa-envelope webix_icon' title='imap_enable'></div>";
         else
@@ -44,10 +46,6 @@ var Users_UserPage = new PageTreeAdm({
                 tmpl += "<div class='fleft fa-sitemap webix_icon' " + colorclass + " title='" + net[i] + "'></div>";
             }
         }
-
-        if (obj.master_admin == "1")  tmpl += "<div class='fleft fa-male webix_icon' title='master_admin'></div>";
-
-        if (obj.master_domain == "1") tmpl += "<div class='fleft fa-users webix_icon' title='master_domain'></div>";
 
         if (obj.last_login)    tmpl += "<div class='fleft last_login' title='last_login'>" + obj.last_login + "</div>";
 
@@ -850,88 +848,135 @@ var Data_LogsPage = new LogsView({
     }
 });
 
+// maintable = {
+//     view: "accordion",
+//     css:"accord",
+//     multi: false,
+//     cols:[
+//         {
+//             headerAlt:"Пользователи",
+//             headerHeight:0,
+//             header:" ",
+//             expand: true,
+//             body:{
+//                 cols: [
+//                     { rows:[Users_UserPage] , gravity:5, minWidth:800},
+//                     { view:"resizer"},
+//                     { rows:[
+//                             {rows: [ Aliases_UserPage ]},
+//                             {rows: [ Fwd_UserPage ]},
+//                             {rows: [ Groups_UserPage ]}
+//                             ], gravity:3
+//                     }
+//                 ]
+//             }
+//         },
+//         {
+//             headerAlt:"Псевдонимы / Рассылки / Домены",
+//             headerHeight:0,
+//             header:" ",
+//             collapsed: true,
+//             body: {
+//                 cols: [
+//                     {
+//                         header:"Пересылка / Псевдонимы",
+//                         body: {
+//                             rows: [ Aliases_AliasPage ]
+//                         },
+//                         gravity: 2
+//                     },
+//                     {
+//                         header:"Группы / Пользователи",
+//                         body: {
+//                             rows: [ Groups_AliasPage ]
+//                         },
+//                         gravity: 1
+//                     },
+//                     {
+//                         header:"Домены",
+//                         body: {
+//                             rows: [ Domains_AliasPage ]
+//                         },
+//                         gravity: 2
+//                     },
+//                 ]
+//             }
+//         },
+//         {
+//             headerAlt:"Почтовые логи",
+//             headerHeight:0,
+//             header:" ",
+//             collapsed: true,
+//             body: {
+//                 cols: [
+//                     { header:"Фильтр",
+//                       // height:30,
+//                       body: {
+//                         rows: [ Form_LogsPage ],
+//                         width: 400 
+//                       }
+//                     },
+//                     { rows: [ Data_LogsPage ] }
+//                 ]
+//             }
+//         }
+//     ]
+// };
+// 
 maintable = {
-    view: "accordion",
-    css:"accord",
-    multi: false,
-    cols:[
+    rows:[
         {
-            headerAlt:"Пользователи",
-            headerHeight:0,
-            header:" ",
-            expand: true,
-            body:{
-                cols: [
-                    { rows:[Users_UserPage] , gravity:5, minWidth:800},
-                    { view:"resizer"},
-                    { rows:[
-                            {rows: [ Aliases_UserPage ]},
-                            {rows: [ Fwd_UserPage ]},
-                            {rows: [ Groups_UserPage ]}
-                            ], gravity:3
-                    }
-                ]
-            }
+           view:"tabbar", css: "itbase_tabs" , multiview:true, options: [
+                { value: "<span class='webix_icon fa-user'></span><span style='padding-left: 8px'>Пользователи</span>", width:250, id:'p1' },
+                { value: "<span class='webix_icon fa-location-arrow'></span><span style='padding-left: 8px'>Псевдонимы</span>", width:250, id: 'p2' },
+                { value: "<span class='webix_icon fa-group'></span><span style='padding-left: 8px'>Списки рассылки</span>", width:250, id: 'p3' },
+                { value: "<span class='webix_icon fa-home'></span><span style='padding-left: 8px'>Почтовые домены</span>", width:250, id: 'p4' },
+                { value: "<span class='webix_icon fa-dashboard'></span><span style='padding-left: 8px'>Почтовые логи</span>", width:250, id: 'p5' }
+            ]
         },
         {
-            headerAlt:"Псевдонимы / Рассылки / Домены",
-            headerHeight:0,
-            header:" ",
-            collapsed: true,
-            body: {
-                cols: [
-                    {
-                        header:"Пересылка / Псевдонимы",
-                        body: {
-                            rows: [ Aliases_AliasPage ]
+            css:"accord",
+            animate: false,
+            cells:[
+                {
+                    id:"p1",
+                    cols: [
+                        { rows:[Users_UserPage] , gravity:5, minWidth:800},
+                        { view:"resizer"},
+                        { rows:[
+                                {rows: [ Aliases_UserPage ]},
+                                {rows: [ Fwd_UserPage ]},
+                                {rows: [ Groups_UserPage ]}
+                                ], gravity:3
+                        }
+                    ]
+                },
+                {
+                    id:"p2",
+                    rows: [ Aliases_AliasPage ] 
+                },
+                {
+                    id:"p3",
+                    rows: [ Groups_AliasPage ],
+                },
+                {
+                    id:"p4",
+                    rows: [ Domains_AliasPage ]
+                },
+                {
+                    id:"p5",
+                    cols: [
+                        { header:"Фильтр",
+                          // height:30,
+                          body: {
+                            rows: [ Form_LogsPage ],
+                            width: 400 
+                          }
                         },
-                        gravity: 2
-                    },
-                    {
-                        header:"Группы / Пользователи",
-                        body: {
-                            rows: [ Groups_AliasPage ]
-                        },
-                        gravity: 1
-                    },
-                    {
-                        header:"Домены",
-                        body: {
-                            rows: [ Domains_AliasPage ]
-                        },
-                        gravity: 2
-                    },
-                ]
-            }
-        },
-        {
-            headerAlt:"Почтовые логи",
-            headerHeight:0,
-            header:" ",
-            collapsed: true,
-            body: {
-                cols: [
-                    { header:"Фильтр",
-                      // height:30,
-                      body: {
-                        rows: [ Form_LogsPage ],
-                        width: 400 
-                      }
-                    },
-                    { rows: [ Data_LogsPage ] }
-                ]
-            }
+                        { rows: [ Data_LogsPage ] }
+                    ]
+                }
+            ]
         }
     ]
 };
-
-
-//TODO
-// 2) заполнение строки "пароль" - по клику на иконку
-// 3) заполниние строки "сети" -  по клику на иконку (?)
-// 4) экспорт в файл ....
-// 5) При клике на почтовую иконку - переход на почту(www) в транскрипции user@domain*i_am@gmpro.ru
-/*
-При подключении:
-id - min 14 знаков (bigint) такое же выставляется для всех id  в lists
- */
