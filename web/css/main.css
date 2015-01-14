@@ -72,11 +72,9 @@ html, body, #mainlayer {
     width: 300px;
 }
 
+.fleft.fa-users,
 .fleft.fa-male {
-    color: #ff009a;
-}
-.fleft.fa-users {
-    color: #ff8bf4;
+    color: #FF0016;
 }
 
 .fleft.webix_icon,
