@@ -183,7 +183,6 @@ function MView(setup) {
     this.isScroll        = setup.isListScroll;
     this.toolbarlabel    = setup.toolbarlabel || "";
     this.hideSearchField = ! setup.showSearchField;
-    // this.hideActiveOnly  = ! setup.showActiveOnly;
     this.filterFunction  = setup.filterFunction || (function(){return true});
     this.list_view       = setup.list_view || "list";
     this.list_css        = setup.list_css || "ftab";

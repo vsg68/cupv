@@ -321,29 +321,6 @@ var DataPage = new PageTreeAdm({
                  label: webix.rules.isNotEmpty,
                  value: webix.rules.isNotEmpty
             },
-            /*save_form: function(){
-                                var mForm  = $$(this.id);
-                                var values =  mForm.getValues();
-
-                                if(values.is_new == undefined)
-                                    values.is_new = 0;
-
-                                if ( mForm.save() === false)  return false;
-
-                                // Если не новая запись - убираем признак новой записи
-                                mForm.setValues({is_new:0},true);
-
-                                webix.ajax().post("/itbase/save/", values, 
-                                                    function(response){
-                                                        if(response)
-                                                            webix.message({type:"error", expire: 3000, text: response}); // server side response
-                                                        else {
-                                                            webix.message("ОK"); // server side response
-                                                            mForm.getParentView().back();
-                                                            $$("list_itemdata").showItem(values.id);
-                                                        }
-                                                });
-                                },*/
         },
         {
             formID: "itemdata__file",
@@ -511,15 +488,15 @@ function getOptionTab() {
     //      return ( obj == undefined) ? false : obj.tsect == val;
     // });
     // закрываются фсе формы
-    if( val == "2") {
-        $$("sect_2").show();
-        return true;
+    if( val == "phone") 
+        $$("section_phone").show();
+    else {
+        $$("section_network").show();    // показываем первыю область
+        $$("list_itbase").filter("tsect",val);  // работает для версии 1.10
+        $$("list_itemdata").clearAll();
+        $$("list_itemdata").show();
+        $$("list_itbase").show();
     }
-    $$("sect_2").hide();
-    $$("list_itbase").filter("tsect",val);  // работает для версии 1.10
-    $$("list_itemdata").clearAll();
-    $$("list_itemdata").show();
-    $$("list_itbase").show();
 }
 
 
@@ -528,11 +505,10 @@ function getOptionTab() {
 maintable = {
     rows: [
         {
-            // view:"tabbar", id:"chPage", click:"getOptionTab", value: "sect_0", options: [ 
-            view:"tabbar", id:"chPage", multiview:true, animate: false, value: "sect_0", options: [ 
+             view:"tabbar", id:"chPage", click:"getOptionTab", value: "sect_0", options: [ 
                 { value: "<span class='webix_icon fa-sitemap'></span>Сеть", id:"sect_0",width:150 },
                 { value: "<span class='webix_icon fa-book'></span>Контакты", id:"sect_1",width:150 },
-                { value: "<span class='webix_icon fa-phone'></span>Telephones", id:"sect_2",width:150 },
+                { value: "<span class='webix_icon fa-phone'></span>Telephones", id:"section_phone",width:150 },
                ],
             minWidth:400, 
             css: "itbase_tabs"  
@@ -542,15 +518,14 @@ maintable = {
                 {
                     cols:[
                         { rows:[ITBasePage] , gravity:3},
-                        // { width: 12, css: "transp"},
                         { rows:[DataPage ], gravity:5}
                     ],
-                    id: "sect_0"
+                    id: "section_network"
                 },
                 {
-                    id: "sect_2",
+                    id: "section_phone",
                     view: "template",
-                    text:"blablabla"
+                    template:"blablabla"
                 }
             ]
         }
