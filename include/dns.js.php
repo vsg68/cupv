@@ -146,6 +146,7 @@ var DNSPage = new PageTreeAdm({
                                         if( type != "A"  && fnTestByType("domain",value) )
                                             this.setValue(value + ".");
                         }
+                    }
                 },
                 {view: "counter", css:"popup_couter", label: "Priority", name: "prio", min:1 },
                 {view: "counter", css:"popup_couter", label: "TTL", name: "ttl", min:100 },
