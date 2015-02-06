@@ -8,7 +8,7 @@
 
         <?= $css_file; ?>
 
-        <script src="/codebase/webix.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/codebase/webix_debug.js" type="text/javascript" charset="utf-8"></script>
         <script src="/js/lib.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
 

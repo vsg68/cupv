@@ -272,9 +272,9 @@ maintable = {
     rows:[
         {
            view:"tabbar", css: "itbase_tabs" , multiview:true, options: [
-                { value: "<span class='webix_icon fa-cogs'></span><span style='padding-left: 8px'>Роли / Права</span>", width:250, id:'p1' },
-                { value: "<span class='webix_icon fa-male'></span><span style='padding-left: 8px'>Пользователи системы</span>", width:250, id: 'p2' },
-                { value: "<span class='webix_icon fa-list-ul'></span><span style='padding-left: 8px'>Разделы</span>", width:250, id: 'p3' },
+                { value: "<span class='webix_icon fa-list-ul'></span><span style='padding-left: 8px'>Разделы</span>", width:250, id: 'p1' },
+                { value: "<span class='webix_icon fa-cogs'></span><span style='padding-left: 8px'>Роли / Права</span>", width:250, id:'p2' },
+                { value: "<span class='webix_icon fa-male'></span><span style='padding-left: 8px'>Пользователи системы</span>", width:250, id: 'p3' },
                 { value: "<span class='webix_icon fa-sitemap'></span><span style='padding-left: 8px'>Сети</span>", width:250, id: 'p4' },
             ]
         },
@@ -282,20 +282,20 @@ maintable = {
             animate: false,
             cells:[
                    {
-                      id: "p1",
+                      id :"p1",
+                      rows: [ SectPage ]
+                   }, 
+                   {
+                      id: "p2",
                       cols:[
                             { rows:[Roles_Page] },
                             { rows: [ Rights_Page ] },
                       ]
                    },
                    { 
-                      id:"p2",
+                      id:"p3",
                       rows: [ Auth_Page ],
                     },
-                   {
-                      id :"p3",
-                      rows: [ SectPage ]
-                   }, 
                    {
                       id :"p4",
                       rows: [ Nets_Page ]

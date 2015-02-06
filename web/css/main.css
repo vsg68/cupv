@@ -252,3 +252,17 @@ a .fleft:hover {
     color: #979797;
     text-decoration: none;
 }
+
+.popup_couter .webix_inp_counter_value {
+    width:70px;
+} 
+.dns_zone .webix_tree_folder_open,
+.dns_zone .webix_tree_folder{
+    background-image: url(/dns.png);
+    background-position: 0px 8px;
+}
+/*.dns_zone .webix_tree_folder_open,*/
+.dns_zone .webix_tree_file{
+    background-image: url(/monitor.png);
+    background-position: 0px 8px;
+}

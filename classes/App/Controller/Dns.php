@@ -4,7 +4,7 @@ namespace App\Controller;
 
 class Dns extends \App\Page {
 
-	public function action_view() {
+	/*public function action_view() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
@@ -14,9 +14,9 @@ class Dns extends \App\Page {
 		$this->view->subview 		= 'dns';
 
 		$this->response->body	= $this->view->render();
-	}
+	}*/
 
-	public function action_records() {
+	public function action_record1s() {
 
 		if( $this->permissions == $this::NONE_LEVEL )
 			return $this->noperm();
@@ -26,104 +26,88 @@ class Dns extends \App\Page {
 
 		$entries = $this->pixie->orm->get('records')->where('domain_id',$this->_id)->find_all();
 
-		$data = array();
-		foreach($entries as $entry)	{
 
-			$data[] = array($entry->name,
-							$entry->type,
-							$entry->content,
-							$entry->ttl,
-							'DT_RowId' => 'tab-records-'.$entry->id,
-							'DT_RowClass' => 'gradeB');
-		}
-
-		$this->response->body = json_encode($data);
+		$this->response->body = json_encode($entries);
     }
 
-  	public function action_showEditForm() {
+	public function action_getTree() {
 
-		if( $this->permissions == $this::NONE_LEVEL )
-			return $this->noperm();
+		$entries = $this->pixie->db->query('select','dns')
+									->fields($this->pixie->db->expr("D.id AS did, D.name AS dname, D.master,D.type AS dtype, R.id, R.name AS value, R.type, R.content, R.ttl, R.prio"))
+									->table("domains",'D')
+									->join( array('records','R'), array("D.id", "R.domain_id"))
+									->execute()->as_array();
+		
+		$result = array();
 
-		if( ! $tab = $this->request->post('t') )
-			return;
+        foreach( $entries as $entry) {
+			
+			$domain = array("id" => $entry->did, 
+							"value" => $entry->dname, 
+							"master" => $entry->master, 
+							"type" => $entry->dtype, 
+							"open" => true);
+			
+			$i   	= $entry->did;
 
-		$this->_id 	= $this->request->param('id');
-		$view 		= $this->pixie->view('form_dns');
-		$init 		= $this->request->post('init');
-		$view->tab  = $tab;
-		// Запрос к бд
-		$view->data = $this->pixie->orm->get($tab)->where('id',$this->_id)->find();
+            unset($entry->did, $entry->dname, $entry->master, $entry->dtype);
 
-		// Для новой записи
-		if( !$this->_id && $init) {
-			$view->data->domain_id = $init;
-		}
+            if( ! isset( $result[ $i ]["data"] ) ) {
+                $result[ $i ] = $domain;
+                $result[ $i ]["data"] = array();
+            }
 
+            if( $entry->id )
+           		array_push( $result[ $i ]["data"], $entry );
+        }
 
-        $this->response->body = $view->render();
+		$this->response->body = json_encode( array_values($result));
     }
 
-	public function action_edit() {
+	public function action_save() {
 
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
-
+		
 		if( ! $params = $this->request->post() )
 			return;
 
 		try {
-			$tab = $params['tab'];
-			unset($params['tab']);
 
-			$is_update = $params['id'] ? true : false;
+			$is_update      = $params['is_new'] ? false : true;
+			$params['name'] = $params['value'];
 
-			// сохраняем модель
+			// print_r($params); exit;
 			// Если в запрос поместить true -  предполагается UPDATE
-			$row = $this->pixie->orm->get($tab)
-									->values($params, $is_update)
-									->save();
+			if( $params['$parent'] == 0 )
+				$sql = $this->pixie->orm->get("dns");
+			else
+				$sql = $this->pixie->orm->get("dns")->records;
+			
+			unset($params['$parent'],$params['$level'],$params['$count'],$params['is_new'],$params['open'],$params['value']);
 
-			$id = $params['id'];
-			unset( $params['domain_id'], $params['id'] );
+			$sql->values($params, $is_update)->save();
 
-			// отдаем
-			$returnData 				= array_values($params);
-			$returnData['DT_RowClass']  = ($tab == 'records') ? 'gradeB' : '';
-			$returnData['DT_RowId']		= 'tab-'.$tab.'-'.($id ? $id : $row->id); // Если id = 0 - вынимаем новый id
-
-			$this->response->body = json_encode($returnData);
 		}
 		catch (\Exception $e) {
 			$this->response->body = $e->getMessage();
-			return;
 		}
 	}
 
 	public function action_delEntry() {
 
-		if( $this->permissions != $this::WRITE_LEVEL )
-			return $this->noperm();
-
+		
 		if( ! $params = $this->request->post() )
 			return;
 
 		try {
-			$entry = $this->pixie->orm->get($params['tab'])->where( 'id', $params['id'])->find();
-			// если это запись домена
-			if ( $params['tab'] == 'dns' ) {
-				$entry->records->delete_all();
-			}
+			if( $params['$parent'] == 0 ) 
+				$this->pixie->orm->get("dns")->where( 'id', $params['id'])->delete_all();
+			else
+				$this->pixie->orm->get("dns")->records->where( 'id', $params['id'])->delete_all();
 
-			$entry->delete();
 		}
 		catch (\Exception $e) {
-			$view = $this->pixie->view('form_alert');
-			$view->errorMsg = $e->getMessage();
-			$this->response->body = $view->render();
+			$this->response->body = $e->getMessage();
 		}
-
     }
 
 }

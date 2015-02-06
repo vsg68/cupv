@@ -108,10 +108,10 @@ function fnTestByType(type, str) {
     mail_tmpl = "^[-_\\w\\.]+@(\\w+\\.){1,}\\w+$";
     word_tmpl = "^[\\w\\.]+$";
     transp_tmpl = "^\\w+:\\[(\\d{1,3}\\.){3}\\d{1,3}\\]$";
-    domain_tmpl = "^(\\w+\\.)+\\w+$";
+    domain_tmpl = "^([\\w\\d-]+\\.)+[\\w\\d-]+$";
     date_tmpl = "^\\d{4}-\\d{2}-\\d{2}$";
     int_tmpl = "^\\d+$";
-    ip_tmpl = "(\\d{1,3}\\.){3}\\d{1,3}";
+    ip_tmpl = "(\\d{1,3}\\.){3}\\d{1,3}$";
 
     switch (type) {
         case 'mail':
@@ -119,6 +119,9 @@ function fnTestByType(type, str) {
             break;
         case 'nets':
             reg = new RegExp(net_tmpl, 'i');
+            break;
+        case 'ip':
+            reg = new RegExp(ip_tmpl, 'i');
             break;
         case 'domain':
             reg = new RegExp(domain_tmpl, 'i');
@@ -131,9 +134,6 @@ function fnTestByType(type, str) {
             break
         case 'date':
             reg = new RegExp(date_tmpl, 'i');
-            break;
-         case 'ip':
-            reg = new RegExp(ip_tmpl, 'i');
             break;
         default:
             return false;
@@ -158,7 +158,16 @@ function GeneratePassword (num_var){
 }
 
 Date.prototype.toLocaleFormat = function(format) {
-    var f = {y : this.getYear() + 1900,m : this.getMonth() + 1,d : this.getDate(),H : this.getHours(),M : this.getMinutes(),S : this.getSeconds()}
+    var f = {
+                Y : this.getFullYear(),
+                y : this.getFullYear()-(this.getFullYear()>=2e3?2e3:1900),
+                m : this.getMonth() + 1,
+                d : this.getDate(),
+                H : this.getHours(),
+                M : this.getMinutes(),
+                S : this.getSeconds()
+            }, k;
+
     for(var k in f)
         format = format.replace('%' + k, f[k] < 10 ? "0" + f[k] : f[k]);
     return format;
@@ -194,6 +203,8 @@ function MView(setup) {
     this.contextmenu     = setup.list_Edit;
     this.cmenuRules      = setup.list_EditRules;
     this.hideTabbar      = ! setup.showTabbar;
+    this.columns         = setup.list_columns;
+    this.fixedRowHeight  = setup.fixedRowHeight;
 
     this.keyPressAction = function(list, key ,formId){
 
@@ -279,19 +290,21 @@ function MView(setup) {
             fitBiggest: true,
             cells: [
                 {
-                    id         : "list_" + self.objID,
-                    view       : this.list_view,
-                    scheme     : this.list_scheme,
-                    scroll     : this.isScroll,
-                    css        : this.list_css,
-                    type       : { height: "auto" },
-                    select     : true,
-                    template   : this.list_template,
-                    url        : this.list_url,
-                    on         : this.list_on,
-                    onContext  : {},
-                    contextmenu: this.contextmenu,
-                    cmenuRules : this.cmenuRules,
+                    id            : "list_" + self.objID,
+                    view          : this.list_view,
+                    scheme        : this.list_scheme,
+                    scroll        : this.isScroll,
+                    css           : this.list_css,
+                    type          : { height: "auto" },
+                    select        : true,
+                    template      : this.list_template,
+                    url           : this.list_url,
+                    on            : this.list_on,
+                    onContext     : {},
+                    contextmenu   : this.contextmenu,
+                    cmenuRules    : this.cmenuRules,
+                    columns       : this.columns,
+                    fixedRowHeight: this.list_fixedRowHeight
                 }
             ]
         }
@@ -481,6 +494,13 @@ function PageTreeAdm(setup) {
                 elements      : formPages[i].formElements,
                 rules         : formPages[i].formRules,
                 on            : formPages[i].on || {},
+                                                    //    "onKeyPress": function(key){
+                                                    //         x = this;
+                                                    //         if( key == 27)
+                                                    //             this.getParentView().back();
+                                                    //     },
+                                                    //     "onChange" : function(){ alert("!")}
+                                                    // },
                 cancel        : ( formPages[i].cancel || function() {
                                                                 mView = $$(this.id).getParentView();
                                                                 values = $$(this.id).getValues();
