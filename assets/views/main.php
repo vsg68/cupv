@@ -20,7 +20,7 @@
                 for(i=0; i < sections.length; i++){
                     items.push({view:"button",
                                 type:"icon",
-                                icon:"angle-right",
+                                icon:"sign-in",
                                 disabled: (sections[i].link == "<?= $ctrl ?>"),
                                 css: "button_" + (sections[i].link == "<?= $ctrl ?>" ? 1: 0),
                                 label:sections[i].name,
