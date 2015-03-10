@@ -9,9 +9,9 @@ var DNSPage = new PageTreeAdm({
     list_css    : "dns_zone", 
     list_columns: [
         {id:"value",header:"Name",width:250, template: function(obj,com){
-                    // Подставляем свою иконку для группы
-                    var icon = obj.$parent ? com.treetable(obj, com) : "<div class='webix_tree_folder'></div>";
-                    return com.icon(obj, com) + icon + '<span>'+ obj.value + '</span>';
+                // Подставляем свою иконку для группы
+                var icon = obj.$parent ? "<div class='webix_tree_file isactive_" + obj.active + "'></div>" : "<div class='webix_tree_folder'></div>";
+                return com.icon(obj, com) + icon + '<span class="isactive_' + obj.active + '">'+ obj.value + '</span>';
             },
         },
         {id:"master",header:"Master",width:100},
@@ -39,15 +39,17 @@ var DNSPage = new PageTreeAdm({
                                 defaults = {
                                              "is_new": 1, 
                                              "domain_id": parent_id,
+                                             "dname": $$("list_dns").getItem(parent_id)["value"],
                                              "type": "A", 
                                              "prio": 10, 
                                              "ttl": 86400, 
+                                             "active": 1, 
                                             };
 
                                  // не показываем richselect, если кладем объект в корень
                                  $$("dns__txt0").show();     
                                  // Переход к редактированию
-                                 $$("list_dns").select( $$("list_dns").add( defaults, 0, parent_id) );
+                                 $$("list_dns").select( $$("list_dns").add( defaults, -1, parent_id) );
                     },
         Edit      : function(){
                             var selected_id   = $$("list_dns").getSelectedId()["id"];
@@ -118,7 +120,7 @@ var DNSPage = new PageTreeAdm({
         {
             formID: "dns__txt",
             formElements: [
-                {view: "text", label: "Домен", name: "value" },
+                {view: "text", label: "Домен", name:"value"},
                 {view: "richselect", label: "Мастер", name: "master", options:["MASTER","SLAVE"] },
                 webix.copy(save_cancel_button)
             ],
@@ -129,8 +131,33 @@ var DNSPage = new PageTreeAdm({
         {
             formID: "dns__txt0",
             formElements: [
-                {view: "text", label: "Name", name: "value"},
-                {view: "richselect", label: "Тип", name: "type", id: "type_entry", options:["SOA","NS","MX","A","PTR","CNAME","HINFO","TXT"] },
+                {view: "text", label: "Name", name:"value", id:"entryname"},
+                {view: "richselect", label: "Тип", name: "type", id: "type_entry", options:["SOA","NS","MX","A","PTR","CNAME","HINFO","TXT"], 
+                    on:{
+                        onChange: function(value){
+                                        form   = this.getFormView();
+                                        values = form.getValues();
+                                        // не даем вводить имена компа - вместо него выступает имя домена
+                                        if( value == "MX" || value == "NS" || value == "SOA" && values["dname"]) {
+                                            $$("entryname").setValue(values["dname"]);
+                                            $$("entryname").define("readonly",true);
+                                            $$("entryname").refresh();
+                                            // скрываем поле - оно нужно только для почтовика
+                                            if( value == "MX" ){
+                                                $$("prio").show();
+                                            }
+                                        }
+                                        else{
+                                            $$("entryname").define("readonly",false);
+                                            $$("prio").hide();
+                                            $$("entryname").refresh();
+                                        }
+
+                                        
+
+                        }    
+                    }
+                },
                 {view: "text", label: "Content/IP", name: "content", id: "content", 
                     on: {
                         onItemClick: function(){
@@ -139,23 +166,16 @@ var DNSPage = new PageTreeAdm({
                                     else
                                         this.define("popup");
                         },
-                        onChange: function(value){
-                                        var value = value.replace(/\.$/,"");
-                                        var type  = $$("type_entry").getValue();
-                                        
-                                        if( type != "A"  && fnTestByType("domain",value) )
-                                            this.setValue(value + ".");
-                        }
                     }
                 },
-                {view: "counter", css:"popup_couter", label: "Priority", name: "prio", min:1 },
+                {view: "counter", css:"popup_couter", label: "Priority", name: "prio", id:"prio", min:1, hidden: true },
                 {view: "counter", css:"popup_couter", label: "TTL", name: "ttl", min:100 },
+                {view: "checkbox", label: "Active", name: "active" },
                 webix.copy(save_cancel_button)
             ],
             formRules:{
                 $all   : webix.rules.isNotEmpty,
                 content: function(value){
-                                        var value = value.replace(/\.$/,"");
                                         var type  = $$("type_entry").getValue();
 
                                         if( type == "SOA" || type == "HINFO" || type == "TXT" ) 

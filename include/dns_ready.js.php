@@ -39,8 +39,12 @@
 		                    {},
 			                    { view: "button", value: "OK", type: "form", width: 70, click: function(){
 					                    	var v = $$("popup_form").getValues();
-											v.zplace = v.zplace.replace(/\.$/,'') + ".";
-											v.cemail = v.cemail.replace(/@/,'\.').replace(/\.$/,'') + ".";
+											// v.zplace = v.zplace.replace(/\.$/,'') + ".";
+											// v.cemail = v.cemail.replace(/@/,'\.').replace(/\.$/,'') + ".";
+											// 
+											// Убираем точку в конце записи
+											v.zplace = v.zplace.replace(/\.$/,'');
+											v.cemail = v.cemail.replace(/@/,'\.').replace(/\.$/,'');
 											v.serial = 1 + parseInt(v.serial);	
 											$$("content").setValue( v.zplace +" "+ v.cemail +" "+ v.serial +" "+ v.refresh +" "+ v.retry +" "+ v.expire +" "+ v.ttl);
 											$$("soa_entry").hide();
@@ -57,8 +61,8 @@
 				var values = $$("content").getValue().split(" ");
 				var num = new Date();
 				$$("popup_form").setValues({
-											"zplace" :values[0] || "comp.example.org.",
-											"cemail" :values[1] || "postmaster@example.org.",
+											"zplace" :values[0] || "comp.example.org",
+											"cemail" :values[1] || "postmaster@example.org",
 											"serial" :values[2] || num.toLocaleFormat("%Y%m%d") + "01",
 											"refresh":values[3] || 28800,
 											"retry"  :values[4] || 7200,

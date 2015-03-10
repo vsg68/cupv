@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"doamin",
+				"domain_name"
+			],
+			[
+				"dns_",
+				"dns__txt0"
+			],
+			[
 				"ge",
 				"getValue"
 			],
@@ -283,7 +291,7 @@
 			"file": "include/dns.js.php",
 			"settings":
 			{
-				"buffer_size": 12816,
+				"buffer_size": 10268,
 				"line_ending": "Unix"
 			}
 		},
@@ -291,87 +299,15 @@
 			"file": "include/dns_ready.js.php",
 			"settings":
 			{
-				"buffer_size": 2756,
+				"buffer_size": 2578,
 				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "assets/views/main.php",
-			"settings":
-			{
-				"buffer_size": 3086,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "web/codebase/webix_debug.js",
-			"settings":
-			{
-				"buffer_size": 809119,
-				"line_ending": "Windows"
 			}
 		},
 		{
 			"file": "classes/App/Controller/Dns.php",
 			"settings":
 			{
-				"buffer_size": 2879,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "web/css/main.css",
-			"settings":
-			{
-				"buffer_size": 4896,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "include/itbase.js.php",
-			"settings":
-			{
-				"buffer_size": 23568,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "include/users_ready.js.php",
-			"settings":
-			{
-				"buffer_size": 2444,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "include/users.js.php",
-			"settings":
-			{
-				"buffer_size": 41432,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "include/itbase_ready.js.php",
-			"settings":
-			{
-				"buffer_size": 563,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "classes/App/Controller/Itbase.php",
-			"settings":
-			{
-				"buffer_size": 5086,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "web/js/lib.js",
-			"settings":
-			{
-				"buffer_size": 28843,
+				"buffer_size": 3012,
 				"line_ending": "Unix"
 			}
 		},
@@ -379,7 +315,7 @@
 			"file": "web/cupv.todo",
 			"settings":
 			{
-				"buffer_size": 1720,
+				"buffer_size": 1820,
 				"line_ending": "Unix"
 			}
 		}
@@ -387,16 +323,24 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 138.0,
+		"height": 54.0,
 		"selected_items":
 		[
 			[
-				"git push ",
+				"git push cb",
 				"Git: Push Current Branch"
 			],
 			[
 				"git qc",
 				"Git: Quick Commit"
+			],
+			[
+				"git push ",
+				"Git: Push Current Branch"
+			],
+			[
+				"git status",
+				"Git: Status"
 			],
 			[
 				"git add",
@@ -413,10 +357,6 @@
 			[
 				"git cq",
 				"Git: Quick Commit"
-			],
-			[
-				"git status",
-				"Git: Status"
 			],
 			[
 				"git log",
@@ -457,10 +397,6 @@
 			[
 				"git q",
 				"Git: Quick Commit"
-			],
-			[
-				"git push cb",
-				"Git: Push Current Branch"
 			],
 			[
 				"git",
@@ -696,35 +632,45 @@
 	"expanded_folders":
 	[
 		"/home/vsg/Dropbox/cupv/assets",
-		"/home/vsg/Dropbox/cupv/assets/config",
 		"/home/vsg/Dropbox/cupv/assets/views",
+		"/home/vsg/Dropbox/cupv/include",
 		"/home/vsg/Dropbox/cupv/classes",
+		"/home/vsg/Dropbox/cupv/classes/App",
 		"/home/vsg/Dropbox/cupv/classes/App/Controller",
-		"/home/vsg/Dropbox/cupv/classes/App/Model",
-		"/home/vsg/Dropbox/cupv/web",
-		"/home/vsg/Dropbox/cupv/web/codebase"
+		"/home/vsg/Dropbox/cupv/web"
 	],
 	"file_history":
 	[
+		"/home/vsg/tmp/asa.conf",
+		"/home/vsg/tmp/enter.xml",
+		"/home/vsg/Документы/Shotwell Import Log.txt",
+		"/home/vsg/mv1.sh",
+		"/home/vsg/tmp/ppp.pl",
+		"/home/vsg/Dropbox/cupv/assets/views/main.php",
+		"/home/vsg/Dropbox/cupv/web/cupv.todo",
+		"/home/vsg/Dropbox/cupv/web/js/lib.js",
+		"/home/vsg/Dropbox/cupv/classes/App/Controller/Itbase.php",
+		"/home/vsg/Dropbox/cupv/include/itbase_ready.js.php",
+		"/home/vsg/Dropbox/cupv/include/users.js.php",
+		"/home/vsg/Dropbox/cupv/include/users_ready.js.php",
+		"/home/vsg/Dropbox/cupv/include/itbase.js.php",
+		"/home/vsg/Dropbox/cupv/web/css/main.css",
+		"/home/vsg/Dropbox/cupv/classes/App/Controller/Dns.php",
+		"/home/vsg/Dropbox/cupv/web/codebase/webix_debug.js",
+		"/home/vsg/Dropbox/cupv/include/dns_ready.js.php",
+		"/home/vsg/Dropbox/cupv/include/dns.js.php",
 		"/home/vsg/Cloud@Mail.Ru/MyDocuments/Vovka_pass_3.txt",
 		"/home/vsg/Dropbox/cupv/classes/App/Model/Dns.php",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/Default/Preferences.sublime-settings",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/Color Highlighter/ColorHighlighter.sublime-settings",
 		"/home/vsg/Dropbox/cupv/include/admin.js.php",
-		"/home/vsg/Dropbox/cupv/web/codebase/webix_debug.js",
-		"/home/vsg/Dropbox/cupv/include/users_ready.js.php",
-		"/home/vsg/Dropbox/cupv/include/users.js.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Controller/Users.php",
-		"/home/vsg/Dropbox/cupv/assets/views/main.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Controller/Nets.php",
 		"/home/vsg/Dropbox/cupv/include/admin_ready.js.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Page.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Model/Nets.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Controller/Admin.php",
 		"/home/vsg/Dropbox/cupv/classes/App/Controller/Groups.php",
-		"/home/vsg/Dropbox/cupv/include/itbase.js.php",
-		"/home/vsg/Dropbox/cupv/web/css/main.css",
-		"/home/vsg/Dropbox/cupv/web/cupv.todo",
 		"/home/vsg/Dropbox/cupv/include/tmp.js",
 		"/home/vsg/tmp/asa-nvtrade.conf",
 		"/home/vsg/Dropbox/sublime-text-3/Packages/PlainTasks/messages/Tutorial.todo",
@@ -782,9 +728,77 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"-vi",
+			"^(.+)$",
+			"\\)",
+			"\\(",
+			"( )",
+			"^(.+)$",
+			"^(.+)\\s+$",
+			".+Вахта памяти 2014.+",
+			"^(.+)$",
+			"\\sф",
+			"\\s(\\d)",
+			"^(.+)\\s+$",
+			"^(.+)$",
+			"^.+(?=Семья).+$",
+			"^(.+)$",
+			"\\)",
+			"\\(",
+			"(",
+			"( )",
+			" ",
+			"(\\s)+",
+			"(\\s+)",
+			"^\\s+",
+			"^.+(?=Копия).+",
+			".+(?!Копия).+",
+			"^(.+)$",
+			"(\\d)(?>\\s+)",
+			"^(.+)$",
+			"(?>\\s+)(\\d)",
+			"^(.+)$\\n",
+			"^(.+)\\n",
+			".+Семья.+",
+			"(?>\\s+)(\\d)",
+			"^(.+)$",
+			"^(.+)\\s+$",
+			"^.+Лазаревское.+$",
+			"^(.+)$",
+			"^(.+)\\s+$",
+			"^.+/Вахта памяти.+$",
+			"^(.+)\\n",
+			"^\\s*$",
+			"^\\s+$",
+			"^.+/Вахта памяти.+$",
+			"^\\s+/.+?$",
+			"^\\s+/.*?$",
+			"делает .+$",
+			"picture",
+			"(?>\\s+)(\\d)",
+			"cloud@mail.ru",
+			"\"",
+			"^mv (.+) /home/vsg/double$",
+			"^mv (.+)$",
+			"^\\s+",
+			"^/.+$",
+			"^\\s+",
+			"^\\s+(\\S+)$",
+			"(\\n)+",
+			"(<Event|</).+|<Data[^>]+>",
+			"(<EventData>|</[^>]+>)",
+			"</Data><Data Name='IpAddress'>",
+			"(<EventData>|</[^>]+>)",
+			"<System>.*?</System>|<Data Name='(?!TargetUserName|IpAddress)[^']+'>.*?</Data>",
+			"(<EventData>|</[^>]+>)",
+			"<EventData>|</[^>]+>",
+			"<EventData>",
+			"<Data Name='(?!TargetUserName|IpAddress)[^']+'>.*?</Data>",
+			"<Data Name='\\w+(?!TargetUserName|IpAddress)'>.*?</Data>",
+			"<System>.*?</System>",
 			"_set_point",
 			"popup",
 			"(nick)$",
@@ -844,50 +858,7 @@
 			"<font face=\"Times New Roman\" ><span style=\"color: rgb(160, 167, 180); font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; text-indent: 0px; text-transform: none; white-space: normal; word-spacing: 0px; display: inline ! important; float: none; background-color: rgb(255, 255, 255);\">[0-9\\.]*%</span></font><br>",
 			" <font color=\"#999999\">[0-9]+</font>",
 			"size=\"\\d+\"",
-			" <img src=\"radio/[\\w\\.]+\" border=\"0\"><br>",
-			"<font color=\"#a0a7b4\" face=\"Times New Roman\" size=\"4\">[0-9\\.]+</font>",
-			"addButtonClick",
-			"addButtonClick()",
-			"crudButtons",
-			"formsPages",
-			"keyPressAction",
-			"borderless",
-			"clear",
-			"sect",
-			"getSelect",
-			"filter",
-			"val",
-			"filter",
-			"list_vie",
-			"find_all",
-			"id=",
-			"accord",
-			"onAfter",
-			"$$('list_itbase')",
-			"list_template",
-			"sche",
-			"values",
-			"onSelect",
-			"anchore",
-			"anchor",
-			"update",
-			"list_rights",
-			"addButtonClick",
-			"ssshshssshshssshshssshsh",
-			";",
-			"rname",
-			"lang",
-			"sections",
-			"\n}",
-			".fleft.sections,",
-			".fleft.sections",
-			"slevel",
-			"        $",
-			"    ",
-			"  public function action_showTree(){\n\n\n        // $entries = $this->pixie->db->query('select','admin')\n        //     ->fields($this->pixie->db->expr(\"R.id AS id, R.name AS value, R.active, S.id as sid, S.name as sectname,\n        //             ( CASE SL.slevel\n        //                  WHEN  0 THEN 'NONE'\n        //                  WHEN  1 THEN 'READ'\n        //                  WHEN  2 THEN 'WRITE'\n        //             END ) AS image,\n        //           1 AS open\"))\n        //     ->table('roles', 'R')\n        //     ->join(array('rights','L'),array('L.role_id','R.id'))\n        //     ->join(array('sections','S'),array('L.section_id','S.id'))\n        //     ->join(array('slevels','SL'),array('L.slevel_id','SL.id'))\n        //     ->order_by(\"R.id\")\n        //     ->execute()->as_array();\n\n        $entries = $this->pixie->db->query('select','admin')\n            ->fields($this->pixie->db->expr(\"R.id AS rid, R.name AS rname, R.active, S.id as sid, S.name as sectname, SL.id AS slid, SL.slevel AS slevel\"))\n            ->table('roles', 'R')\n            ->join(array('rights','L'),array('L.role_id','R.id'))\n            ->join(array('sections','S'),array('L.section_id','S.id'))\n            ->join(array('slevels','SL'),array('L.slevel_id','SL.id'))\n            ->order_by(\"R.id\")\n            ->execute()->as_array();\n\n        $result = array();\n  ",
-			"AS",
-			"check",
-			" $entries = $this->pixie->db->query('select','admin')\n            ->fields($this->pixie->db->expr(\"R.id AS id, R.name AS value, R.active, S.id as sid, S.name as sectname,\n                    ( CASE SL.slevel\n                         WHEN  0 THEN 'NONE'\n                         WHEN  1 THEN 'READ'\n                         WHEN  2 THEN 'WRITE'\n                    END ) AS image,\n                  1 AS open\"))\n            ->table('roles', 'R')\n            ->join(array('rights','L'),array('L.role_id','R.id'))\n            ->join(array('sections','S'),array('L.section_id','S.id'))\n            ->join(array('slevels','SL'),array('L.slevel_id','SL.id'))\n            ->order_by(\"R.id\")\n            ->execute()->as_array();\n"
+			" <img src=\"radio/[\\w\\.]+\" border=\"0\"><br>"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -895,6 +866,62 @@
 		"regex": true,
 		"replace_history":
 		[
+			"-v",
+			"mv -vi $1 ~vsg/double_vovka",
+			"\\\\\\)",
+			"\\\\\\(",
+			"\\\\$1",
+			"mv -vi $1 ~vsg/double_vovka",
+			"$1",
+			"",
+			"mv -vi $1 ~vsg/double_vovka",
+			"\\\\ ф",
+			"\\\\ $1",
+			"$1",
+			"\\1",
+			"",
+			"mv -vi $1 ~vsg/double_vovka",
+			"\\\\\\)",
+			"\\\\\\(",
+			"\\\\$1",
+			"\\\\\\1\\\\",
+			"\\\\ \\1 \\\\",
+			"",
+			"mv -vi \\1 ~vsg/double_vovka",
+			"\\1\\\\ ",
+			"\\1\\\\",
+			"mv -vi \\1 ~vsg/double_vovka",
+			"\\\\ \\1",
+			"\\1",
+			"",
+			"\\\\ $1",
+			"\\\\$1",
+			"mv -v \\1 ~vsg/double_vovka",
+			"\\1",
+			"",
+			"mv -v \\1 ~vsg/double_vovka",
+			"\\1",
+			"$1",
+			"",
+			"$1",
+			"",
+			"Picture",
+			"\\\\ $1",
+			"\\ $1",
+			"Cloud@Mail.Ru",
+			"",
+			"mv \"$1\" /home/vsg/double",
+			"mv $1 /home/vsg/double",
+			"",
+			"$1",
+			"\\n",
+			"",
+			"$1\\n",
+			" - ",
+			"$1\\n",
+			"",
+			"$1\\n",
+			"",
 			"$1:",
 			"site: http",
 			"200",
@@ -904,7 +931,7 @@
 			",",
 			"as"
 		],
-		"reverse": false,
+		"reverse": true,
 		"show_context": true,
 		"use_buffer2": true,
 		"whole_word": false,
@@ -932,7 +959,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -941,15 +968,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 12816,
+						"buffer_size": 10268,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								184,
-								184
+								6685,
+								6685
 							]
 						],
 						"settings":
@@ -957,17 +984,16 @@
 							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
 							"encoding_helper_encoding": "UTF-8",
 							"encoding_thread_running": true,
-							"open_with_edit": true,
 							"side_bar_folders_auto_load_folder": 1,
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1836.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
@@ -976,99 +1002,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2756,
+						"buffer_size": 2578,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								308,
-								308
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"open_with_edit": true,
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "assets/views/main.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3086,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								433,
-								433
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "web/codebase/webix_debug.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 809119,
-						"regions":
-						{
-							"bookmarks":
-							{
-								"flags": 144,
-								"icon": "bookmark",
-								"regions":
-								[
-									[
-										169180,
-										169190
-									],
-									[
-										175975,
-										175975
-									]
-								],
-								"scope": "bookmarks"
-							}
-						},
-						"selection":
-						[
-							[
-								176224,
-								176224
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1078,229 +1020,30 @@
 							"encoding_thread_running": true,
 							"side_bar_folders_auto_load_folder": 1,
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 109418.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "classes/App/Controller/Dns.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2879,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1346,
-								1346
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/PHP/PHP.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 432.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "web/css/main.css",
+					"buffer": 2,
+					"file": "classes/App/Controller/Dns.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4896,
+						"buffer_size": 3012,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4710,
-								4710
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/CSS/CSS.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3876.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "include/itbase.js.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 23568,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1954,
-								1954
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 10,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "include/users_ready.js.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2444,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1545,
-								1545
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 540.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 9,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "include/users.js.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 41432,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2708,
-								2708
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 5564.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "include/itbase_ready.js.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 563,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								497,
-								497
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"open_with_edit": true,
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 11,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "classes/App/Controller/Itbase.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5086,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2925,
-								2925
+								2453,
+								2453
 							]
 						],
 						"settings":
@@ -1313,87 +1056,31 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1620.0,
+						"translation.y": 1330.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
-					"file": "web/js/lib.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 28843,
-						"regions":
-						{
-							"bookmarks":
-							{
-								"flags": 144,
-								"icon": "bookmark",
-								"regions":
-								[
-									[
-										8136,
-										8136
-									],
-									[
-										20833,
-										20929
-									],
-									[
-										23936,
-										23936
-									]
-								],
-								"scope": "bookmarks"
-							}
-						},
-						"selection":
-						[
-							[
-								5000,
-								5000
-							]
-						],
-						"settings":
-						{
-							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1890.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 12,
+					"buffer": 3,
 					"file": "web/cupv.todo",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1720,
+						"buffer_size": 1820,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1600,
-								1600
+								1779,
+								1779
 							]
 						],
 						"settings":
 						{
-							"color_scheme": "Packages/PlainTasks/tasks.hidden-tmTheme",
 							"encoding_helper_encoding": "UTF-8",
 							"encoding_thread_running": true,
 							"side_bar_folders_auto_load_folder": 1,
@@ -1403,7 +1090,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -1459,6 +1146,10 @@
 	"output.git-push":
 	{
 		"height": 320.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 211.0
 	},
 	"project": "",
 	"replace":
