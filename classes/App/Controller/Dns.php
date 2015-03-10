@@ -33,11 +33,21 @@ class Dns extends \App\Page {
 	public function action_getTree() {
 
 		$entries = $this->pixie->db->query('select','dns')
-									->fields($this->pixie->db->expr("D.id AS did, D.name AS dname, D.master,D.type AS dtype, R.id, R.name AS value, R.type, R.content, R.ttl, R.prio"))
+									->fields($this->pixie->db->expr("
+										D.id AS did, 
+										D.name AS dname, 
+										D.master,
+										D.type AS dtype, 
+										R.id, 
+										R.name AS value, 
+										R.type, 
+										R.content, 
+										R.ttl,
+										IF(R.disabled=0,1,0) AS active,
+										R.prio"))
 									->table("domains",'D')
 									->join( array('records','R'), array("D.id", "R.domain_id"))
 									->execute()->as_array();
-		
 		$result = array();
 
         foreach( $entries as $entry) {
@@ -50,7 +60,8 @@ class Dns extends \App\Page {
 			
 			$i   	= $entry->did;
 
-            unset($entry->did, $entry->dname, $entry->master, $entry->dtype);
+            unset($entry->did, $entry->master, $entry->dtype);
+            // unset($entry->did, $entry->dname, $entry->master, $entry->dtype);
 
             if( ! isset( $result[ $i ]["data"] ) ) {
                 $result[ $i ] = $domain;
@@ -72,8 +83,9 @@ class Dns extends \App\Page {
 
 		try {
 
-			$is_update      = $params['is_new'] ? false : true;
-			$params['name'] = $params['value'];
+			$is_update         = $params['is_new'] ? false : true;
+			$params['name']    = $params['value'];
+			$params['disabled'] = ! $params['active'];
 
 			// print_r($params); exit;
 			// Если в запрос поместить true -  предполагается UPDATE
@@ -82,7 +94,7 @@ class Dns extends \App\Page {
 			else
 				$sql = $this->pixie->orm->get("dns")->records;
 			
-			unset($params['$parent'],$params['$level'],$params['$count'],$params['is_new'],$params['open'],$params['value']);
+			unset($params['$parent'],$params['$level'],$params['$count'],$params['is_new'],$params['open'],$params['value'],$params['dname'], $params['active']);
 
 			$sql->values($params, $is_update)->save();
 
