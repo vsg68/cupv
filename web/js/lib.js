@@ -615,7 +615,7 @@ function LogsView(setup) {
 
 function LogsPool(setup) {
     var self            = this;
-    extend(LogsPoll, MView);    // Наследуем
+    extend(LogsPool, MView);    // Наследуем
     MView.apply(this, arguments);  // Запускаем родительский конструктор
 
     this.formElements    = setup.formElements || [];
