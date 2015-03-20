@@ -613,7 +613,7 @@ function LogsView(setup) {
      ];
 };
 
-function LogsPoll(setup) {
+function LogsPool(setup) {
     var self            = this;
     extend(LogsPoll, MView);    // Наследуем
     MView.apply(this, arguments);  // Запускаем родительский конструктор

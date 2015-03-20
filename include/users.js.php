@@ -758,7 +758,7 @@ var Groups_AliasPage = new MView({
 /******************************************** For ALL ***********************************************/
 
 /*********   LOGS PAGE  ********/
-var Form_LogsPage = new LogsPoll({
+var Form_LogsPage = new LogsPool({
     id: "logs",
     list_view: "form",
     isHideToolbar: true,
@@ -808,7 +808,7 @@ var Form_LogsPage = new LogsPoll({
     ]
 });
 
-var Data_LogsPage = new LogsPoll({
+var Data_LogsPage = new LogsPool({
     id: "dt", //  id ->  this.list_view + "_" + this.objID,
     list_view: "datatable",
     showStartButton: true,
