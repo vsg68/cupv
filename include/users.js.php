@@ -169,6 +169,7 @@ var Aliases_UserPage = new PageTreeAdm({
 var Fwd_UserPage = new PageTreeAdm({
     id: "fwd_first",
     showTabbar  : true,
+    hreflink    : "aliases", 
     toolbarlabel: "Пересылка",
     list_template: "<div class='isactive_#active#'>#delivery_to#</div>",
     list_EditRules: function(key){
@@ -757,11 +758,14 @@ var Groups_AliasPage = new MView({
 /******************************************** For ALL ***********************************************/
 
 /*********   LOGS PAGE  ********/
-var Form_LogsPage = new LogsView({
+var Form_LogsPage = new LogsPoll({
     id: "logs",
     list_view: "form",
     isHideToolbar: true,
     formElements:[
+        {view: "fieldset", label:"Источник", body:{
+            view: "select", label: "Сервер", name: "server", value:"mail", options:["mail","relay"]
+        }},
         {view: "fieldset", label:"Дата поиска", body: {
             rows:[
                 {view: "datepicker", label: "Начало", name: "start_date", timepicker:true, format: "%Y-%n-%d %H:%i", value: new Date() },
@@ -777,9 +781,7 @@ var Form_LogsPage = new LogsView({
                 {view: "text", label: "Адрес", name: "address" },
             ]
         }},
-        {view: "fieldset", label:"Источник", body:{
-            view: "select", label: "Сервер", name: "server", value:"mail", options:["mail","relay"]
-        }},
+        
         {
             id: "searchButton",
             view: "button",
@@ -792,7 +794,7 @@ var Form_LogsPage = new LogsView({
                     own.define({disabled:true});
 
                     $$("datatable_dt").clearAll();
-                    webix.ajax().get("/logs/show/", this.getFormView().getValues(), function (data){
+                    webix.ajax().get("/logs/show", this.getFormView().getValues(), function (data){
                         if (data) 
                             $$("datatable_dt").parse(data);
                         else
@@ -806,7 +808,7 @@ var Form_LogsPage = new LogsView({
     ]
 });
 
-var Data_LogsPage = new LogsView({
+var Data_LogsPage = new LogsPoll({
     id: "dt", //  id ->  this.list_view + "_" + this.objID,
     list_view: "datatable",
     showStartButton: true,
@@ -848,81 +850,6 @@ var Data_LogsPage = new LogsView({
     }
 });
 
-// maintable = {
-//     view: "accordion",
-//     css:"accord",
-//     multi: false,
-//     cols:[
-//         {
-//             headerAlt:"Пользователи",
-//             headerHeight:0,
-//             header:" ",
-//             expand: true,
-//             body:{
-//                 cols: [
-//                     { rows:[Users_UserPage] , gravity:5, minWidth:800},
-//                     { view:"resizer"},
-//                     { rows:[
-//                             {rows: [ Aliases_UserPage ]},
-//                             {rows: [ Fwd_UserPage ]},
-//                             {rows: [ Groups_UserPage ]}
-//                             ], gravity:3
-//                     }
-//                 ]
-//             }
-//         },
-//         {
-//             headerAlt:"Псевдонимы / Рассылки / Домены",
-//             headerHeight:0,
-//             header:" ",
-//             collapsed: true,
-//             body: {
-//                 cols: [
-//                     {
-//                         header:"Пересылка / Псевдонимы",
-//                         body: {
-//                             rows: [ Aliases_AliasPage ]
-//                         },
-//                         gravity: 2
-//                     },
-//                     {
-//                         header:"Группы / Пользователи",
-//                         body: {
-//                             rows: [ Groups_AliasPage ]
-//                         },
-//                         gravity: 1
-//                     },
-//                     {
-//                         header:"Домены",
-//                         body: {
-//                             rows: [ Domains_AliasPage ]
-//                         },
-//                         gravity: 2
-//                     },
-//                 ]
-//             }
-//         },
-//         {
-//             headerAlt:"Почтовые логи",
-//             headerHeight:0,
-//             header:" ",
-//             collapsed: true,
-//             body: {
-//                 cols: [
-//                     { header:"Фильтр",
-//                       // height:30,
-//                       body: {
-//                         rows: [ Form_LogsPage ],
-//                         width: 400 
-//                       }
-//                     },
-//                     { rows: [ Data_LogsPage ] }
-//                 ]
-//             }
-//         }
-//     ]
-// };
-// 
 maintable = {
     rows:[
         {

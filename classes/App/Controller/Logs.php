@@ -11,7 +11,7 @@ class Logs extends \App\Page {
 			$query = $values = array();
 
 			$params = $this->request->get();
-
+// print_r($params);exit;
 			try {
                 $time_start = date("Y-m-d H:i:s", strtotime($params['start_date']));
 				$time_stop  = date("Y-m-d H:i:s", strtotime($params['stop_date']));
@@ -82,6 +82,72 @@ class Logs extends \App\Page {
 			catch (\Exception $e) {
 				$this->response->body = $e->getMessage();
 			}
+	}
+
+	// public function action_poll() {
+		
+	// 	$startID = $this->request->get('ID');		
+	// 	ignore_user_abort(false);
+		
+	// 	try {
+ //            while(true) {
+ //                // начало запроса
+ //                if( ! $startID )
+ //                    $answer = $this->pixie->orm->get('maillog')->order_by('ID', 'desc')->limit(1)->find_all()->as_array(true);
+ //                else
+ //                    $answer = $this->pixie->orm->get('maillog')->where('ID','>', $startID)->find_all()->as_array(true);
+
+	// 			// 	Если есть ответ - выдаем браузеру и выходим
+	// 			if( count($answer) ){
+	// 				$this->response->body = json_encode($answer);
+	// 				break;
+	// 			}
+	// 			else 
+	// 				sleep(1);
+
+	// 			// if( connection_aborted() )
+	// 			// 	break;
+	// 		}	
+
+	// 	}
+	// 	catch (\Exception $e) {
+	// 		$this->response->body = $e->getMessage();
+	// 	}
+	// }
+
+	public function action_sse() {
+		
+		$startID = 0;
+		header("Content-Type: text/event-stream");
+		header('Cache-Control: no-cache');
+		
+		try {
+            while( !connection_aborted() ) {
+
+                // начало запроса
+                if( $startID == 0 )
+                    $answer = $this->pixie->orm->get('maillog')->order_by('ID', 'desc')->limit(1)->find_all()->as_array(true);
+                else
+                    $answer = $this->pixie->orm->get('maillog')->where('ID','>', $startID)->find_all()->as_array(true);
+
+				// 	Если есть ответ - выдаем браузеру и выходим
+				foreach( $answer as $line ){
+					$startID = $line->ID;
+				}
+
+				// если нет данных - ничего отображаться не будет
+				// Но все равно надо выводить
+				echo "data: ".json_encode($answer)."\n\n";
+				ob_flush();
+				flush();
+				
+				sleep(1);
+			}	
+
+		}
+		catch (\Exception $e) {
+			$this->response->body = $e->getMessage();
+		}
 	}
 }
 ?>

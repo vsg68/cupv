@@ -613,6 +613,82 @@ function LogsView(setup) {
      ];
 };
 
+function LogsPoll(setup) {
+    var self            = this;
+    extend(LogsPoll, MView);    // Наследуем
+    MView.apply(this, arguments);  // Запускаем родительский конструктор
+
+    this.formElements    = setup.formElements || [];
+    this.hideStartButton = ! setup.showStartButton;
+    this.isHideToolbar   = setup.isHideToolbar,
+    this.columnConfig    = setup.columnConfig || [{}],
+    this.evtSource       = false;
+    
+    this.rows = [
+        {
+            view: "toolbar",
+            height: 35,
+            hidden: this.isHideToolbar,
+            cols: [
+                {
+                    view: "label",
+                    label: this.toolbarlabel
+                },
+                {
+                    view:"toggle",
+                    type:"iconButton",
+                    icon:"play",
+                    label:"Старт",
+                    width: 90,
+                    hidden: this.hideStartButton,
+                    click: function(){
+
+                        if(typeof(EventSource) == undefined) {
+                            webix.message("Ваш браузер не поддерживает технологию SSE.. Пора обновить браузер.");
+                            return true;
+                        }
+
+                        var id = self.list_view + "_" + self.objID;
+                        
+                        if( self.evtSource ) {
+                            self.evtSource.close();
+                            self.evtSource = false;
+                            this.define({icon:"play", label: "Старт"});
+                            $$("searchButton").define({disabled:false});
+                        }
+                        else {
+                            this.define({icon:"stop", label: "Стоп"});
+                            $$("searchButton").define({disabled:true});
+                            $$(id).clearAll();
+                            
+                            self.evtSource = new EventSource("/logs/sse");
+                                                    
+                            self.evtSource.onmessage = function(e){
+                                                            $$(id).parse(e.data);
+                                                        };
+                            self.evtSource.onerror = function(e) {
+                                                            if (this.readyState == EventSource.CONNECTING)      
+                                                                webix.message({type: "error", text:"Соединение порвалось, пересоединяемся..."});
+                                                            else
+                                                                webix.message({type: "error", text:"Ошибка, состояние: " + this.readyState});
+                                                        };  
+                        }                        
+                    }
+                }
+            ]
+        },
+        {
+            view          : this.list_view,
+            id            : this.list_view + "_" + this.objID,
+            on            : this.list_on,
+            scheme        : this.list_scheme,
+            elementsConfig: {labelWidth: 130},
+            elements      : this.formElements,
+            columns       : this.columnConfig,
+        }
+     ];
+};
+
 /* 
     Контекстное меню. 
     Входные параметры:

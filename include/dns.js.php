@@ -161,10 +161,10 @@ var DNSPage = new PageTreeAdm({
                 {view: "text", label: "Content/IP", name: "content", id: "content", 
                     on: {
                         onItemClick: function(){
-                                    if( $$("type_entry").getValue() == "SOA" )
-                                        this.define("popup","soa_entry");
-                                    else
+                                    if( $$("type_entry").getValue() != "SOA" )
                                         this.define("popup");
+                                    else
+                                        this.define("popup","soa_entry");
                         },
                     }
                 },
@@ -209,9 +209,9 @@ var DNSPage = new MView({
     list_css    : "dns_zone", 
     list_columns: [
         {id:"value",header:"Name",width:250, template: function(obj,com){
-                    // Подставляем свою иконку для группы
-                    var icon = obj.$parent ? com.treetable(obj, com) : "<div class='webix_tree_folder'></div>";
-                    return com.icon(obj, com) + icon + '<span>'+ obj.value + '</span>';
+                // Подставляем свою иконку для группы
+                var icon = obj.$parent ? "<div class='webix_tree_file isactive_" + obj.active + "'></div>" : "<div class='webix_tree_folder'></div>";
+                return com.icon(obj, com) + icon + '<span class="isactive_' + obj.active + '">'+ obj.value + '</span>';
             },
         },
         {id:"master",header:"Master",width:100},

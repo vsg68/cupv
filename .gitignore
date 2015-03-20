@@ -2,3 +2,5 @@ assets/config/db.php
 tmp/
 nbproject/
 .idea/
+cupv.sublime-project
+cupv.sublime-workspace
