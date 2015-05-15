@@ -14,7 +14,6 @@ var DNSPage = new PageTreeAdm({
                 return com.icon(obj, com) + icon + '<span class="isactive_' + obj.active + '">'+ obj.value + '</span>';
             },
         },
-        {id:"master",header:"Master",width:100},
         {id:"type",header:"Type",width:100},
         {id:"content",header:"Content", fillspace:true},
         {id:"prio",header:"Priority",width:100},
@@ -24,7 +23,8 @@ var DNSPage = new PageTreeAdm({
         Add_Domain: function(){
                              defaults = {
                                          "is_new": 1, 
-                                         "master": "MASTER", 
+                                         "type"  : "NATIVE", 
+                                         "id"    : GenID()
                                         };
 
                              // Переход к редактированию
@@ -37,11 +37,12 @@ var DNSPage = new PageTreeAdm({
 
                                 // если это не бранч - тогда нужен id бранча
                                 defaults = {
+                                             "id"    : GenID(),
                                              "is_new": 1, 
                                              "domain_id": parent_id,
                                              "dname": $$("list_dns").getItem(parent_id)["value"],
                                              "type": "A", 
-                                             "prio": 10, 
+                                             "prio": 0, 
                                              "ttl": 86400, 
                                              "active": 1, 
                                             };
@@ -78,25 +79,6 @@ var DNSPage = new PageTreeAdm({
                                 }
                             }})     
                     },
-        // Copy      : function(){
-        //                     var selected_id   = $$("list_dns").getSelectedId()["id"];
-        //                     var selected_item = $$("list_dns").getItem(selected_id);
-
-        //                     defaults = {
-        //                                     "is_new"  : 1, 
-        //                                     "copy_id" : selected_item.id, 
-        //                                     "name"    : selected_item.name + "_copy", 
-        //                                     "value"   : selected_item.pid, 
-        //                                     "pid"     : selected_item.pid,
-        //                                     "fldr"    : selected_item.fldr,
-        //                                     "tsect"   : selected_item.tsect
-        //                                 };
-
-        //                     //  делаем новую запись
-        //                     $$("list_dns").select( $$("list_dns").add( defaults, 0, selected_item.pid) );
-                            
-        //                     $$("dns__txt").show();   
-        //             },
     },    
     list_EditRules: function(key){
         var selected_id   = $$("list_dns").getSelectedId();
@@ -121,50 +103,56 @@ var DNSPage = new PageTreeAdm({
             formID: "dns__txt",
             formElements: [
                 {view: "text", label: "Домен", name:"value"},
-                {view: "richselect", label: "Мастер", name: "master", options:["MASTER","SLAVE"] },
+                // {view: "richselect", label: "Мастер", name: "master", options:["MASTER","SLAVE"] },
                 webix.copy(save_cancel_button)
             ],
             formRules:{
-                $all: webix.rules.isNotEmpty,
+                value: function(value){
+                    return fnTestByType("domain",value);
+                },
             }
         },
         {
             formID: "dns__txt0",
             formElements: [
-                {view: "text", label: "Name", name:"value", id:"entryname"},
                 {view: "richselect", label: "Тип", name: "type", id: "type_entry", options:["SOA","NS","MX","A","PTR","CNAME","HINFO","TXT"], 
                     on:{
                         onChange: function(value){
                                         form   = this.getFormView();
                                         values = form.getValues();
+
                                         // не даем вводить имена компа - вместо него выступает имя домена
                                         if( value == "MX" || value == "NS" || value == "SOA" && values["dname"]) {
                                             $$("entryname").setValue(values["dname"]);
                                             $$("entryname").define("readonly",true);
-                                            $$("entryname").refresh();
-                                            // скрываем поле - оно нужно только для почтовика
-                                            if( value == "MX" ){
-                                                $$("prio").show();
-                                            }
                                         }
-                                        else{
+                                        else {
                                             $$("entryname").define("readonly",false);
-                                            $$("prio").hide();
-                                            $$("entryname").refresh();
                                         }
 
-                                        
+                                        // скрываем поле - оно нужно только для почтовика
+                                        if( value == "MX" ){
+                                            if( !values["prio"] ) {  // если 0, то ставим 10-ку по умолчанию
+                                                $$("prio").setValue(10);
+                                            }
+                                            $$("prio").show();
+                                        }
+                                        else {
+                                            $$("prio").setValue(0);
+                                            $$("prio").hide();
+                                        }
+
+                                        $$("entryname").refresh();
 
                         }    
                     }
                 },
+                {view: "text", label: "Name", name:"value", id:"entryname"},
                 {view: "text", label: "Content/IP", name: "content", id: "content", 
                     on: {
                         onItemClick: function(){
-                                    if( $$("type_entry").getValue() != "SOA" )
-                                        this.define("popup");
-                                    else
-                                        this.define("popup","soa_entry");
+                                    if( $$("type_entry").getValue() == "SOA" )
+                                        $$("soa_entry").show(this.getNode());
                         },
                     }
                 },

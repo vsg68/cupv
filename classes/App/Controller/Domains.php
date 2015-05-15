@@ -21,6 +21,11 @@ class Domains extends \App\Page {
     public function action_showTable(){
 
         $result = $this->pixie->orm->get('domains')->find_all()->as_array(true);
+       
+        foreach($result as $str) {
+             $str->relay_notcheckusers = ! $str->relay_notcheckusers;
+         }
+
         $this->response->body = json_encode($result);
     }
 
@@ -31,6 +36,7 @@ class Domains extends \App\Page {
             return false;
 
         try {
+            $params['relay_notcheckusers'] = ! $params['relay_notcheckusers'];
             $is_update = $params['is_new'] ? false : true;
             unset( $params['is_new']);
 
